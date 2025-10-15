@@ -3175,7 +3175,7 @@ sap.ui.define([
 			],
 			sortConditions: {
 				sorters: [
-					{name: "name", descending: true}
+					{key: "name", descending: true}
 				]
 			},
 			autoBindOnInit: false
@@ -3209,8 +3209,8 @@ sap.ui.define([
 		oUpdateSortIndicator.resetHistory();
 		this.oTable.setSortConditions({
 			sorters: [
-				{name: "firstName", descending: false},
-				{name: "age", descending: true}
+				{key: "firstName", descending: false},
+				{key: "age", descending: true}
 			]
 		});
 		await this.oTable.rebind();
@@ -4450,13 +4450,13 @@ sap.ui.define([
 	QUnit.test("State validation against property infos", async function(assert) {
 		await this.createTable({
 			sortConditions: {
-				sorters: [{name: "DoesNotExist"}]
+				sorters: [{key: "DoesNotExist"}]
 			},
 			filterConditions: {
 				DoesNotExist: [{operator: "EQ", values: [30]}]
 			},
 			groupConditions: {
-				groupLevels: [{name: "DoesNotExist"}]
+				groupLevels: [{key: "DoesNotExist"}]
 			},
 			aggregateConditions: {
 				DoesNotExist: {}
