@@ -321,6 +321,7 @@ sap.ui.define([
 
 		var that = this;
 		this._bHasHeaderButton = false;
+		this._bNavigatedBackToList = false;
 
 		/**
 		 * Defines whether the custom header of details page will be shown.
@@ -435,7 +436,7 @@ sap.ui.define([
 
 		if (aListItems.length === 1 && aListItems[0].getType()  === ListType.Navigation) {
 
-			if (this._navContainer.getCurrentPage() !== this._detailsPage) {
+			if (this._navContainer.getCurrentPage() !== this._detailsPage && !this._bNavigatedBackToList) {
 				this._fnHandleForwardNavigation(aListItems[0], "show");
 
 				// TODO: adopt this to NavContainer's public API once a parameter for back navigation transition name is available
@@ -443,6 +444,9 @@ sap.ui.define([
 			}
 		} else if (aListItems.length === 0) {
 			this._navContainer.backToTop();
+		} else {
+			// reset parameter once the list items are more than one
+			this._bNavigatedBackToList = false;
 		}
 
 		// Bind automatically to the MessageModel if no items are bound
@@ -1447,6 +1451,7 @@ sap.ui.define([
 	MessageView.prototype.navigateBack = function () {
 		this._listPage.$().removeAttr("aria-hidden");
 		this._navContainer.back();
+		this._bNavigatedBackToList = true;
 	};
 
 	/**
