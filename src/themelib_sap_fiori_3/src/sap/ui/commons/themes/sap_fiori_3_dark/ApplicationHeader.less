@@ -4,19 +4,15 @@
 /* ================================================= */
 
 .sapUiAppHdr {
-	font-family: @sapUiDesktopFontFamily;
+	font-family: var(--sapFontFamily);
 	font-size: @sapUiDesktopFontSize;
-	-moz-box-shadow: 0 0 8px @sapUiContentShadowColor;
-	background-image: -moz-linear-gradient(top center, lighten(@sapUiContentForegroundColor, 46), lighten(@sapUiContentForegroundColor, 70));
-	background-image: -webkit-gradient(linear, left top, left bottom, from(lighten(@sapUiContentForegroundColor, 46)), to(lighten(@sapUiContentForegroundColor, 70)));
-	background-image: -webkit-linear-gradient(top center, lighten(@sapUiContentForegroundColor, 46), lighten(@sapUiContentForegroundColor, 70));
-	background-image: -ms-linear-gradient(lighten(@sapUiContentForegroundColor, 46), lighten(@sapUiContentForegroundColor, 70)); /* starting with IE10 this works in IE */
+	box-shadow: 0 0 8px var(--sapContent_ShadowColor);
 	background-image: linear-gradient(top center, lighten(@sapUiContentForegroundColor, 46), lighten(@sapUiContentForegroundColor, 70));
 	background-position: left top;
 	background-size: 100% 110px;
 	text-shadow: 1px 1px 2px darken(@sapUiContentShadowColor, 20);
-	color: @sapUiContentContrastTextColor;
-	border: 0px solid @sapUiBrand;
+	color: var(--sapContent_ContrastTextColor);
+	border: 0px solid var(--sapBrandColor);
 	border-top-width: 8px;
 }
 
@@ -24,19 +20,19 @@
 	font-size: 13px;
 }
 
-.sapUiAppHdr .sapUiBtn.sapUiBtnS.sapUiBtnLite{
-	color: @sapUiContentContrastTextColor;
+.sapUiAppHdr .sapUiBtn.sapUiBtnS.sapUiBtnLite {
+	color: var(--sapContent_ContrastTextColor);
 }
 
-.sapUiAppHdr .sapUiBtn.sapUiBtnS.sapUiBtnLite:focus{
-	color: @sapUiContentContrastTextColor;
+.sapUiAppHdr .sapUiBtn.sapUiBtnS.sapUiBtnLite:focus {
+	color: var(--sapContent_ContrastTextColor);
 	background-color: transparent;
-	outline: 1px dotted @sapUiContentContrastFocusColor;
+	outline: 1px dotted var(--sapContent_ContrastFocusColor);
 	outline-offset: -1px;
 }
 
-.sapUiAppHdrWelcomeLogoffArea > .sapUiBtn.sapUiBtnS.sapUiBtnLite.sapUiBtnAct{
-	background-color: @sapUiButtonHoverBackground;
+.sapUiAppHdrWelcomeLogoffArea > .sapUiBtn.sapUiBtnS.sapUiBtnLite.sapUiBtnAct {
+	background-color: var(--sapButton_Hover_Background);
 }
 
 .sapUiAppHdrWelcomeLogoffArea > .sapUiTbSeparator {
