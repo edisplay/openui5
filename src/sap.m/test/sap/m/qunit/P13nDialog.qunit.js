@@ -841,7 +841,7 @@ sap.ui.define([
 		var done = assert.async();
 		this.oP13nDialog.attachAfterOpen(function () {
 			assert.equal(this.oP13nDialog.getPanels().length, 1);
-			assert.equal(this.oP13nDialog.$().find("header > .sapMDialogTitleGroup").length, 1);
+			assert.equal(this.oP13nDialog.$().find(".sapMDialogHeader > .sapMDialogTitleGroup").length, 1);
 			assert.equal(this.oP13nDialog.$().find(".sapMP13nColumnsPanel").length, 1);
 			done();
 		}.bind(this));
@@ -1035,7 +1035,7 @@ sap.ui.define([
 		var done = assert.async();
 		this.oP13nDialog.attachAfterOpen(function () {
 			assert.equal(this.oP13nDialog.getPanels().length, 1);
-			assert.equal(this.oP13nDialog.$().find("header > .sapMDialogTitleGroup").length, 1);
+			assert.equal(this.oP13nDialog.$().find(".sapMDialogHeader > .sapMDialogTitleGroup").length, 1);
 			assert.equal(this.oP13nDialog.$().find(".sapMP13nColumnsPanel").length, 1);
 			done();
 		}.bind(this));
