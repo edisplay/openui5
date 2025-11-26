@@ -3,29 +3,28 @@
 /* Quartz Dark theme                           */
 /* =========================================== */
 
-.sapUiCltBase{
-	font-family: @sapUiDesktopFontFamily;
+.sapUiCltBase {
+	font-family: var(--sapFontFamily);
 	font-size: @sapUiDesktopFontSize;
-	color: @sapUiContentForegroundTextColor;
+	color: var(--sapContent_ForegroundTextColor);
 	background-color: darken(@sapUiContentForegroundColor, 10);
 	border: 4px solid darken(@sapUiContentForegroundColor, 25);
 	min-width: 40px;
 	min-height: 30px;
 }
 
-.sapUiCltBaseCont{
+.sapUiCltBaseCont {
 	background-color: darken(@sapUiContentForegroundColor, 10);
 }
 
-.sapUiCltBaseArr{
+.sapUiCltBaseArr {
 	display: block;
 	width: 20px;
 	height: 20px;
-	margin: 0px;
-	padding: 0px;
+	margin: 0;
+	padding: 0;
 	background-color: darken(@sapUiContentForegroundColor, 10);
 	position: absolute;
-	-webkit-transform: rotate(45deg);
 	transform: rotate(45deg);
 	z-index: -1;
 }
