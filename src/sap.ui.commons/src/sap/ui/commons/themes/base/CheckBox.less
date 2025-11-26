@@ -1,3 +1,8 @@
+/* ======================================== */
+/* CSS for control sap.ui.commons/CheckBox  */
+/* Base theme                               */
+/* ======================================== */
+
 .sapUiCb {
 	vertical-align: top;
 	line-height: @sapUiLineHeight;
@@ -14,7 +19,7 @@
 
 /* Do not invert for table */
 .sapUiInverted-CTX .sapUiTable .sapUiCb {
-	color: @sapUiBaseText;
+	color: var(--sapTextColor);
 }
 
 .sapUiCb > label {
@@ -27,28 +32,11 @@
 }
 
 .sapUiCbDis > label {
-	color: @sapUiContentDisabledTextColor;
+	color: var(--sapContent_DisabledTextColor);
 }
 
 /* make outline on control borders because otherwise it is cut in layout containers using overflow: hidden */
-.sapUiCb:focus{
+.sapUiCb:focus {
 	outline: 1px dotted @sapUiBaseBorder;
 	outline-offset: -1px;
-}
-
-html[data-sap-ui-browser^="ie"] .sapUiCb:focus{
-	outline: none;
-	position: relative; /* otherwise the Border is not displayed */
-}
-
-html[data-sap-ui-browser^="ie"] .sapUiCb:focus:after {
-	content: "";
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	display: block;
-	border: 1px dotted @sapUiBaseBorder;
-	pointer-events: none;
 }
