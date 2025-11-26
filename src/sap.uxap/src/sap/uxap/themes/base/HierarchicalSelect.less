@@ -66,9 +66,9 @@
 }
 
 .sapMSltPicker .sapUxAPHierarchicalSelect.sapMSltBar::after {
-	font-family: "SAP-icons";
+	font-family: var(--sapContent_IconFontFamily);
 	speak: none;
-	content: "\e03e";
+	content: '\e03e';
 }
 
 .sapUiSizeCompact .sapMSltPicker .sapUxAPHierarchicalSelect.sapMSltBar::after {
@@ -122,7 +122,8 @@
 
 	.sapUxAPHierarchicalSelect {
 		display: flex;
-		 .sapMSltLabel {
+
+		.sapMSltLabel {
 			position: relative;
 			padding-left: 0;
 			display: inline-block;
@@ -132,6 +133,7 @@
 			padding-right: 0;
 			overflow: visible;
 		 	min-width: 0;
+
 			.sapMSelectListItemText {
 				display: inline-block;
 				width: 100%;
@@ -157,41 +159,12 @@
 
 .sap-phone .sapUiSizeCompact,
 .sapUiSizeCompact .sapUxAPObjectPageLayout-Std-Phone {
+
 	.sapUxAPHierarchicalSelect .sapMSltLabel {
 		padding-bottom: 0.3rem;
 	}
 
 	.sapMSlt.sapUxAPHierarchicalSelect {
 		height: 2rem;
-	}
-}
-
-/* IE and Edge ignores outline-offset. Use an overlay: */
-/* TODO remove after the end of support for Internet Explorer */
-html[data-sap-ui-browser^="ie"].sap-desktop,
-html[data-sap-ui-browser^="ed"].sap-desktop {
-	.sapMSlt.sapUxAPHierarchicalSelect:focus  > .sapMSltArrow {
-		box-shadow: none;
-	}
-
-	.sapUxAPHierarchicalSelect.sapMSltHoverable.sapMSltIconOnly.sapMSlt:not(.sapMSltPressed):focus {
-		&:before {
-			border: none;
-		}
-		> .sapMSltIcon {
-			outline: none;
-			position: relative;
-		}
-		> .sapMSltIcon:after {
-			content: " ";
-			box-sizing: border-box;
-			width: 100%;
-			height: 100%;
-			position: absolute;
-			left: 0;
-			top: 0;
-			border: 1px dashed @sapUiContentFocusColor;
-			pointer-events: none;
-		}
 	}
 }
