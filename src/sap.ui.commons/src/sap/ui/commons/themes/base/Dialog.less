@@ -1,22 +1,26 @@
+/* ======================================= */
+/* CSS for control commons/Dialog.control  */
+/* Base theme                              */
+/* ======================================= */
+
 @_sap_ui_commons_Dialog_HeaderHeight: 19px;
 @_sap_ui_commons_Dialog_FooterHeight: 36px;
 
 .sapUiDlg {
-	position: absolute; /*relative;/* enable positioning for children */
+	position: absolute; /*relative enable positioning for children */
 	display: inline-block;
 	outline: none;
 	box-sizing: border-box;
 }
 
 /* header */
-
 .sapUiDlgHdr {
 	height: @_sap_ui_commons_Dialog_HeaderHeight;
 	margin: 10px 10px 0 10px;
 	cursor: move;
 	overflow: hidden;
-	-moz-user-select: none;
 	-webkit-user-select: none;
+	user-select: none;
 }
 
 .sapUiDlgHdr > .sapUiDlgHdrLeft {
@@ -53,12 +57,6 @@
 	color: transparent /* make x text invisible */
 }
 
-/* make x text non selectable for firefox so it can't be selected with mouse/keyboard */
-html[data-sap-ui-browser="ff3"] .sapUiDlgHdrBtns > a {
-	-moz-user-select: none;
-	-webkit-user-select: none;
-}
-
 /* content */
 
 .sapUiDlgCont {
@@ -67,23 +65,23 @@ html[data-sap-ui-browser="ff3"] .sapUiDlgHdrBtns > a {
 	border-color: @sapUiMediumBorder;
 	border-style: solid;
 	position:absolute; /* required for proper layout, do not change! */
-	left: 0px;
-	right: 0px;
-	bottom: 36px;   /* must equal the footer height! */
-	top: 26px;      /* must equal the header height! */
+	left: 0;
+	right: 0;
+	bottom: 36px; /* must equal the footer height! */
+	top: 26px; /* must equal the header height! */
 	overflow: auto; /* this triggers the Dialog's scrollbars when required */
 	padding: 16px 22px;
 	outline: none;
 }
 
 .sapUiDlgNoPad .sapUiDlgCont {
-	padding: 0px;
+	padding: 0;
 }
 
 .sapUiDlgFlexHeight .sapUiDlgCont,
 .sapUiDlgFlexWidth .sapUiDlgCont {
 	position: relative;
-	top: 0px;
+	top: 0;
 }
 
 /* footer */
@@ -125,10 +123,4 @@ html[data-sap-ui-browser="ff3"] .sapUiDlgHdrBtns > a {
 	height: 14px;
 	cursor: nw-resize;
 	background-position: left top;
-}
-
-/* make resize text non selectable for firefox so it can't be selected with mouse/keyboard */
-html[data-sap-ui-browser="ff3"] .sapUiDlgGrip {
-	-moz-user-select: none;
-	-webkit-user-select: none;
 }
