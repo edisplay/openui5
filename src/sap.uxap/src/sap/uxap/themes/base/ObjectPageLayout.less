@@ -2,6 +2,7 @@
 /* CSS for control sap.uxap/ObjectPageLayout  */
 /* Base theme                                 */
 /* ========================================== */
+
 @_sap_uxap_ObjectPageLayout_FooterHeight: 3rem;
 @_sap_uxap_ObjectPageLayout_FooterHeight_Compact: 2.5rem;
 @_sap_uxap_ObjectPageLayout_FooterMarginBottom: 0.5rem;
@@ -10,17 +11,15 @@
 	width: 100%;
 	height: 100%;
 	position: relative;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 	isolation: isolate;
 	z-index: 0;
-	white-space: normal; // BCP: 1780382804
+	white-space: normal; /* BCP: 1780382804 */
 
 	/* ObjectAttribute will not truncate inside ObjectPage but rather will go on more lines */
 	.sapUxAPObjectPageHeaderDetails {
+
 		.sapMObjectAttributeActive .sapMObjectAttributeTitle,
 		.sapMObjectAttributeActive .sapMObjectAttributeText {
 			display: inline;
@@ -31,7 +30,7 @@
 	}
 }
 
-.sapUxAPObjectPageLayout > .sapUiLocalBusyIndicator:focus  {
+.sapUxAPObjectPageLayout > .sapUiLocalBusyIndicator:focus {
 	z-index: 5;
 }
 
@@ -49,8 +48,7 @@ body > .sapUxAPObjectPageLayout,
 }
 
 .sapUxAPObjectPageHeaderTitle {
-    flex-shrink: 0;
-    -webkit-flex-shrink: 0;
+	flex-shrink: 0;
 }
 
 .sapUxAPObjectPageLayoutTitleClickEnabled > .sapUxAPObjectPageHeaderStickied > .sapFDynamicPageTitle {
@@ -66,12 +64,11 @@ body > .sapUxAPObjectPageLayout,
 }
 
 .sapUxAPObjectPageWrapper {
-    position:relative;
-    height:100%;
-    -webkit-flex-grow: 1;
-    flex-grow: 1;
+	position:relative;
+	height:100%;
+	flex-grow: 1;
 	overflow-y: auto;
-	background-color: @sapUiGlobalBackgroundColor;
+	background-color: var(--sapBackgroundColor);
 }
 
 .sapUxAPObjectPageWrapperWillChangeScrollTop {
@@ -87,9 +84,7 @@ body > .sapUxAPObjectPageLayout,
 	margin-top:  2rem;
 }
 
-/****
-    sapUxAPObjectPageScroll copied from sapMScroll for now
-****/
+/* sapUxAPObjectPageScroll copied from sapMScroll for now */
 
 .sapUxAPObjectPageScrollV,
 .sapUxAPObjectPageScrollH,
@@ -137,32 +132,35 @@ body > .sapUxAPObjectPageLayout,
 	left: 0;
 	right: auto;
 	z-index: 3000;
-	background: @sapUiObjectHeaderBorderColor;
+	background: var(--sapObjectHeader_BorderColor);
 }
 
 .sapUxAPObjectPageLayout.sapUxAPObjectPageLayoutTitleClickEnabled {
-	// title hover
+
+	/* title hover */
 	.sapFDynamicPageTitle:hover,
 	&.sapUxAPObjectPageTitleForceHovered .sapFDynamicPageTitle {
 		cursor: pointer;
 	}
 }
 
-// anchorBar
+/* anchorBar */
 .sapUxAPObjectPageLayoutTitleClickEnabled .sapUxAPObjectPageNavigation .sapMITH,
 .sapUxAPObjectPageLayoutHeaderPinnable .sapUxAPObjectPageNavigation .sapMITH {
 	margin-top: 0.25rem;
 }
 
 .sapUiSizeCompact {
+
 	.sapUxAPObjectPageLayoutTitleClickEnabled .sapUxAPObjectPageNavigation .sapMITH,
 	.sapUxAPObjectPageLayoutHeaderPinnable .sapUxAPObjectPageNavigation .sapMITH {
 		margin-top: 0.0625rem;
 	}
 }
 
-// footer
+/* footer */
 .sapUxAPObjectPageLayout {
+
 	.sapUxAPObjectPageFooter {
 		position: absolute;
 		height: @_sap_uxap_ObjectPageLayout_FooterHeight;
@@ -182,16 +180,17 @@ body > .sapUxAPObjectPageLayout,
 }
 
 .sapUiSizeCompact .sapUxAPObjectPageLayout .sapUxAPObjectPageFooter {
+
 	.sapUxAPObjectPageFloatingFooter {
 		height: @_sap_uxap_ObjectPageLayout_FooterHeight_Compact;
 
-		// Reflection: styles overwritten
+		/* Reflection: styles overwritten */
 		&.sapMBar-CTX {
-			// BCP: 1870106645
-			// When sap.m.Bar is used as footer (in compact) setting 2.5rem height
-			// breaks the Bar`s content vertical alignment.
-			// Fixing this internally in the sap.m.Bar (in the context of flaoting footer)
-			// will require significant effort, so we set height of 2rem (the expected Bar height by the visual spec).
+			/* BCP: 1870106645
+			When sap.m.Bar is used as footer (in compact) setting 2.5rem height
+			breaks the Bar`s content vertical alignment.
+			Fixing this internally in the sap.m.Bar (in the context of flaoting footer)
+			will require significant effort, so we set height of 2rem (the expected Bar height by the visual spec). */
 			height: 2rem;
 		}
 	}
@@ -199,76 +198,48 @@ body > .sapUxAPObjectPageLayout,
 }
 
 html[data-sap-ui-animation='on'] .sapUxAPObjectPageLayout {
+
 	.sapUxAPObjectPageFloatingFooterShow {
-		-webkit-animation: bounceShow 0.35s forwards ease-in-out;
 		animation: bounceShow 0.35s forwards ease-in-out;
 	}
+
 	.sapUxAPObjectPageFloatingFooterHide {
-		-webkit-animation: bounceHide 0.35s forwards ease-in-out;
 		animation: bounceHide 0.35s forwards ease-in-out;
 	}
 
-	@-webkit-keyframes bounceShow {
-		0% {
-			-webkit-transform: translateY(100%);
-			transform: translateY(100%);
-			opacity: 0;
-		}
-		100% {
-			opacity: 1;
-		}
-	}
 	@keyframes bounceShow {
+
 		0% {
 			transform: translateY(100%);
 			opacity: 0;
 		}
+
 		100% {
 			opacity: 1;
 		}
 	}
-	@-webkit-keyframes bounceHide {
-		0% {
-			-webkit-transform: translateY(-5%);
-			transform: translateY(-5%);
-			opacity: 1;
-		}
-		100% {
-			-webkit-transform: translateY(100%);
-			transform: translateY(100%);
-			opacity: 0;
-		}
-	}
+
 	@keyframes bounceHide {
+
 		0% {
 			transform: translateY(-5%);
 			opacity: 1;
 		}
+
 		100% {
 			transform: translateY(100%);
 			opacity: 0;
 		}
 	}
 }
-/* Only on Windows 8 with IE 11 there's some weird incompatibility between the usage of the transform property
- in the sapMShell and the one in the objectPageWrapper.
- Also the z-index causes the scroll bars of the table to show in the headerTitle.
- For more information see internal incident 1670194272. */
- /* TODO remove after the end of support for Internet Explorer */
-html[data-sap-ui-browser^="ie"] .sapMShell {
 
-  .sapUxAPObjectPageHeaderTitle {
-    z-index: 3;
-  }
-}
-
-.ui-helper-clearfix:before,
-.ui-helper-clearfix:after {
-	content: "";
+.ui-helper-clearfix::before,
+.ui-helper-clearfix::after {
+	content: '';
 	display: table;
 }
 
-.ui-helper-clearfix:after {
+.ui-helper-clearfix::after {
 	clear: both;
 }
 
