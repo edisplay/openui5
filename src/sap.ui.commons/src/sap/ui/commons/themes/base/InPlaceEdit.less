@@ -1,6 +1,7 @@
-/* ================================================== */
-/* CSS for control sap.ui.commons/InPlaceEdit.control */
-/* ================================================== */
+/* =========================================== */
+/* CSS for control sap.ui.commons/InPlaceEdit  */
+/* Base theme                                  */
+/* =========================================== */
 
 .sapUiIpeInvisible,
 .sapUiIpeInvisible.sapUiTv,
@@ -9,7 +10,7 @@
 	display: none;
 }
 
-.sapUiIpe{
+.sapUiIpe {
 	border: 1px solid transparent; /* to avoid reposition if border is painted on focus */
 	box-sizing: border-box;
 	overflow: hidden;
@@ -19,13 +20,13 @@
 }
 
 /* Content area if revert button is available*/
-.sapUiIpeUndo{
+.sapUiIpeUndo {
 	padding-right: 22px;
 }
 
 .sapUiIpe:hover,
-.sapUiIpeFocus{
-	border-color: @sapUiHighlight;
+.sapUiIpeFocus {
+	border-color: var(--sapHighlightColor);
 	cursor: text;
 	outline: none;
 }
@@ -33,111 +34,110 @@
 .sapUiIpe.sapUiIpeRo:hover,
 .sapUiIpeFocus.sapUiIpeRo,
 .sapUiIpe.sapUiIpeLink:hover,
-.sapUiIpeFocus.sapUiIpeLink{
+.sapUiIpeFocus.sapUiIpeLink {
 	border-color: transparent;
 	cursor: default;
 }
 
 /* disable outline on display controls - focus is visualized on outer DIV */
 .sapUiIpeFocus .sapUiTv,
-.sapUiIpeFocus .sapUiLnk:focus{
+.sapUiIpeFocus .sapUiLnk:focus {
 	outline: none;
 }
 
-.sapUiIpeUndo{
-	background-color: @sapUiListHoverBackground;
+.sapUiIpeUndo {
+	background-color: var(--sapList_Hover_Background);
 }
 
 .sapUiIpeEdit,
-.sapUiIpeEdit.sapUiIpeUndo{
+.sapUiIpeEdit.sapUiIpeUndo {
 	border: none;
-	background-color: @sapUiFieldBackground;
+	background-color: var(--sapField_Background);
 }
 
 /* success state */
 .sapUiIpeSucc,
-.sapUiIpeUndo.sapUiIpeSucc{
-	border-color: @sapUiFieldSuccessColor;
-	background-color: @sapUiFieldSuccessBackground;
+.sapUiIpeUndo.sapUiIpeSucc {
+	border-color: var(--sapField_SuccessColor);
+	background-color: var(--sapField_SuccessBackground);
 }
 
 /* invalid state */
 .sapUiIpeErr,
-.sapUiIpeUndo.sapUiIpeErr{
-	border-color: @sapUiFieldInvalidColor;
-	background-color: @sapUiFieldInvalidBackground;
+.sapUiIpeUndo.sapUiIpeErr {
+	border-color: var(--sapField_InvalidColor);
+	background-color: var(--sapField_InvalidBackground);
 }
 
 /* warning state */
 .sapUiIpeWarn,
-.sapUiIpeUndo.sapUiIpeWarn{
-	border-color: @sapUiFieldWarningColor;
-	background-color: @sapUiFieldWarningBackground;
+.sapUiIpeUndo.sapUiIpeWarn {
+	border-color: var(--sapField_WarningColor);
+	background-color: var(--sapField_WarningBackground);
 }
 
 /* Content area if revert button is available*/
-.sapUiIpeCont{
+.sapUiIpeCont {
 	height: 100%;
 	position: relative;
 	overflow: hidden;
 }
 
-.sapUiIpeLink > .sapUiIpeCont{
+.sapUiIpeLink > .sapUiIpeCont {
 	display: inline-block;
 	box-sizing: border-box;
 	max-width: 100%;
 }
 
-.sapUiIpeEdit.sapUiIpeLink > .sapUiIpeCont{
+.sapUiIpeEdit.sapUiIpeLink > .sapUiIpeCont {
 	display: block;
 	box-sizing: content-box;
 	padding-right: auto;
 }
 
 .sapUiIpeLink:hover > .sapUiIpeCont,
-.sapUiIpeFocus.sapUiIpeLink > .sapUiIpeCont{
+.sapUiIpeFocus.sapUiIpeLink > .sapUiIpeCont {
 	padding-right: 20px;
 }
 
-.sapUiIpeEdit.sapUiIpeFocus.sapUiIpeLink > .sapUiIpeCont{
+.sapUiIpeEdit.sapUiIpeFocus.sapUiIpeLink > .sapUiIpeCont {
 	padding-right: 0;
 }
 
 /* Revert/Edit Button */
 .sapUiIpe > .sapUiBtnS.sapUiBtnLite,
-.sapUiIpeCont > .sapUiBtnS.sapUiBtnLite{
+.sapUiIpeCont > .sapUiBtnS.sapUiBtnLite {
 	position: absolute;
 	right: -1px; /*because of border of outer DIV in display mode*/
-	/*top: -1px;*/ /*because of border of outer DIV in display mode*/
 	top: 0;
 	height: 100%;
 }
 
-.sapUiIpeEdit > .sapUiBtnS.sapUiBtnLite{
+.sapUiIpeEdit > .sapUiBtnS.sapUiBtnLite {
 	visibility: hidden;
-	border-color: @sapUiHighlight;
+	border-color: var(--sapHighlightColor);
 	right: 0;
 	top: 0;
 	border-style: solid;
 	border-width: 1px 1px 1px 0;
 }
 
-.sapUiIpeEdit.sapUiIpeUndo > .sapUiBtnS.sapUiBtnLite{
+.sapUiIpeEdit.sapUiIpeUndo > .sapUiBtnS.sapUiBtnLite {
 	visibility: visible;
 }
 
-.sapUiIpeCont > a{
+.sapUiIpeCont > a {
 	height: 100%;
 	padding-right: 2px; /* to have some space before edit button */
 }
 
-.sapUiIpeEBtn{
+.sapUiIpeEBtn {
 	visibility: hidden;
 }
 
 .sapUiIpe:hover > .sapUiIpeEBtn,
 .sapUiIpeFocus > .sapUiIpeEBtn,
 .sapUiIpe:hover > .sapUiIpeCont > .sapUiIpeEBtn,
-.sapUiIpeFocus > .sapUiIpeCont > .sapUiIpeEBtn{
+.sapUiIpeFocus > .sapUiIpeCont > .sapUiIpeEBtn {
 	visibility: visible;
 }
