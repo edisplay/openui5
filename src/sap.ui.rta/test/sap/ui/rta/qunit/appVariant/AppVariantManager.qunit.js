@@ -209,14 +209,18 @@ sap.ui.define([
 		});
 
 		QUnit.test("When notifyKeyUserWhenPublishingIsReady() method is failed on S4/Hana Cloud", function(assert) {
-			const checkFlpCustomizingIsReadyStub = sandbox.stub(S4HanaCloudBackend.prototype, "notifyFlpCustomizingIsReady").returns(Promise.reject());
+			const notifyFlpCustomizingIsReadyStub = sandbox.stub(S4HanaCloudBackend.prototype, "notifyFlpCustomizingIsReady")
+			.returns(Promise.reject(new Error()));
 			const fncatchErrorDialog = sandbox.spy(AppVariantUtils, "catchErrorDialog");
 			sandbox.stub(MessageBox, "show").callsFake(function(sText, mParameters) {
 				mParameters.onClose("Close");
 			});
 			return this.oAppVariantManager.notifyKeyUserWhenPublishingIsReady("IamID", "AppvarID", true).catch(
 				function() {
-					assert.ok(checkFlpCustomizingIsReadyStub.calledOnceWith("IamID", true), "then the method notifyFlpCustomizingIsReady is called once with correct parameters");
+					assert.ok(
+						notifyFlpCustomizingIsReadyStub.calledOnceWith("IamID", true),
+						"then the method notifyFlpCustomizingIsReady is called once with correct parameters"
+					);
 					assert.ok(fncatchErrorDialog.calledOnce, "then the function catchErrorDialog() is called once");
 					assert.strictEqual(fncatchErrorDialog.getCall(0).args[1], "MSG_TILE_CREATION_FAILED", "then the function catchErrorDialog() is called with correct message key");
 					assert.strictEqual(fncatchErrorDialog.getCall(0).args[2], "AppvarID", "then the function catchErrorDialog() is called with correct app const id");
@@ -332,7 +336,7 @@ sap.ui.define([
 		QUnit.test("When triggerCatalogPublishing() method is called on S4/Hana Cloud for catalog assignment and response is failed", function(assert) {
 			sandbox.stub(FlexRuntimeInfoAPI, "isAtoEnabled").returns(true);
 
-			const oSendRequestStub = sandbox.stub(WriteUtils, "sendRequest").returns(Promise.reject("Error"));
+			const oSendRequestStub = sandbox.stub(WriteUtils, "sendRequest").returns(Promise.reject(new Error("Error")));
 
 			sandbox.stub(MessageBox, "show").callsFake(function(sText, mParameters) {
 				mParameters.onClose("Close");
@@ -364,7 +368,7 @@ sap.ui.define([
 		QUnit.test("When triggerCatalogPublishing() method is called on S4/Hana Cloud for catalog unassignment and response is failed", function(assert) {
 			sandbox.stub(FlexRuntimeInfoAPI, "isAtoEnabled").returns(true);
 
-			const oSendRequestStub = sandbox.stub(WriteUtils, "sendRequest").returns(Promise.reject("Error"));
+			const oSendRequestStub = sandbox.stub(WriteUtils, "sendRequest").returns(Promise.reject(new Error("Error")));
 
 			sandbox.stub(MessageBox, "show").callsFake(function(sText, mParameters) {
 				mParameters.onClose("Close");

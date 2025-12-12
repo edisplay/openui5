@@ -220,15 +220,15 @@ sap.ui.define([
 	}, function() {
 		QUnit.test("when no control is provided", function(assert) {
 			delete this.mPropertyBag.control;
-			return ContextBasedAdaptationsAPI.initialize(this.mPropertyBag).catch(function(sError) {
-				assert.equal(sError, "No control was provided", "then the correct error message is returned");
+			return ContextBasedAdaptationsAPI.initialize(this.mPropertyBag).catch(function(oError) {
+				assert.strictEqual(oError.message, "No control was provided", "then the correct error message is returned");
 			});
 		});
 
 		QUnit.test("when no layer is provided", function(assert) {
 			delete this.mPropertyBag.layer;
-			return ContextBasedAdaptationsAPI.initialize(this.mPropertyBag).catch(function(sError) {
-				assert.equal(sError, "No layer was provided", "then the correct error message is returned");
+			return ContextBasedAdaptationsAPI.initialize(this.mPropertyBag).catch(function(oError) {
+				assert.strictEqual(oError.message, "No layer was provided", "then the correct error message is returned");
 			});
 		});
 
@@ -1106,8 +1106,8 @@ sap.ui.define([
 			.then(function() {
 				assert.ok(false, "Should not succeed");
 			})
-			.catch(function(sError) {
-				assert.equal(sError, "No control was provided", "then the correct error message is returned");
+			.catch(function(oError) {
+				assert.strictEqual(oError.message, "No control was provided", "then the correct error message is returned");
 				assert.strictEqual(this.oOnAllChangesSavedStub.callCount, 0, "Versions.OnAllChangesSaved is called");
 			}.bind(this));
 		});
@@ -1124,8 +1124,8 @@ sap.ui.define([
 			.then(function() {
 				assert.ok(false, "Should not succeed");
 			})
-			.catch(function(sError) {
-				assert.equal(sError, "No layer was provided", "then the correct error message is returned");
+			.catch(function(oError) {
+				assert.strictEqual(oError.message, "No layer was provided", "then the correct error message is returned");
 				assert.strictEqual(this.oOnAllChangesSavedStub.callCount, 0, "Versions.OnAllChangesSaved is called");
 			}.bind(this));
 		});
@@ -1142,8 +1142,8 @@ sap.ui.define([
 			.then(function() {
 				assert.ok(false, "Should not succeed");
 			})
-			.catch(function(sError) {
-				assert.equal(sError, "No contextBasedAdaptation was provided", "then the correct error message is returned");
+			.catch(function(oError) {
+				assert.strictEqual(oError.message, "No contextBasedAdaptation was provided", "then the correct error message is returned");
 				assert.strictEqual(this.oOnAllChangesSavedStub.callCount, 0, "Versions.OnAllChangesSaved is called");
 			}.bind(this));
 		});
@@ -1414,8 +1414,8 @@ sap.ui.define([
 	}, function() {
 		QUnit.test("and no control is provided", function(assert) {
 			delete this.mPropertyBag.control;
-			return ContextBasedAdaptationsAPI.reorder(this.mPropertyBag).catch(function(sError) {
-				assert.equal(sError, "No control was provided", "then the correct error message is returned");
+			return ContextBasedAdaptationsAPI.reorder(this.mPropertyBag).catch(function(oError) {
+				assert.strictEqual(oError.message, "No control was provided", "then the correct error message is returned");
 			});
 		});
 
@@ -1432,8 +1432,8 @@ sap.ui.define([
 			.then(function() {
 				assert.ok(false, "Should not succeed");
 			})
-			.catch(function(sError) {
-				assert.equal(sError, "No layer was provided", "then the correct error message is returned");
+			.catch(function(oError) {
+				assert.strictEqual(oError.message, "No layer was provided", "then the correct error message is returned");
 				assert.strictEqual(this.oOnAllChangesSavedStub.callCount, 0, "Versions.OnAllChangesSaved is not called");
 			}.bind(this));
 		});
@@ -1451,8 +1451,8 @@ sap.ui.define([
 			.then(function() {
 				assert.ok(false, "Should not succeed");
 			})
-			.catch(function(sError) {
-				assert.equal(sError, "No valid priority list was provided", "then the correct error message is returned");
+			.catch(function(oError) {
+				assert.strictEqual(oError.message, "No valid priority list was provided", "then the correct error message is returned");
 				assert.strictEqual(this.oOnAllChangesSavedStub.callCount, 0, "Versions.OnAllChangesSaved is not called");
 			}.bind(this));
 		});
@@ -1520,8 +1520,8 @@ sap.ui.define([
 	}, function() {
 		QUnit.test("and no control is provided", function(assert) {
 			delete this.mPropertyBag.control;
-			return ContextBasedAdaptationsAPI.load(this.mPropertyBag).catch(function(sError) {
-				assert.equal(sError, "No control was provided", "then the correct error message is returned");
+			return ContextBasedAdaptationsAPI.load(this.mPropertyBag).catch(function(oError) {
+				assert.strictEqual(oError.message, "No control was provided", "then the correct error message is returned");
 			});
 		});
 
@@ -1534,8 +1534,8 @@ sap.ui.define([
 					return sActiveVersion;
 				}
 			});
-			return ContextBasedAdaptationsAPI.load(this.mPropertyBag).catch(function(sError) {
-				assert.equal(sError, "No layer was provided", "then the correct error message is returned");
+			return ContextBasedAdaptationsAPI.load(this.mPropertyBag).catch(function(oError) {
+				assert.strictEqual(oError.message, "No layer was provided", "then the correct error message is returned");
 			});
 		});
 
@@ -1650,8 +1650,8 @@ sap.ui.define([
 			.then(function() {
 				assert.ok(false, "Should not succeed");
 			})
-			.catch(function(sError) {
-				assert.equal(sError, "No control was provided", "then the correct error message is returned");
+			.catch(function(oError) {
+				assert.strictEqual(oError.message, "No control was provided", "then the correct error message is returned");
 				assert.strictEqual(this.oOnAllChangesSavedStub.callCount, 0, "Versions.OnAllChangesSaved is not called");
 			}.bind(this));
 		});
@@ -1669,8 +1669,8 @@ sap.ui.define([
 			.then(function() {
 				assert.ok(false, "Should not succeed");
 			})
-			.catch(function(sError) {
-				assert.equal(sError, "No layer was provided", "then the correct error message is returned");
+			.catch(function(oError) {
+				assert.strictEqual(oError.message, "No layer was provided", "then the correct error message is returned");
 				assert.strictEqual(this.oOnAllChangesSavedStub.callCount, 0, "Versions.OnAllChangesSaved is not called");
 			}.bind(this));
 		});
@@ -1688,8 +1688,8 @@ sap.ui.define([
 			.then(function() {
 				assert.ok(false, "Should not succeed");
 			})
-			.catch(function(sError) {
-				assert.equal(sError, "No contextBasedAdaptation was provided", "then the correct error message is returned");
+			.catch(function(oError) {
+				assert.strictEqual(oError.message, "No contextBasedAdaptation was provided", "then the correct error message is returned");
 				assert.strictEqual(this.oOnAllChangesSavedStub.callCount, 0, "Versions.OnAllChangesSaved is not called");
 			}.bind(this));
 		});
@@ -1707,8 +1707,8 @@ sap.ui.define([
 			.then(function() {
 				assert.ok(false, "Should not succeed");
 			})
-			.catch(function(sError) {
-				assert.equal(sError, "No adaptationId was provided", "then the correct error message is returned");
+			.catch(function(oError) {
+				assert.strictEqual(oError.message, "No adaptationId was provided", "then the correct error message is returned");
 				assert.strictEqual(this.oOnAllChangesSavedStub.callCount, 0, "Versions.OnAllChangesSaved is not called");
 			}.bind(this));
 		});
@@ -1780,8 +1780,8 @@ sap.ui.define([
 	}, function() {
 		QUnit.test("and no control is provided", function(assert) {
 			delete this.mPropertyBag.control;
-			return ContextBasedAdaptationsAPI.remove(this.mPropertyBag).catch(function(sError) {
-				assert.equal(sError, "No control was provided", "then the correct error message is returned");
+			return ContextBasedAdaptationsAPI.remove(this.mPropertyBag).catch(function(oError) {
+				assert.strictEqual(oError.message, "No control was provided", "then the correct error message is returned");
 			});
 		});
 
@@ -1794,8 +1794,8 @@ sap.ui.define([
 					return sActiveVersion;
 				}
 			});
-			return ContextBasedAdaptationsAPI.remove(this.mPropertyBag).catch(function(sError) {
-				assert.equal(sError, "No layer was provided", "then the correct error message is returned");
+			return ContextBasedAdaptationsAPI.remove(this.mPropertyBag).catch(function(oError) {
+				assert.strictEqual(oError.message, "No layer was provided", "then the correct error message is returned");
 			});
 		});
 
@@ -1808,8 +1808,8 @@ sap.ui.define([
 					return sActiveVersion;
 				}
 			});
-			return ContextBasedAdaptationsAPI.remove(this.mPropertyBag).catch(function(sError) {
-				assert.equal(sError, "No adaptationId was provided", "then the correct error message is returned");
+			return ContextBasedAdaptationsAPI.remove(this.mPropertyBag).catch(function(oError) {
+				assert.strictEqual(oError.message, "No adaptationId was provided", "then the correct error message is returned");
 			});
 		});
 

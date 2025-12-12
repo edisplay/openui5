@@ -39,16 +39,16 @@ sap.ui.define([
 	 */
 	return (mPropertyBag) => {
 		if (!mPropertyBag) {
-			return Promise.reject("A property bag must be provided");
+			return Promise.reject(new Error("A property bag must be provided"));
 		}
 		if (!mPropertyBag.control) {
-			return Promise.reject("variant management control must be provided");
+			return Promise.reject(new Error("variant management control must be provided"));
 		}
 		if (!mPropertyBag.id) {
-			return Promise.reject("variant ID must be provided");
+			return Promise.reject(new Error("variant ID must be provided"));
 		}
 		if (!mPropertyBag.content) {
-			return Promise.reject("content must be provided");
+			return Promise.reject(new Error("content must be provided"));
 		}
 
 		mPropertyBag.reference = ManifestUtils.getFlexReferenceForControl(mPropertyBag.control);
@@ -58,17 +58,17 @@ sap.ui.define([
 		const oVariant = aFlexObjects.find((oFlexObject) => oFlexObject.getId() === mPropertyBag.id);
 
 		if (oVariant?.getFileType() !== "variant") {
-			return Promise.reject("no variant with the ID found");
+			return Promise.reject(new Error("no variant with the ID found"));
 		}
 
 		mPropertyBag.layer = oVariant.getLayer();
 
 		if (![Layer.USER, Layer.PUBLIC].includes(mPropertyBag.layer)) {
-			return Promise.reject("only variants in the USER and PUBLIC layer can be updated");
+			return Promise.reject(new Error("only variants in the USER and PUBLIC layer can be updated"));
 		}
 
 		if (!oVariant.isEditEnabled()) {
-			return Promise.reject("the user is not authorized to edit the PUBLIC variant (no author nor key user)");
+			return Promise.reject(new Error("the user is not authorized to edit the PUBLIC variant (no author nor key user)"));
 		}
 
 		CompVariantManager.updateVariant(mPropertyBag);
