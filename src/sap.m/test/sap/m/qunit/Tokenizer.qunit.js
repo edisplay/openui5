@@ -917,19 +917,31 @@ sap.ui.define([
 	});
 
 	QUnit.test("Should render and not focus disabled tokenizer", async function(assert) {
-		var oTokenizer = new Tokenizer({
-			width: "300px",
-			enabled: false
+		const oButton = new sap.m.Button({
+			text: "focus"
 		}).placeAt("content");
 
-		oTokenizer.addToken(new Token({text: "Token 1", key: "0001"}));
-		oTokenizer.addToken(new Token({text: "Token 2", key: "0002"}));
+		const oTokenizer = new Tokenizer({
+			enabled: false,
+			tokens: [
+				new Token({ text: "One" }),
+				new Token({ text: "Two" })
+			]
+		}).placeAt("content");
+		await nextUIUpdate();
+
+		oButton.focus();
+		await nextUIUpdate();
+
+		oTokenizer.getDomRef().focus();
 		await nextUIUpdate();
 
 		assert.ok(oTokenizer.getDomRef().classList.contains("sapMTokenizerDisabled"), "The aria-expanded attribute should be true");
 		assert.ok(oTokenizer.getTokens()[0].getDomRef().getAttribute("tabindex"), "-1", "tabindex should be -1");
+		assert.strictEqual(document.activeElement, oButton.getDomRef(),"Disabled Tokenizer must not receive focus");
 
 		oTokenizer.destroy();
+		oButton.destroy();
 	});
 
 	QUnit.test("Should not throw exception on rendering when first token is hidden", async function(assert) {

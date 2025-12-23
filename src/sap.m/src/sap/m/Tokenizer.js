@@ -1888,7 +1888,7 @@ sap.ui.define([
 	 * @protected
 	 */
 	Tokenizer.prototype.getEffectiveTabIndex = function () {
-		return this._bShouldRenderTabIndex === null ? !!this.getTokens().length : this._bShouldRenderTabIndex;
+		return this.getEnabled() && (this._bShouldRenderTabIndex === null ? !!this.getTokens().length : this._bShouldRenderTabIndex);
 	};
 
 	/**
