@@ -18,7 +18,7 @@ module.exports = function(grunt, config) {
 		const libraryFile = path.join(targetPathSDK, 'resources', libraryPath, '.library');
 		const apiJsonFile = path.join(targetPathSDK, 'test-resources', libraryPath, 'designtime/api.json');
 		const transformedApiJsonFile = path.join(targetPathSDK, 'test-resources', libraryPath, 'designtime/apiref/api.json');
-		const faqDirectory = path.join(targetPathSDK, 'test-resources', libraryPath, 'demokit/faq');
+		const sectionsDirectory = path.join(targetPathSDK, 'test-resources', libraryPath, 'demokit/sections');
 
 		// create target configuration
 		tasks['library-' + library.name] = {
@@ -26,7 +26,7 @@ module.exports = function(grunt, config) {
 				source: apiJsonFile,
 				dest: transformedApiJsonFile,
 				lib: libraryFile,
-				faqDirectory: faqDirectory
+				sectionsDirectory: sectionsDirectory
 			}
 		};
 

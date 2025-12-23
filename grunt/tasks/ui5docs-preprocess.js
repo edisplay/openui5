@@ -43,7 +43,7 @@ module.exports = function(grunt) {
 		}
 		collectFromDir('target');
 
-		transformer(options.source,options.dest,options.lib, dependencyLibs, options.faqDirectory)
+		transformer(options.source,options.dest,options.lib, dependencyLibs, options.sectionsDirectory)
 		.then(done, (err) => {
 			grunt.fail.warn(err);
 		});

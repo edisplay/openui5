@@ -100,12 +100,12 @@ module.exports = function(grunt, config) {
 			};
 		}
 
-		copy['faq-target-' + library.name] = {
+		copy['sections-target-' + library.name] = {
 			files: [ {
 				expand: true,
 				dot: true,
 				cwd: library.test,
-				src: '**/faq/*.md',
+				src: '**/demokit/sections/**/*.md',
 				dest: 'target/openui5-sdk/test-resources'
 			} ]
 		};
