@@ -2,7 +2,7 @@
     background-color: @sapUiBaseBG;
 }
 
-// give all panels on the valueHelpPanel a left/right padding
+/* give all panels on the valueHelpPanel a left/right padding */
 .sapMdcValueHelpPanel .sapMPanel {
 	padding-top: 0.5rem;
 	padding-left: 1rem;
@@ -27,9 +27,17 @@
 }
 
 .sapMdcTablePanel > .sapMPanelHeadingDiv > .sapMPanelHdr,
-.sapMdcTokenizerPanel > .sapMPanelHeadingDiv > .sapMPanelHdr,
-.sapMdcDefineconditionPanel > .sapMPanelHeadingDiv > .sapMPanelHdr{
+.sapMdcTokenizerPanel > .sapMPanelHeadingDiv > .sapMPanelHdr {
 	border: none;
+}
+
+.sapUiMdcDefineConditionPanel {
+	margin-left: 1.75rem;
+	margin-right: 1rem;
+}
+
+.sapUiMdcDefineConditionPanel .sapMTB {
+	padding-left: 0.25rem;
 }
 
 /* add border to Tokenizer */
@@ -53,12 +61,12 @@
     min-height: 32px;
 }
 
-// make the ITB header height 3rem
+/* make the ITB header height 3rem */
 .sapMdcValueHelpPanel .sapMITBHead {
-	margin-top: 0rem;
+	margin-top: 0;
 }
 
-// make the toolbar height 3rem and add 2rem padding left/right
+/* make the toolbar height 3rem and add 2rem padding left/right */
 .sapMdcValueHelpPanel .sapMdcValueHelpPanelFilterbar .sapMTB {
 	margin-top: 0.5rem;
 	height: 3rem;
@@ -74,31 +82,24 @@
 	margin-left: 0;
 }
 
-// padding between the Define Condition value fields
+/* padding between the Define Condition value fields */
 .sapUiMdcDefineConditionPanel .sapUiRespGrid > div {
 	padding-left: 0.25rem;
 	padding-right: 0.25rem;
 	box-sizing: border-box;
 }
 
-// correct paddings around the define conditions content
-.sapMdcDefineconditionPanel .sapMPanelContent {
-	padding-left: 0.75rem;
-	padding-right: 0rem;
-	padding-top: 0rem;
-}
-
 .sapUiMdcDefineConditionPanel .sapUiMdcDefineConditionGrid {
 	margin-bottom: 0.5rem;
 }
 
-// give the Filterbar the required padding and max height
+/* give the Filterbar the required padding and max height */
 .sapMdcValueHelpPanelFilterbar {
 	margin-left: 2rem;
 	margin-right: 1rem;
 }
 
-// allign static text
+/* allign static text */
 .sapUiMdcDefineConditionPanel .sapUiRespGrid .sapMText {
 	min-height: 2.75rem;
 	padding-top: 0.6875rem;
@@ -111,13 +112,13 @@
 	padding-bottom: 0.3125rem;
 }
 
-// spacing between rows
+/* spacing between rows */
 .sapUiMdcDefineConditionPanel .sapUiRespGrid.sapUiRespGridMedia-Std-Phone > .sapUiRespGridBreak:not(:first-child),
 .sapUiMdcDefineConditionPanel .sapUiRespGrid.sapUiRespGridMedia-Std-Phone > .sapUiRespGridBreak:not(:first-child) + div {
 	padding-top: 0.5rem;
 }
 
-// align add-button to the right
+/* align add-button to the right */
 .sapUiMdcDefineConditionPanel .sapUiRespGrid > div:last-child {
 	padding-top: 0.25rem;
 	position: relative;
@@ -126,35 +127,34 @@
 .sapUiSizeCompact .sapUiMdcDefineConditionPanel .sapUiRespGrid > div:last-child {
 	height: 2rem;
 }
+
 .sapUiMdcDefineConditionPanel .sapUiRespGrid > div:last-child > button{
 	position: absolute;
 	right: 0.25rem;
 }
 
-// hide the toolbar border and give some more top margin
+/* hide the toolbar border and give some more top margin */
 .sapMdcValueHelpPanel .sapMTBStandard, .sapUiMdcDefineConditionPanel .sapMTBStandard {
 	border-bottom: solid 1px transparent;
 }
 
-// hide the panel bottom border
+/* hide the panel bottom border */
 .sapMdcValueHelpPanel .sapMPanelContent:not(.sapMPanelBGTransparent) {
 	border-bottom: none;
 }
 
-
-// show padding on top of the defineConditionPanel when used on popover
+/* show padding on top of the defineConditionPanel when used on popover */
 .sapMPopoverCont .sapMPopoverScroll > .sapUiMdcDefineConditionPanel {
 	padding-top: 1rem;
-	// padding-left: 0.75rem;
 	padding-right: 0.75rem;
 }
 
-// makes the title of the used panels smaller
+/* makes the title of the used panels smaller */
 .sapMdcValueHelpPanel .sapMPanel .sapMPanelHdr {
 	font-size: @sapMFontHeader5Size;
 }
 
-// make the title shadows transparent
+/* make the title shadows transparent */
 .sapMdcValueHelpTitleShadow.sapMDialog:not(.sapMDialogWithSubHeader) > header:first-of-type .sapMIBar {
 	box-shadow: inset 0 -0.0625rem transparent;
 }
@@ -163,14 +163,14 @@
 	box-shadow: inset 0 -0.0625rem transparent;
 }
 
-// remove some borders around the IconTabBar content
+/* remove some borders around the IconTabBar content */
 .sapMdcValueHelpPanel .sapMITBContent {
 	border-left: none;
 	border-right: none;
 	border-bottom: none;
 }
 
-// set the 2rem padding also on the OK and Cancel buttons in the footer
+/* set the 2rem padding also on the OK and Cancel buttons in the footer */
 .sapMdcValueHelpTitle.sapMDialog footer .sapMTB {
 	padding: 0 2rem;
 }
@@ -181,16 +181,11 @@
 }
 
 .sapMdcValueHelpPanelTableBox > .sapMFlexItem {
-	//min-height: 200px !important;
 	height: 100%;
 }
 
 .sapMdcValueHelpPanel .sapUiFixFlexScrolling .sapMdcValueHelpPanelTableBox {
 	height: 200px !important;
-}
-
-.sapMdcValueHelpPanelTableBox .sapUiMdcTable .sapMTB > .sapMTitle {
-	font-size: 1rem;
 }
 
 .sapMdcValueHelpPopover.sapMdcValueHelpMultiSelect .sapUiMdcDefineConditionPanel {
@@ -199,7 +194,7 @@
 }
 
 .sapMdcValueHelpPopover.sapMdcValueHelpSingleSelect .sapUiMdcDefineConditionPanel {
-	margin-left: 0rem;
+	margin-left: 0;
 	margin-right: 0.75rem;
 	margin-top: 1rem;
 }
