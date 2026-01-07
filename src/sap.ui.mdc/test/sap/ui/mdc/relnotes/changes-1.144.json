@@ -3,6 +3,16 @@
     "date": "January 2026",
     "notes": [
       {
+        "id": "bba2fd6c0f3db75f9e83482241fe4c30b0bede72",
+        "type": "FIX",
+        "text": " mdc.Chart: Select Chart Type popover now has visible focus"
+      },
+      {
+        "id": "7bcb18904ec46c0852d41b51cce9a81feb6c803d",
+        "type": "FIX",
+        "text": " MDC.ValueHelp: FilterContainer should properly destroy all layoutitems"
+      },
+      {
         "id": "ebfb47c4f9fc9f6bc18f70a2cc049dc3a7e14cca",
         "type": "FIX",
         "text": " VariantManagement: \"expanded\" not announced"

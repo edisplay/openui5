@@ -3,9 +3,49 @@
     "date": "January 2026",
     "notes": [
       {
+        "id": "d8a92793e48d5b9559c8fcf1e5efae37d0fcc065",
+        "type": "FIX",
+        "text": " sap.m.Popover: Visual tests for scrollable popovers are provided"
+      },
+      {
+        "id": "cce2e68f67335c33d29cc6f35ab634741b6ce9bc",
+        "type": "FEATURE",
+        "text": " sap.m.SegmentedButton: Enable selection of an item as an"
+      },
+      {
+        "id": "e11f88ddd6c365cdc3b6f60ac33fa0171bb45c9f",
+        "type": "FIX",
+        "text": " sap.m.TimePicker: aria-description attribute is added."
+      },
+      {
+        "id": "b1cd574f6d918bd45773ef836cb2e99524989cd0",
+        "type": "FIX",
+        "text": " sap.m.MenuButton: menu is not opened on disabled MenuButton"
+      },
+      {
+        "id": "3801f4cd357dbfb6279b4b93b9c87d48ff8e00a7",
+        "type": "FIX",
+        "text": " Card Explorer: Focus is correctly aligned in the Table of Contents"
+      },
+      {
+        "id": "a9e33a6c80283512399229896a0b33d232440441",
+        "type": "FIX",
+        "text": " sap.m.DynamicDateRange: apply correct ARIA attributes to options"
+      },
+      {
+        "id": "382d78dd5a48c0825792bcb6586415c433eb11e6",
+        "type": "FIX",
+        "text": " sap.m.SinglePlanningCalendar: Add the browser event information to the UI5 event"
+      },
+      {
         "id": "630004062bd47ef3a46fdb6bb766c12b09b5d467",
         "type": "FIX",
         "text": "sap.m.MultiComboBox: Restore previous value state after selection"
+      },
+      {
+        "id": "3417c1fdc03c891e4d15508e44809e9b4a1e2fe4",
+        "type": "FIX",
+        "text": " sap.m.Tokenizer: Align token border with visual design"
       },
       {
         "id": "e9865e3df99d28e54c4dc7824d301b5b65b4bc8f",
@@ -13,9 +53,19 @@
         "text": " sap.m.Input: InputBase getLabels is returning labels correctly (without duplicates)"
       },
       {
+        "id": "b991376439fc486f66493af53bf3bf84dcf80b53",
+        "type": "FIX",
+        "text": " sap.m.ObjectHeader: Remove deprecated API usage"
+      },
+      {
         "id": "7d7ed90b8660c21a6bc96f089ab3e6bd61ddc37d",
         "type": "FIX",
         "text": " sap.m.QuickViewBase: NavContainer is added as an aggregation"
+      },
+      {
+        "id": "e5534e49a6bfe9798bf571420937bf9b44e97f4f",
+        "type": "FIX",
+        "text": " sap.m.SegmentedButton: remove uses of deprecated code"
       },
       {
         "id": "2ce2132dd5659fc38c244c83eff6a48f7cde2095",

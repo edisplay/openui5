@@ -3,6 +3,16 @@
     "date": "January 2026",
     "notes": [
       {
+        "id": "63613a84bae5c2532128370713e2712ce8df010e",
+        "type": "FIX",
+        "text": " sap.m.Switch: fixed switch handle hover effect cutoff"
+      },
+      {
+        "id": "cd5f30585ff72f032fe9f3c4c54398cbe59c6fec",
+        "type": "FIX",
+        "text": " sap.m.Switch: adjusted horizontal paddings to prevent focus cut"
+      },
+      {
         "id": "ecfff06d9675d120d1c6f82077cd21b4cd3fb297",
         "type": "FEATURE",
         "text": " sap.m.ToolPage: Breakpoint-based responsive behavior has now been introduced"

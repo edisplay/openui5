@@ -3,6 +3,11 @@
     "date": "January 2026",
     "notes": [
       {
+        "id": "5ba41634f2f315e701433bcbb6258306b3ec2e6a",
+        "type": "FEATURE",
+        "text": " sap.ui.unified.ColorPicker: Add announcement on changing of color mode"
+      },
+      {
         "id": "7f9cb3608813d05b35fc260d608c71063282e63a",
         "type": "FEATURE",
         "text": " sap.ui.unified.Calendar: accessibility of the Calendar is improved:"

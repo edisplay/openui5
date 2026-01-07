@@ -3,6 +3,16 @@
     "date": "January 2026",
     "notes": [
       {
+        "id": "15c5f0582605c6afcc06b62417a2cf8936c42386",
+        "type": "FIX",
+        "text": " sap.ui.integration.widgets.Card: Resolve snack card dialog resize on loading"
+      },
+      {
+        "id": "c4c0330b41f9f7efc445e3bbd8cd32cf5116f484",
+        "type": "FIX",
+        "text": "sap.ui.integration.widgets.Card: Improved accessibility for tile-like cards"
+      },
+      {
         "id": "95aee513158abaa9c59282b047129f4312a7dd4f",
         "type": "FIX",
         "text": " sap.f.CardHeader: header does not wrap when placed in a flexbox"
