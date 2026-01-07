@@ -5931,6 +5931,7 @@ sap.ui.define([
 			},
 			oResponseMessage0 = {
 				code : "1",
+				longtextUrl : "LongText('0815')",
 				message : "Text",
 				numericSeverity : 3,
 				target : "ID",
@@ -5978,6 +5979,7 @@ sap.ui.define([
 			.expectChange("id", ["0", "1"])
 			.expectMessages([{
 				code : "1",
+				descriptionUrl : sTeaBusi + "LongText('0815')",
 				message : "Text",
 				target : "/EMPLOYEES('0')/ID",
 				technicalDetails : {
@@ -15385,6 +15387,8 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 					"/Equipments/EQUIPMENT_2_PRODUCT/SupplierIdentifier")
 				.expectChange("item", "ProductPicture",
 					"/Equipments/EQUIPMENT_2_PRODUCT/ProductPicture")
+				.expectChange("item", "__FAKE__Messages",
+					"/Equipments/EQUIPMENT_2_PRODUCT/__FAKE__Messages")
 				.expectChange("item", "PRODUCT_2_CATEGORY",
 					"/Equipments/EQUIPMENT_2_PRODUCT/PRODUCT_2_CATEGORY")
 				.expectChange("item", "PRODUCT_2_SUPPLIER",
@@ -17313,7 +17317,15 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	// Scenario: Check that the context paths use key predicates if the key properties are delivered
 	// in the response. Check that an expand spanning a complex type does not lead to failures.
 	QUnit.test("Context Paths Using Key Predicates", function (assert) {
-		var oTable,
+		var oOriginalMessage = {
+				code : "1",
+				longtextUrl : "LongText('42')",
+				message : "Text",
+				numericSeverity : 3,
+				target : "Name",
+				transition : false
+			},
+			oTable,
 			sView = '\
 <Table id="table" items="{path : \'/EMPLOYEES\',\
 		parameters : {$expand : {\'LOCATION/City/EmployeesInCity\' : {$select : [\'Name\']}}, \
@@ -17324,13 +17336,20 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 
 		this.expectRequest("EMPLOYEES?$expand=LOCATION/City/EmployeesInCity($select=Name)"
 				+ "&$select=ID,Name&$skip=0&$top=100", {
+				"@odata.context" : "../0815/$metadata#n/a",
 				value : [{
+					// not sure what realistic examples would look like
+					"@odata.context" : "1st/$metadata#n/a",
 					ID : "1",
 					Name : "Frederic Fall",
 					LOCATION : {
+						"@odata.context" : "2nd/$metadata#n/a",
 						City : {
+							"@odata.context" : "3rd/$metadata#n/a",
+							"EmployeesInCity@odata.context" : "4th/$metadata#n/a",
 							EmployeesInCity : [
-								{Name : "Frederic Fall"},
+								{Name : "Frederic Fall",
+									__CT__FAKE__Message : {__FAKE__Messages : [oOriginalMessage]}},
 								{Name : "Jonathan Smith"}
 							]
 						}
@@ -17348,7 +17367,18 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 					}
 				}]
 			})
-			.expectChange("text", ["Frederic Fall", "Jonathan Smith"]);
+			.expectChange("text", ["Frederic Fall", "Jonathan Smith"])
+			.expectMessages([{
+				code : "1",
+				descriptionUrl : sTeaBusi.replace("/0001/", "/")
+					+ "0815/1st/2nd/3rd/4th/LongText('42')",
+				message : "Text",
+				target : "/EMPLOYEES('1')/LOCATION/City/EmployeesInCity/0/Name",
+				technicalDetails : {
+					originalMessage : oOriginalMessage
+				},
+				type : "Warning"
+			}]);
 
 		return this.createView(assert, sView).then(function () {
 			oTable = that.oView.byId("table");
@@ -17390,6 +17420,14 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	QUnit.test(sTitle, function (assert) {
 		var oContext,
 			oModel = this.createTeaBusiModel({autoExpandSelect : true}),
+			oOriginalMessage = {
+				code : "1",
+				longtextUrl : "LongText('0815')",
+				message : "Are you sure?",
+				numericSeverity : 3,
+				target : "ProductPicture",
+				transition : false
+			},
 			oResponse = {
 				"Picture@odata.mediaReadLink" : "ProductPicture('42')"
 			},
@@ -17407,8 +17445,9 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 		}
 		this.expectRequest("Equipments('1')/EQUIPMENT_2_PRODUCT"
 				+ "?$select=ID,ProductPicture/Picture,SupplierIdentifier", {
-				"@odata.context" : "../$metadata#Equipments('1')/EQUIPMENT_2_PRODUCT",
+				"@odata.context" : "../$metadata#n/a",
 				ID : "42",
+				__FAKE__Messages : [oOriginalMessage],
 				ProductPicture : oResponse,
 				"SupplierIdentifier@foo.bar" : "The answer",
 				SupplierIdentifier : 42 // Edm.Int32
@@ -17416,7 +17455,17 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			.expectChange("url", sTeaBusi + "ProductPicture('42')")
 			// Note: JSON.stringify is used in expression binding to "simulate" a function call
 			.expectChange("contentType", JSON.stringify(vMediaContentType))
-			.expectChange("fooBar", "The answer");
+			.expectChange("fooBar", "The answer")
+			.expectMessages([{
+				code : "1",
+				descriptionUrl : sTeaBusi + "LongText('0815')",
+				message : "Are you sure?",
+				target : "/Equipments('1')/EQUIPMENT_2_PRODUCT/ProductPicture",
+				technicalDetails : {
+					originalMessage : oOriginalMessage
+				},
+				type : "Warning"
+			}]);
 
 		return this.createView(assert, sView, oModel).then(function () {
 			oContext = that.oView.byId("contentType").getBindingContext();
@@ -55061,6 +55110,14 @@ make root = ${bMakeRoot}`;
 	// JIRA: CPOUI5UISERVICESV3-1361
 	QUnit.test("Delete an entity with messages from an relative ODLB w/o cache", function (assert) {
 		var oModel = this.createTeaBusiModel({autoExpandSelect : true}),
+			oOriginalMessage = {
+				code : "1",
+				longtextUrl : "LongText('42')",
+				message : "Text",
+				numericSeverity : 3,
+				target : "Name",
+				transition : false
+			},
 			oTable,
 			sView = '\
 <FlexBox id="detail" binding="{/TEAMS(\'TEAM_01\')}">\
@@ -55075,18 +55132,15 @@ make root = ${bMakeRoot}`;
 		this.expectRequest("TEAMS('TEAM_01')?$select=Team_Id"
 				+ "&$expand=TEAM_2_EMPLOYEES($select=ID,Name,"
 				+ "__CT__FAKE__Message/__FAKE__Messages)", {
+				"@odata.context" : "../0815/$metadata#n/a",
 				Team_Id : "TEAM_01",
+				// not sure what a realistic example would look like
+				"TEAM_2_EMPLOYEES@odata.context" : "RELATIVE/$metadata#n/a",
 				TEAM_2_EMPLOYEES : [{
 					ID : "1",
 					Name : "Jonathan Smith",
 					__CT__FAKE__Message : {
-						__FAKE__Messages : [{
-							code : "1",
-							message : "Text",
-							numericSeverity : 3,
-							target : "Name",
-							transition : false
-						}]
+						__FAKE__Messages : [oOriginalMessage]
 					}
 				}, {
 					ID : "2",
@@ -55098,8 +55152,12 @@ make root = ${bMakeRoot}`;
 			.expectChange("name", ["Jonathan Smith", "Frederic Fall"])
 			.expectMessages([{
 				code : "1",
+				descriptionUrl : sTeaBusi.replace("/0001/", "/") + "0815/RELATIVE/LongText('42')",
 				message : "Text",
 				target : "/TEAMS('TEAM_01')/TEAM_2_EMPLOYEES('1')/Name",
+				technicalDetails : {
+					originalMessage : oOriginalMessage
+				},
 				type : "Warning"
 			}]);
 
