@@ -607,6 +607,7 @@ sap.ui.define([
 
 		this._oPopup = new ResponsivePopover({
 			showArrow: true,
+			showCloseButton: false,
 			showHeader: Device.system.phone,
 			placement: PlacementType.Auto,
 			offsetX: 0,
@@ -673,9 +674,15 @@ sap.ui.define([
 		this.addPopupClasses(this._oPopup);
 
 		if (Device.system.phone) {
-			this._oPopup.setEndButton(new Button({
+			this._oPopup.setBeginButton(new Button({
 				text: oRb.getText("SUGGESTIONSPOPOVER_CLOSE_BUTTON"),
 				type: ButtonType.Emphasized,
+				press: function () {
+					this._oPopup.close();
+				}.bind(this)
+			}));
+			this._oPopup.setEndButton(new Button({
+				text: oRb.getText("TOKENIZER_CANCEL_BUTTON"),
 				press: function () {
 					this._oPopup.close();
 				}.bind(this)
