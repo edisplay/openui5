@@ -148,8 +148,9 @@
 		numberUnit: "Euro",
 		firstStatus: new sap.m.ObjectStatus({text: "Positive Ñagçyfox", state: "Success", tooltip: "Status tip", icon: "sap-icon://alert", active:true}),
 		secondStatus: new sap.m.ObjectStatus({text: "Negative Ñagçyfox", state: "Error", tooltip: "Status tip", active:true, inverted:true}),
-		showMarkers: true,
-		markFavorite: true
+		markers: [
+ 			new sap.m.ObjectMarker({type: "Favorite"})
+		]
 	});
 	var oOli2 = new sap.m.ObjectListItem("activeStatusListItem", {
 		type: "Navigation",
@@ -158,8 +159,9 @@
 		numberUnit: "Euro",
 		firstStatus: new sap.m.ObjectStatus("activeStatus", {text: "Positive Ñagçyfox", state: "Success", tooltip: "Status tip", active:true}),
 		secondStatus: new sap.m.ObjectStatus({text: "Negative Ñagçyfox", state: "Information", tooltip: "Status tip", icon: "sap-icon://alert", active:true, inverted:true}),
-		showMarkers: true,
-		markFavorite: true
+		markers: [
+ 			new sap.m.ObjectMarker({type: "Favorite"})
+		]
 	});
 	var oOli3 = new sap.m.ObjectListItem({
 		type: "Detail",
@@ -168,8 +170,9 @@
 		numberUnit: "Euro",
 		firstStatus: new sap.m.ObjectStatus({text: "Positive Ñagçyfox", state: "Warning", tooltip: "Status tip", active:true, inverted:true}),
 		secondStatus: new sap.m.ObjectStatus({text: "Negative Ñagçyfox", state: "Warning", tooltip: "Status tip", icon: "sap-icon://alert", active:true}),
-		showMarkers: true,
-		markFavorite: true
+		markers: [
+ 			new sap.m.ObjectMarker({type: "Favorite"})
+		]
 	});
 	oList.addItem(oOli);
 	oList.addItem(oOli2);
@@ -180,7 +183,6 @@
 		showHeaderContent:true,
 		showTitleInHeaderContent:true,
 		headerTitle: new sap.uxap.ObjectPageHeader({
-			headerDesign:"Light",
 			isActionAreaAlwaysVisible:true,
 			isObjectSubtitleAlwaysVisible:false,
 			isObjectTitleAlwaysVisible:false,
