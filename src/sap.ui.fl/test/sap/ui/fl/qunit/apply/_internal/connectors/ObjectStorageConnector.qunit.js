@@ -345,15 +345,15 @@ sap.ui.define([
 	}, function() {
 		QUnit.test("given loadFeatures is called", function(assert) {
 			return ObjectStorageConnector.loadFeatures().then(function() {
-			}).catch((sError) => {
-				assert.equal(sError, "loadFeatures is not implemented", "correct error is returned");
+			}).catch((oError) => {
+				assert.strictEqual(oError.message, "loadFeatures is not implemented", "correct error is returned");
 			});
 		});
 
 		QUnit.test("given loadFeatures is called", function(assert) {
 			return ObjectStorageConnector.loadVariantsAuthors().then(function() {
-			}).catch((sError) => {
-				assert.equal(sError, "loadVariantsAuthors is not implemented", "correct error is returned");
+			}).catch((oError) => {
+				assert.strictEqual(oError.message, "loadVariantsAuthors is not implemented", "correct error is returned");
 			});
 		});
 	});

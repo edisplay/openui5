@@ -39,8 +39,8 @@ sap.ui.define([
 	};
 
 	const callCatchAndExpectMessage = (assert, sMessage, mPropertyBag) => {
-		return SACIntegrationUpdateVariant(mPropertyBag).catch((sErrorMessage) => {
-			assert.equal(sErrorMessage, sMessage, "the function rejects with the error");
+		return SACIntegrationUpdateVariant(mPropertyBag).catch((oError) => {
+			assert.strictEqual(oError.message, sMessage, "the function rejects with the error");
 		});
 	};
 
