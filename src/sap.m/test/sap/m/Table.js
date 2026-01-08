@@ -392,7 +392,8 @@ sap.ui.define([
 			header : new Label({
 				text : "LastName",
 				wrapping: false,
-				wrappingType: "Hyphenated"
+				wrappingType: "Hyphenated",
+				tooltip: "First column"
 			}),
 			dependents: new ColumnAIAction({
 				press: function(oEvent) {
@@ -414,6 +415,7 @@ sap.ui.define([
 				wrapping: true,
 				wrappingType: "Hyphenated"
 			}),
+			width: "7rem",
 			demandPopin: true,
 			popinDisplay: "Inline",
 			minScreenWidth: "Tablet"
@@ -434,6 +436,7 @@ sap.ui.define([
 				wrapping: true,
 				wrappingType: "Hyphenated"
 			}),
+			width: "5rem",
 			minScreenWidth : "Phone"
 		}).data("clipboard", "src"),
 		new Column({
@@ -450,7 +453,8 @@ sap.ui.define([
 			header : new Label({
 				text : "Birthday",
 				wrapping: true,
-				wrappingType: "Hyphenated"
+				wrappingType: "Hyphenated",
+				required: true
 			}),
 			minScreenWidth: "800px",
 			popinDisplay : "Inline",
@@ -548,6 +552,7 @@ sap.ui.define([
 				value: "{rating}"
 			}),
 			new DatePicker({
+				required: true,
 				value : "{birthday}",
 				valueFormat : "yyyy-MM-dd",
 				displayFormat : "dd.MM.yyyy"
