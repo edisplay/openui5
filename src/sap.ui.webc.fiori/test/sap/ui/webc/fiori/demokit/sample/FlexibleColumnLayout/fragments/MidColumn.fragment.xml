@@ -27,8 +27,7 @@
 				<f:actions>
 					<m:Button
 							text="Edit"
-							type="Emphasized"
-							press="toggleAreaPriority"/>
+							type="Emphasized"/>
 					<m:Button
 							text="Copy"
 							type="Transparent"/>
