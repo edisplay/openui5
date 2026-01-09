@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>FileUploader - sap.ui.unified</title>
+		<script src="shared-config.js"></script>
+		<script src="../../../../resources/sap-ui-core.js"
+			id="sap-ui-bootstrap"
+			data-sap-ui-libs="sap.m, sap.ui.unified, sap.ui.layout">
+		</script>
+
+		<script id="myXml" type="text/xmldata">
+			<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:unified="sap.ui.unified" controllerName="myController" displayBlock="true">
+				<App>
+					<Page title="Fileuploader Example">
+						<OverflowToolbar>
+							<Button text="Action" />
+							<unified:FileUploader buttonOnly="true" uploadButtonText="Upload"/>
+							<unified:FileUploader buttonOnly="false" uploadButtonText="Upload"/>
+						</OverflowToolbar>
+						<unified:FileUploader buttonOnly="true" uploadButtonText="Upload"/>
+						<unified:FileUploader buttonOnly="false" uploadButtonText="Upload"/>
+					</Page>
+				</App>
+			</mvc:View>
+		</script>
+
+		<script>
+			sap.ui.require(["sap/ui/core/mvc/Controller", "sap/ui/core/mvc/XMLView"],
+			function (Controller, XMLView) {
+				Controller.extend("myController", {
+					onInit: function () {
+						// Initialization code can go here
+					},
+					onActionPress: function () {
+						alert("Button Pressed!");
+					}
+				});
+
+				XMLView.create({definition: jQuery('#myXml').html()}).then(function (oView) {
+					oView.placeAt("content");
+				});
+			});
+		</script>
+
+	</head>
+	<body id='content' class='sapUiBody'>
+	</body>
+</html>
