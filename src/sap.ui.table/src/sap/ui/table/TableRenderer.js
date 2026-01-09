@@ -1270,8 +1270,6 @@ sap.ui.define([
 	 * @param {sap.ui.table.Row} oRow Row instance
 	 */
 	TableRenderer.writeRowSelectorContent = function(rm, oTable, oRow) {
-		oTable._getAccRenderExtension().writeAccRowSelectorText(rm, oTable, oRow);
-
 		if (TableUtils.Grouping.isInGroupMode(oTable)) {
 			rm.openStart("div");
 			rm.class("sapUiTableGroupShield");
