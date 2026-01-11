@@ -17,9 +17,10 @@
 
 	<!-- simple empty div -->
 	<script id="view1" type="sapui5/xmlview">
-		<core:View
+		<mvc:View
 				xmlns="sap.uxap"
 				xmlns:core="sap.ui.core"
+				xmlns:mvc="sap.ui.core.mvc"
 				xmlns:layout="sap.ui.layout"
 				xmlns:m="sap.m"
 				xmlns:f="sap.ui.layout.form"
@@ -29,12 +30,10 @@
 					<ObjectPageHeader id="headerForTest"
 									  objectTitle="Long title that wraps and goes over more lines"
 									  showTitleSelector="true"
-									  titleSelectorPress="handleTitleSelectorPress"
 									  showMarkers="true"
 									  markFavorite="true"
 									  markLocked="true"
 									  markFlagged="true"
-									  markLockedPress="handleMarkLockedPress"
 									  objectSubtitle="Long subtitle that wraps and goes over more lines"
 									  objectImageShape="Circle"
 									  objectImageURI="./images/imageID_275314.png">
@@ -48,8 +47,8 @@
 						</actions>
 						<breadcrumbs>
 							<m:Breadcrumbs>
-								<m:Link text="Page 1 a very long link" press="handleLink1Press"/>
-								<m:Link text="Page 2 long link" press="handleLink2Press"/>
+								<m:Link text="Page 1 a very long link"/>
+								<m:Link text="Page 2 long link"/>
 							</m:Breadcrumbs>
 						</breadcrumbs>
 					</ObjectPageHeader>
@@ -76,7 +75,7 @@
 					</m:OverflowToolbar>
 				</footer>
 			</ObjectPageLayout>
-		</core:View>
+		</mvc:View>
 	</script>
 </head>
 <body id="body" class="sapUiBody">
@@ -109,13 +108,16 @@
 
 				var oTable1 = new sap.ui.table.Table("testUITable",{
 					rows:"{model>/rows}",
-					visibleRowCountMode: "Auto",
-					minAutoRowCount: 2
+					rowMode: new sap.ui.table.rowmodes.Auto({
+						minRowCount: 2
+					})
 				});
 				oTable1.setModel(oModel,"model");
 
 				oTable1.addColumn(new sap.ui.table.Column({
-					label: "col01",
+					label: new sap.m.Label({
+						text: "col01"
+					}),
 					autoResizable: true,
 					template: new sap.m.Text({
 						text:"{model>text1}"
@@ -123,14 +125,18 @@
 				}));
 
 				oTable1.addColumn(new sap.ui.table.Column({
-					label: "col02",
+					label: new sap.m.Label({
+						text: "col02"
+					}),
 					autoResizable: true,
 					template: new sap.m.Text({
 						text:"{model>text2}"
 					})
 				}));
 				oTable1.addColumn(new sap.ui.table.Column({
-					label: "col03",
+					label: new sap.m.Label({
+						text: "col03"
+					}),
 					autoResizable: true,
 					template: new sap.m.Text({
 						text:"{model>text3}"

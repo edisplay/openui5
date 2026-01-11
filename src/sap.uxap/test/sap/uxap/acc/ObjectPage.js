@@ -1,5 +1,5 @@
 sap.ui.define([
-	"sap/f/Avatar",
+	"sap/m/Avatar",
 	"sap/m/HBox",
 	"sap/m/VBox",
 	"sap/m/Title",

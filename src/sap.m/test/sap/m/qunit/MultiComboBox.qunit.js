@@ -16,6 +16,7 @@ sap.ui.define([
 	"sap/m/Link",
 	"sap/ui/table/Table",
 	"sap/ui/table/Column",
+	"sap/ui/table/rowmodes/Fixed",
 	"sap/ui/base/Event",
 	"sap/base/Log",
 	"sap/ui/events/KeyCodes",
@@ -52,6 +53,7 @@ sap.ui.define([
 	Link,
 	Table,
 	Column,
+	FixedRowMode,
 	Event,
 	Log,
 	KeyCodes,
@@ -7307,7 +7309,9 @@ sap.ui.define([
 		});
 
 		var oTable = new Table({
-			visibleRowCount: 2,
+			rowMode: new FixedRowMode({
+				rowCount: 2
+			}),
 			rows: "{/items}",
 			columns: [
 				new Column({

@@ -16,8 +16,9 @@ sap.ui.define([
 	"sap/ui/core/library",
 	"sap/ui/core/Theming",
 	"sap/ui/table/Table",
-	"sap/ui/table/Column"
-], function (JSONModel, App, Button, Column, ColumnListItem, Label, List, MessageBox, MultiInput, Page, StandardListItem, Table, Text, Token, coreLibrary, Theming, GridTable, GridTableColumn){
+	"sap/ui/table/Column",
+	"sap/ui/table/rowmodes/Fixed"
+], function (JSONModel, App, Button, Column, ColumnListItem, Label, List, MessageBox, MultiInput, Page, StandardListItem, Table, Text, Token, coreLibrary, Theming, GridTable, GridTableColumn, GridTableFixedRowMode){
 	"use strict";
 
 	// var TextDirection = coreLibrary.TextDirection;
@@ -289,8 +290,9 @@ sap.ui.define([
 	]);
 
 	var oCondensedTable = new GridTable("condensed-table", {
-		visibleRowCount: 2,
-		visibleRowCountMode: "Fixed",
+		rowMode: new GridTableFixedRowMode({
+			rowCount: 2
+		}),
 		rows: "{/modelData}"
 	}).addStyleClass("sapUiMediumMarginBottom");
 
