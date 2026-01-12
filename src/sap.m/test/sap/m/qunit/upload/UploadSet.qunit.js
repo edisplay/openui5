@@ -270,6 +270,23 @@ sap.ui.define([
 		assert.equal(oItem._getFileNameLink().$().length, 0, "File name link should be ignored.");
 	});
 
+	QUnit.test("Test placeholder text is propagated to file name edit input field", async function (assert) {
+		// Arrange
+		var oItem = this.oUploadSet.getItems()[0];
+		var sExpectedPlaceholder = this.oUploadSet._oRb.getText("UPLOAD_SET_FILE_NAME");
+		this.oUploadSet.placeAt("qunit-fixture");
+		await nextUIUpdate();
+
+		// Act - trigger edit mode to create the input field
+		oItem._getEditButton().firePress();
+		await nextUIUpdate();
+
+		// Assert
+		var oFileNameEdit = oItem._getFileNameEdit();
+		assert.ok(oFileNameEdit, "File name edit input should be created.");
+		assert.equal(oFileNameEdit.getPlaceholder(), sExpectedPlaceholder, "Placeholder text should be set correctly from message bundle.");
+	});
+
 	QUnit.test("Event afterItemEdited is called at proper time and with correct parameters.", async function (assert) {
 		assert.expect(1);
 		var oItem = this.oUploadSet.getItems()[0];
