@@ -1,0 +1,12 @@
+{
+  "1.145.0": {
+    "date": "January 2026",
+    "notes": [
+      {
+        "id": "a225f31bf43c07a7df8511eeb2b7ab5f6592751d",
+        "type": "FIX",
+        "text": " sap.uxap.ObjectPageLayout: Apply aria-label to dynamically shown anchor bar"
+      }
+    ]
+  }
+}

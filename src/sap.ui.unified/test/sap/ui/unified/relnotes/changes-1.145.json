@@ -1,0 +1,22 @@
+{
+  "1.145.0": {
+    "date": "January 2026",
+    "notes": [
+      {
+        "id": "17f8f04437676cfd8d98887c70e69b8ac43c4c36",
+        "type": "FIX",
+        "text": " sap.ui.uinifed.calendar.DatesRow: adjust day names describedby references"
+      },
+      {
+        "id": "4c3afae206449678191caf62a1ff8887d9ead8d6",
+        "type": "FIX",
+        "text": " sap.ui.unified.FileUploader: button only type aligned correctly"
+      },
+      {
+        "id": "00355e50c774403e89dd487ecd70ac7f9c50c457",
+        "type": "FIX",
+        "text": "sap.ui.unified.CalendarRow: Corrected rendering of non-working periods"
+      }
+    ]
+  }
+}

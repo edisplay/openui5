@@ -1,0 +1,12 @@
+{
+  "1.145.0": {
+    "date": "January 2026",
+    "notes": [
+      {
+        "id": "dd701bb7a34c156c9c88d978b2cf7ef8a32a6d0f",
+        "type": "FIX",
+        "text": " Diagnostics: Vertical scrolling issue is now resolved"
+      }
+    ]
+  }
+}

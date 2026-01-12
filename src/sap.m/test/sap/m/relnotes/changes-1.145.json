@@ -1,0 +1,37 @@
+{
+  "1.145.0": {
+    "date": "January 2026",
+    "notes": [
+      {
+        "id": "a6f8c0e694b0d77405641801649d9ad4e8afc209",
+        "type": "FIX",
+        "text": " sap.m.MenuButton: open menu with correct button combination"
+      },
+      {
+        "id": "62b2796b72ac43815b534b1f250ddc7354f79b5d",
+        "type": "FEATURE",
+        "text": " sap.m.VariantManagement: Improve save dialog"
+      },
+      {
+        "id": "35a53b501e61754c7946ceb4e3553b1ba5b63896",
+        "type": "FIX",
+        "text": " sap.m.DynamicDateRange: improve grouping announcements for screen readers"
+      },
+      {
+        "id": "1f9d9b8ff2c635e14de5593fb0ab2648c5edeba0",
+        "type": "FIX",
+        "text": " sap.m.Link: enable context menu on iOS long press"
+      },
+      {
+        "id": "3f4fcd220dd29f37e2845a45f2c94d262e601b82",
+        "type": "FIX",
+        "text": " sap.m.ObjectStatus: Remove deprecated API usage"
+      },
+      {
+        "id": "972ff7e8ebc2e8aef0eaaf44ef5fd44f344daa23",
+        "type": "FIX",
+        "text": " sap.m.Tokenizer: fix border color and background for token displayOnly and non-editable state"
+      }
+    ]
+  }
+}

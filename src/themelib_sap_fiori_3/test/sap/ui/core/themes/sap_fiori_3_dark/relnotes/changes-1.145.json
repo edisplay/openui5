@@ -1,0 +1,12 @@
+{
+  "1.145.0": {
+    "date": "January 2026",
+    "notes": [
+      {
+        "id": "4c3afae206449678191caf62a1ff8887d9ead8d6",
+        "type": "FIX",
+        "text": " sap.ui.unified.FileUploader: button only type aligned correctly"
+      }
+    ]
+  }
+}
