@@ -1229,7 +1229,7 @@ sap.ui.define([
 		const oRowSelectorText = oRow.getDomRef("rowselecttext");
 		const sSelectedText = TableUtils.getResourceText("TBL_ROW_DESELECT_KEY");
 		const sNotSelectedText = TableUtils.getResourceText("TBL_ROW_SELECT_KEY");
-		const sNoSelectionText = ".";
+		const sNoSelectionText = "";
 		const oSelectionPlugin = new TableQUnitUtils.TestSelectionPlugin();
 
 		this.oTable.setSelectionBehavior(library.SelectionBehavior.Row);
@@ -2124,7 +2124,7 @@ sap.ui.define([
 				"The highlight text element " + (bTextExists ? "exists in the DOM" : "does not exist in the DOM"));
 
 			if (oHighlightTextElement != null) {
-				assert.strictEqual(oHighlightTextElement.innerHTML, sText || ".", "The highlight text is correct: \"" + sText + "\"");
+				assert.strictEqual(oHighlightTextElement.innerHTML, sText || "", "The highlight text is correct: \"" + sText + "\"");
 			}
 		}
 
