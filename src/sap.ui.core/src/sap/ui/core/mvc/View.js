@@ -515,6 +515,7 @@ sap.ui.define([
 	* @param {object.string} mSettings.viewName view name
 	* @param {object.boolean} [mSettings.async] set the view to load a view resource asynchronously
 	* @private
+	* @ui5-transform-hint replace-param mSettings.async true
 	*/
 	View.prototype._initCompositeSupport = function(mSettings) {
 
@@ -877,6 +878,7 @@ sap.ui.define([
 	 * @returns {Promise|object|string|Element}
 	 *   a promise resolving with the processed source or an error | the source when bSync=true
 	 * @protected
+	 * @ui5-transform-hint replace-param bSync false
 	 */
 	View.prototype.runPreprocessor = function(sType, vSource, bSync) {
 
