@@ -65,7 +65,7 @@ sap.ui.define([
 
 	function stubSettings(sandbox) {
 		sandbox.stub(Settings, "getInstance").resolves({
-			getVersioning: () => ({ ALL: true }),
+			getIsVersioningEnabled: () => true,
 			getIsPublishAvailable: () => true
 		});
 	}
