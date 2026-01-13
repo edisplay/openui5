@@ -6548,6 +6548,7 @@ sap.ui.define([
 			this.oMetaModelMock.expects("fetchObject")
 				.withExactArgs("/resolved/path")
 				.returns(SyncPromise.resolve(oPropertyMetadata));
+			this.mock(_AggregationHelper).expects("getPropertyMetadataForFilter").never();
 			oHelperMock.expects("formatLiteral").withExactArgs("SAP", sType)
 				.returns("'SAP'");
 			if (oFixture.op === FilterOperator.BT || oFixture.op === FilterOperator.NB) {
@@ -6598,6 +6599,7 @@ sap.ui.define([
 				this.oMetaModelMock.expects("fetchObject")
 					.withExactArgs("/resolved/path2")
 					.returns(SyncPromise.resolve({$Type : "Edm.Decimal"}));
+				this.mock(_AggregationHelper).expects("getPropertyMetadataForFilter").never();
 				oHelperMock.expects("formatLiteral").withExactArgs("SAP", "Edm.String")
 					.returns("'SAP'");
 				oHelperMock.expects("formatLiteral").withExactArgs(12345, "Edm.Decimal")
@@ -6661,6 +6663,7 @@ sap.ui.define([
 		this.oMetaModelMock.expects("fetchObject")
 			.withExactArgs("/resolved/path")
 			.returns(SyncPromise.resolve(oPropertyMetadata));
+		this.mock(_AggregationHelper).expects("getPropertyMetadataForFilter").never();
 		this.mock(_Helper).expects("formatLiteral").withExactArgs("SAP", "Edm.String")
 			.returns("'SAP'");
 		oBinding.aApplicationFilters = [new Filter("SO_2_BP/CompanyName", "invalid", "SAP")];
@@ -6688,8 +6691,11 @@ sap.ui.define([
 		this.oMetaModelMock.expects("fetchObject")
 			.withExactArgs("/resolved/path")
 			.returns(SyncPromise.resolve());
-		oBinding.aApplicationFilters = [new Filter("SO_2_BP/CompanyName", FilterOperator.EQ,
-			"SAP")];
+		const oFilter = new Filter("SO_2_BP/CompanyName", FilterOperator.EQ, "SAP");
+		this.mock(_AggregationHelper).expects("getPropertyMetadataForFilter")
+			.withExactArgs(sinon.match.same(oFilter), undefined, "/resolved/path")
+			.returns(undefined);
+		oBinding.aApplicationFilters = [oFilter];
 
 		return oBinding.fetchFilter().then(function () {
 			assert.ok(false);
@@ -6697,6 +6703,28 @@ sap.ui.define([
 			assert.strictEqual(oError.message, "Type cannot be determined, no metadata for path: "
 				+ "/resolved/path");
 		});
+	});
+
+	//*********************************************************************************************
+	QUnit.test("fetchFilter: alias fallback", function (assert) {
+		const oBinding = this.bindList("/SalesOrderList");
+		const oMetaContext = {getPath : function () { return "/SalesOrderList"; }};
+
+		this.oMetaModelMock.expects("getMetaContext")
+			.withExactArgs("/SalesOrderList").returns(oMetaContext);
+		this.oMetaModelMock.expects("resolve")
+			.withExactArgs("Alias", sinon.match.same(oMetaContext))
+			.returns("/resolved/path");
+		this.oMetaModelMock.expects("fetchObject")
+			.withExactArgs("/resolved/path")
+			.returns(SyncPromise.resolve());
+		const oFilter = new Filter("Alias", FilterOperator.EQ, 42);
+		this.mock(_AggregationHelper).expects("getPropertyMetadataForFilter")
+			.withExactArgs(sinon.match.same(oFilter), undefined, "/resolved/path")
+			.returns({$Type : "Edm.Decimal"});
+		oBinding.aApplicationFilters = [oFilter];
+
+		assert.deepEqual(oBinding.fetchFilter().getResult(), ["Alias eq 42", undefined, undefined]);
 	});
 
 	//*********************************************************************************************
@@ -6717,6 +6745,7 @@ sap.ui.define([
 			// call getMetaContext only if there are filters
 			this.oMetaModelMock.expects("getMetaContext").withExactArgs(oBinding.sPath)
 				.returns("~");
+			this.mock(_AggregationHelper).expects("getPropertyMetadataForFilter").never();
 			oFixture.filters.forEach((vFilter) => {
 				var sPath,
 					sValue;
@@ -6774,6 +6803,7 @@ sap.ui.define([
 			oPromise = Promise.resolve(oPropertyMetadata);
 
 		oMetaModelMock.expects("getMetaContext").withExactArgs(oBinding.sPath).returns("~");
+		this.mock(_AggregationHelper).expects("getPropertyMetadataForFilter").never();
 
 		oMetaModelMock.expects("resolve").withExactArgs("p0.0", "~").returns("/resolved/p0.0");
 		oMetaModelMock.expects("fetchObject").withExactArgs("/resolved/p0.0").returns(oPromise);
@@ -6963,6 +6993,7 @@ sap.ui.define([
 				this.oMetaModelMock.expects("getMetaContext")
 					.withExactArgs(oBinding.sPath)
 					.returns("~");
+				this.mock(_AggregationHelper).expects("getPropertyMetadataForFilter").never();
 
 				aFetchObjectKeys.forEach((sObjectPath) => {
 					this.oMetaModelMock.expects("resolve")
@@ -7000,6 +7031,7 @@ sap.ui.define([
 			.returns(SyncPromise.resolve({
 				$Type : "Type0"
 			}));
+		this.mock(_AggregationHelper).expects("getPropertyMetadataForFilter").never();
 
 		// code under test
 		return oBinding.fetchFilter().then(function (aFilterValues) {
@@ -7019,6 +7051,7 @@ sap.ui.define([
 		this.oMetaModelMock.expects("resolve").withExactArgs("p0.0", "~").returns("/resolved/p0.0");
 		this.oMetaModelMock.expects("fetchObject").withExactArgs("/resolved/p0.0")
 			.returns(oPromise);
+		this.mock(_AggregationHelper).expects("getPropertyMetadataForFilter").never();
 
 		this.oMetaModelMock.expects("resolve").withExactArgs("p1.0", "~").returns("/resolved/p1.0");
 		this.oMetaModelMock.expects("fetchObject").withExactArgs("/resolved/p1.0")
@@ -7045,6 +7078,7 @@ sap.ui.define([
 			.returns("/resolved/path");
 		this.oMetaModelMock.expects("fetchObject").withExactArgs("/resolved/path")
 			.returns(oPromise);
+		this.mock(_AggregationHelper).expects("getPropertyMetadataForFilter").never();
 		oBinding.aApplicationFilters = [new Filter("AmountIn%E2%82%AC", FilterOperator.GT, "1000")];
 
 		return oBinding.fetchFilter().then(function (aFilterValues) {
@@ -7114,6 +7148,7 @@ sap.ui.define([
 			}
 
 			this.oMetaModelMock.expects("fetchObject").atLeast(0).returns(oPromise);
+			this.mock(_AggregationHelper).expects("getPropertyMetadataForFilter").never();
 			oBinding.aApplicationFilters = buildFilters(oFixture.filters);
 
 			// code under test
@@ -7273,6 +7308,7 @@ sap.ui.define([
 			.atLeast(0).returns("/resolved/a");
 		this.oMetaModelMock.expects("fetchObject").withExactArgs("/resolved/a").atLeast(0)
 			.returns(Promise.resolve({$Type : "Edm.Decimal"}));
+		this.mock(_AggregationHelper).expects("getPropertyMetadataForFilter").never();
 		this.oMetaModelMock.expects("resolve").withExactArgs("b", sinon.match.same(oMetaContext))
 			.atLeast(0).returns("/resolved/b");
 		this.oMetaModelMock.expects("fetchObject").withExactArgs("/resolved/b").atLeast(0)
