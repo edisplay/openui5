@@ -481,7 +481,7 @@ sap.ui.define([
 	 * @param {boolean} [bMerged=false] Indicates whether the custom configuration is merged with the parent custom configuration of the Component.
 	 * @return {Object} custom Component configuration with the specified key.
 	 * @public
-	 * @deprecated Since 1.27.1. Please use the sap.ui.core.ComponentMetadata#getManifestEntry
+	 * @deprecated As of version 1.27.1, without replacement.
 	 */
 	ComponentMetadata.prototype.getCustomEntry = function(sKey, bMerged) {
 		if (!sKey || sKey.indexOf(".") <= 0) {
