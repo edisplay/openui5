@@ -349,8 +349,9 @@ sap.ui.define([
 	 *   Whether no ("change") events should be fired
 	 * @param {boolean} [bNested]
 	 *   Whether the "collapse all" was performed at an ancestor
-	 * @param {string[]} [aKeptElementPredicates]
-	 *   The key predicates for all (effectively) kept-alive elements incl. exceptions of selection
+	 * @param {Object<boolean>} [mKeptElementPredicates]
+	 *   The set of key predicates for all (effectively) kept-alive elements incl. exceptions of
+	 *   selection
 	 * @returns {number}
 	 *   The number of descendant nodes that were affected
 	 *
@@ -358,7 +359,7 @@ sap.ui.define([
 	 * @see #expand
 	 */
 	_AggregationCache.prototype.collapse = function (sGroupNodePath, oGroupLock, bSilent, bNested,
-			aKeptElementPredicates) {
+			mKeptElementPredicates) {
 		const oGroupNode = this.getValue(sGroupNodePath);
 		const oCollapsed = _AggregationHelper.getCollapsedObject(oGroupNode);
 		_Helper.updateAll(bSilent ? {} : this.mChangeListeners, sGroupNodePath, oGroupNode,
@@ -386,11 +387,10 @@ sap.ui.define([
 			const sPredicate = _Helper.getPrivateAnnotation(oElement, "predicate");
 			if (bAll && oElement["@$ui5.node.isExpanded"]) {
 				iRemaining
-					-= this.collapse(sPredicate, oGroupLock, bSilent, true, aKeptElementPredicates);
+					-= this.collapse(sPredicate, oGroupLock, bSilent, true, mKeptElementPredicates);
 			}
 			// exceptions of selection are effectively kept alive
-			if (!this.isSelectionDifferent(oElement)
-					&& !aKeptElementPredicates?.includes(sPredicate)) {
+			if (!this.isSelectionDifferent(oElement) && !mKeptElementPredicates?.[sPredicate]) {
 				delete aElements.$byPredicate[sPredicate];
 				delete aElements.$byPredicate[
 					_Helper.getPrivateAnnotation(oElement, "transientPredicate")];
@@ -2513,15 +2513,14 @@ sap.ui.define([
 	 * @override
 	 * @see sap.ui.model.odata.v4.lib._CollectionCache#reset
 	 */
-	_AggregationCache.prototype.reset = function (aKeptElementPredicates, sGroupId, mQueryOptions,
+	_AggregationCache.prototype.reset = function (mKeptElementPredicates, sGroupId, mQueryOptions,
 			oAggregation, bIsGrouped) {
 		if (bIsGrouped) {
 			throw new Error("Unsupported grouping via sorter");
 		}
 
-		aKeptElementPredicates.forEach((sPredicate) => {
-			var oKeptElement = this.aElements.$byPredicate[sPredicate];
-
+		for (const sPredicate in mKeptElementPredicates) {
+			const oKeptElement = this.aElements.$byPredicate[sPredicate];
 			if (_Helper.hasPrivateAnnotation(oKeptElement, "placeholder")) {
 				throw new Error("Unexpected placeholder");
 			}
@@ -2529,11 +2528,11 @@ sap.ui.define([
 			delete oKeptElement["@$ui5.node.level"];
 			delete oKeptElement["@$ui5._"];
 			_Helper.setPrivateAnnotation(oKeptElement, "predicate", sPredicate);
-		});
+		}
 
 		// "super" call (like @borrows ...)
 		const fnSuper = this.oFirstLevel.reset;
-		fnSuper.call(this, aKeptElementPredicates, sGroupId, mQueryOptions);
+		fnSuper.call(this, mKeptElementPredicates, sGroupId, mQueryOptions);
 		if (sGroupId) { // sGroupId means we are in a side-effects refresh
 			this.oBackup.oCountPromise = this.oCountPromise;
 			this.oBackup.oFirstLevel = this.oFirstLevel;

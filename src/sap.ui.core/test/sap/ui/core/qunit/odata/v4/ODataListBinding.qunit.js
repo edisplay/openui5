@@ -3262,7 +3262,7 @@ sap.ui.define([
 			.withExactArgs("~sResourcePathPrefix~");
 		this.mock(oBinding).expects("createRefreshPromise").withExactArgs()
 			.returns(Promise.reject("~oError~"));
-		this.mock(oBinding.oCache).expects("reset").withExactArgs([]);
+		this.mock(oBinding.oCache).expects("reset").withExactArgs({});
 		this.mock(oBinding).expects("fetchCache").never();
 		this.mock(oBinding).expects("refreshKeptElements").never();
 
@@ -7377,18 +7377,17 @@ sap.ui.define([
 				reset : function () {},
 				// no resetOutOfPlace
 				setQueryOptions : function () {}
-			},
-			aPredicates = ["('0')", "('2')"];
+			};
 
 		oBinding.mParameters.$$aggregation = "~$$aggregation~";
 		this.mock(oOldCache).expects("getResourcePath").withExactArgs().returns("resource/path");
 		this.mock(oBinding).expects("hasEffectivelyKeptAlive").withExactArgs().returns(true);
 		this.mock(oBinding).expects("getKeepAlivePredicates").withExactArgs()
-			.returns(aPredicates);
+			.returns("~mKeepAlivePredicates~");
 		this.mock(oBinding).expects("isGrouped").withExactArgs().returns("~isGrouped~");
 		this.mock(oBinding).expects("getGroupId").never();
 		const oResetCall = this.mock(oOldCache).expects("reset")
-			.withExactArgs(sinon.match.same(aPredicates),
+			.withExactArgs("~mKeepAlivePredicates~",
 				bSideEffectsRefresh ? "myGroup" : undefined, "~queryOptions~",
 				"~$$aggregation~", "~isGrouped~");
 		const oValidationCall = this.mock(oBinding).expects("validateSelection")
@@ -7424,7 +7423,7 @@ sap.ui.define([
 		this.mock(oBinding).expects("getKeepAlivePredicates").never();
 		this.mock(oBinding).expects("isGrouped").withExactArgs().returns("~isGrouped~");
 		this.mock(oOldCache).expects("reset")
-			.withExactArgs([], "myGroup", "~queryOptions~", undefined, "~isGrouped~");
+			.withExactArgs({}, "myGroup", "~queryOptions~", undefined, "~isGrouped~");
 		this.mock(_AggregationCache).expects("create").never();
 
 		assert.strictEqual(
@@ -7466,7 +7465,7 @@ sap.ui.define([
 		this.mock(oOldCache).expects("resetOutOfPlace")
 			.exactly((bAggregationCache && bResetViaSideEffects) ? 1 : 0);
 		this.mock(oOldCache).expects("reset").exactly(bAggregationCache ? 1 : 0)
-			.withExactArgs([], bAggregationCache && bResetViaSideEffects ? "resetGroup" : undefined,
+			.withExactArgs({}, bAggregationCache && bResetViaSideEffects ? "resetGroup" : undefined,
 				"~queryOptions~", sinon.match.same(oBinding.mParameters.$$aggregation),
 				"~isGrouped~");
 		this.mock(oBinding).expects("inheritQueryOptions").exactly(bAggregationCache ? 0 : 1)
@@ -7547,7 +7546,7 @@ sap.ui.define([
 			.returns(bFromModel ? oCache : undefined);
 		if (bFromModel && bAggregation) {
 			oGetExpectation = oBindingMock.expects("getKeepAlivePredicates").withExactArgs()
-				.returns(["(1)", "(3)"]);
+				.returns({"(1)" : true, "(3)" : true});
 			oCacheMock.expects("getValue").withExactArgs("(1)").returns("~1~");
 			oCacheMock.expects("getValue").withExactArgs("(3)").returns("~3~");
 			oCacheMock.expects("setActive").withExactArgs(false);
@@ -8721,7 +8720,7 @@ sap.ui.define([
 		oBinding.sResumeAction = "resetCache";
 		this.mock(oBinding).expects("getDependentBindings").never();
 		this.mock(oBinding).expects("removeCachesAndMessages").withExactArgs("");
-		this.mock(oBinding.oCache).expects("reset").withExactArgs([]);
+		this.mock(oBinding.oCache).expects("reset").withExactArgs({});
 		this.mock(oBinding).expects("onChange").never();
 		this.mock(oBinding).expects("fetchCache").never();
 		this.mock(oBinding).expects("refreshKeptElements").never();
@@ -12470,16 +12469,8 @@ sap.ui.define([
 
 		assert.deepEqual(
 			oBinding.getKeepAlivePredicates(), // code under test
-			["('0')", "('2')", "('4')"]
+			{"('0')" : true, "('2')" : true, "('4')" : true}
 		);
-	});
-
-	//*********************************************************************************************
-	QUnit.test("getKeepAlivePredicates: unresolved", function (assert) {
-		var oBinding = this.bindList("n/a"); // relative, but path is irrelevant
-
-		// code under test
-		assert.deepEqual(oBinding.getKeepAlivePredicates(), []);
 	});
 
 	//*********************************************************************************************

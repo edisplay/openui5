@@ -1583,7 +1583,6 @@ sap.ui.define([
 	ODataListBinding.prototype.doCreateCache = function (sResourcePath, mQueryOptions, oContext,
 			sDeepResourcePath, sGroupId, bSideEffectsRefresh, oOldCache) {
 		var oCache,
-			aKeepAlivePredicates,
 			mKeptElementsByPredicate,
 			bResetViaSideEffects = this.bResetViaSideEffects;
 
@@ -1602,12 +1601,12 @@ sap.ui.define([
 					bSideEffectsRefresh = true;
 					oOldCache.resetOutOfPlace();
 				}
-				aKeepAlivePredicates = bHasEffectivelyKeptAlive
+				const mKeepAlivePredicates = bHasEffectivelyKeptAlive
 					? this.getKeepAlivePredicates()
-					: [];
+					: {};
 				// Note: #inheritQueryOptions as called below should not matter in case of own
 				// requests, which are a precondition for kept-alive elements
-				oOldCache.reset(aKeepAlivePredicates, bSideEffectsRefresh ? sGroupId : undefined,
+				oOldCache.reset(mKeepAlivePredicates, bSideEffectsRefresh ? sGroupId : undefined,
 					mQueryOptions, this.mParameters.$$aggregation, this.isGrouped());
 				// validate selection after the old cache is reset
 				this.validateSelection(oOldCache, sGroupId);
@@ -1619,11 +1618,10 @@ sap.ui.define([
 		mQueryOptions = this.inheritQueryOptions(mQueryOptions, oContext);
 		oCache = this.getCacheAndMoveKeepAliveContexts(sResourcePath, mQueryOptions);
 		if (oCache && this.mParameters.$$aggregation) {
-			mKeptElementsByPredicate = {};
-			aKeepAlivePredicates = this.getKeepAlivePredicates();
-			aKeepAlivePredicates.forEach(function (sPredicate) {
+			mKeptElementsByPredicate = this.getKeepAlivePredicates();
+			for (const sPredicate in mKeptElementsByPredicate) {
 				mKeptElementsByPredicate[sPredicate] = oCache.getValue(sPredicate);
-			});
+			}
 			oCache.setActive(false);
 			oCache = undefined; // create _AggregationCache instead of _CollectionCache
 		}
@@ -1633,9 +1631,9 @@ sap.ui.define([
 			this.bSharedRequest, this.isGrouped());
 		oCache.setSeparate?.(this.mParameters.$$separate);
 		if (mKeptElementsByPredicate) {
-			aKeepAlivePredicates.forEach(function (sPredicate) {
+			for (const sPredicate in mKeptElementsByPredicate) {
 				oCache.addKeptElement(mKeptElementsByPredicate[sPredicate]);
-			});
+			}
 		} else if (this.bSharedRequest) {
 			oCache.registerChangeListener("", this);
 		}
@@ -3271,26 +3269,25 @@ sap.ui.define([
 	};
 
 	/**
-	 * Returns a list of key predicates of all kept-alive contexts.
+	 * Returns a set of key predicates of all kept-alive contexts.
 	 *
-	 * @returns {string[]} The list of key predicates
+	 * @returns {Object<boolean>} The set of key predicates
 	 *
 	 * @private
 	 */
 	ODataListBinding.prototype.getKeepAlivePredicates = function () {
-		var sBindingPath;
+		const mSet = {};
+		const sBindingPath = this.getHeaderContext().getPath();
+		const addKeepAlivePredicate = (oContext) => {
+			if (oContext.isEffectivelyKeptAlive()) {
+				const sPredicate = _Helper.getRelativePath(oContext.getPath(), sBindingPath);
+				mSet[sPredicate] = true;
+			}
+		};
+		Object.values(this.mPreviousContextsByPath).forEach(addKeepAlivePredicate);
+		this.aContexts.forEach(addKeepAlivePredicate);
 
-		if (!this.getHeaderContext()) {
-			return [];
-		}
-		sBindingPath = this.getHeaderContext().getPath();
-
-		return Object.values(this.mPreviousContextsByPath).concat(this.aContexts)
-			.filter(function (oContext) {
-				return oContext.isEffectivelyKeptAlive();
-			}).map(function (oContext) {
-				return _Helper.getRelativePath(oContext.getPath(), sBindingPath);
-			});
+		return mSet;
 	};
 
 	/**
@@ -4031,7 +4028,7 @@ sap.ui.define([
 				that.removeCachesAndMessages(sResourcePathPrefix);
 				if (that.bSharedRequest) {
 					oPromise = that.createRefreshPromise();
-					oCache.reset([]);
+					oCache.reset({});
 				} else {
 					that.fetchCache(that.oContext, false, /*bKeepQueryOptions*/true,
 						sGroupId, bKeepCacheOnError, bSync);
@@ -4789,7 +4786,7 @@ sap.ui.define([
 				return;
 			}
 			if (sResumeAction === "resetCache") {
-				this.oCache.reset([]);
+				this.oCache.reset({});
 				return;
 			}
 			this.reset();
