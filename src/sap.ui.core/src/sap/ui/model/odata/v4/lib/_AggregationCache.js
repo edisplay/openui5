@@ -389,8 +389,7 @@ sap.ui.define([
 				iRemaining
 					-= this.collapse(sPredicate, oGroupLock, bSilent, true, mKeptElementPredicates);
 			}
-			// exceptions of selection are effectively kept alive
-			if (!this.isSelectionDifferent(oElement) && !mKeptElementPredicates?.[sPredicate]) {
+			if (!mKeptElementPredicates?.[sPredicate]) {
 				delete aElements.$byPredicate[sPredicate];
 				delete aElements.$byPredicate[
 					_Helper.getPrivateAnnotation(oElement, "transientPredicate")];
