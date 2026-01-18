@@ -23,9 +23,9 @@ sap.ui.define([
 	});
 	QUnit.test("Test", function (assert) {
 		var sXml = [
-			'<core:View xmlns:core="sap.ui.core" xmlns:m="sap.m" xmlns="http://www.w3.org/1999/xhtml">',
+			'<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:m="sap.m">',
 			'	<m:P13nPanel/>',
-			'</core:View>'
+			'</mvc:View>'
 		].join('');
 		return XMLView.create({
 			definition: sXml
