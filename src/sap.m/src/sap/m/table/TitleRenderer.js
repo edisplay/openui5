@@ -2,7 +2,7 @@
  * ${copyright}
  */
 
-// Provides renderer for sap.m.TableTitle
+// Provides renderer for sap.m.table.Title
 sap.ui.define([
 	"sap/ui/core/Lib",
 	"sap/ui/core/format/NumberFormat"
@@ -11,31 +11,31 @@ sap.ui.define([
 	"use strict";
 
 	/**
-	 * TableTitle renderer.
+	 * Title renderer.
 	 * @namespace
 	 */
-	const TableTitleRenderer = {
+	const TitleRenderer = {
 		apiVersion: 2
 	};
 
 	/**
 	 * Renders the HTML for the given control, using the provided {@link sap.ui.core.RenderManager}.
 	 * @param {sap.ui.core.RenderManager} oRm The RenderManager that can be used to render the control's DOM
-	 * @param {sap.m.TableTitle} oTableTitle An object representation of the control that is rendered
+	 * @param {sap.m.table.Title} oTitle An object representation of the control that is rendered
 	 */
-	TableTitleRenderer.render = function(oRm, oTableTitle){
-		const oExternalTitle = oTableTitle.getTitle();
+	TitleRenderer.render = function(oRm, oTitle){
+		const oExternalTitle = oTitle.getTitle();
 
 		const oNumberFormat = NumberFormat.getIntegerInstance({groupingEnabled: true});
-		const iTotalCount = oTableTitle.getTotalCount();
-		const iSelectedCount = oTableTitle.getSelectedCount();
-		const sTotalCountFormatted = oNumberFormat.format(oTableTitle.getTotalCount());
-		const sSelectedCountFormatted = oNumberFormat.format(oTableTitle.getSelectedCount());
+		const iTotalCount = oTitle.getTotalCount();
+		const iSelectedCount = oTitle.getSelectedCount();
+		const sTotalCountFormatted = oNumberFormat.format(oTitle.getTotalCount());
+		const sSelectedCountFormatted = oNumberFormat.format(oTitle.getSelectedCount());
 		const oResourceBundle = Library.getResourceBundleFor("sap.m");
 		let sText;
 
-		oRm.openStart("div", oTableTitle);
-		if (!oTableTitle.getVisible()) {
+		oRm.openStart("div", oTitle);
+		if (!oTitle.getVisible()) {
 			oRm.style("display", "none");
 		}
 		oRm.class("sapMTableTitle");
@@ -43,11 +43,11 @@ sap.ui.define([
 
 		oRm.renderControl(oExternalTitle);
 
-		oRm.openStart("span", oTableTitle.getId() + "-tableTitleContent");
+		oRm.openStart("span", oTitle.getId() + "-tableTitleContent");
 		oRm.class("sapMTableTitleText");
 		if (iSelectedCount > 0 && iTotalCount > 0) {
 			oRm.class("sapMTableTitleSelectedRowCount");
-			if (oTableTitle.getShowExtendedView()) {
+			if (oTitle.getShowExtendedView()) {
 				sText = oResourceBundle.getText("TABLETITLE_SELECTED_ROW_COUNT_EXT", [sSelectedCountFormatted, sTotalCountFormatted]);
 
 			} else {
@@ -69,5 +69,5 @@ sap.ui.define([
 		oRm.close("div");
 	};
 
-	return TableTitleRenderer;
+	return TitleRenderer;
 }, /* bExport= */ true);
