@@ -3,6 +3,66 @@
     "date": "January 2026",
     "notes": [
       {
+        "id": "1fb800319ef06317ebeb13c90a66f77ebb5b3b15",
+        "type": "FIX",
+        "text": " sap.m.Link: Press event is fired correctly on pressing SPACE"
+      },
+      {
+        "id": "e7d6b87efb4e13cd957c2b3e9a018ecc50858163",
+        "type": "FIX",
+        "text": " sap.m.MultiComboBox: After deletion next focused token is announced with correct position"
+      },
+      {
+        "id": "df8675442489e47a8a54d40188f48b3e1ed0e7f6",
+        "type": "FIX",
+        "text": " sap.m.FacetFilter: adjust facet popover autoclose behavior"
+      },
+      {
+        "id": "773b799ed41bcd2018983244282ec2c4c11a3832",
+        "type": "FIX",
+        "text": "sap.m.ComboBox: clearIcon width distortion is now fixed"
+      },
+      {
+        "id": "c2f6e4b46addca2c31a9fda7d70b0a38d44ae6c7",
+        "type": "FIX",
+        "text": " sap.m.Toolbar: Preserve arrow key behavior for sap.m.MultiComboBox"
+      },
+      {
+        "id": "e9a18a54020c525a0446728871b19ad6153228e1",
+        "type": "FIX",
+        "text": " sap.m.MessageStrip: apply CSS classes correctly"
+      },
+      {
+        "id": "b83356e4019a10f8f91238ece74a15247049932d",
+        "type": "FIX",
+        "text": " sap.m.Tokenizer: tokenizer is no more focusable in disabled state"
+      },
+      {
+        "id": "e316f948ebb4a21da1ed01b50ef2cb2ab04ba777",
+        "type": "FIX",
+        "text": "sap.m.MultiComboBox: change event is now fired correctly"
+      },
+      {
+        "id": "a3b62bac218f455b7e1cc193c377e4a3e3a6fe78",
+        "type": "FIX",
+        "text": " We've now fixed an issue where the slide tile content was not adjusting dynamically to the screen size"
+      },
+      {
+        "id": "5102adc0973bf4a2201ffe5a42b81dfed4774851",
+        "type": "FIX",
+        "text": " We now display placeholder text while renaming a file on the UploadSetItem"
+      },
+      {
+        "id": "338fe80ba9b27d04db0799d28ad47e21b0316b7d",
+        "type": "FIX",
+        "text": " sap.m Tokenizer: Ensure role \"listbox\" is applied to the correct container"
+      },
+      {
+        "id": "3845b663a729873dc86f7428e5faefbcd2a538a1",
+        "type": "FIX",
+        "text": " VariantManagement: Readjust order of destruction and creation of role contexts"
+      },
+      {
         "id": "a6f8c0e694b0d77405641801649d9ad4e8afc209",
         "type": "FIX",
         "text": " sap.m.MenuButton: open menu with correct button combination"
@@ -11,6 +71,11 @@
         "id": "62b2796b72ac43815b534b1f250ddc7354f79b5d",
         "type": "FEATURE",
         "text": " sap.m.VariantManagement: Improve save dialog"
+      },
+      {
+        "id": "e08b9d6bc961bf53868720c324d235ceed86552b",
+        "type": "FIX",
+        "text": " sap.m.Tokenizer: align mobile dialog cancel button placement"
       },
       {
         "id": "35a53b501e61754c7946ceb4e3553b1ba5b63896",
@@ -31,6 +96,11 @@
         "id": "972ff7e8ebc2e8aef0eaaf44ef5fd44f344daa23",
         "type": "FIX",
         "text": " sap.m.Tokenizer: fix border color and background for token displayOnly and non-editable state"
+      },
+      {
+        "id": "e89c9984592570e38e88a014960ef680dba9196d",
+        "type": "FIX",
+        "text": " sap.m.SearchField: Prevented unnecessary reopening of suggestions"
       }
     ]
   }

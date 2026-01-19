@@ -3,6 +3,11 @@
     "date": "January 2026",
     "notes": [
       {
+        "id": "a3d546579d63ada30ffe739d3eb487982391b3fb",
+        "type": "FIX",
+        "text": " sap.ui.core.ShortcutHintsMixin: Hide shortcut hint on mouseout"
+      },
+      {
         "id": "dd701bb7a34c156c9c88d978b2cf7ef8a32a6d0f",
         "type": "FIX",
         "text": " Diagnostics: Vertical scrolling issue is now resolved"

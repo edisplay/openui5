@@ -1,0 +1,17 @@
+{
+  "1.145.0": {
+    "date": "January 2026",
+    "notes": [
+      {
+        "id": "1b4501ed5adb0fe97810a90b4e054f5e46035ece",
+        "type": "FIX",
+        "text": " sap.ui.integration.widgets.Card: Fixed error when setting card manifest to null"
+      },
+      {
+        "id": "7068384a4b8bd5d088284de339a357496e841c1b",
+        "type": "FIX",
+        "text": " Integration Cards: Fix reported console errors in Card Explorer"
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "1.145.0": {
+    "date": "January 2026",
+    "notes": [
+      {
+        "id": "c079725064d023c4d2913a4d677a714d241cd4a6",
+        "type": "FIX",
+        "text": " sap.f.SidePanel: close the opener that of the side content properly"
+      },
+      {
+        "id": "853dae50d10e871eb900fec2256663464d40655e",
+        "type": "FIX",
+        "text": " sap.f.SidePanel: adjust side content header reference"
+      }
+    ]
+  }
+}

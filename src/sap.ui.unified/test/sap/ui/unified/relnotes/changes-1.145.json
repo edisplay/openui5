@@ -3,6 +3,11 @@
     "date": "January 2026",
     "notes": [
       {
+        "id": "89d5874d03f83e4929780b596dc7a8abfaec9615",
+        "type": "FIX",
+        "text": " sap.uiunified.Calendar: visual fixes for HC themes/base/Calendar"
+      },
+      {
         "id": "17f8f04437676cfd8d98887c70e69b8ac43c4c36",
         "type": "FIX",
         "text": " sap.ui.uinifed.calendar.DatesRow: adjust day names describedby references"
