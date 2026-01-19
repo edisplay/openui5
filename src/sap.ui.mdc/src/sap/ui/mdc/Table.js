@@ -963,7 +963,8 @@ sap.ui.define([
 
 		this._oManagedObjectModel = new ManagedObjectModel(this, {
 			hasGrandTotal: false,
-			activeP13nModes: createActiveP13nModesMap(this)
+			activeP13nModes: createActiveP13nModesMap(this),
+			toolbarButtonType: TableSettings.getToolbarButtonType()
 		});
 		this._oManagedObjectModel.setDefaultBindingMode(BindingMode.OneWay);
 		this.setModel(this._oManagedObjectModel, "$sap.ui.mdc.Table");
@@ -3133,10 +3134,7 @@ sap.ui.define([
 	 * Handler for theme changes
 	 */
 	Table.prototype.onThemeChanged = function() {
-		if (this._oExportButton) {
-			const sButtonType = MLibrary.ButtonType[ThemeParameters.get({name: "_sap_ui_mdc_Table_ExportButtonType"})];
-			this._oExportButton.setType(sButtonType);
-		}
+		this._oManagedObjectModel.setProperty("/@custom/toolbarButtonType", TableSettings.getToolbarButtonType());
 
 		if (this._oToolbar) {
 			const sToolBarDesign = ToolbarDesign[ThemeParameters.get({name: "_sap_ui_mdc_Table_ToolbarDesign"})];
