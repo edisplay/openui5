@@ -3743,13 +3743,13 @@ sap.ui.define([
 				`<Label text="{formatter: '.foo', path: '/'}"/>`,
 				`<template:alias name=".foo" value="Helper.foo">`,
 					`<Text text="{formatter: '.foo', path: '/'}"/>`,
-					// redefine existing alias
-					`<template:alias name=".foo" value="Helper.bar">`,
+					// redefine existing alias - name doesn't need to start with a dot
+					`<template:alias name="foo" value="Helper.bar">`,
 						`<Text text="{formatter: '.foo', path: '/'}"/>`,
 						`<Label text="{formatter: 'Helper.checkScope', path: '/'}"/>`,
 					`</template:alias>`,
-					// old value must be used again
-					`<Text text="{formatter: '.foo', path: '/'}"/>`,
+					// old value must be used again - alias usage doesn't need to start with a dot
+					`<Text text="{formatter: 'foo', path: '/'}"/>`,
 				`</template:alias>`,
 				// <template:repeat> uses scope
 				`<template:repeat list="{path: '/', factory: '.bar'}"/>`,
