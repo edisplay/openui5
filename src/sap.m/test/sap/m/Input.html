@@ -965,23 +965,6 @@
 							new sap.m.Input({value: "ValueHelp", showValueHelp: true, valueHelpRequest: function(evt) { sap.m.MessageBox.alert("Value help requested"); }}).addStyleClass('myInput'),
 							new sap.m.Input({value: "ValueHelp + Status", showValueHelp: true, valueState : "Error", valueHelpRequest: function(evt) { sap.m.MessageBox.alert("Value help requested"); }}).addStyleClass('myInput'),
 							new sap.m.Input({
-								value: "ValueHelpOnly",
-								showValueHelp: true,
-								valueHelpOnly: true,
-								valueHelpRequest: function(evt) {
-									sap.m.MessageBox.alert("Value help requested");
-								}
-							}),
-							new sap.m.Input({
-								value: "ValueHelpOnly + Status",
-								showValueHelp: true,
-								valueHelpOnly: true,
-								valueState : "Warning",
-								valueHelpRequest: function(evt) {
-									sap.m.MessageBox.alert("Value help requested");
-								}
-							}),
-							new sap.m.Input({
 								value: "Custom value help icon",
 								showValueHelp: true,
 								valueHelpIconSrc: "sap-icon://arrow-left",
@@ -1149,7 +1132,6 @@
 				new sap.m.Input({type: "Url", placeholder : "Url"}).addStyleClass('myInput'),
 				new sap.m.Input({type: "Password", placeholder : "Password"}).addStyleClass('myInput'),
 				new sap.m.Input({type: "Text", placeholder : "ValueHelp", showValueHelp: true, valueHelpRequest: function(evt) { sap.m.MessageBox.alert("Value help requested"); }}).addStyleClass('myInput'),
-				new sap.m.Input({type: "Text", placeholder : "ValueHelpOnly", showValueHelp: true, valueHelpOnly: true, valueHelpRequest: function(evt) { sap.m.MessageBox.alert("Value help requested"); }})
 			],
 			footer: createFooter()
 		});
@@ -1191,9 +1173,6 @@
 
 		list.addItem(new sap.m.InputListItem({label: 'ValueHelp+Status', content: [
 			new sap.m.Input({value: "ValueHelp + Status", showValueHelp: true, valueState : "Warning", valueHelpRequest: function(evt) { sap.m.MessageBox.alert("Value help requested"); }})
-		]}));
-		list.addItem(new sap.m.InputListItem({label: 'ValueHelpOnly', content: [
-			new sap.m.Input({value: "ValueHelpOnly", showValueHelp: true, valueHelpOnly: true, valueHelpRequest: function(evt) { sap.m.MessageBox.alert("Value help requested"); }})
 		]}));
 		page3.addContent(list);
 
