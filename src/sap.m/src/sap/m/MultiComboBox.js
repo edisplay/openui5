@@ -941,8 +941,9 @@ function(
 		}
 
 		// Clear error state when user types valid input
-		if (sValueState === ValueState.Error && this._sPreviousValueState && this.isValueValid(sValue)) {
-			oInputField.setValueState(this._sPreviousValueState);
+		if (sValueState === ValueState.Error && this.isValueValid(sValue)) {
+			this._bIsValueInvalid = false;
+			oInputField.setValueState(this._sInitialValueState);
 			oInputField.setValueStateText(this._sInitialValueStateText || "");
 		}
 
@@ -1245,10 +1246,9 @@ function(
 		this._synchronizeSelectedItemAndKey();
 		this.setProperty("hasSelection", !!this.getSelectedItems().length);
 
-		if (!this._bAlreadySelected && this.getValueState() !== ValueState.Error) {
+		if (!this._bAlreadySelected && !this._bIsValueInvalid) {
 			this._sInitialValueState = this.getValueState();
 			this._sInitialValueStateText = this.getValueStateText();
-			this._sPreviousValueState = this.getValueState();
 		}
 
 		if (this.getShowClearIcon()) {
@@ -1609,9 +1609,11 @@ function(
 
 		this.setValue('');
 
-		if (this.getValueState() === ValueState.Error) {
-			this.setValueState(this._sPreviousValueState);
-			this.setValueStateText(this._sPreviousValueState !== ValueState.None ? this._sInitialValueStateText : '');
+		if (this.getValueState() === ValueState.Error && this._bIsValueInvalid) {
+			this._bIsValueInvalid = false;
+
+			this.setValueState(this._sInitialValueState);
+			this.setValueStateText(this._sInitialValueState !== ValueState.None ? this._sInitialValueStateText : '');
 		}
 
 		if (mOptions.fireFinishEvent) {
@@ -3284,7 +3286,7 @@ function(
 		 */
 		this._bCheckBoxClicked = true;
 
-		this._sPreviousValueState = this.getValueState();
+		this._sInitialValueState = this.getValueState();
 		this._sInitialValueStateText = "";
 
 		// ToDo: Remove. Just for backwards compatibility with the runtime layer. When this change merges, we'd need to adjust the code in the runtime
@@ -3813,8 +3815,8 @@ function(
 			this.setValue("");
 			this._sOldInput = "";
 
-			if (this._sPreviousValueState) {
-				this.setValueState(this._sPreviousValueState);
+			if (this._sInitialValueState !== this.getValueState()) {
+				this.setValueState(this._sInitialValueState);
 				this.setValueStateText(this._sInitialValueStateText || "");
 			}
 
@@ -3830,10 +3832,7 @@ function(
 	 * @private
 	 */
 	MultiComboBox.prototype._handleFieldValidationState = function (oInput) {
-		if (this._sPreviousValueState !== ValueState.None) {
-			this._sPreviousValueState = this.getValueState();
-		}
-
+		this._bIsValueInvalid = true;
 		this._showWrongValueVisualEffect();
 	};
 
