@@ -3222,7 +3222,7 @@ sap.ui.define([
 			.withExactArgs(sinon.match.same(oGroupLock), "~path~", "~iLevels~")
 			.callThrough(); // for code under test
 		oCacheMock.expects("expand").exactly(bStale ? 0 : 1)
-			.withExactArgs(sinon.match.same(_GroupLock.$cached), sinon.match.same(aSpliced[2]))
+			.withExactArgs(sinon.match.same(_GroupLock.$cached), sinon.match.same(aSpliced[2]), 1)
 			.returns(SyncPromise.resolve(100));
 		if (bStale) {
 			oCacheMock.expects("isSelectionDifferent")
@@ -5598,7 +5598,7 @@ sap.ui.define([
 		const oCollapseExpectation = oCacheMock.expects("collapse").exactly(bChildExpanded ? 1 : 0)
 			.withExactArgs("('23')").returns("~collapseCount~");
 		oCacheMock.expects("expand").exactly(bNewParentExpanded === false ? 1 : 0)
-			.withExactArgs(sinon.match.same(_GroupLock.$cached), "('42')")
+			.withExactArgs(sinon.match.same(_GroupLock.$cached), "('42')", 1)
 			.returns(SyncPromise.resolve(47));
 		oHelperMock.expects("updateAll")
 			.exactly(oParentNode && bNewParentExpanded === undefined ? 1 : 0)
@@ -7526,7 +7526,7 @@ sap.ui.define([
 				assert.strictEqual(oCache.aElements.indexOf(oNode3), 5, "not yet moved");
 			});
 		this.mock(oCache).expects("expand")
-			.withExactArgs(sinon.match.same(_GroupLock.$cached), "~predicate3~")
+			.withExactArgs(sinon.match.same(_GroupLock.$cached), "~predicate3~", 1)
 			.callsFake(function () {
 				assert.strictEqual(oCache.aElements.indexOf(oNode3), 2,
 					"moved immediately behind parent (snapshot)");
