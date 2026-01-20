@@ -91,7 +91,6 @@ sap.ui.define([
 		}
 	};
 
-	Localization.setLanguage("en");
 	document.body.className = document.body.className + " sapUiSizeCompact ";
 
 	QUnit.module("basic", {
