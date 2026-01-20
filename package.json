@@ -104,7 +104,7 @@
     "pacote": "^20.0.0",
     "rimraf": "^6.1.0",
     "semver": "^7.7.3",
-    "set-cookie-parser": "^2.7.2",
+    "set-cookie-parser": "^3.0.1",
     "wsrun": "^5.2.4"
   },
   "overrides": {
