@@ -2011,6 +2011,7 @@ sap.ui.define([
 		let aFiltersNoThese;
 		const oMetaModel = this.oModel.getMetaModel();
 		const oMetaContext = oMetaModel.getMetaContext(this.oModel.resolve(this.sPath, oContext));
+		const that = this;
 
 		/*
 		 * Returns the $filter value for the given single filter using the given Edm type to
@@ -2101,6 +2102,8 @@ sap.ui.define([
 			return oMetaModel.fetchObject(sResolvedPath).then(function (oPropertyMetadata) {
 				var oCondition, sLambdaVariable, sOperator;
 
+				oPropertyMetadata ??= _AggregationHelper.getPropertyMetadataForFilter(oFilter,
+					that.mParameters.$$aggregation, sResolvedPath);
 				if (!oPropertyMetadata) {
 					throw new Error("Type cannot be determined, no metadata for path: "
 						+ sResolvedPath);
