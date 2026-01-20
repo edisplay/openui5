@@ -107,7 +107,7 @@ sap.ui.define([
 		QUnit.test("update translation values and delete", function (assert) {
 			var that = this;
 			return new Promise(function (resolve, reject) {
-				that.oEditor = EditorQunitUtils.createEditor("en");
+				that.oEditor = EditorQunitUtils.createEditor();
 				that.oEditor.setJson({
 					baseUrl: sBaseUrl,
 					host: "contexthost",
@@ -278,7 +278,7 @@ sap.ui.define([
 		QUnit.test("update translation values during adding new object, then cancel the add process", function (assert) {
 			var that = this;
 			return new Promise(function (resolve, reject) {
-				that.oEditor = EditorQunitUtils.createEditor("en");
+				that.oEditor = EditorQunitUtils.createEditor();
 				that.oEditor.setJson({
 					baseUrl: sBaseUrl,
 					host: "contexthost",
@@ -417,7 +417,7 @@ sap.ui.define([
 		QUnit.test("change translation values but reset", function (assert) {
 			var that = this;
 			return new Promise(function (resolve, reject) {
-				that.oEditor = EditorQunitUtils.createEditor("en");
+				that.oEditor = EditorQunitUtils.createEditor();
 				that.oEditor.setJson({
 					baseUrl: sBaseUrl,
 					host: "contexthost",
@@ -546,7 +546,7 @@ sap.ui.define([
 		QUnit.test("update translation values and change property value to another normal value", function (assert) {
 			var that = this;
 			return new Promise(function (resolve, reject) {
-				that.oEditor = EditorQunitUtils.createEditor("en");
+				that.oEditor = EditorQunitUtils.createEditor();
 				that.oEditor.setJson({
 					baseUrl: sBaseUrl,
 					host: "contexthost",
@@ -709,7 +709,7 @@ sap.ui.define([
 		QUnit.test("update translation values and change property value to {i18n>KEY} format", function (assert) {
 			var that = this;
 			return new Promise(function (resolve, reject) {
-				that.oEditor = EditorQunitUtils.createEditor("en");
+				that.oEditor = EditorQunitUtils.createEditor();
 				that.oEditor.setJson({
 					baseUrl: sBaseUrl,
 					host: "contexthost",

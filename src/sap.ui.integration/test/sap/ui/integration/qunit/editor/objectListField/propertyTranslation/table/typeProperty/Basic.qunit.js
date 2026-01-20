@@ -105,7 +105,7 @@ sap.ui.define([
 		QUnit.test("check translation icon", function (assert) {
 			var that = this;
 			return new Promise(function (resolve, reject) {
-				that.oEditor = EditorQunitUtils.createEditor("en");
+				that.oEditor = EditorQunitUtils.createEditor();
 				that.oEditor.setJson({
 					baseUrl: sBaseUrl,
 					host: "contexthost",
@@ -192,7 +192,7 @@ sap.ui.define([
 		QUnit.test("check translation values", function (assert) {
 			var that = this;
 			return new Promise(function (resolve, reject) {
-				that.oEditor = EditorQunitUtils.createEditor("en");
+				that.oEditor = EditorQunitUtils.createEditor();
 				that.oEditor.setJson({
 					baseUrl: sBaseUrl,
 					host: "contexthost",
