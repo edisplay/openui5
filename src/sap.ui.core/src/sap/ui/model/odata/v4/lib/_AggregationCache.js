@@ -864,7 +864,7 @@ sap.ui.define([
 						}
 						if (_Helper.hasPrivateAnnotation(oElement, "expanding")) {
 							_Helper.deletePrivateAnnotation(oElement, "expanding");
-							iCount += that.expand(_GroupLock.$cached, oElement).getResult();
+							iCount += that.expand(_GroupLock.$cached, oElement, 1).getResult();
 						}
 					}
 				}
@@ -1755,7 +1755,7 @@ sap.ui.define([
 				let iResult = 1;
 				switch (oParentNode ? oParentNode["@$ui5.node.isExpanded"] : true) {
 					case false:
-						iResult = this.expand(_GroupLock.$cached, sParentPredicate).unwrap() + 1;
+						iResult = this.expand(_GroupLock.$cached, sParentPredicate, 1).unwrap() + 1;
 						// fall through
 					case true:
 						break;
@@ -1819,7 +1819,7 @@ sap.ui.define([
 				this.aElements.splice(iNodeIndex, 1);
 				this.aElements.splice(iParentIndex + 1, 0, oNode);
 				if (bExpanded) {
-					this.expand(_GroupLock.$cached, sNodePredicate);
+					this.expand(_GroupLock.$cached, sNodePredicate, 1);
 				}
 			}
 		});
