@@ -151,7 +151,7 @@ sap.ui.define([
 		QUnit.test("In en (English)", function (assert) {
 			var that = this;
 			return new Promise(function (resolve, reject) {
-				that.oEditor = EditorQunitUtils.createEditor("en");
+				that.oEditor = EditorQunitUtils.createEditor();
 				that.oEditor.setMode("content");
 				that.oEditor.setAllowSettings(true);
 				that.oEditor.setAllowDynamicValues(true);

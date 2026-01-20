@@ -740,7 +740,7 @@ sap.ui.define([
 			};
 			//Fallback language
 			return new Promise(function (resolve, reject) {
-				this.oEditor = EditorQunitUtils.createEditor("en");
+				this.oEditor = EditorQunitUtils.createEditor();
 				this.oEditor.setMode("translation");
 				this.oEditor.setLanguage("fr");
 				this.oEditor.setAllowSettings(true);
@@ -838,7 +838,7 @@ sap.ui.define([
 			};
 			//Fallback language
 			return new Promise(function (resolve, reject) {
-				this.oEditor = EditorQunitUtils.createEditor("en");
+				this.oEditor = EditorQunitUtils.createEditor();
 				this.oEditor.setMode("translation");
 				this.oEditor.setLanguage("fr-CA");
 				this.oEditor.setAllowSettings(true);

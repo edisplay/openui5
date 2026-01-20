@@ -110,7 +110,7 @@ sap.ui.define([
 			var that = this;
 			//Fallback language
 			return new Promise(function (resolve, reject) {
-				that.oEditor = EditorQunitUtils.createEditor("en");
+				that.oEditor = EditorQunitUtils.createEditor();
 				that.oEditor.setMode("all");
 				that.oEditor.setAllowSettings(true);
 				that.oEditor.setAllowDynamicValues(true);
@@ -228,7 +228,7 @@ sap.ui.define([
 			var that = this;
 			//Fallback language
 			return new Promise(function (resolve, reject) {
-				that.oEditor = EditorQunitUtils.createEditor("en");
+				that.oEditor = EditorQunitUtils.createEditor();
 				that.oEditor.setMode("all");
 				that.oEditor.setAllowSettings(true);
 				that.oEditor.setAllowDynamicValues(true);
@@ -361,7 +361,7 @@ sap.ui.define([
 			var that = this;
 			//Fallback language
 			return new Promise(function (resolve, reject) {
-				that.oEditor = EditorQunitUtils.createEditor("en");
+				that.oEditor = EditorQunitUtils.createEditor();
 				that.oEditor.setMode("all");
 				that.oEditor.setAllowSettings(true);
 				that.oEditor.setAllowDynamicValues(true);
@@ -540,7 +540,7 @@ sap.ui.define([
 			var that = this;
 			//Fallback language
 			return new Promise(function (resolve, reject) {
-				that.oEditor = EditorQunitUtils.createEditor("en");
+				that.oEditor = EditorQunitUtils.createEditor();
 				that.oEditor.setMode("all");
 				that.oEditor.setAllowSettings(true);
 				that.oEditor.setAllowDynamicValues(true);
@@ -646,7 +646,7 @@ sap.ui.define([
 			var that = this;
 			//Fallback language
 			return new Promise(function (resolve, reject) {
-				that.oEditor = EditorQunitUtils.createEditor("en");
+				that.oEditor = EditorQunitUtils.createEditor();
 				that.oEditor.setMode("all");
 				that.oEditor.setAllowSettings(true);
 				that.oEditor.setAllowDynamicValues(true);
@@ -763,7 +763,7 @@ sap.ui.define([
 			var that = this;
 			//Fallback language
 			return new Promise(function (resolve, reject) {
-				that.oEditor = EditorQunitUtils.createEditor("en");
+				that.oEditor = EditorQunitUtils.createEditor();
 				that.oEditor.setMode("all");
 				that.oEditor.setAllowSettings(true);
 				that.oEditor.setAllowDynamicValues(true);
