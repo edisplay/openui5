@@ -1,13 +1,14 @@
-/* ============= */
-/* Link control  */
-/* ============= */
+/* ==================================== */
+/* CSS for control sap.ui.commons/Link  */
+/* base theme                           */
+/* ==================================== */
 
 .sapUiLnk,
 .sapUiLnkDsbl {
-	font-family: @sapUiFontFamily;
+	font-family: var(--sapFontFamily);
 	font-size: @sapUiFontSize;
 	line-height: @sapUiLineHeight;
-	color: @sapUiLink;
+	color: var(--sapLinkColor);
 	vertical-align: top;
 	white-space: nowrap;
 	overflow: hidden;
@@ -17,28 +18,28 @@
 
 .sapUiLnk:active,
 .sapUiLnk:focus {
-	color: @sapUiLinkActive;
+	color: var(--sapLink_Active_Color);
 }
 
 .sapUiLnk:visited {
-	color: @sapUiLinkVisited;
+	color: var(--sapLink_Visited_Color);
 }
 
 .sapUiLnk:hover {
-	color: @sapUiLinkHover;
+	color: var(--sapLink_Hover_Color);
 }
 
 .sapUiLnkDsbl {
-	color: @sapUiContentDisabledTextColor;
+	color: var(--sapContent_DisabledTextColor);
 	cursor: default;
 }
 
 /* If control is used on black/dark background */
 .sapUiInverted-CTX .sapUiLnk {
-	color: @sapUiLinkInverted;
+	color: var(--sapLink_InvertedColor);
 }
 
 /* Do not invert for table */
 .sapUiInverted-CTX .sapUiTable .sapUiLnk {
-	color: @sapUiLink;
+	color: var(--sapLinkColor);
 }
