@@ -1,3 +1,8 @@
+/* ====================================== */
+/* CSS for control sap.ui.commons/layout  */
+/* base theme                             */
+/* ====================================== */
+
 /*
  * Note: capital letters in comment only explain abbreviations, but these still
  * follow original capitalization
@@ -5,8 +10,8 @@
 
 /* MatrixLayouT */
 .sapUiMlt {
-	color: @sapUiBaseText;
-	font-family: @sapUiFontFamily;
+	color: var(--sapTextColor);
+	font-family: var(--sapFontFamily);
 	font-size: @sapUiFontSize;
 	text-align: initial; /* alignment should not be inherited */
 }
@@ -19,9 +24,11 @@
 .sapUiMltCellHAlignCenter {
 	text-align: center;
 }
+
 .sapUiMltCellHAlignLeft {
 	text-align: left;
 }
+
 .sapUiMltCellHAlignRight {
 	text-align: right;
 }
@@ -30,31 +37,64 @@
 	margin-left: auto;
 	margin-right: auto;
 }
+
 .sapUiMltCellHAlignLeft > *,
-html[dir=rtl] .sapUiMltCellHAlignRight > * {
+html[dir='rtl'] .sapUiMltCellHAlignRight > * {
 	margin-right: auto;
 	margin-left: 0;
 }
+
 .sapUiMltCellHAlignRight > *,
-html[dir=rtl] .sapUiMltCellHAlignLeft > * {
+html[dir='rtl'] .sapUiMltCellHAlignLeft > * {
 	margin-left: auto;
 	margin-right: 0;
 }
 
 /* BackGround design */
-.sapUiMltBgBorder   {background-color:@sapUiMediumBorder;}
-.sapUiMltBgFill1    {background-color:@sapUiHighlight;}
-.sapUiMltBgFill2    {background-color:@sapUiMediumBG;}
-.sapUiMltBgFill3    {background-color:@sapUiDarkBG;}
-.sapUiMltBgHeader   {background-color:@sapUiHighlight;}
-.sapUiMltBgPlain    {background-color:@sapUiExtraLightBG;}
+.sapUiMltBgBorder {
+	background-color: @sapUiMediumBorder;
+}
+
+.sapUiMltBgFill1 {
+	background-color: var(--sapHighlightColor);
+}
+
+.sapUiMltBgFill2 {
+	background-color: @sapUiMediumBG;
+}
+
+.sapUiMltBgFill3 {
+	background-color: @sapUiDarkBG;
+}
+
+.sapUiMltBgHeader {
+	background-color: var(--sapHighlightColor);
+}
+
+.sapUiMltBgPlain {
+	background-color: @sapUiExtraLightBG;
+}
 
 /* PADding */
-.sapUiMltPadNone    {padding:0;}
-.sapUiMltPadLeft    {padding:0 0   5px 4px;}
-.sapUiMltPadRight   {padding:0 4px 5px 0;}
-.sapUiMltPadBoth    {padding:0 4px 5px 4px;}
-.sapUiMltPadNeither {padding:0 0   5px 0;}
+.sapUiMltPadNone {
+	padding: 0;
+}
+
+.sapUiMltPadLeft {
+	padding: 0 0 5px 4px;
+}
+
+.sapUiMltPadRight {
+	padding: 0 4px 5px 0;
+}
+
+.sapUiMltPadBoth {
+	padding: 0 4px 5px 4px;
+}
+
+.sapUiMltPadNeither {
+	padding: 0 0 5px 0;
+}
 
 /* SEParation (Small, Medium, Large) WithLine */
 .sapUiMltSepS {
@@ -65,7 +105,7 @@ html[dir=rtl] .sapUiMltCellHAlignLeft > * {
 	padding-left: 17px;
 	background-repeat: repeat-y;
 	background-position: top left;
-	background-image: url(img/layout/separationSmall.gif);
+	background-image: url('img/layout/separationSmall.gif');
 }
 
 .sapUiMltSepM {
@@ -76,7 +116,7 @@ html[dir=rtl] .sapUiMltCellHAlignLeft > * {
 	padding-left: 31px;
 	background-repeat: repeat-y;
 	background-position: top left;
-	background-image: url(img/layout/separationMedium.gif);
+	background-image: url('img/layout/separationMedium.gif');
 }
 
 .sapUiMltSepL {
@@ -87,5 +127,5 @@ html[dir=rtl] .sapUiMltCellHAlignLeft > * {
 	padding-left: 63px;
 	background-repeat: repeat-y;
 	background-position: top left;
-	background-image: url(img/layout/separationLarge.gif);
+	background-image: url('img/layout/separationLarge.gif');
 }
