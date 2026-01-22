@@ -493,9 +493,6 @@ sap.ui.define([
 
 			if (oController) {
 				if (bAsync) {
-					if (!oThis.oAsyncState) {
-						throw new Error("The view " + oThis.sViewName + " runs in sync mode and therefore cannot use async controller extensions!");
-					}
 					return oController.then(connectToView);
 				} else {
 					connectToView(oController);
