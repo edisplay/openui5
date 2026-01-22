@@ -3583,7 +3583,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/Basic": {
+			"designtime/editor/childCardEditors/Basic": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3593,7 +3593,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/Navigation01": {
+			"designtime/editor/childCardEditors/Navigation01": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3603,7 +3603,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/Navigation02": {
+			"designtime/editor/childCardEditors/Navigation02": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3612,7 +3612,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/SaveChanges01": {
+			"designtime/editor/childCardEditors/SaveChanges01": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3621,7 +3621,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/SaveChanges02": {
+			"designtime/editor/childCardEditors/SaveChanges02": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3630,7 +3630,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminForAdminMode": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminForAdminMode": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3639,7 +3639,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminForContentMode": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminForContentMode": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3648,7 +3648,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminForTranslationMode01": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminForTranslationMode01": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3657,7 +3657,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminForTranslationMode02": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminForTranslationMode02": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3666,7 +3666,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminForTranslationMode03": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminForTranslationMode03": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3675,7 +3675,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminForTranslationMode04": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminForTranslationMode04": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3684,7 +3684,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminForAllMode": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminForAllMode": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3693,7 +3693,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByContentForContentMode": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByContentForContentMode": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3702,7 +3702,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByContentForTranslationMode01": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByContentForTranslationMode01": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3711,7 +3711,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByContentForTranslationMode02": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByContentForTranslationMode02": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3720,7 +3720,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByContentForTranslationMode03": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByContentForTranslationMode03": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3729,7 +3729,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByContentForTranslationMode04": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByContentForTranslationMode04": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3738,7 +3738,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByContentForAllMode": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByContentForAllMode": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3747,7 +3747,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByTranslationForTranslationMode01": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByTranslationForTranslationMode01": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3756,7 +3756,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByTranslationForTranslationMode02": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByTranslationForTranslationMode02": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3765,7 +3765,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByTranslationForTranslationMode03": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByTranslationForTranslationMode03": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3774,7 +3774,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByTranslationForTranslationMode04": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByTranslationForTranslationMode04": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3783,7 +3783,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByTranslationForAllMode": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByTranslationForAllMode": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3792,7 +3792,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndContentForContentMode": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndContentForContentMode": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3801,7 +3801,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndContentForTranslationMode01": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndContentForTranslationMode01": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3810,7 +3810,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndContentForTranslationMode02": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndContentForTranslationMode02": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3819,7 +3819,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndContentForTranslationMode03": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndContentForTranslationMode03": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3828,7 +3828,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndContentForTranslationMode04": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndContentForTranslationMode04": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3837,7 +3837,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndContentForAllMode": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndContentForAllMode": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3846,7 +3846,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndTranslationForTranslationMode01": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndTranslationForTranslationMode01": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3855,7 +3855,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndTranslationForTranslationMode02": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndTranslationForTranslationMode02": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3864,7 +3864,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndTranslationForTranslationMode03": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndTranslationForTranslationMode03": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3873,7 +3873,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndTranslationForTranslationMode04": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndTranslationForTranslationMode04": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3882,7 +3882,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndTranslationForAllMode": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndTranslationForAllMode": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3891,7 +3891,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByContentAndTranslationForTranslationMode01": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByContentAndTranslationForTranslationMode01": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3900,7 +3900,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByContentAndTranslationForTranslationMode02": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByContentAndTranslationForTranslationMode02": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3909,7 +3909,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByContentAndTranslationForTranslationMode03": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByContentAndTranslationForTranslationMode03": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3918,7 +3918,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByContentAndTranslationForTranslationMode04": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByContentAndTranslationForTranslationMode04": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3927,7 +3927,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByContentAndTranslationForAllMode": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByContentAndTranslationForAllMode": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3936,7 +3936,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndContentAndTranslationForAdminMode": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndContentAndTranslationForAdminMode": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3945,7 +3945,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndContentAndTranslationForContentMode": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndContentAndTranslationForContentMode": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3954,7 +3954,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndContentAndTranslationForTranslationMode01": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndContentAndTranslationForTranslationMode01": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3963,7 +3963,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndContentAndTranslationForTranslationMode02": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndContentAndTranslationForTranslationMode02": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3972,7 +3972,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndContentAndTranslationForTranslationMode03": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndContentAndTranslationForTranslationMode03": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3981,7 +3981,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndContentAndTranslationForTranslationMode04": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndContentAndTranslationForTranslationMode04": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
@@ -3990,7 +3990,7 @@ sap.ui.define([
 				},
 				sinon: false
 			},
-			"designtime/editor/childCards/manifestChanges/ChangesByAdminAndContentAndTranslationForAllMode": {
+			"designtime/editor/childCardEditors/manifestChanges/ChangesByAdminAndContentAndTranslationForAllMode": {
 				group: "Runtime Editor for Card",
 				coverage: {
 					only: [
