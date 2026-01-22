@@ -11,6 +11,9 @@
 		<base href="../../../../../../">
 
 		<style>
+			#connectionCheck, #connectionCheck div {display:block}
+			.connectionCheckOK {color: green; font-weight: bold}
+			.connectionCheckFailed {color: red; font-weight: bold}
 			.failed {background-color: red}
 			.hidden {display: none}
 			.running {font-weight: bold}
@@ -27,6 +30,7 @@
 	</head>
 	<body>
 		<h1 id="h1">Before Push Tests</h1>
+		<div id="connectionCheck"></div>
 		<div id="actions"></div>
 		<p id="status"></p>
 		<div class="hidden" id="variants">
