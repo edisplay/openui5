@@ -559,6 +559,7 @@ sap.ui.define([
 	*
 	* @param {object} mSettings with view settings
 	* @returns {Promise|null} will be returned if running in async mode
+	* @ui5-transform-hint replace-param mSettings.async true
 	*/
 	XMLView.prototype.initViewSettings = function(mSettings) {
 		var that = this, _xContent;
@@ -744,10 +745,14 @@ sap.ui.define([
 			});
 		}
 
-		// parse the XML tree
-		if (!this.oAsyncState) {
+		/**
+		 * @ui5-transform-hint replace-local false
+		 */
+		const bSync = !this.oAsyncState;
+		if (bSync) {
 			this._aParsedContent = fnRunWithPreprocessor(XMLTemplateProcessor.parseTemplate.bind(null, this._xContent, this, mSettings));
 		} else {
+			// parse the XML tree
 			var fnDone = Interaction.notifyAsyncStep("VIEW PROCESSING");
 			return XMLTemplateProcessor.parseTemplatePromise(this._xContent, this, true, {
 				fnRunWithPreprocessor: fnRunWithPreprocessor
