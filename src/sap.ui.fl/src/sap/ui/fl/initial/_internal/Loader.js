@@ -265,6 +265,7 @@ sap.ui.define([
 			oAuthors = _mCachedFlexData[sReference].data.authors;
 		}
 
+		// The next line is used by the Flex Support Tool to set breakpoints - please adjust the tool if you change it!
 		const oFlexDataCopy = Object.assign({}, oFlexData);
 		applyDeactivateChanges(oFlexDataCopy);
 		filterInvalidFileNames(oFlexDataCopy);
