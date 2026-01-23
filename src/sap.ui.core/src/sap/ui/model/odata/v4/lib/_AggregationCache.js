@@ -2330,7 +2330,7 @@ sap.ui.define([
 	 * @param {sap.ui.model.odata.v4.lib._GroupLock} oGroupLock
 	 *   An original lock for the group ID to be used for the GET request, to be cloned via
 	 *   {@link sap.ui.model.odata.v4.lib._GroupLock#getUnlockedCopy}
-	 * @returns {Promise[]}
+	 * @returns {Array<Promise<object>>}
 	 *   The request promises
 	 *
 	 * @private

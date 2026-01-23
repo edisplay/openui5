@@ -4595,8 +4595,8 @@ sap.ui.define([
 		 * Adds an error handler to the given promise which reports errors to the model and ignores
 		 * cancellations.
 		 *
-		 * @param {Promise} oPromise - A promise
-		 * @returns {Promise} A promise including an error handler
+		 * @param {Promise<any>} oPromise - A promise
+		 * @returns {Promise<any>} A promise including an error handler
 		 */
 		function reportError(oPromise) {
 			return oPromise.catch(function (oError) {
