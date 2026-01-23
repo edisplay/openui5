@@ -925,6 +925,12 @@ sap.ui.define([
 					only: ["sap/ui/fl/write/_internal/connectors/NeoLrepConnector"]
 				}
 			},
+			"write/_internal/connectors/SupportFakeConnector": {
+				group: "Write Internal",
+				coverage: {
+					only: ["sap/ui/fl/write/_internal/connectors/SupportFakeConnector"]
+				}
+			},
 			"write/_internal/controlVariants/ControlVariantWriteUtils": {
 				group: "Write Internal",
 				coverage: {
