@@ -2,6 +2,10 @@
  * ${copyright}
  */
 
+/**
+ * @deprecated As of 1.60, as all contained APIs are deprecated
+ * @fileoverview
+ */
 sap.ui.define(["sap/ui/thirdparty/jquery",
 		"sap/ui/support/supportRules/Main",
 		"sap/ui/support/supportRules/RuleSetLoader"],
