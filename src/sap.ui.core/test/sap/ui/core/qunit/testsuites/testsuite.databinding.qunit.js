@@ -39,6 +39,9 @@ sap.ui.define(function() {
 					only : "sap/ui/base/BindingParser"
 				}
 			},
+			BoundFilter : {
+				title: "sap.ui.base.BoundFilter - QUnit Tests"
+			},
 			CalculatedFields: {
 				title: "Calculated Fields - QUnit Tests",
 				ui5: {
