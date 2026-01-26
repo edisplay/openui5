@@ -3,6 +3,16 @@
     "date": "January 2026",
     "notes": [
       {
+        "id": "addcfeaec0a6f764eeaba9c5dc98fd87e0a72ff6",
+        "type": "FIX",
+        "text": " sap.ui.unified.FileUploader: update value help icon as per spec"
+      },
+      {
+        "id": "fd91cde52ff0e2579aabb632357ebf32d70b503a",
+        "type": "FIX",
+        "text": " sap.ui.unified.FileUploader: Clear file selection when invisible"
+      },
+      {
         "id": "89d5874d03f83e4929780b596dc7a8abfaec9615",
         "type": "FIX",
         "text": " sap.uiunified.Calendar: visual fixes for HC themes/base/Calendar"

@@ -3,6 +3,11 @@
     "date": "January 2026",
     "notes": [
       {
+        "id": "6e2fca4b876416411964c9c247ae51f988127a36",
+        "type": "FIX",
+        "text": " sap.uxap.ObjectPageLayout: Improve acc sample"
+      },
+      {
         "id": "a225f31bf43c07a7df8511eeb2b7ab5f6592751d",
         "type": "FIX",
         "text": " sap.uxap.ObjectPageLayout: Apply aria-label to dynamically shown anchor bar"

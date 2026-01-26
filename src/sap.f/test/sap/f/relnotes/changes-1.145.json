@@ -3,6 +3,11 @@
     "date": "January 2026",
     "notes": [
       {
+        "id": "447c5937437dcd8ff53248c071d130acdb0f8c1d",
+        "type": "FIX",
+        "text": " Integration Card: Large info texts no longer gets cut off"
+      },
+      {
         "id": "c079725064d023c4d2913a4d677a714d241cd4a6",
         "type": "FIX",
         "text": " sap.f.SidePanel: close the opener that of the side content properly"

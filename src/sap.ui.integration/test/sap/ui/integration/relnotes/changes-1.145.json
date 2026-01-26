@@ -3,6 +3,11 @@
     "date": "January 2026",
     "notes": [
       {
+        "id": "447c5937437dcd8ff53248c071d130acdb0f8c1d",
+        "type": "FIX",
+        "text": " Integration Card: Large info texts no longer gets cut off"
+      },
+      {
         "id": "1b4501ed5adb0fe97810a90b4e054f5e46035ece",
         "type": "FIX",
         "text": " sap.ui.integration.widgets.Card: Fixed error when setting card manifest to null"

@@ -3,6 +3,11 @@
     "date": "January 2026",
     "notes": [
       {
+        "id": "e6e12c340850e387dd995f544cdcf7c8459d139a",
+        "type": "FIX",
+        "text": " sap.ui.unified.Calendar: Focus is visible on high contrast themes"
+      },
+      {
         "id": "89d5874d03f83e4929780b596dc7a8abfaec9615",
         "type": "FIX",
         "text": " sap.uiunified.Calendar: visual fixes for HC themes/base/Calendar"

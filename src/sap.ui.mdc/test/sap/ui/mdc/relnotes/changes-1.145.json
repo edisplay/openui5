@@ -3,6 +3,16 @@
     "date": "January 2026",
     "notes": [
       {
+        "id": "1ba4874bd103bd5dfe125073f783dee55fe1019e",
+        "type": "FIX",
+        "text": "Validation Issue in TableSettingsDialog"
+      },
+      {
+        "id": "82e907bbb18f44693daed87c7b3772b480e6e5e0",
+        "type": "FIX",
+        "text": " P13nPopup: Filter with error state"
+      },
+      {
         "id": "d25d0563033994c23cf4dcfe1071777bfe9c6013",
         "type": "FIX",
         "text": " mdc.FilterBar: clear filter item changes on variant switch"

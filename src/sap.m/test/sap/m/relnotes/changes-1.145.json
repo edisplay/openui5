@@ -3,6 +3,46 @@
     "date": "January 2026",
     "notes": [
       {
+        "id": "88f083595763738be3132558f17e31398d330add",
+        "type": "FIX",
+        "text": " sap.m.ObjectStatus: ontap event is marked as handled"
+      },
+      {
+        "id": "c250d800b140ac7064a567ee3d0413daa9bf5201",
+        "type": "FIX",
+        "text": " sap.m.TimePicker: Make TimePickerMaskMode.Enforce public"
+      },
+      {
+        "id": "32391210f889b37161e96fb7592221c0f7f400bb",
+        "type": "FIX",
+        "text": " sap.m.MessageItem: correct show more focus outline"
+      },
+      {
+        "id": "b04cbcba0ffa51965cd90d109e0ec51f409db353",
+        "type": "FIX",
+        "text": " sap.m.Tokenizer: The aria-labelledby attribute is now correctly set"
+      },
+      {
+        "id": "0dd0f37862941e791ed9658dea792f99cb05b65a",
+        "type": "FIX",
+        "text": "sap.m.MultiInput: Token addition is now reset on focusin"
+      },
+      {
+        "id": "c0f4ee52223949e78d838a815188b895471fef36",
+        "type": "FIX",
+        "text": " sap.m.DynamicDateRange: popup is resized when there are less"
+      },
+      {
+        "id": "b0b40a0209b3ad3802744aff0bf6541269971a35",
+        "type": "FIX",
+        "text": " sap.m.SearchField: Revert - Prevented unnecessary reopening of suggestions"
+      },
+      {
+        "id": "82e907bbb18f44693daed87c7b3772b480e6e5e0",
+        "type": "FIX",
+        "text": " P13nPopup: Filter with error state"
+      },
+      {
         "id": "1fb800319ef06317ebeb13c90a66f77ebb5b3b15",
         "type": "FIX",
         "text": " sap.m.Link: Press event is fired correctly on pressing SPACE"
@@ -26,6 +66,11 @@
         "id": "c2f6e4b46addca2c31a9fda7d70b0a38d44ae6c7",
         "type": "FIX",
         "text": " sap.m.Toolbar: Preserve arrow key behavior for sap.m.MultiComboBox"
+      },
+      {
+        "id": "c8d808514ef78925e7fc6e0c5009f91095c2a64b",
+        "type": "FIX",
+        "text": "sap.m.MultiComboBox: Resetting initial value state is now fixed"
       },
       {
         "id": "e9a18a54020c525a0446728871b19ad6153228e1",
