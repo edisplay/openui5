@@ -116,7 +116,8 @@ sap.ui.define([
 				compVariants: [],
 				variantChanges: [],
 				variants: [],
-				variantManagementChanges: []
+				variantManagementChanges: [],
+				cacheKey: "initialCacheKey"
 			};
 			const oCompleteFlexDataResponse = merge({}, oFlexDataResponse, {
 				variants: [{
@@ -173,7 +174,7 @@ sap.ui.define([
 				skipLoadBundle: true
 			});
 
-			assert.ok(oResult.parameters.loaderCacheKey, "a loader cache key is provided in the parameters");
+			assert.strictEqual(oResult.parameters.loaderCacheKey, "initialCacheKey", "a loader cache key is provided in the parameters");
 			assert.deepEqual(oResult.data.changes, this.oExpectedFlexDataResponse, "the Loader loads data");
 			assert.strictEqual(oResult.data.authors, "authors", "the authors are loaded");
 			assert.strictEqual(this.oLoadFlexDataStub.callCount, 1, "the Storage.loadFlexData was called");
@@ -187,7 +188,7 @@ sap.ui.define([
 			assert.deepEqual(mPassedPropertyBag, oExpectedProperties, "and is the property bag");
 
 			const oFlexData = Loader.getCachedFlexData(sReference);
-			assert.deepEqual(oFlexData, oResult.data, "the cached data is correct");
+			assert.deepEqual(oFlexData, oResult, "the cached data is correct");
 
 			const oFlexInfoSession = FlexInfoSession.getByReference(sReference);
 			assert.strictEqual(oFlexInfoSession.foo, "bar", "the info is stored in the FlexInfoSession");
@@ -875,7 +876,7 @@ sap.ui.define([
 
 			// Step 1: add some changes to the cache
 			Loader.updateCachedResponse(sReference, aUpdates);
-			const oCachedData = Loader.getCachedFlexData(sReference).changes;
+			const oCachedData = Loader.getCachedFlexData(sReference).data.changes;
 			assert.strictEqual(oCachedData.changes.length, 1, "one UI change is stored");
 			assert.strictEqual(oCachedData.changes[0].fileName, "uiChange1", "the UI change is stored");
 			assert.strictEqual(oCachedData.variantDependentControlChanges.length, 1, "one variant dependent UI change is stored");
@@ -919,7 +920,7 @@ sap.ui.define([
 				flexObject: oUpdatedChange
 			});
 			Loader.updateCachedResponse(sReference, aSecondUpdates);
-			const oCachedData2 = Loader.getCachedFlexData(sReference).changes;
+			const oCachedData2 = Loader.getCachedFlexData(sReference).data.changes;
 			assert.strictEqual(oCachedData2.changes.length, 0, "the UI change is deleted");
 			assert.strictEqual(oCachedData2.variantDependentControlChanges.length, 0, "the variant dependent UI change is deleted");
 			assert.strictEqual(oCachedData2.variantChanges.length, 0, "the variant change is deleted");
@@ -972,7 +973,7 @@ sap.ui.define([
 				variantReference: "flVariant1"
 			});
 
-			const oFlexData = Loader.getCachedFlexData(sReference);
+			const oFlexData = Loader.getCachedFlexData(sReference).data;
 			assert.deepEqual(oFlexData.changes, oLoadedVariantData.completeLoaderData.data.changes, "the cached data is correct");
 			assert.strictEqual(
 				oLoadedVariantData.newData.variants.length, 2,

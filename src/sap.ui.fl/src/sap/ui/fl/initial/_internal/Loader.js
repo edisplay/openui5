@@ -272,7 +272,6 @@ sap.ui.define([
 
 		const oFormattedFlexData = {
 			changes: oFlexDataCopy,
-			cacheKey: oFlexDataCopy.cacheKey,
 			authors: oAuthors
 		};
 
@@ -283,7 +282,7 @@ sap.ui.define([
 				version: sVersion,
 				allContextsProvided: bAllContextsProvided,
 				adaptationId: sAdaptationId,
-				loaderCacheKey: uid(),
+				loaderCacheKey: oFlexDataCopy.cacheKey || uid(),
 				previouslyFilledData: bPreviouslyFilledData
 			}
 		};
@@ -377,7 +376,7 @@ sap.ui.define([
 	 */
 	Loader.getCachedFlexData = function(sReference) {
 		// TODO return copy of the data once the CompVariantManager does not mutate it anymore
-		return _mCachedFlexData[sReference]?.data || {};
+		return _mCachedFlexData[sReference] || {};
 	};
 
 	/**
