@@ -3304,6 +3304,8 @@ sap.ui.define([
 	//*********************************************************************************************
 	// Scenario: dataRequested/dataReceived on context binding and model. Check the initial request
 	// (incl. cancelBubble), refresh and requestSideEffects
+	//
+	// Use null instead of empty navigation property path (JIRA: CPOUI5ODATAV4-3315)
 	QUnit.test("CPOUI5ODATAV4-1671: ODCB: " + sTitle, function (assert) {
 		var oBinding,
 			sView = '\
@@ -3357,8 +3359,8 @@ sap.ui.define([
 
 					return Promise.all([
 						// code under test
-						oBinding.getBoundContext().requestSideEffects([""]),
-						that.waitForChanges(assert, "requestSideEffects")
+						oBinding.getBoundContext().requestSideEffects([null]),
+						that.waitForChanges(assert, "requestSideEffects (JIRA: CPOUI5ODATAV4-3315)")
 					]);
 				}).then(function () {
 					checkEvents(assert, false);
@@ -3370,6 +3372,8 @@ sap.ui.define([
 	//*********************************************************************************************
 	// Scenario: dataRequested/dataReceived on list binding and model. Check the initial request
 	// (incl. cancelBubble), refresh and requestSideEffects
+	//
+	// Use null instead of empty navigation property path (JIRA: CPOUI5ODATAV4-3315)
 	QUnit.test("CPOUI5ODATAV4-1671: ODLB: " + sTitle, function (assert) {
 		var oBinding,
 			sView = '\
@@ -3427,8 +3431,8 @@ sap.ui.define([
 
 					return Promise.all([
 						// code under test
-						oBinding.getHeaderContext().requestSideEffects([""]),
-						that.waitForChanges(assert, "requestSideEffects")
+						oBinding.getHeaderContext().requestSideEffects([{$Null : null}]),
+						that.waitForChanges(assert, "requestSideEffects (JIRA: CPOUI5ODATAV4-3315)")
 					]);
 				}).then(function () {
 					checkEvents(assert, false);
