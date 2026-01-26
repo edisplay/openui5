@@ -4485,18 +4485,6 @@ sap.ui.define([
 	};
 
 	/**
-	 * Checks if a section is the first visible one
-	 * @private
-	 */
-	ObjectPageLayout.prototype._isFirstSection = function (oSection) {
-		var aSections = this._getVisibleSections();
-		if (oSection === aSections[0]) {
-			return true;
-		}
-		return false;
-	};
-
-	/**
 	 * Checks if the <code>_oStoredScrolledSubSectionInfo</code> is still eligible to restore
 	 *
 	 * (as the visibility of the stored subSection or the value of the currently <code>selectedSection</code> may have
@@ -4574,17 +4562,6 @@ sap.ui.define([
 		return this._oStoredScrolledSubSectionInfo;
 	};
 
-	ObjectPageLayout.prototype.onkeyup = function (oEvent) {
-		var oFocusedControl;
-
-		if (oEvent.which === KeyCodes.TAB) {
-			oFocusedControl = Element.getActiveElement();
-
-			if (oFocusedControl && this._isFirstSection(oFocusedControl)) {
-				this._scrollTo(0, 0);
-			}
-		}
-	};
 
 	//Footer section
 	ObjectPageLayout.prototype.setShowFooter = function (bShowFooter) {
