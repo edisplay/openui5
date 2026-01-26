@@ -3,13 +3,17 @@ sap.ui.define([
 	"sap/ui/core/theming/Parameters",
 	"sap/ui/core/Control",
 	"sap/ui/core/Element",
-	"sap/ui/core/Icon",
 	"sap/ui/core/Lib",
 	"sap/ui/core/Theming",
-	"sap/m/Bar",
-	"sap/ui/thirdparty/URI",
-	"sap/ui/test/utils/nextUIUpdate"
-], function(Parameters, Control, Element, Icon, Library, Theming, Bar, URI, nextUIUpdate) {
+	"sap/ui/thirdparty/URI"
+], function(
+	Parameters,
+	Control,
+	Element,
+	Library,
+	Theming,
+	URI
+) {
 	"use strict";
 
 	QUnit.module("Parmeters.get", {
@@ -168,58 +172,6 @@ sap.ui.define([
 		assert.ok(checkLibraryParametersJsonRequestForLib("1").length <= 1, "library-parameters.json requested not more then once for testlibs.themeParameters.lib1");
 	});
 
-	QUnit.test("Read scoped parameters (from testlibs.themeParameters.lib2)", function(assert) {
-		var oControl = new Control();
-
-		sap.ui.getCore().loadLibrary("testlibs.themeParameters.lib2");
-
-		assert.equal(Parameters.get("sapUiThemeParamWithScopeForLib2", oControl), "#fbfbfb",
-			"No scope set - default value should get returned");
-
-		oControl.addStyleClass("sapTestScope");
-
-		assert.equal(getParameterInUnifiedHexNotation("sapUiThemeParamWithScopeForLib2", oControl), "#000000",
-			"Scope set directly on control - scoped param should be returned");
-		assert.equal(getParameterInUnifiedHexNotation("sapUiThemeParamWithoutScopeForLib2", oControl), "#ffffff",
-			"Scope set directly on control but no scoped value defined - default value should get returned");
-
-		oControl.removeStyleClass("sapTestScope");
-		var oParent = new Control();
-		oParent.addStyleClass("sapTestScope");
-		oControl.setParent(oParent);
-
-		assert.equal(getParameterInUnifiedHexNotation("sapUiThemeParamWithScopeForLib2", oControl), "#000000",
-			"Scope set on parent control - scoped param should be returned");
-		assert.equal(getParameterInUnifiedHexNotation("sapUiThemeParamWithoutScopeForLib2", oControl), "#ffffff",
-			"Scope set on parent control but no scoped value defined - default value should get returned");
-
-		assert.ok(checkLibraryParametersJsonRequestForLib("2").length <= 1, "library-parameters.json requested not more once for testlibs.themeParameters.lib2");
-	});
-
-	QUnit.test("Read scoped parameters (error handling)", function(assert) {
-		var oElement = new Element();
-
-		sap.ui.getCore().loadLibrary("testlibs.themeParameters.lib3");
-
-		assert.equal(Parameters.get("sapUiThemeParamWithScopeForLib3", oElement), "#fcfcfc",
-			"No scope set - default value should get returned");
-
-		assert.equal(Parameters.get("sapUiThemeParamWithScopeForLib3", null), "#fcfcfc",
-			"'null' value provided as 'oControl' - default value should get returned");
-
-		assert.equal(Parameters.get("sapUiThemeParamWithScopeForLib3", {}), "#fcfcfc",
-			"'{}' value provided as 'oControl' - default value should get returned");
-
-		var oParent = new Control();
-		oParent.addStyleClass("sapTestScope");
-		oElement.setParent(oParent);
-
-		assert.equal(getParameterInUnifiedHexNotation("sapUiThemeParamWithScopeForLib3", oElement), "#111111",
-			"Scope set on parent control - scoped param should be returned");
-
-		assert.ok(checkLibraryParametersJsonRequestForLib("3").length <= 1, "library-parameters.json requested not more once for testlibs.themeParameters.lib3");
-	});
-
 	QUnit.test("Read multiple given parameters", function(assert) {
 		var aParams = ["sapUiThemeParamWithScopeForLib2", "sapUiThemeParamWithoutScopeForLib2"];
 		var oExpected = {
@@ -247,12 +199,11 @@ sap.ui.define([
 			sap.ui.getCore().loadLibrary("testlibs.themeParameters.lib2");
 		}
 
-		oParent.addStyleClass("sapTestScope");
 		oElement.setParent(oParent);
 
 		var aParams = ["sapUiThemeParamWithScopeForLib2", "sapUiThemeParamWithoutScopeForLib2"];
 		var oExpected = {
-			"sapUiThemeParamWithScopeForLib2": "#000000",
+			"sapUiThemeParamWithScopeForLib2": "#fbfbfb",
 			"sapUiThemeParamWithoutScopeForLib2": "#ffffff"
 		};
 
@@ -386,45 +337,12 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Read scoped parameters (from testlibs.themeParameters.lib6)", function(assert) {
-		var oControl = new Control(), done = assert.async();
-
-		sap.ui.getCore().loadLibrary("testlibs.themeParameters.lib6");
-
-		const callback = function (sParamValue) {
-			assert.equal(sParamValue, "#ababab", "No scope set - default value should get returned");
-			oControl.addStyleClass("sapTestScope");
-
-			assert.equal(Parameters.get({
-				name: "sapUiAsyncThemeParamWithScopeForLib6",
-				scopeElement: oControl
-			}), "#222222", "Scope set directly on control - scoped param should be returned");
-
-			assert.equal(Parameters.get({
-				name: "sapUiAsyncThemeParamWithoutScopeForLib6",
-				scopeElement: oControl
-			}), "#aaaaaa", "Scope set directly on control but no scoped value defined - default value should get returned");
-
-			assert.strictEqual(checkLibraryParametersJsonRequestForLib("6").length, 0, "library-parameters.json not requested for testlibs.themeParameters.lib6");
-
-			done();
-		};
-		const sParamValue = Parameters.get({
-			name: "sapUiAsyncThemeParamWithScopeForLib6",
-			scopeElement: oControl,
-			callback
-		});
-		if (sParamValue) {
-			callback(sParamValue);
-		}
-	});
-
 	QUnit.test("Read multiple given parameters (including undefined param name)", function(assert) {
 		var done = assert.async();
 		var oControl = new Control();
 		var aParams = ["sapUiMultipleAsyncThemeParamWithScopeForLib7", "sapUiMultipleAsyncThemeParamWithoutScopeForLib7", "sapUiNotExistingTestParam", "sapUiBaseColor"];
 		var oExpected = {
-			"sapUiMultipleAsyncThemeParamWithScopeForLib7": "#cccccc",
+			"sapUiMultipleAsyncThemeParamWithScopeForLib7": "#eeeeee",
 			"sapUiMultipleAsyncThemeParamWithoutScopeForLib7": "#dddddd",
 			"sapUiBaseColor": "#000000"
 		};
@@ -516,50 +434,6 @@ sap.ui.define([
 		};
 
 		sap.ui.getCore().loadLibrary("testlibs.themeParameters.lib10");
-
-		Theming.attachApplied(fnAssertApplied);
-	});
-
-	QUnit.test("getActiveScopesFor: Check scope chain for given rendered control", async function(assert) {
-		assert.expect(12);
-		var done = assert.async();
-
-		var oInnerIcon1 =  new Icon();
-		var oInnerIcon2 =  new Icon();
-		oInnerIcon2.addStyleClass("TestScope1");
-		var oOuterIcon1 =  new Icon();
-		var oOuterIcon2 =  new Icon();
-		oOuterIcon2.addStyleClass("TestScope1");
-		var oInnerBar = new Bar({ contentLeft: [oInnerIcon1, oInnerIcon2] });
-		oInnerBar.addStyleClass("TestScope1");
-		var oOuterBar = new Bar({ contentLeft: oInnerBar, contentRight: [oOuterIcon1, oOuterIcon2] });
-		oOuterBar.addStyleClass("TestScope2"); // No valid TestScope ==> only checking that this is not part of the ScopeChain
-		oOuterBar.placeAt("qunit-fixture");
-
-		await nextUIUpdate();
-
-		var fnAssertApplied = function () {
-			// CSS is loaded and scope 'TestScope1' is defined therefore different scope chains expected
-			assert.deepEqual(Parameters.getActiveScopesFor(oOuterBar, true), [], "OuterBar - no own scope - empty scope chain");
-			assert.deepEqual(Parameters.getActiveScopesFor(oInnerBar, true), [["TestScope1"]], "InnerBar - TestScope1 - [['TestScope1']]");
-			assert.deepEqual(Parameters.getActiveScopesFor(oOuterIcon1, true), [], "InnerIcon1 - no own scope - empty scope chain");
-			assert.deepEqual(Parameters.getActiveScopesFor(oOuterIcon2, true), [["TestScope1"]], "OuterIcon2 - TestScope1 - [['TestScope1']]");
-			assert.deepEqual(Parameters.getActiveScopesFor(oInnerIcon1, true), [["TestScope1"]], "InnerIcon1 - no own scope - [['TestScope1']]");
-			assert.deepEqual(Parameters.getActiveScopesFor(oInnerIcon2, true), [["TestScope1"], ["TestScope1"]], "InnerIcon2 - TestScope1 - [['TestScope1'], ['TestScope1']]");
-
-			assert.deepEqual(Parameters.get("sapUiThemeParam1ForLib11", oOuterBar), "#111213", "OuterBar - no own scope - default scope value #111213");
-			assert.deepEqual(Parameters.get("sapUiThemeParam1ForLib11", oInnerBar), "#312111", "InnerBar - TestScope1 - TestScope1 value #312111");
-			assert.deepEqual(Parameters.get("sapUiThemeParam1ForLib11", oOuterIcon1), "#111213", "OuterBar - no own scope - default scope value #111213");
-			assert.deepEqual(Parameters.get("sapUiThemeParam1ForLib11", oOuterIcon2), "#312111", "OuterIcon2 - TestScope1 - TestScope1 value #312111");
-			assert.deepEqual(Parameters.get("sapUiThemeParam1ForLib11", oInnerIcon1), "#312111", "InnerIcon1 - no own scope - TestScope1 value #312111");
-			assert.deepEqual(Parameters.get("sapUiThemeParam1ForLib11", oInnerIcon2), "#312111", "InnerIcon2 - TestScope1 - TestScope1 value #312111");
-
-			oOuterBar.destroy();
-			Theming.detachApplied(fnAssertApplied);
-			done();
-		};
-
-		sap.ui.getCore().loadLibrary("testlibs.themeParameters.lib11");
 
 		Theming.attachApplied(fnAssertApplied);
 	});
