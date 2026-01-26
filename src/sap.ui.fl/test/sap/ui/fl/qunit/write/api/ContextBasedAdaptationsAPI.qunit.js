@@ -1853,7 +1853,7 @@ sap.ui.define([
 			this.oResourceBundle = Lib.getResourceBundleFor("sap.ui.fl");
 		},
 		beforeEach() {
-			this.oAppComponent = RtaQunitUtils.createAndStubAppComponent(sandbox, "com.sap.test.app");
+			this.oAppComponent = RtaQunitUtils.createAndStubAppComponent(sandbox, "com.sap.app");
 			sandbox.stub(ManifestUtils, "getFlexReference").returns("com.sap.app");
 			sandbox.stub(ManifestUtils, "getFlexReferenceForControl").returns("com.sap.app");
 			sandbox.stub(URLHandler, "attachHandlers");
