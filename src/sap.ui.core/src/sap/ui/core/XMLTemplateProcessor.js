@@ -268,6 +268,7 @@ function(
 	 * @param {string} sTemplateName the template/fragment/view resource to be loaded
 	 * @param {string} [sExtension] the file extension, e.g. "fragment"
 	 * @return {Element} an XML document root element
+	 * @deprecated
 	 */
 	XMLTemplateProcessor.loadTemplate = function(sTemplateName, sExtension) {
 		var sResourceName = sTemplateName.replace(/\./g, "/") + ("." + (sExtension || "view") + ".xml");
@@ -319,6 +320,7 @@ function(
 	 * @param {sap.ui.core.mvc.XMLView|sap.ui.core.Fragment} oView the View/Fragment which corresponds to the parsed XML
 	 * @return {Element} The element enriched with the full ids
 	 * @protected
+	 * @deprecated
 	 */
 	XMLTemplateProcessor.enrichTemplateIds = function(xmlNode, oView) {
 		XMLTemplateProcessor.enrichTemplateIdsPromise(xmlNode, oView, false);

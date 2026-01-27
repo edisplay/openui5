@@ -840,8 +840,12 @@ function(
 		},
 		init: function(mSettings) {
 			this._aContent = [];
-			// use specified content or load the content definition
-			if (mSettings.fragmentContent) {
+			/**
+			 * @ui5-transform-hint replace-local true
+			 */
+			const bFragmentContent = !!mSettings.fragmentContent;
+			if (bFragmentContent) {
+				// use specified content or load the content definition
 				if (typeof (mSettings.fragmentContent) === "string") {
 					this._xContent = XMLHelper.parse(mSettings.fragmentContent).documentElement;
 				} else {
