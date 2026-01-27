@@ -192,6 +192,7 @@ sap.ui.define([
 					id: "myId"
 				},
 				reference: sReference,
+				componentId: sReference,
 				persistencyKey: sPersistencyKey
 			});
 			CompVariantManager.updateVariant({
@@ -200,6 +201,7 @@ sap.ui.define([
 				layer: Layer.USER,
 				control: oControl,
 				reference: sReference,
+				componentId: sReference,
 				persistencyKey: sPersistencyKey
 			});
 
@@ -319,6 +321,7 @@ sap.ui.define([
 					id: sVariantId
 				},
 				reference: sReference,
+				componentId: sReference,
 				persistencyKey: sPersistencyKey,
 				control: {
 					getCurrentVariantId() {
@@ -331,6 +334,7 @@ sap.ui.define([
 				id: sVariantId,
 				layer: Layer.CUSTOMER,
 				reference: sReference,
+				componentId: sReference,
 				persistencyKey: sPersistencyKey
 			});
 			sandbox.stub(URLSearchParams.prototype, "get").returns(Layer.VENDOR);
@@ -341,6 +345,7 @@ sap.ui.define([
 					content: {}
 				},
 				reference: sReference,
+				componentId: sReference,
 				persistencyKey: sPersistencyKey,
 				control: {
 					getCurrentVariantId() {
@@ -383,12 +388,14 @@ sap.ui.define([
 					id: sVariantId
 				},
 				reference: sReference,
+				componentId: sReference,
 				persistencyKey: sPersistencyKey
 			});
 			CompVariantManager.updateVariant({
 				favorite: true,
 				id: sVariantId,
 				reference: sReference,
+				componentId: sReference,
 				persistencyKey: sPersistencyKey
 			});
 			CompVariantManager.addVariant({
@@ -398,6 +405,7 @@ sap.ui.define([
 					content: {}
 				},
 				reference: sReference,
+				componentId: sReference,
 				persistencyKey: sPersistencyKey
 			});
 
@@ -1236,6 +1244,7 @@ sap.ui.define([
 
 			FlexObjectManager.deleteFlexObjects({
 				reference: sReference,
+				componentId: sReference,
 				flexObjects: aFlexObjects
 			});
 			aFlexObjects = FlexObjectState.getAllApplicableUIChanges(sReference);
@@ -1286,10 +1295,12 @@ sap.ui.define([
 
 			FlexObjectManager.deleteFlexObjects({
 				reference: sReference,
+				componentId: sReference,
 				flexObjects: aAllFlexObjects
 			});
 			FlexObjectManager.restoreDeletedFlexObjects({
 				reference: sReference,
+				componentId: sReference,
 				flexObjects: [aAllFlexObjects[0], aAllFlexObjects[1]]
 			});
 
