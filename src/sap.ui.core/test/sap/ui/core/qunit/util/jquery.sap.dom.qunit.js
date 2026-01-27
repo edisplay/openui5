@@ -759,6 +759,343 @@ sap.ui.define([
 			});
 		}
 
+		QUnit.test('should find focusable element in shadow root', function(assert) {
+			const container = document.getElementById("container3");
+			const hostElement = document.createElement('div');
+			container.appendChild(hostElement);
+
+			const shadowRoot = hostElement.attachShadow({ mode: 'open' });
+			shadowRoot.innerHTML = `
+						<div>
+							<span>Not focusable</span>
+							<button id="shadow-button">Shadow Button</button>
+							<input id="shadow-input" type="text">
+						</div>
+					`;
+
+			const result = jQuery(hostElement).firstFocusableDomRef();
+			assert.equal(result.id, 'shadow-button', 'Should find the first focusable element in shadow root');
+			hostElement.remove();
+		});
+
+		QUnit.test('should prioritize shadow root over light DOM', function(assert) {
+			const container = document.getElementById("container3");
+			const hostElement = document.createElement('div');
+			hostElement.innerHTML = '<button id="light-button">Light Button</button>';
+			container.appendChild(hostElement);
+
+			const shadowRoot = hostElement.attachShadow({ mode: 'open' });
+			shadowRoot.innerHTML = '<button id="shadow-button">Shadow Button</button>';
+
+			const result = jQuery(hostElement).firstFocusableDomRef();
+			assert.equal(result.id, 'shadow-button', 'Should prioritize shadow root content over light DOM');
+			hostElement.remove();
+		});
+
+		QUnit.test('should find focusable elements in slotted content', function(assert) {
+			const container = document.getElementById("container3");
+			const hostElement = document.createElement('div');
+			container.appendChild(hostElement);
+
+			// Create light DOM content
+			hostElement.innerHTML = `
+				<button id="slotted-button" slot="content">Slotted Button</button>
+				<input id="slotted-input" slot="content" type="text">
+			`;
+
+			const shadowRoot = hostElement.attachShadow({ mode: 'open' });
+			shadowRoot.innerHTML = `
+				<div>
+					<span>Shadow content</span>
+					<slot name="content"></slot>
+				</div>
+			`;
+
+			const result = jQuery(hostElement).firstFocusableDomRef();
+			assert.equal(result.id, 'slotted-button', 'Should find the first focusable element in slotted content');
+			hostElement.remove();
+		});
+
+		QUnit.test('should handle nested shadow roots', function(assert) {
+			const container = document.getElementById("container3");
+			const outerHost = document.createElement('div');
+			container.appendChild(outerHost);
+
+			const outerShadow = outerHost.attachShadow({ mode: 'open' });
+			const innerHost = document.createElement('div');
+			outerShadow.appendChild(innerHost);
+
+			const innerShadow = innerHost.attachShadow({ mode: 'open' });
+			innerShadow.innerHTML = '<button id="nested-button">Nested Button</button>';
+
+			const result = jQuery(outerHost).firstFocusableDomRef();
+			assert.equal(result.id, 'nested-button', 'Should find focusable element in nested shadow root');
+			outerHost.remove();
+		});
+
+		QUnit.test('should handle complex slot scenarios with multiple slots', function(assert) {
+			const container = document.getElementById("container3");
+			const hostElement = document.createElement('div');
+			container.appendChild(hostElement);
+
+			hostElement.innerHTML = `
+				<span slot="header">Header content</span>
+				<button id="header-btn" slot="header">Header Button</button>
+				<input id="main-input" slot="main" type="text">
+				<button id="footer-btn" slot="footer">Footer Button</button>
+			`;
+
+			const shadowRoot = hostElement.attachShadow({ mode: 'open' });
+			shadowRoot.innerHTML = `
+				<div>
+					<slot name="header"></slot>
+					<slot name="main"></slot>
+					<slot name="footer"></slot>
+				</div>
+			`;
+
+			const result = jQuery(hostElement).firstFocusableDomRef();
+			assert.equal(result.id, 'header-btn', 'Should find the first focusable element across multiple slots');
+			hostElement.remove();
+		});
+
+		QUnit.test('should find last focusable element in regular DOM', function(assert) {
+			const container = document.getElementById("container3");
+			container.innerHTML = `
+				<div>
+					<button id="first">First Button</button>
+					<input id="second" type="text">
+					<span>Not focusable</span>
+				</div>
+			`;
+
+			const result = jQuery(container).lastFocusableDomRef();
+			assert.equal(result.id, 'second', 'Should find the last focusable element');
+			container.innerHTML = "";
+		});
+
+		QUnit.test('should return null when no focusable elements exist', function(assert) {
+			const container = document.getElementById("container3");
+			container.innerHTML = `
+				<div>
+					<span>Not focusable</span>
+					<p>Also not focusable</p>
+				</div>
+			`;
+
+			const result = jQuery(container).lastFocusableDomRef();
+			assert.strictEqual(result, null, 'Should return null when no focusable elements exist');
+			container.innerHTML = "";
+		});
+
+		QUnit.test('should find last focusable element in shadow root', function(assert) {
+			const container = document.getElementById("container3");
+			const hostElement = document.createElement('div');
+			container.appendChild(hostElement);
+
+			const shadowRoot = hostElement.attachShadow({ mode: 'open' });
+			shadowRoot.innerHTML = `
+				<div>
+					<button id="shadow-button">Shadow Button</button>
+					<input id="shadow-input" type="text">
+					<span>Not focusable</span>
+				</div>
+			`;
+
+			const result = jQuery(hostElement).lastFocusableDomRef();
+			assert.equal(result.id, 'shadow-input', 'Should find the last focusable element in shadow root');
+			hostElement.remove();
+		});
+
+		QUnit.test('should find last focusable in slotted content', function(assert) {
+			const container = document.getElementById("container3");
+			const hostElement = document.createElement('div');
+			container.appendChild(hostElement);
+
+			hostElement.innerHTML = `
+				<button id="slotted-button" slot="content">Slotted Button</button>
+				<input id="slotted-input" slot="content" type="text">
+			`;
+
+			const shadowRoot = hostElement.attachShadow({ mode: 'open' });
+			shadowRoot.innerHTML = `
+				<div>
+					<slot name="content"></slot>
+					<span>Shadow content</span>
+				</div>
+			`;
+
+			const result = jQuery(hostElement).lastFocusableDomRef();
+			assert.equal(result.id, 'slotted-input', 'Should find the last focusable element in slotted content');
+			hostElement.remove();
+		});
+
+		QUnit.test('should handle reverse traversal in complex slot scenarios', function(assert) {
+			const container = document.getElementById("container3");
+			const hostElement = document.createElement('div');
+			container.appendChild(hostElement);
+
+			hostElement.innerHTML = `
+				<button id="header-btn" slot="header">Header Button</button>
+				<input id="main-input" slot="main" type="text">
+				<button id="footer-btn" slot="footer">Footer Button</button>
+			`;
+
+			const shadowRoot = hostElement.attachShadow({ mode: 'open' });
+			shadowRoot.innerHTML = `
+				<div>
+					<slot name="header"></slot>
+					<slot name="main"></slot>
+					<slot name="footer"></slot>
+				</div>
+			`;
+
+			const result = jQuery(hostElement).lastFocusableDomRef();
+			assert.equal(result.id, 'footer-btn', 'Should find the last focusable element in reverse traversal');
+			hostElement.remove();
+		});
+
+		QUnit.test('should handle nested elements with mixed shadow and light DOM', function(assert) {
+			const container = document.getElementById("container3");
+			const hostElement = document.createElement('div');
+			container.appendChild(hostElement);
+
+			const shadowRoot = hostElement.attachShadow({ mode: 'open' });
+			shadowRoot.innerHTML = `
+				<div>
+					<button id="shadow-first">Shadow First</button>
+					<div id="nested-container">
+						<input id="nested-input" type="text">
+					</div>
+				</div>
+			`;
+
+			const result = jQuery(hostElement).lastFocusableDomRef();
+			assert.equal(result.id, 'nested-input', 'Should find the last focusable element in nested structure');
+			hostElement.remove();
+		});
+
+		QUnit.test('should handle deeply nested structures', function(assert) {
+			const container = document.getElementById("container3");
+			container.innerHTML = `
+				<div>
+					<button id="top-button">Top Button</button>
+					<div>
+						<div>
+							<div>
+								<input id="deep-input" type="text">
+							</div>
+						</div>
+					</div>
+				</div>
+			`;
+
+			const result = jQuery(container).lastFocusableDomRef();
+			assert.equal(result.id, 'deep-input', 'Should find focusable element in deeply nested structure');
+			container.innerHTML = "";
+		});
+
+
+		QUnit.test('should handle empty slots', function(assert) {
+			const container = document.getElementById("container3");
+			const hostElement = document.createElement('div');
+			container.appendChild(hostElement);
+
+			const shadowRoot = hostElement.attachShadow({ mode: 'open' });
+			shadowRoot.innerHTML = `
+				<div>
+					<button id="before-slot">Before</button>
+					<slot name="empty"></slot>
+					<button id="after-slot">After</button>
+				</div>
+			`;
+
+			const firstResult = jQuery(hostElement).firstFocusableDomRef();
+			const lastResult = jQuery(hostElement).lastFocusableDomRef();
+
+			assert.equal(firstResult.id, 'before-slot', 'Should find first element when slot is empty');
+			assert.equal(lastResult.id, 'after-slot', 'Should find last element when slot is empty');
+			hostElement.remove();
+		});
+
+		QUnit.test('should handle slots with nested content', function(assert) {
+			const container = document.getElementById("container3");
+			const hostElement = document.createElement('div');
+			container.appendChild(hostElement);
+
+			hostElement.innerHTML = `
+				<div slot="content">
+					<span>Not focusable</span>
+					<button id="nested-slotted">Nested Slotted</button>
+				</div>
+			`;
+
+			const shadowRoot = hostElement.attachShadow({ mode: 'open' });
+			shadowRoot.innerHTML = '<slot name="content"></slot>';
+
+			const result = jQuery(hostElement).lastFocusableDomRef();
+			assert.equal(result.id, 'nested-slotted', 'Should find focusable element in nested slotted content');
+			hostElement.remove();
+		});
+
+		QUnit.test('should handle mixed shadow DOM and slot traversal order', function(assert) {
+			const container = document.getElementById("container3");
+			const hostElement = document.createElement('div');
+			container.appendChild(hostElement);
+
+			hostElement.innerHTML = `
+				<button id="slotted-1" slot="slot1">Slotted 1</button>
+				<button id="slotted-2" slot="slot2">Slotted 2</button>
+			`;
+
+			const shadowRoot = hostElement.attachShadow({ mode: 'open' });
+			shadowRoot.innerHTML = `
+				<button id="shadow-first">Shadow First</button>
+				<slot name="slot1"></slot>
+				<button id="shadow-middle">Shadow Middle</button>
+				<slot name="slot2"></slot>
+				<button id="shadow-last">Shadow Last</button>
+			`;
+
+			const firstResult = jQuery(hostElement).firstFocusableDomRef();
+			const lastResult = jQuery(hostElement).lastFocusableDomRef();
+
+			assert.equal(firstResult.id, 'shadow-first', 'Should find first element respecting shadow DOM order');
+			assert.equal(lastResult.id, 'shadow-last', 'Should find last element respecting shadow DOM order');
+			hostElement.remove();
+		});
+
+
+		QUnit.test('should handle multiple levels of slot nesting', function(assert) {
+			const container = document.getElementById("container3");
+			const outerHost = document.createElement('div');
+			container.appendChild(outerHost);
+
+			// Create nested slot structure
+			outerHost.innerHTML = `
+				<div slot="outer">
+					<button id="deep-slotted">Deep Slotted Button</button>
+				</div>
+			`;
+
+			const outerShadow = outerHost.attachShadow({ mode: 'open' });
+			const innerHost = document.createElement('div');
+			outerShadow.appendChild(innerHost);
+
+			const innerShadow = innerHost.attachShadow({ mode: 'open' });
+			innerShadow.innerHTML = '<slot name="inner"></slot>';
+
+			outerShadow.innerHTML = `
+				<div>
+					<slot name="outer"></slot>
+				</div>
+			`;
+
+			const result = jQuery(outerHost).firstFocusableDomRef();
+			assert.equal(result.id, 'deep-slotted', 'Should handle multiple levels of slot nesting');
+			outerHost.remove();
+		});
+
 		QUnit.module("Others");
 
 		QUnit.test("ParentByAttribute", function (assert) {
