@@ -532,6 +532,7 @@ sap.ui.define([
 		}
 
 		const iNewHeight = this.determineAvailableSpace();
+		const iOldConfiguredRowCount = this.getConfiguredRowCount();
 		const iNewRowCount = Math.floor(iNewHeight / getRowHeight(this));
 		const iOldComputedRowCount = this.getComputedRowCounts().count;
 
@@ -545,7 +546,7 @@ sap.ui.define([
 			oTable.setProperty("visibleRowCount", iNewComputedRowCount, true);
 		}
 
-		if (iOldComputedRowCount !== iNewComputedRowCount) {
+		if (iOldComputedRowCount !== iNewComputedRowCount || this.getHideEmptyRows() && iOldConfiguredRowCount !== this.getConfiguredRowCount()) {
 			this.invalidate();
 		}
 
