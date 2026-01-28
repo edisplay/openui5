@@ -1985,11 +1985,11 @@ sap.ui.define([
 			delete this.oCountPromise.$resolve;
 
 			mQueryOptions = Object.assign({}, this.mQueryOptions);
-			// // drop collection related system query options (except $filter,$search)
+			// drop collection related system query options (except $filter, $search)
 			delete mQueryOptions.$apply;
 			delete mQueryOptions.$count;
-			// keep mQueryOptions.$filter;
 			delete mQueryOptions.$expand;
+			// keep mQueryOptions.$filter;
 			delete mQueryOptions.$orderby;
 			if (this.oAggregation.search) {
 				// Note: A recursive hierarchy cannot be combined with "$search"
