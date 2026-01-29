@@ -1,6 +1,7 @@
 
 /* global QUnit, TestControlRenderer */
 sap.ui.define([
+	"sap/base/future",
 	"sap/ui/Device",
 	"sap/ui/core/Control",
 	"sap/ui/core/Core",
@@ -16,6 +17,7 @@ sap.ui.define([
 	"sap/base/Log",
 	"sap/ui/core/Configuration"
 ], function(
+	future,
 	Device,
 	Control,
 	Core,
@@ -715,7 +717,13 @@ sap.ui.define([
 		checkACCOutput(sOutput, "aria-labelledby=\"" + sText + "\"");
 	});
 
-	QUnit.module("Writer API: Semantic Syntax (DOM) Assertions", {
+	/**
+	 * @deprecated
+	 */
+	QUnit.module("Writer API: Semantic Syntax (DOM) Assertions (future=false)", {
+		before: function() {
+			future.active = false;
+		},
 		beforeEach: function() {
 			this.oRM = new RenderManager().getInterface();
 			this.oAssertionSpy = this.spy(console, "assert");
@@ -931,6 +939,334 @@ sap.ui.define([
 		this.oRM.openEnd();
 
 		assert.equal(this.oAssertionSpy.callCount, 0);
+	});
+
+	QUnit.module("Writer API: Semantic Syntax (DOM) Assertions (future=true)", {
+		before: function() {
+			future.active = true;
+		},
+		beforeEach: function() {
+			this.oRM = new RenderManager().getInterface();
+		},
+		afterEach: function() {
+			this.oRM.destroy();
+		},
+		after: function() {
+			future.active = false;
+		}
+	});
+
+	QUnit.test("RenderManager.openStart - empty tag", function (assert) {
+		try {
+			this.oRM.openStart();
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("The tag name provided 'undefined' is not valid; it must contain alphanumeric characters, hyphens or underscores"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.openStart - invalid tag", function (assert) {
+		try {
+			this.oRM.openStart("1");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("The tag name provided '1' is not valid; it must contain alphanumeric characters, hyphens or underscores"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.openStart - nested", function (assert) {
+		try {
+			this.oRM.openStart("div").openStart("div");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("There is an open tag; 'div' tag has not yet ended with 'openEnd'"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.openStart - invalid tag upper case", function (assert) {
+		try {
+			this.oRM.openStart("H1");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("The tag name provided 'H1' is not valid; it must contain alphanumeric characters, hyphens or underscores"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.openStart - voidStart", function (assert) {
+		try {
+			this.oRM.openStart("div").voidStart("img");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("There is an open tag; 'div' tag has not yet ended with 'openEnd'"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.voidStart - empty tag", function (assert) {
+		try {
+			this.oRM.voidStart();
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("The tag name provided 'undefined' is not valid; it must contain alphanumeric characters, hyphens or underscores"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.voidStart - invalid tag", function (assert) {
+		try {
+			this.oRM.voidStart("?");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("The tag name provided '?' is not valid; it must contain alphanumeric characters, hyphens or underscores"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.voidStart - nested", function (assert) {
+		try {
+			this.oRM.voidStart("img").voidStart("input");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("There is an open tag; 'img' tag has not yet ended with 'voidEnd'"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.voidStart - invalid tag upper case", function (assert) {
+		try {
+			this.oRM.voidStart("INPUT");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("The tag name provided 'INPUT' is not valid; it must contain alphanumeric characters, hyphens or underscores"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.voidStart - openStart", function (assert) {
+		try {
+			this.oRM.voidStart("img").openStart("div");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("There is an open tag; 'img' tag has not yet ended with 'voidEnd'"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.openEnd - without openStart", function (assert) {
+		try {
+			this.oRM.openEnd();
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("There is no open tag; 'openEnd' must not be called without an open tag"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.openEnd - voidStart", function (assert) {
+		try {
+			this.oRM.voidStart("div").openEnd();
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("There is an open tag; 'div' tag has not yet ended with 'voidEnd'"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.openEnd - valid", function (assert) {
+		this.oRM.openStart("div").openEnd();
+		assert.ok(true, "No error should be thrown");
+
+	});
+
+	QUnit.test("RenderManager.voidEnd - without voidStart", function (assert) {
+		try {
+			this.oRM.voidEnd();
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("There is no open tag; 'voidEnd' must not be called without an open tag"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.voidEnd - openStart", function (assert) {
+		try {
+			this.oRM.openStart("div").voidEnd();
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("There is an open tag; 'div' tag has not yet ended with 'openEnd'"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.voidEnd - valid", function (assert) {
+		this.oRM.voidStart("br").voidEnd();
+		assert.ok(true, "No error should be thrown");
+	});
+
+	QUnit.test("RenderManager.close - no tag name", function (assert) {
+		try {
+			this.oRM.openStart("div").openEnd().close();
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("The tag name provided 'undefined' is not valid; it must contain alphanumeric characters, hyphens or underscores"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.close - open tag", function (assert) {
+		try {
+			this.oRM.openStart("div").close("div");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("There is an open tag; 'div' tag has not yet ended with 'openEnd'"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.close - open void tag", function (assert) {
+		try {
+			this.oRM.voidStart("img").close("img");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("There is an open tag; 'img' tag has not yet ended with 'voidEnd'"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.unsafeHTML", function (assert) {
+		try {
+			this.oRM.voidStart("img").unsafeHtml(" tabindex='0'");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("There is an open tag; 'img' tag has not yet ended with 'voidEnd'"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.text", function (assert) {
+		try {
+			this.oRM.openStart("div").text("text");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("There is an open tag; 'div' tag has not yet ended with 'openEnd'"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.class('a b')", function (assert) {
+		try {
+			this.oRM.openStart("div").class("class1 class2");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("Method 'class' must be called with exactly one class name"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.class('a', 'b')", function (assert) {
+		try {
+			this.oRM.openStart("div").class("class1", "class2");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("Method 'class' must be called with exactly one class name"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.attr('class', ...)", function (assert) {
+		this.oRM.openStart("div").attr("class");
+		assert.ok(true, "No error should be thrown. Writing class attribute alone should be fine");
+	});
+
+	QUnit.test("RenderManager.class(...).attr('class', ...)", function (assert) {
+		try {
+			this.oRM.openStart("div").class("class1").attr("class", "class2");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("Attributes 'class' and 'style' must not be written when the methods with the same name have been called for the same element already"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.attr('class', ...).class(...)", function (assert) {
+		try {
+			this.oRM.openStart("div").attr("class", "class2").class("class1");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("Method class() must not be called after the 'class' attribute has been written for the same element"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.class(...).openEnd().openStart().attr('class',...)", function (assert) {
+		this.oRM.openStart("div").class("class1").openEnd().openStart("div").attr("class", "class2");
+		assert.ok(true, "No error should be thrown. Writing class attribute in new tag should pass assertion");
+	});
+
+	QUnit.test("RenderManager.attr('class',...).openEnd().openStart().class(...)", function (assert) {
+		this.oRM.openStart("div").attr("class", "class1").openEnd().openStart("div").class("class2");
+		assert.ok(true, "No error should be thrown. Adding a class in new tag should pass assertion");
+	});
+
+	QUnit.test("RenderManager.class(...).openEnd().voidStart().attr('class',...)", function (assert) {
+		this.oRM.openStart("div").class("class1").openEnd().voidStart("div").attr("class", "class2");
+		assert.ok(true, "No error should be thrown. Writing class attribute in new void tag should pass assertion");
+	});
+
+	QUnit.test("RenderManager.attr('class',...).openEnd().voidStart().class(...)", function (assert) {
+		this.oRM.openStart("div").attr("class", "class1").openEnd().voidStart("div").class("class2");
+		assert.ok(true, "No error should be thrown. Adding a class in new void tag should pass assertion");
+	});
+
+	QUnit.test("RenderManager.style (no style prop name)", function (assert) {
+		try {
+			this.oRM.openStart("div").style("", "100px");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("Method 'style' must be called with a non-empty string name"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.attr('style')", function (assert) {
+		this.oRM.openStart("div").attr("style", "width: 100%");
+		assert.ok(true, "No error should be thrown. Writing style attribute alone should be fine");
+	});
+
+	QUnit.test("RenderManager.style(...).attr('style',...)", function (assert) {
+		try {
+			this.oRM.openStart("div").style("width", "100%").attr("style", "height: 100%");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("Attributes 'class' and 'style' must not be written when the methods with the same name have been called for the same element already"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.attr('style',...).style(...)", function (assert) {
+		try {
+			this.oRM.openStart("div").attr("style", "height: 100%").style("width", "100%");
+		} catch (error) {
+			assert.ok(error, "Error thrown as expected");
+			assert.ok(error.message.includes("Method style() must not be called after the 'style' attribute has been written for the same element"), "Error message is as expected");
+		}
+	});
+
+	QUnit.test("RenderManager.style(...).openEnd().openStart().attr('style',...)", function (assert) {
+		this.oRM.openStart("div").style("width", "100%").openEnd().openStart("div").attr("style", "height: 100%");
+		assert.ok(true, "No error should be thrown. Writing style attribute in new tag should pass assertion");
+	});
+
+	QUnit.test("RenderManager.attr('style',...).openEnd().openStart().style(...)", function (assert) {
+		this.oRM.openStart("div").attr("style", "height: 100%").openEnd().openStart("div").style("width", "100%");
+		assert.ok(true, "No error should be thrown. Setting style property in new tag should pass assertion");
+	});
+
+	QUnit.test("RenderManager.style(...).openEnd().voidStart().attr('style',...)", function (assert) {
+		this.oRM.openStart("div").style("width", "100%").openEnd().voidStart("input").attr("style", "height: 100%");
+		assert.ok(true, "No error should be thrown. Writing style attribute in new void tag should pass assertion");
+	});
+
+	QUnit.test("RenderManager.attr('style',...).openEnd().voidStart().style(...)", function (assert) {
+		this.oRM.openStart("div").attr("style", "height: 100%").openEnd().voidStart("input").style("width", "100%");
+		assert.ok(true, "No error should be thrown. Setting style property in new void tag should pass assertion");
+	});
+
+	QUnit.test("Valid syntax No API assertion", function (assert) {
+		this.oRM.
+		openStart("div").attr("id", "x").style("width", "100%").class("x").openEnd().
+			voidStart("img").attr("id", "y").style("width", "100px").class("y").class().class(false).class(null).voidEnd().
+			openStart("so-me_Tag1").attr("some-3Attri_bute", "x").class(undefined).class("").openEnd().close("so-me_Tag1").
+			voidStart("so-me_Void5Tag").voidEnd().
+		close("div");
+
+		// nested
+		this.oRM.openStart("div");
+			var oRM = new RenderManager().getInterface();
+			oRM.voidStart("img").voidEnd();
+			oRM.destroy();
+		this.oRM.openEnd();
+
+		assert.ok(true, "No error should be thrown");
 	});
 
 	/**
