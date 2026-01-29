@@ -473,7 +473,14 @@ sap.ui.define([
 			aFilterItems.forEach((oFilterItem) => {
 				const sPropertyKey = oFilterItem.getPropertyKey();
 				const fnIsPropertyInfo = (oPropertyInfo) => {
-					return oPropertyInfo.name === sPropertyKey;
+					/**
+					 * @deprecated As of version 1.121
+					 */
+					if (oPropertyInfo.name === sPropertyKey) {
+						return true;
+					}
+
+					return oPropertyInfo.key === sPropertyKey;
 				};
 				//if (sPropertyKey) {
 				if (sPropertyKey && (PropertyInfoValidator._isValidationFeatureFlagEnabled || aPropertyInfos.some(fnIsPropertyInfo))) {
