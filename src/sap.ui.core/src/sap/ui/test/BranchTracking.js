@@ -649,11 +649,11 @@
 			"sap/base/Log",
 			"sap/ui/base/SyncPromise"
 		], function (Log, SyncPromise) {
-			var oUriParameters = new URLSearchParams(window.location.search);
+			var oURLSearchParams = new URLSearchParams(window.location.search);
 
 			bInfo = Log.isLoggable(Log.Level.INFO, sClassName);
-			sFilter = oUriParameters.get("filter");
-			sTestId = oUriParameters.get("testId");
+			sFilter = oURLSearchParams.get("filter");
+			sTestId = oURLSearchParams.get("testId");
 			SyncPromise.listener = listener;
 		});
 
@@ -689,4 +689,3 @@
 	}
 }());
 //TODO add tooltips to highlighting to explain rules
-
