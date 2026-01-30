@@ -26256,8 +26256,8 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 				+ "&$top=4", {
 				"@odata.count" : "2",
 				value : [
-					{Country : "US", SalesAmount : "100"},
-					{Country : "UK", SalesAmount : "200"}
+					{Country : "US"},
+					{Country : "UK"}
 				]
 			})
 			.expectChange("groupLevelCount", [undefined, undefined])
@@ -26266,7 +26266,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			.expectChange("level", [1, 1])
 			.expectChange("country", ["US", "UK"])
 			.expectChange("region", [null, null])
-			.expectChange("salesAmount", ["100", "200"]);
+			.expectChange("salesAmount", [undefined, undefined]);
 
 		return this.createView(assert, sView, oModel).then(function () {
 			oTable = that.oView.byId("table");
@@ -26774,7 +26774,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 					+ "&$count=true&$skip=0&$top=3", {
 					"@odata.count" : "1",
 					value : [
-						{AccountResponsible : "a", SalesAmount : "10", SalesNumber : 1}
+						{AccountResponsible : "a", SalesAmount : "10"}
 					]
 				});
 
@@ -28449,8 +28449,8 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 		QUnit.test(sTitle, function (assert) {
 			var oListBinding,
 				oMinMaxElement = {
-					UI5min__AGE : 42,
-					UI5max__AGE : 77
+					UI5min__GrossAmount : 42,
+					UI5max__GrossAmount : 77
 				},
 				oModel = this.createSalesOrdersModel({autoExpandSelect : true}),
 				oTable,
@@ -28512,6 +28512,12 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 
 					that.oView.byId("count").setBindingContext(oListBinding.getHeaderContext());
 				}
+
+				assert.deepEqual(
+					await oListBinding.updateAnalyticalInfo(
+						[{name : "GrossAmount", total : false, min : true, max : true}])
+						.measureRangePromise,
+					{GrossAmount : {min : 42, max : 77}});
 
 				return that.waitForChanges(assert);
 			}).then(function () {
@@ -28763,7 +28769,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			that.expectRequest("SalesOrderList"
 					+ "?$apply=groupby((LifecycleStatus),aggregate(GrossAmount))"
 					+ "&$skip=0&$top=100", {
-					value : [{GrossAmount : "4"}]
+					value : [{GrossAmount : "4", LifecycleStatus : "X"}]
 				})
 				.expectChange("grossAmount", ["4"]);
 
@@ -29202,7 +29208,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			oModel = this.createAggregationModel(),
 			oResponse = {
 				"@odata.count" : "1",
-				value : [{Region : "A", SalesAmount : "123"}]
+				value : [{Currency : "EUR", Region : "A", SalesAmount : "123"}]
 			},
 			sUrl = "BusinessPartners?$apply"
 				+ "=groupby((Region),aggregate(SalesAmount,Currency))&$count=true&$skip=0&$top=100",
@@ -51676,9 +51682,9 @@ make root = ${bMakeRoot}`;
 					UI5__count : "4",
 					"UI5__count@odata.type" : "#Decimal"
 				},
-				{ID : "1", Name : "Jonathan Smith", AGE : 50},
-				{ID : "0", Name : "Frederic Fall", AGE : 70},
-				{ID : "2", Name : "Peter Burke", AGE : 77}]
+				{Name : "Jonathan Smith", AGE : 50},
+				{Name : "Frederic Fall", AGE : 70},
+				{Name : "Peter Burke", AGE : 77}]
 			})
 			.expectChange("count")
 			.expectChange("text", [, "Jonathan Smith", "Frederic Fall", "Peter Burke"])
@@ -51704,7 +51710,6 @@ make root = ${bMakeRoot}`;
 					// (same for orderby() vs. $orderby and skip/top)
 					+ "/filter(AGE ge 30)/orderby(AGE)/top(1)", {
 					value : [{
-						ID : "3",
 						Name : "John Field",
 						AGE : 42
 					}]
@@ -51765,9 +51770,9 @@ make root = ${bMakeRoot}`;
 						UI5min__AGE : 42,
 						UI5max__AGE : 77
 					},
-					{ID : "1", Name : "Jonathan Smith", AGE : 50},
-					{ID : "0", Name : "Frederic Fall", AGE : 70},
-					{ID : "2", Name : "Peter Burke", AGE : 77}]
+					{Name : "Jonathan Smith", AGE : 50},
+					{Name : "Frederic Fall", AGE : 70},
+					{Name : "Peter Burke", AGE : 77}]
 				})
 				.expectChange("text", ["Jonathan Smith", "Frederic Fall", "Peter Burke"])
 				.expectChange("age", ["50", "70", "77"]);
