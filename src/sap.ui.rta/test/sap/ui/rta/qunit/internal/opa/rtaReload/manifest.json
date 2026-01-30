@@ -1,0 +1,46 @@
+{
+	"sap.app": {
+		"id": "sap.ui.rta.rtaReload",
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"type": "application",
+		"i18n": {
+			"bundleUrl": "i18n/i18n.properties",
+			"supportedLocales": [
+				""
+			],
+			"fallbackLocale": ""
+		}
+	},
+	"sap.ui5": {
+		"rootView": {
+			"viewName": "sap.ui.rta.rtaReload.Page",
+			"type": "XML",
+			"async": true,
+			"id": "rtaReload"
+		},
+		"dependencies": {
+			"libs": {
+				"sap.m": {},
+				"sap.ui.core": {},
+				"sap.ui.dt": {},
+				"sap.ui.layout": {},
+				"sap.ui.rta": {},
+				"sap.uxap": {}
+			}
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "sap.ui.rta.test.rtaReload.i18n.i18n",
+					"supportedLocales": [
+						""
+					],
+					"fallbackLocale": ""
+				}
+			}
+		}
+	}
+}
