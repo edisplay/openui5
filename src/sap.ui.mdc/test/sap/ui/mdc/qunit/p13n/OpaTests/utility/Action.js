@@ -399,6 +399,9 @@ sap.ui.define([
 				actions: new Press()
 			});
 		},
+		iRemoveFiltersInFilterDialog: function() {
+			return this.iRemoveSorting();
+		},
 		iSelectColumn: function(sColumnName, sPopoverTitle, aP13nItems, bModal, bFilter) {
 			return this.waitForP13nItem({
 				columnName: sColumnName,
