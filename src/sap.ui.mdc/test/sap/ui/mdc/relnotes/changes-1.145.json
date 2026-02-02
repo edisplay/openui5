@@ -1,7 +1,17 @@
 {
   "1.145.0": {
-    "date": "January 2026",
+    "date": "February 2026",
     "notes": [
+      {
+        "id": "2e2e17847d21a2eb6ddfec414625c61472a42e3a",
+        "type": "FIX",
+        "text": " MDC.Chart: chart type button is now disabled when no available chart types"
+      },
+      {
+        "id": "4d4c8fa5f0b6a47a032addbcdd57483c24237544",
+        "type": "FIX",
+        "text": "Adapt Filters Panel  does not open"
+      },
       {
         "id": "1ba4874bd103bd5dfe125073f783dee55fe1019e",
         "type": "FIX",

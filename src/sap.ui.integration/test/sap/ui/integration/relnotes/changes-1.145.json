@@ -1,7 +1,12 @@
 {
   "1.145.0": {
-    "date": "January 2026",
+    "date": "February 2026",
     "notes": [
+      {
+        "id": "b222de2f9a52abf31f2398dbfe33104afd82845f",
+        "type": "FIX",
+        "text": " sap.m.Select/TableSelectDialog: Selection is not fired when text is being selected"
+      },
       {
         "id": "447c5937437dcd8ff53248c071d130acdb0f8c1d",
         "type": "FIX",

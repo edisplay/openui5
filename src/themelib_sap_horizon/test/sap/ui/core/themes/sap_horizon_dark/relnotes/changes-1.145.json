@@ -1,7 +1,22 @@
 {
   "1.145.0": {
-    "date": "January 2026",
+    "date": "February 2026",
     "notes": [
+      {
+        "id": "c50f01e60823541c6bc70b9078a8025057109305",
+        "type": "FIX",
+        "text": " sap.tnt.NavigationList: Bugs reported from designers review are now fixed"
+      },
+      {
+        "id": "590f317122a09c65bcb00a248787e4b862abbda1",
+        "type": "FIX",
+        "text": " sap.ui.unified.Calendar: fixed focus in Horizon HC themes"
+      },
+      {
+        "id": "5aa14102d72bb549e2583f67dd41d8e3e78f6755",
+        "type": "FIX",
+        "text": " sap.m.Token: Adjust token selected bottom border and focus outline"
+      },
       {
         "id": "e6e12c340850e387dd995f544cdcf7c8459d139a",
         "type": "FIX",

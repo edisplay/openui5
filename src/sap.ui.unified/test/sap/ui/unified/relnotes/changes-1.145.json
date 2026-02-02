@@ -1,7 +1,27 @@
 {
   "1.145.0": {
-    "date": "January 2026",
+    "date": "February 2026",
     "notes": [
+      {
+        "id": "c9c0d26cdaefab3a0a9a46646fdb703ef455632c",
+        "type": "FIX",
+        "text": " sap.m.DateTimePicker: Fix various bugs in the control"
+      },
+      {
+        "id": "08c167a6fd193197dcc927fdf14e9069a6983da2",
+        "type": "FIX",
+        "text": " sap.ui.unified.CalendarRow: skip appointments without start date"
+      },
+      {
+        "id": "590f317122a09c65bcb00a248787e4b862abbda1",
+        "type": "FIX",
+        "text": " sap.ui.unified.Calendar: fixed focus in Horizon HC themes"
+      },
+      {
+        "id": "53489e9f789d5ec04aeb8f8cac708c234dfec4c7",
+        "type": "FIX",
+        "text": " sap.ui.unified.FileUploader: Add visible label to the uploader input"
+      },
       {
         "id": "addcfeaec0a6f764eeaba9c5dc98fd87e0a72ff6",
         "type": "FIX",
