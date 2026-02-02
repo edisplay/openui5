@@ -112,6 +112,10 @@
 				valueStateText: "Error Message"
 			},
 			{
+				id: "TP15a",
+				valueState: "Warning"
+			},
+			{
 				id: "TP16",
 				value: {
 					path: "/timeValue",
@@ -180,6 +184,21 @@
 					});
 				} else {
 					oTp = new sap.m.TimePicker(options[i]);
+
+					if (options[i].id === "TP15a") {
+						oTp.setFormattedValueStateText(new sap.m.FormattedText({
+							htmlText: "Value state with a clickable %%0 - clicking the link should work!",
+							controls: [new sap.m.Link({
+								text: "link",
+								href: "https://www.sap.com",
+								target: "_blank",
+								press: function() {
+									alert("Link was clicked!");
+								}
+							})]
+						}));
+					}
+
 					sInfo =  JSON.stringify(options[i]).split("\"").join("").replace("{", "").replace(",", " ").replace("}", "") + ", id: " + oTp.getId();
 					oBar = new sap.m.Toolbar(options[i].id + "-toolbar", {
 						content: [
