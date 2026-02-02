@@ -1,3 +1,8 @@
+/* ===================================== */
+/* CSS for control sap.ui.commons/Panel  */
+/* base theme                            */
+/* ===================================== */
+
 @_sap_ui_commons_Panel_BorderRadius: 0;
 
 .sapUiPanel {
@@ -14,16 +19,13 @@
 }
 
 .sapUiPanel.sapUiPanelColl,
-.sapUiPanelColl > .sapUiPanelHdr  {
+.sapUiPanelColl > .sapUiPanelHdr {
 	border-radius: @_sap_ui_commons_Panel_BorderRadius;
 }
 
 .sapUiPanelHdr {
 	border-radius: @_sap_ui_commons_Panel_BorderRadius @_sap_ui_commons_Panel_BorderRadius 0 0;
-	display: -webkit-box;
 	display: flex;
-	-webkit-box-orient: horizontal;
-	-webkit-box-align: center;
 	flex-direction: row;
 	align-items: center;
 	box-sizing: border-box;
@@ -36,7 +38,7 @@
 }
 
 .sapUiPanelDis > .sapUiPanelHdr {
-	color: @sapUiContentDisabledTextColor;
+	color: var(--sapContent_DisabledTextColor);
 }
 
 /* items inside the Panel header */
@@ -59,10 +61,11 @@
 
 .sapUiPanelCollArrow {
 	/* the 'collapse' icon on the left-hand side of the panel header */
-	background-image: url(img/panel/expanded.gif);
+	background-image: url('img/panel/expanded.gif');
 }
+
 .sapUiPanelColl .sapUiPanelCollArrow {
-	background-image: url(img/panel/collapsed.gif);
+	background-image: url('img/panel/collapsed.gif');
 }
 
 .sapUiPanelCollIco {
@@ -79,7 +82,6 @@
 	margin: 0; /* remove the H1 default style */
 	padding: 0;
 	font-size: 11px;
-	-webkit-box-flex: 1;
 	flex-grow: 1;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -89,7 +91,6 @@
 }
 
 .sapUiPanelTb {
-	-webkit-box-flex: 1000;
 	flex-grow: 1000;
 	min-width: 30px; /* the minimum width is also set to the width of the largest button through JS calculations */
 	margin: 2px 10px 0 10px;
@@ -128,41 +129,6 @@
 
 .sapUiPanelColl > .sapUiPanelCont {
 	display: none;
-}
-
-/* IE only - because no FlexBoxLayout supported */
-
-/* Feature detection is not used yet because we do not write the detected features to the DOM yet. Be assured it will come. */
-html[data-sap-ui-browser*="ie"] .sapUiPanelHdr {
-	white-space: nowrap;
-	overflow: hidden;
-	display: inline-block;
-	position: relative;
-}
-
-html[data-sap-ui-browser*="ie"] .sapUiPanelHdrItem,
-html[data-sap-ui-browser*="ie"] .sapUiPanelHdrRightItem {
-	white-space: normal;
-	display: inline-block;
-	vertical-align: middle;
-}
-
-html[data-sap-ui-browser*="ie"] .sapUiPanelTitle {
-	white-space: nowrap;
-	height: 20px;
-	line-height: 20px;
-}
-
-html[data-sap-ui-browser*="ie"] .sapUiPanelCollIco {
-	position: absolute;
-	top: 2px;
-	right: 4px;
-	display: none;
-}
-
-html[data-sap-ui-browser*="ie"] .sapUiPanelTb {
-	right: 56px;
-	min-width: 150px;
 }
 
 .sapUiPanelAreaDesignFill > .sapUiPanelCont {
