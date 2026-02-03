@@ -268,7 +268,6 @@ function(
 	 * @param {string} sTemplateName the template/fragment/view resource to be loaded
 	 * @param {string} [sExtension] the file extension, e.g. "fragment"
 	 * @return {Element} an XML document root element
-	 * @deprecated
 	 */
 	XMLTemplateProcessor.loadTemplate = function(sTemplateName, sExtension) {
 		var sResourceName = sTemplateName.replace(/\./g, "/") + ("." + (sExtension || "view") + ".xml");
