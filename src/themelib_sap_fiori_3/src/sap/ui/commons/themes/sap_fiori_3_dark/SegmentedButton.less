@@ -3,8 +3,8 @@
 /* Quartz Dark theme                             */
 /* ============================================= */
 
-.sapUiSegmentedButton{
-	font-family: @sapUiDesktopFontFamily;
+.sapUiSegmentedButton {
+	font-family: var(--sapFontFamily);
 	font-size: @sapUiDesktopFontSize;
 }
 
@@ -40,8 +40,8 @@
 .sapUiSegmentedButton > span > .sapUiBtnS.sapUiBtnNorm.sapUiBtnDsbl.sapUiSegButtonSelected > span.sapUiBtnIco {
 	box-shadow:  none;
 	cursor: default;
-	background-color: @sapUiHighlight;
-	color: @sapUiContentContrastTextColor;
+	background-color: var(--sapHighlightColor);
+	color: var(--sapContent_ContrastTextColor);
 	border-color: lighten(@sapUiSegmentedButtonBorderColor, 12);
 }
 
@@ -57,7 +57,7 @@
 }
 
 .sapUiSegmentedButton > span > .sapUiBtnS.sapUiBtnNorm.sapUiBtnDsbl.sapUiSegButtonSelected,
-.sapUiSegmentedButton > span > .sapUiBtnS.sapUiBtnNorm.sapUiBtnDsbl.sapUiSegButtonSelected > span.sapUiBtnIco{
+.sapUiSegmentedButton > span > .sapUiBtnS.sapUiBtnNorm.sapUiBtnDsbl.sapUiSegButtonSelected > span.sapUiBtnIco {
 	background-color: fade(@sapUiHighlight, 25);
 	color: fade(@sapUiContentContrastTextColor, 75);
 }
@@ -73,7 +73,7 @@
 
 .sapUiSegmentedButton > span > .sapUiBtnS.sapUiBtnLite.sapUiBtnStd:hover,
 .sapUiSegmentedButton > span > .sapUiBtnS.sapUiBtnLite.sapUiBtnStd:focus {
-	background-color: @sapUiButtonHoverBackground;
+	background-color: var(--sapButton_Hover_Background);
 }
 
 .sapUiSegmentedButton > span > .sapUiBtnS.sapUiBtnLite.sapUiBtnStd.sapUiSegButtonSelected,
@@ -82,8 +82,8 @@
 .sapUiSegmentedButton > span > .sapUiBtnS.sapUiBtnLite.sapUiBtnStd.sapUiSegButtonSelected > span.sapUiBtnIco,
 .sapUiSegmentedButton > span > .sapUiBtnS.sapUiBtnLite.sapUiBtnAct.sapUiSegButtonSelected > span.sapUiBtnIco,
 .sapUiSegmentedButton > span > .sapUiBtnS.sapUiBtnLite.sapUiBtnDsbl.sapUiSegButtonSelected > span.sapUiBtnIco {
-	background-color: @sapUiHighlight;
-	color: @sapUiContentContrastTextColor;
+	background-color: var(--sapHighlightColor);
+	color: var(--sapContent_ContrastTextColor);
 	cursor: default;
 }
 
@@ -106,6 +106,6 @@
 
 .sapUiSegmentedButton > span > .sapUiBtnS.sapUiBtnStd:focus,
 .sapUiSegmentedButton > span > .sapUiBtnS.sapUiBtnStd.sapUiBtnStdFocus {
-	outline: 1px dotted @sapUiHighlight;
+	outline: 1px dotted var(--sapHighlightColor);
 	outline-offset: -1px;
 }
