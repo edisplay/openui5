@@ -1,6 +1,6 @@
 /* global QUnit, sinon */
 sap.ui.define([
-	"sap/base/util/deepExtend",
+	"sap/base/future",
 	"sap/ui/base/OwnStatics",
 	"sap/ui/core/mvc/View",
 	"sap/ui/core/mvc/XMLView",
@@ -9,7 +9,7 @@ sap.ui.define([
 	"sap/ui/core/library",
 	"./testdata/TestPreprocessor",
 	"sap/base/Log"
-], function(deepExtend, OwnStatics, View, XMLView, XMLPreprocessor, JSONModel, coreLibrary, TestPreprocessor, Log) {
+], function(future, OwnStatics, View, XMLView, XMLPreprocessor, JSONModel, coreLibrary, TestPreprocessor, Log) {
 	"use strict";
 
 	const { _getPreprocessors, _removePreprocessor } = OwnStatics.get(View);
@@ -580,15 +580,19 @@ sap.ui.define([
 		}.bind(this));
 	});
 
-	QUnit.test("on demand preprocessor provided", function (assert) {
-		assert.expect(4);
-		XMLView.registerPreprocessor("xml", this.oPreprocessor, true, this.mSettings);
+	/**
+	 * @deprecated
+	 */
+	QUnit.test("on demand preprocessor provided (future=false)", function (assert) {
+		future.active = false;
+		assert.expect(3);
+
+		const oFutureSpy = sinon.spy(future, "errorThrows");
+		XMLView.registerPreprocessor("xml", this.oPreprocessor, /*bSyncSupport=*/false, /*bOnDemand=*/true, this.mSettings);
 
 		var mDefaultSettings = {
 			message: "OnDemand preprocessor executed"
 		};
-
-		var oSpy = this.spy;
 
 		// call via init
 		return XMLView.create({
@@ -599,30 +603,24 @@ sap.ui.define([
 				}
 			}
 		}).then(function(oView) {
-			sinon.assert.calledTwice(oSpy);
+			assert.ok(oFutureSpy.calledWithMatch("sap.ui.core.mvc.View: Registration for \"xml\" failed, only one on-demand-preprocessor allowed"), "Correct future error message logged");
 			assert.ok(oView.hasPreprocessor("xml"), "active xml preprocessor");
 			assert.ok(!oView.hasPreprocessor("controls"), "no active controls preprocessor");
 			_removePreprocessor("XML", "xml", this.oPreprocessor, false, true);
+			oFutureSpy.restore();
 		}.bind(this));
 	});
 
-	QUnit.test("on demand preprocessor not provided", function (assert) {
-		assert.expect(4);
+	QUnit.test("on demand preprocessor provided (future=true)", function (assert) {
+		future.active = true;
+		assert.expect(2);
 
-		var logSpy = sinon.spy(Log, "debug");
-
-		var oSpy = this.spy;
-
-		// call via init
-		return XMLView.create({
-			definition: this.sViewContent
-		}).then(function(oView) {
-			assert.ok(!logSpy.calledWithExactly("Running preprocessor for \"xml\" via given function", oView), "No log statement");
-			sinon.assert.calledTwice(oSpy);
-			assert.ok(!oView.hasPreprocessor("controls"), "no active controls preprocessor");
-			assert.ok(!oView.hasPreprocessor("xml"), "no active xml preprocessor");
-			logSpy.restore();
-		});
+		try {
+			XMLView.registerPreprocessor("xml", this.oPreprocessor, /*bSyncSupport=*/false, /*bOnDemand=*/true, this.mSettings);
+		} catch (e) {
+			assert.ok(e, "Error thrown as expected");
+			assert.ok(e.message.includes("sap.ui.core.mvc.View: Registration for \"xml\" failed, only one on-demand-preprocessor allowed"), "Correct error message thrown");
+		}
 	});
 
 	QUnit.test("sap.ui.core.mvc.View#getPreprocessorInfo", function(assert) {
