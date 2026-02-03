@@ -19443,7 +19443,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	});
 
 	//*********************************************************************************************
-	// Scenario: list/detail with V2 adapter where the detail URI must be adjusted for V2
+	// Scenario: list/detail with V2 adapter where the detail URL must be adjusted for V2
 	// Additionally properties of a contained complex type are used with auto-$expand/$select
 	QUnit.test("V2 adapter: list/detail", function (assert) {
 		var oModel = this.createModelForV2FlightService({autoExpandSelect : true}),

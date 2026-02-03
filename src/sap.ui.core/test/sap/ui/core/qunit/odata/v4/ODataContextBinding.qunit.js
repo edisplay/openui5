@@ -4709,7 +4709,7 @@ sap.ui.define([
 		this.mock(oBinding).expects("getQueryOptionsFromParameters").withExactArgs()
 			.returns(mQueryOptions);
 		this.mock(Object).expects("assign")
-			.withExactArgs({}, sinon.match.same(oBinding.oModel.mUriParameters),
+			.withExactArgs({}, sinon.match.same(oBinding.oModel.mURLParameters),
 				sinon.match.same(mQueryOptions))
 			.returns(mMergedQueryOptions);
 
