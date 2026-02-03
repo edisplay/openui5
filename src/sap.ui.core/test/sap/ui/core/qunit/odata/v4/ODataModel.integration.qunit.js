@@ -24521,7 +24521,8 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	//
 	// Update grand total when single entity is refreshed; ensure that filter, search, and custom
 	// query options are considered when requesting the grand total again. All filters are applied
-	// before aggregation, because the leaves are not aggregated.
+	// before aggregation, because the leaves are not aggregated. If there are multiple refreshes,
+	// only a single grand total request is sent.
 	// JIRA: CPOUI5ODATAV4-3300
 	QUnit.test("Data Aggregation: leaves' key predicates", function (assert) {
 		var oBinding,
@@ -24563,18 +24564,19 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 				+ "/orderby(LifecycleStatus desc)"
 				+ "/concat(aggregate($count as UI5__count),top(99)))", {
 				value : [
-					{GrossAmount : "12345"},
-					{UI5__count : "2", "UI5__count@odata.type" : "#Decimal"},
+					{GrossAmount : "6"},
+					{UI5__count : "3", "UI5__count@odata.type" : "#Decimal"},
 					{GrossAmount : "1", LifecycleStatus : "Z", SalesOrderID : "26"},
-					{GrossAmount : "2", LifecycleStatus : "Y", SalesOrderID : "25"}
+					{GrossAmount : "2", LifecycleStatus : "Y", SalesOrderID : "25"},
+					{GrossAmount : "3", LifecycleStatus : "X", SalesOrderID : "24"}
 				]
 			})
-			.expectChange("isExpanded", [true, undefined, undefined])
-			.expectChange("isTotal", [true, false, false])
-			.expectChange("level", [0, 1, 1])
-			.expectChange("lifecycleStatus", [null, "Z", "Y"])
-			.expectChange("grossAmount", ["12345", "1", "2"])
-			.expectChange("salesOrderID", [null, "26", "25"]);
+			.expectChange("isExpanded", [true, undefined, undefined, undefined])
+			.expectChange("isTotal", [true, false, false, false])
+			.expectChange("level", [0, 1, 1, 1])
+			.expectChange("lifecycleStatus", [null, "Z", "Y", "X"])
+			.expectChange("grossAmount", ["6", "1", "2", "3"])
+			.expectChange("salesOrderID", [null, "26", "25", "24"]);
 
 		return this.createView(assert, sView, oModel).then(function () {
 			oTable = that.oView.byId("table");
@@ -24584,7 +24586,8 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			assert.deepEqual(aCurrentContexts.map(getPath), [
 				"/SalesOrderList()",
 				"/SalesOrderList('26')", // SalesOrderID is the single key property!
-				"/SalesOrderList('25')"
+				"/SalesOrderList('25')",
+				"/SalesOrderList('24')"
 			]);
 
 			const oContext = aCurrentContexts[1];
@@ -24641,12 +24644,12 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 				that.waitForChanges(assert)
 			]);
 		}).then(function () {
-			assert.strictEqual(oBinding.getCount(), 2);
+			assert.strictEqual(oBinding.getCount(), 3);
 
 			that.expectRequest("DELETE SalesOrderList('26')")
-				.expectChange("lifecycleStatus", [, "Y"])
-				.expectChange("grossAmount", [, "2"])
-				.expectChange("salesOrderID", [, "25"]);
+				.expectChange("lifecycleStatus", [, "Y", "X"])
+				.expectChange("grossAmount", [, "2", "3"])
+				.expectChange("salesOrderID", [, "25", "24"]);
 
 			return Promise.all([
 				// code under test (JIRA: CPOUI5ODATAV4-3229)
@@ -24654,20 +24657,26 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 				that.waitForChanges(assert, "delete")
 			]);
 		}).then(function () {
-			assert.strictEqual(oBinding.getCount(), 1);
+			assert.strictEqual(oBinding.getCount(), 2);
 
 			that.expectRequest("#4 SalesOrderList('25')?sap-client=123&custom=foo"
 					+ "&$select=GrossAmount,LifecycleStatus,Note,SalesOrderID",
-					{GrossAmount : "3", LifecycleStatus : "Y", Note : "Late", SalesOrderID : "25"})
+					{GrossAmount : "3", LifecycleStatus : "Y", Note : "n/a", SalesOrderID : "25"})
 				.expectRequest("#4 SalesOrderList?sap-client=123&custom=foo&$apply="
 					+ "filter(LifecycleStatus gt 'P' and GrossAmount lt 100)/search(covfefe)/"
 					+ "aggregate(GrossAmount)",
-					{value : [{GrossAmount : "54321"}]})
-				.expectChange("grossAmount", ["54321", "3"]);
+					{value : [{GrossAmount : "7"}]})
+				.expectRequest("#4 SalesOrderList('24')?sap-client=123&custom=foo"
+					+ "&$select=GrossAmount,LifecycleStatus,Note,SalesOrderID",
+					{GrossAmount : "4", LifecycleStatus : "X", Note : "n/a", SalesOrderID : "24"})
+				.expectChange("grossAmount", ["7", "3", "4"]);
 
+			const [, oContext25, oContext24] = oBinding.getCurrentContexts();
 			return Promise.all([
 				// code under test (JIRA: CPOUI5ODATAV4-3257, CPOUI5ODATAV4-3300)
-				oBinding.getCurrentContexts()[1].requestRefresh(),
+				oContext25.requestRefresh(),
+				// code under test - grand total is requested only once
+				oContext24.requestRefresh(),
 				that.waitForChanges(assert, "requestRefresh")
 			]);
 		}).then(function () {
