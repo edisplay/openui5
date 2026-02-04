@@ -1,9 +1,14 @@
+/* ======================================== */
+/* CSS for control sap.ui.commons/TabStrip  */
+/* base theme                               */
+/* ======================================== */
+
 .sapUiTabStrip {
 	border: solid 1px @sapUiMediumBorder;
-	font-family: @sapUiFontFamily;
+	font-family: var(--sapFontFamily);
 	font-size: @sapUiFontSize;
 	box-sizing: border-box;
-	position:relative;
+	position: relative;
 }
 
 .sapUiTabBar {
@@ -35,12 +40,11 @@
 }
 
 .sapUiTabDsbl {
-	color: @sapUiContentDisabledTextColor;
+	color: var(--sapContent_DisabledTextColor);
 }
 
-.sapUiTabDsbl .sapUiTabIco {  /* make icon on disabled tab look faded out */
-	opacity: .3;
-	filter: alpha(opacity=30);
+.sapUiTabDsbl .sapUiTabIco { /* make icon on disabled tab look faded out */
+	opacity: 0.3;
 }
 
 .sapUiTabClose {
@@ -51,9 +55,9 @@
 }
 
 .sapUiTabIco {
-	width:16px; /* TODO: application contract... */
-	height:16px;
-	vertical-align:top;
+	width: 16px; /* TODO: application contract... */
+	height: 16px;
+	vertical-align: top;
 }
 
 span.sapUiTabIco {
@@ -63,23 +67,22 @@ span.sapUiTabIco {
 .sapUiTabBar .sapUiTabMenu {
 	display: inline-block;
 	float: right;
-	display:none; /* will be toggled by framework code */
+	display: none; /* will be toggled by framework code */
 }
 
 .sapUiTabPanel {
 	overflow: auto;
-	left:0;
-	right:0;
+	left: 0;
+	right: 0;
 }
 
 /* If height is defined it must be positioned absolute to fit the height*/
 .sapUiTabPanelHeight {
 	position: absolute;
-	bottom:0;
+	bottom: 0;
 }
 
 .sapUiTabStripNoSelection {
-	-moz-user-select: none;
 	-webkit-user-select: none;
 	user-select: none;
 }
@@ -88,7 +91,6 @@ span.sapUiTabIco {
 	display: inline-block;
 	position: absolute;
 	overflow: hidden;
-
 	left: 0;
 	right: 0;
 }
@@ -102,12 +104,9 @@ span.sapUiTabIco {
 	vertical-align: top;
 	visibility: hidden;
 	display: none;
-
 	box-sizing: border-box;
-
 	outline: none;
 	-webkit-user-select: none;  /* Chrome all / Safari all */
-	-moz-user-select: none;     /* Firefox all */
 	user-select: none;
 }
 
@@ -117,6 +116,7 @@ span.sapUiTabIco {
 }
 
 .sapUiTabStrip {
+
 	&.sapUiTabStripScrollForward .sapUiTabStripRightScrollIcon,
 	&.sapUiTabStripScrollBack .sapUiTabStripLeftScrollIcon {
 		visibility: visible;
@@ -124,6 +124,7 @@ span.sapUiTabIco {
 }
 
 .sapUiTabStrip.sapUiTabStripScrollable .sapUiTabBar {
+
 	.sapUiTabStripScrollIcon {
 		display: inline-block;
 	}
