@@ -1,16 +1,16 @@
-/* ================================================= */
-/* CSS for control sap.ui.commons/Slider.control     */
-/* ================================================= */
+/* ====================================== */
+/* CSS for control sap.ui.commons/Slider  */
+/* base theme                             */
+/* ====================================== */
 
-/* All DIV elements MUST have a POSITION definition, otherwise the calculation of the
-   grip position will not work */
+/* All DIV elements MUST have a POSITION definition, otherwise the calculation of the grip position will not work */
 
-.sapUiSli{
+.sapUiSli {
 	position: relative;
 	display: inline-block;
 	overflow: visible;
-	-moz-user-select: none;
 	-webkit-user-select: none;
+	user-select: none;
 	border: 1px solid @sapUiMediumBorder;
 }
 
@@ -76,12 +76,12 @@
 }
 
 .sapUiSliStd .sapUiSliText {
-	color: @sapUiBaseText;
+	color: var(--sapTextColor);
 }
 
 .sapUiSliRo .sapUiSliText,
 .sapUiSliDsbl .sapUiSliText {
-	color: @sapUiContentDisabledTextColor;
+	color: var(--sapContent_DisabledTextColor);
 }
 
 .sapUiSliVert .sapUiSliBar,
