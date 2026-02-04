@@ -3,6 +3,41 @@
     "date": "February 2026",
     "notes": [
       {
+        "id": "cd3b482c82c7330ec337e9b08a24b649547b7741",
+        "type": "FIX",
+        "text": " We've now removed redundant CSS attributes from the GenericTile header content to avoid the truncation of text in certain languages"
+      },
+      {
+        "id": "5b91546a197890210256128ece39376641f02959",
+        "type": "FIX",
+        "text": " sap.m.SinglePlanningCalendarMonthGrid: Fix tab chain"
+      },
+      {
+        "id": "b28bcd6a9030581625ab88f404caa982e702e279",
+        "type": "FEATURE",
+        "text": " PlanningCalendar: Week numbers display is now enabled in the months view"
+      },
+      {
+        "id": "2b740083a9e87bf00d2e97846ca71cfb79c9f6e4",
+        "type": "FIX",
+        "text": " sap.m.TimePicker: link is now clickable when in value state message"
+      },
+      {
+        "id": "f43335e0e4e4f0b1e0509165ee2fb33455f3948c",
+        "type": "FIX",
+        "text": " sap.m.MenuButton: fixed menu close by Alt + ArrowDown/ArrowUp, F4"
+      },
+      {
+        "id": "29d5fa6cc7981985f014c0df7d1a2f3d20145e82",
+        "type": "FIX",
+        "text": " We've now updated the demokit samples to handle the preview of locally uploaded pdf files for upload set with table"
+      },
+      {
+        "id": "ff90197553c123f039739ffed10b431f942aba75",
+        "type": "FIX",
+        "text": " sap.m.DatePicker: improve dialog toggle trough keyboard"
+      },
+      {
         "id": "cd6de2a7b8c7a8960edf61e19a89108d6576d57d",
         "type": "FEATURE",
         "text": " sap.m.SinglePlanningCalendarMonthGrid: Change in the rendering order of the moreLink"

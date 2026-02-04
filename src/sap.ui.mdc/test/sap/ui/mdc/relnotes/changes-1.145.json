@@ -3,6 +3,21 @@
     "date": "February 2026",
     "notes": [
       {
+        "id": "c76ed03118496ed68a071eb0f5ad395d57ce0eba",
+        "type": "FEATURE",
+        "text": " sap.ui.mdc.valueHelp: Remove duplicate label from DefineConditionsPanel"
+      },
+      {
+        "id": "29d5fa6cc7981985f014c0df7d1a2f3d20145e82",
+        "type": "FIX",
+        "text": " We've now updated the demokit samples to handle the preview of locally uploaded pdf files for upload set with table"
+      },
+      {
+        "id": "bec20c0a4a3317ead6469e412be9e7893ecd78cb",
+        "type": "FIX",
+        "text": " MultiValueField: duplicate values not recognized"
+      },
+      {
         "id": "2e2e17847d21a2eb6ddfec414625c61472a42e3a",
         "type": "FIX",
         "text": " MDC.Chart: chart type button is now disabled when no available chart types"

@@ -3,6 +3,11 @@
     "date": "February 2026",
     "notes": [
       {
+        "id": "24bffca5cee42a0f113bf23c14950898f61c45bb",
+        "type": "FIX",
+        "text": " sap.tnt.NavigationListItem: Icon rendering for child items is now fixed"
+      },
+      {
         "id": "0f238065a3c0e2fa115c8a4e7d5a0c50fab68ff6",
         "type": "FIX",
         "text": " sap.tnt.ToolPage: Side Navigation now auto-closes on item selection for small screens"

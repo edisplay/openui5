@@ -3,6 +3,11 @@
     "date": "February 2026",
     "notes": [
       {
+        "id": "b28bcd6a9030581625ab88f404caa982e702e279",
+        "type": "FEATURE",
+        "text": " PlanningCalendar: Week numbers display is now enabled in the months view"
+      },
+      {
         "id": "c9c0d26cdaefab3a0a9a46646fdb703ef455632c",
         "type": "FIX",
         "text": " sap.m.DateTimePicker: Fix various bugs in the control"

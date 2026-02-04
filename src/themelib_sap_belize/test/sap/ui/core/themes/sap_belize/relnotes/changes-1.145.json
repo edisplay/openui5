@@ -1,0 +1,12 @@
+{
+  "1.145.0": {
+    "date": "February 2026",
+    "notes": [
+      {
+        "id": "b28bcd6a9030581625ab88f404caa982e702e279",
+        "type": "FEATURE",
+        "text": " PlanningCalendar: Week numbers display is now enabled in the months view"
+      }
+    ]
+  }
+}

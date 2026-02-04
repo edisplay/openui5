@@ -1,0 +1,17 @@
+{
+  "1.145.0": {
+    "date": "February 2026",
+    "notes": [
+      {
+        "id": "b28bcd6a9030581625ab88f404caa982e702e279",
+        "type": "FEATURE",
+        "text": " PlanningCalendar: Week numbers display is now enabled in the months view"
+      },
+      {
+        "id": "c76ed03118496ed68a071eb0f5ad395d57ce0eba",
+        "type": "FEATURE",
+        "text": " sap.ui.mdc.valueHelp: Remove duplicate label from DefineConditionsPanel"
+      }
+    ]
+  }
+}
