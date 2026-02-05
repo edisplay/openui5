@@ -1,10 +1,10 @@
-/* ============================================= */
-/* CSS for control sap.ui.commons/Tree.control   */
-/* Base Theme                                    */
-/* ============================================= */
+/* ==================================== */
+/* CSS for control sap.ui.commons/Tree  */
+/* base theme                           */
+/* ==================================== */
 
 .sapUiTree {
-	color: @sapUiBaseText;
+	color: var(--sapTextColor);
 }
 
 /* if the Tree is used within another control that
@@ -15,7 +15,7 @@ invert its text to white as well */
 }
 
 .sapUiTreeFixedHeight {
-	position:relative;
+	position: relative;
 }
 
 .sapUiTree .sapUiBtn.sapUiBtnS {
@@ -23,10 +23,9 @@ invert its text to white as well */
 	vertical-align: middle;
 }
 
-
 .sapUiTreeList {
 	list-style-position: inside;
-	margin: 0px;
+	margin: 0;
 	padding-left: 10px;
 	padding-right: 2px;
 }
@@ -38,27 +37,27 @@ invert its text to white as well */
 }
 
 .sapUiTreeHeader {
-	border-bottom:none;
-	height:26px;
-	overflow-y:hidden;
+	border-bottom: none;
+	height: 26px;
+	overflow-y: hidden;
 	text-align: right;
-	width:100%;
+	width: 100%;
 }
 
 .sapUiTreeFixedHeight .sapUiTreeHeader {
 	width: auto;
-	position:absolute;
-	top: 0px;
-	left: 0px;
-	right: 0px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
 }
 
 html[dir=rtl] .sapUiTreeTbCont {
-	text-align:left;
+	text-align: left;
 }
 
 html[dir=rtl] .sapUiTreeTitle {
-	text-align:right;
+	text-align: right;
 }
 
 .sapUiTreeTitle {
@@ -66,12 +65,12 @@ html[dir=rtl] .sapUiTreeTitle {
 	font-weight: bold;
 	float: left;
 	left: 10px;
-	overflow:hidden;
+	overflow: hidden;
 	position: relative;
 	top: 5px;
-	white-space:nowrap;
+	white-space: nowrap;
 	width: 50%;
-	text-overflow:ellipsis;
+	text-overflow: ellipsis;
 	text-align: left;
 }
 
@@ -81,11 +80,11 @@ html[dir=rtl] .sapUiTreeTitle {
 }
 
 .sapUiTreeTbCont .sapUiTbInner {
-	margin-right: 0px;
+	margin-right: 0;
 }
 
 .sapUiTreeCont {
-	border:1px solid @sapUiMediumBorder;
+	border: 1px solid @sapUiMediumBorder;
 	overflow: auto;
 	background-color: @sapUiExtraLightBG;
 	width: 100%;
@@ -94,16 +93,16 @@ html[dir=rtl] .sapUiTreeTitle {
 
 .sapUiTreeTransparent .sapUiTreeCont {
 	background-color: transparent;
-	border:none;
-	top: 0px;
+	border: none;
+	top: 0;
 }
 
 .sapUiTreeFixedHeight .sapUiTreeCont {
 	width: auto;
-	position:absolute;
-	left: 0px;
-	right: 0px;
-	bottom: 0px;
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
 }
 
 .sapUiTreeContNoScroll {
@@ -128,7 +127,8 @@ html[dir=rtl] .sapUiTreeTitle {
 	margin-bottom: 3px;
 	border: 1px solid transparent;
 	border-radius: 1px;
-	-moz-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
 }
 
 .sapUiTreeContScroll .sapUiTreeNode {
@@ -145,7 +145,7 @@ html[dir=rtl] .sapUiTreeTitle {
 .sapUiTreeNodeContent {
 	cursor: default;
 	display: inline-block;
-	vertical-align:middle;
+	vertical-align: middle;
 	position: relative;
 	top: -2px;
 	width: 100%;
@@ -171,7 +171,7 @@ html[dir=rtl] .sapUiTreeTitle {
 }
 
 .sapUiTreeChildrenNodes {
-	display:block;
+	display: block;
 	padding-left: 16px;
 }
 
@@ -179,17 +179,17 @@ html[dir=rtl] .sapUiTreeTitle {
 	clear: left;
 }
 
-.sapUiTreeContScroll .sapUiTreeChildrenNodes:before,
-.sapUiTreeContScroll .sapUiTreeChildrenNodes:after,
-.sapUiTreeContScroll .sapUiTreeList:before,
-.sapUiTreeContScroll .sapUiTreeList:after {
-    content: " ";
-    display: table;
+.sapUiTreeContScroll .sapUiTreeChildrenNodes::before,
+.sapUiTreeContScroll .sapUiTreeChildrenNodes::after,
+.sapUiTreeContScroll .sapUiTreeList::before,
+.sapUiTreeContScroll .sapUiTreeList::after {
+	content: ' ';
+	display: table;
 }
 
-.sapUiTreeContScroll .sapUiTreeChildrenNodes:after,
-.sapUiTreeContScroll .sapUiTreeList:after {
-    clear: left;
+.sapUiTreeContScroll .sapUiTreeChildrenNodes::after,
+.sapUiTreeContScroll .sapUiTreeList::after {
+	clear: left;
 }
 
 .sapUiTreeHiddenChildrenNodes {
