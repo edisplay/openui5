@@ -1,3 +1,8 @@
+/* ======================================= */
+/* CSS for control sap.ui.commons/Toolbar  */
+/* base theme                              */
+/* ======================================= */
+
 /**
  * All Toolbar items are arranged in a flow layout. Once there are too many items to display, some flow into the second row
  * which is not visible.
@@ -10,7 +15,7 @@
 	margin: 0;
 	overflow: hidden;
 	position: relative;
-	white-space: normal; // make sure parents don't break the toolbar logic for overflowing to the second line
+	white-space: normal; /* make sure parents don't break the toolbar logic for overflowing to the second line */
 }
 
 .sapUiTb.sapUiTbStandalone {
@@ -31,12 +36,12 @@
 .sapUiTbCont {
 	height: 22px;
 	line-height: 22px;
-	overflow: hidden;   /* hide the items flowing into the second row */
+	overflow: hidden; /* hide the items flowing into the second row */
 	position: relative; /* required for IE7 to make overflow:hidden work! */
-	padding: 4px 0px 0px 10px;
+	padding: 4px 0 0 10px;
 }
 
-.sapUiTbContLeft.sapUiTbCont{
+.sapUiTbContLeft.sapUiTbCont {
 	float: left;
 	width: 100%;
 	box-sizing: border-box;
@@ -57,7 +62,8 @@
 }
 
 /* regular padding between Toolbar items */
-.sapUiTbInner > * , .sapUiTbInnerRight > * {
+.sapUiTbInner > * ,
+.sapUiTbInnerRight > * {
 	margin-right: 2px;
 	margin-bottom: 20px; /* make sure the second row is out of sight */
 }
@@ -65,23 +71,23 @@
 .sapUiTbInnerRight {
 	text-align: right;
 	position: absolute;
-	right: 0px;
-	padding: 2px 0px 0px 10px;
+	right: 0;
+	padding: 2px 0 0 10px;
 	height: 22px;
 	white-space: nowrap;
 }
 
 /* ToolBar Overflow Button ("chevron arrows") */
 .sapUiTbOB {
-	background-image: url(img/toolbar/overflow.png);
+	background-image: url('img/toolbar/overflow.png');
 	background-position: center center;
 	background-repeat: no-repeat;
-	display: none;  /* will be modified by Toolbar.js for displaying/hiding on resize */
+	display: none; /* will be modified by Toolbar.js for displaying/hiding on resize */
 	width: 14px;
 	height: 20px;
 	position: absolute;
 	right: -14px; /* position the overflow button right outside of its container */
-	top: 0px;
+	top: 0;
 	cursor: pointer;
 	margin-right: 0; /* remove that standard Toolbar item margin */
 }
@@ -119,14 +125,14 @@
 	margin: 2px;
 }
 
-/* disabled buttons are focuses in Toolbar by ItemNavigation -> so make visible using simple outline*/
+/* disabled buttons are focuses in Toolbar by ItemNavigation -> so make visible using simple outline */
 .sapUiTbInner > .sapUiBtnDsbl:focus,
-.sapUiTbInnerRight > .sapUiBtnDsbl:focus{
+.sapUiTbInnerRight > .sapUiBtnDsbl:focus {
 	outline: 1px dotted @sapUiBaseBorder;
 }
 
 /* Toolbar inside of Form as Form- and Container- header */
 .sapUiGridTitle > th > .sapUiTb,
-.sapUiFormToolbar > .sapUiTb{
+.sapUiFormToolbar > .sapUiTb {
 	border-bottom: 2px solid @sapUiMediumBorder;
 }
