@@ -2003,7 +2003,7 @@ sap.ui.define([
 
 		const iFirstVisibleRow = this.getFirstVisibleRow();
 
-		if (iIndex >= iFirstVisibleRow && iIndex <= iFirstVisibleRow + iRowCount) {
+		if (iIndex >= iFirstVisibleRow && iIndex < iFirstVisibleRow + iRowCount) {
 			return Promise.resolve();
 		}
 
