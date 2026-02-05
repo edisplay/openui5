@@ -220,7 +220,7 @@ module.exports = function(grunt, config) {
 					return;
 				}
 				aTasks.push('jsdoc:library-' + library.name);
-				aTasks.push('copy:faq-target-' + library.name);
+				aTasks.push('copy:sections-target-' + library.name);
 				if (!useDefaultTemplate) {
 					aTasks.push('ui5docs-preprocess:library-' + library.name);
 				}
