@@ -584,7 +584,8 @@ sap.ui.define([
 		 * @param {string} oViewInfo.name
 		 *   the view name (since 1.31; needed for extension point support)
 		 * @param {boolean} [oViewInfo.sync]
-		 *   whether the view is synchronous (since 1.57.0; needed for asynchronous XML templating)
+		 *   <b>Deprecated:</b> whether the view is synchronous (since 1.57.0; needed for
+		 *   asynchronous XML templating)
 		 * @param {object} [mSettings={}]
 		 *   map/JSON-object with initial property values, etc.
 		 * @param {object} mSettings.bindingContexts
@@ -598,6 +599,7 @@ sap.ui.define([
 		 *   synchronously
 		 *
 		 * @private
+		 * @ui5-transform-hint replace-param oViewInfo.sync false
 		 */
 		process : function (oRootElement, oViewInfo, mSettings) {
 			var sCaller = oViewInfo.caller,
@@ -607,7 +609,7 @@ sap.ui.define([
 				mFragmentCache = {},
 				iNestingLevel = 0,
 				oScope = {}, // for BindingParser.complexParser()
-				/** @deprecated since 1.120.0 */
+				/** @deprecated As of version 1.120.0 */
 				fnSupportInfo = oViewInfo._supportInfo,
 				bWarning = Log.isLoggable(Log.Level.WARNING, sXMLPreprocessor);
 
@@ -1324,15 +1326,16 @@ sap.ui.define([
 					return new SyncPromise(function (resolve, reject) {
 						var aModules = aURNs.map(sap.ui.require);
 
+						/** @deprecated As of version 1.120.0 */
 						if (aModules.every(Boolean)) {
 							// if all modules have been loaded already, resolve sync
 							// Note: we do not care about edge cases where a module value is falsy
 							resolve(aModules);
-						} else {
-							sap.ui.require(aURNs, function (/*oModule,...*/) {
-								resolve(arguments); // Note: not exactly an Array, but good enough
-							}, reject);
+							return;
 						}
+						sap.ui.require(aURNs, function (/*oModule,...*/) {
+							resolve(arguments); // Note: not exactly an Array, but good enough
+						}, reject);
 					}).then(function (aModules) {
 						Object.keys(mAlias2URN).forEach(function (sAlias, i) {
 							oScope[sAlias] = aModules[i];
@@ -1360,9 +1363,7 @@ sap.ui.define([
 					if (!oViewInfo.sync) {
 						return asyncRequire();
 					}
-					/**
-					 * @deprecated As of version 1.120
-					 */
+					/** @deprecated As of version 1.120.0 */
 					aURNs.forEach(sap.ui.requireSync); // legacy-relevant: Sync path
 				}
 				return oSyncPromiseResolved;
@@ -1777,7 +1778,7 @@ sap.ui.define([
 			 *   getting the binding's value fails.
 			 */
 			function visitAttribute(oElement, oAttribute, oWithControl) {
-				/** @deprecated since 1.120.0 */
+				/** @deprecated As of version 1.120.0 */
 				if (fnSupportInfo) {
 					fnSupportInfo({
 						context : undefined /*context from node clone*/,
@@ -1788,7 +1789,7 @@ sap.ui.define([
 					});
 				}
 				return resolveAttributeBinding(oElement, oAttribute, oWithControl)
-					/** @deprecated since 1.120.0 */
+					/** @deprecated As of version 1.120.0 */
 					.then(function () {
 						if (fnSupportInfo) {
 							fnSupportInfo({
@@ -1870,7 +1871,7 @@ sap.ui.define([
 					return visitAttributes(oNode, oWithControl).then(function () {
 						return visitChildNodes(oNode, oWithControl);
 					})
-					/** @deprecated since 1.120.0 */
+					/** @deprecated As of version 1.120.0 */
 					.then(function () {
 						if (fnSupportInfo) {
 							fnSupportInfo({context : oNode,
@@ -1883,7 +1884,7 @@ sap.ui.define([
 				if (oNode.nodeType !== 1 /* Node.ELEMENT_NODE */) {
 					return oSyncPromiseResolved;
 				}
-				/** @deprecated since 1.120.0 */
+				/** @deprecated As of version 1.120.0 */
 				if (fnSupportInfo) {
 					fnSupportInfo({context : oNode,
 						env : {caller : "visitNode", before : {name : oNode.tagName}}});
@@ -1978,7 +1979,7 @@ sap.ui.define([
 					}
 				}
 			}
-			/** @deprecated since 1.120.0 */
+			/** @deprecated As of version 1.120.0 */
 			if (fnSupportInfo) {
 				fnSupportInfo({
 						context : oRootElement,
