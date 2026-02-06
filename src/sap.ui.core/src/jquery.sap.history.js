@@ -338,6 +338,7 @@ sap.ui.define([
 		};
 
 		/**
+		 * Enumeration for supported NavTypes.
 		 * @enum {string}
 		 * @public
 		 * @alias jQuery.sap.history.NavType

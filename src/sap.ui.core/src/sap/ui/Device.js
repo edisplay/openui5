@@ -579,7 +579,7 @@ if (typeof window.sap.ui !== "object") {
 	 * using WKWebView have the possibility to customize the user agent, and to explicitly add this information.
 	 *
 	 * @name sap.ui.Device.browser.webview
-	 * @deprecated as of version 1.98.
+	 * @deprecated as of version 1.98 without replacement, refer to the above note.
 	 * @type boolean
 	 * @since 1.31.0
 	 * @public
