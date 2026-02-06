@@ -229,7 +229,7 @@ sap.ui.define([
 	};
 
 	ABHelper.prototype.selectAnchorForSection = function (sId) {
-		var oSectionBase = sap.ui.getCore().byId(sId),
+		var oSectionBase = Element.getElementById(sId),
 			bIsSubsection;
 
 		if (!oSectionBase) {
@@ -244,6 +244,7 @@ sap.ui.define([
 
 
 		this._getAnchorBar().setSelectedKey(sId);
+		this._setAnchorButtonsTabFocusValues(sId);
 	};
 
 	ABHelper.prototype._setAnchorButtonsTabFocusValues = function (sSelectedKey) {
