@@ -46,7 +46,6 @@ sap.ui.define([
 	 * @version ${version}
 	 *
 	 * @private
-	 * @experimental 1.70
 	 * @deprecated as of version 1.81. Use the {@link sap.ui.integration.designtime.baseEditor.propertyEditor.selectEditor.SelectEditor} instead
 	 * @ui5-restricted
 	 */
