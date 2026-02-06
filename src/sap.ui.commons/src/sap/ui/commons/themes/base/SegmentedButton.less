@@ -1,9 +1,10 @@
-/* ====================================================== */
-/* CSS for control sap.ui.commons/SegmentedButton.control */
-/* ====================================================== */
+/* ============================================= */
+/* CSS for control sap.ui.commons/SegmentButton  */
+/* base theme                                    */
+/* ============================================= */
 
 .sapUiSegmentedButton {
-	color: @sapUiBaseText;
+	color: var(--sapTextColor);
 	white-space: nowrap;
 }
 
@@ -13,7 +14,7 @@
 }
 
 .sapUiSegmentedButton > span > button:first-of-type {
-	border-radius:  2px 0 0 2px;
+	border-radius: 2px 0 0 2px;
 	border-left-width: 1px;
 }
 
@@ -23,11 +24,11 @@
 
 .sapUiSegmentedButton > span > .sapUiBtnS.sapUiSegButtonSelected {
 	cursor: default;
-	background-color: @sapUiHighlight;
+	background-color: var(--sapHighlightColor);
 	color: @sapUiTextSelection;
 }
 
 .sapUiSegmentedButton > span > .sapUiBtnS.sapUiBtnStd:focus,
 .sapUiSegmentedButton > span > .sapUiBtnS.sapUiBtnStd.sapUiBtnStdFocus {
-	outline: 1px dashed @sapUiHighlight;
+	outline: 1px dashed var(--sapHighlightColor);
 }
