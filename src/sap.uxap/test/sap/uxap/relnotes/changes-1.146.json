@@ -1,0 +1,17 @@
+{
+  "1.146.0": {
+    "date": "February 2026",
+    "notes": [
+      {
+        "id": "4b3ef09eb9e861ab52a21803f364167b7431dfdd",
+        "type": "FIX",
+        "text": " sap.uxap.ObjectPageLayout: Ensure subsection visibility is tracked correctly"
+      },
+      {
+        "id": "5784f5747b1ac143ad82ba6ca7973a2bc026dd24",
+        "type": "FIX",
+        "text": " sap.uxap.ObjectPageLayout: fix back navigation to IconTabHeader"
+      }
+    ]
+  }
+}

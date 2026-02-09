@@ -1,0 +1,12 @@
+{
+  "1.146.0": {
+    "date": "February 2026",
+    "notes": [
+      {
+        "id": "f512eb4a370df20b091d33f272bd81a01c2a9a10",
+        "type": "FIX",
+        "text": " Field: runtime error if DOM removed while update"
+      }
+    ]
+  }
+}

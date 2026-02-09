@@ -1,0 +1,12 @@
+{
+  "1.146.0": {
+    "date": "February 2026",
+    "notes": [
+      {
+        "id": "ec113e0f1f787a0999408210a657d53870a64f20",
+        "type": "FIX",
+        "text": " sap.m.DynamicDateRange: resize the popup depending on page"
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "1.146.0": {
+    "date": "February 2026",
+    "notes": [
+      {
+        "id": "bd7487f0500dabb7f30fd364be069f9b2a90ab35",
+        "type": "FIX",
+        "text": " Integration Cards: Min-width for the Object card is now changed"
+      }
+    ]
+  }
+}
