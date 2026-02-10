@@ -4811,8 +4811,10 @@ sap.ui.define([
 			},
 			oContext = Context.create(oModel, oBinding, "/path");
 
-		this.mock(oContext).expects("isTransient").exactly(4).withExactArgs().returns(false);
 		this.mock(_Helper).expects("getPredicateIndex").exactly(4).withExactArgs("/path");
+		this.stub(oContext, "toString"); // called by SinonJS, would call #isDeleted :-(
+		this.mock(oContext).expects("isDeleted").exactly(2).withExactArgs().returns(false);
+		this.mock(oContext).expects("isTransient").exactly(2).withExactArgs().returns(false);
 		oBindingMock.expects("checkKeepAlive")
 			.withExactArgs(sinon.match.same(oContext), "bTrueOrFalse");
 		oBindingMock.expects("onKeepAliveChanged").withExactArgs(sinon.match.same(oContext))
@@ -4870,8 +4872,10 @@ sap.ui.define([
 			oContext = Context.create(oModel, oBinding, "/path"),
 			oError = new Error();
 
-		this.mock(oContext).expects("isTransient").withExactArgs().returns(false);
 		this.mock(_Helper).expects("getPredicateIndex").withExactArgs("/path");
+		this.stub(oContext, "toString"); // called by SinonJS, would call #isDeleted :-(
+		this.mock(oContext).expects("isDeleted").withExactArgs().returns(false);
+		this.mock(oContext).expects("isTransient").withExactArgs().returns(false);
 		this.mock(oBinding).expects("checkKeepAlive")
 			.withExactArgs(sinon.match.same(oContext), true).throws(oError);
 
@@ -4884,9 +4888,24 @@ sap.ui.define([
 	});
 
 	//*********************************************************************************************
+	QUnit.test("setKeepAlive: destroyed", function () {
+		const oContext = Context.create(/*oModel*/undefined, /*oBinding*/undefined, "/path");
+		this.mock(_Helper).expects("getPredicateIndex").withExactArgs("/path");
+		this.stub(oContext, "toString"); // called by SinonJS, would call #isDeleted :-(
+		this.mock(oContext).expects("isDeleted").never();
+		this.mock(oContext).expects("isTransient").never();
+
+		// code under test
+		oContext.setKeepAlive(false);
+	});
+
+	//*********************************************************************************************
 	QUnit.test("setKeepAlive: transient", function (assert) {
 		var oContext = Context.create({/*oModel*/}, {/*oBinding*/}, "/path");
 
+		this.mock(_Helper).expects("getPredicateIndex").withExactArgs("/path");
+		this.stub(oContext, "toString"); // called by SinonJS, would call #isDeleted :-(
+		this.mock(oContext).expects("isDeleted").withExactArgs().returns(false);
 		this.mock(oContext).expects("isTransient").withExactArgs().returns(true);
 
 		assert.throws(function () {
@@ -4901,8 +4920,10 @@ sap.ui.define([
 	QUnit.test("setKeepAlive: deleted", function (assert) {
 		var oContext = Context.create({/*oModel*/}, {/*oBinding*/}, "/path");
 
-		this.mock(oContext).expects("isTransient").withExactArgs().returns(false);
-		this.mock(oContext).expects("isDeleted").withExactArgs().thrice().returns(true);
+		this.mock(_Helper).expects("getPredicateIndex").withExactArgs("/path");
+		this.stub(oContext, "toString"); // called by SinonJS, would call #isDeleted :-(
+		this.mock(oContext).expects("isDeleted").withExactArgs().returns(true);
+		this.mock(oContext).expects("isTransient").never();
 
 		assert.throws(function () {
 			// code under test
@@ -4922,8 +4943,10 @@ sap.ui.define([
 			},
 			oContext = Context.create(oModel, oBinding, "/path");
 
-		this.mock(oContext).expects("isTransient").withExactArgs().returns(false);
 		this.mock(_Helper).expects("getPredicateIndex").withExactArgs("/path");
+		this.stub(oContext, "toString"); // called by SinonJS, would call #isDeleted :-(
+		this.mock(oContext).expects("isDeleted").withExactArgs().returns(false);
+		this.mock(oContext).expects("isTransient").withExactArgs().returns(false);
 		this.mock(oBinding).expects("checkKeepAlive")
 			.withExactArgs(sinon.match.same(oContext), true);
 		this.mock(_Helper).expects("getMetaPath").never();
@@ -4959,8 +4982,10 @@ sap.ui.define([
 			},
 			oContext = Context.create(oModel, oBinding, "/path");
 
-		this.mock(oContext).expects("isTransient").withExactArgs().returns(false);
 		this.mock(_Helper).expects("getPredicateIndex").withExactArgs("/path");
+		this.stub(oContext, "toString"); // called by SinonJS, would call #isDeleted :-(
+		this.mock(oContext).expects("isDeleted").withExactArgs().returns(false);
+		this.mock(oContext).expects("isTransient").withExactArgs().returns(false);
 		this.mock(oBinding).expects("checkKeepAlive")
 			.withExactArgs(sinon.match.same(oContext), true);
 		this.mock(_Helper).expects("getMetaPath").withExactArgs("/path").returns("/meta/path");
@@ -4997,8 +5022,10 @@ sap.ui.define([
 			},
 			oContext = Context.create(oModel, oBinding, "/path");
 
-		this.mock(oContext).expects("isTransient").withExactArgs().returns(false);
 		this.mock(_Helper).expects("getPredicateIndex").withExactArgs("/path");
+		this.stub(oContext, "toString"); // called by SinonJS, would call #isDeleted :-(
+		this.mock(oContext).expects("isDeleted").withExactArgs().returns(false);
+		this.mock(oContext).expects("isTransient").withExactArgs().returns(false);
 		this.mock(oBinding).expects("checkKeepAlive")
 			.withExactArgs(sinon.match.same(oContext), true);
 		this.mock(_Helper).expects("getMetaPath").withExactArgs("/path").returns("/meta/path");
