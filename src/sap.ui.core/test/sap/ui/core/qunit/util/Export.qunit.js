@@ -1,5 +1,6 @@
 /* global sinon QUnit */
 
+/** @deprecated As of version 1.73 */
 sap.ui.define([
 	"sap/ui/core/util/Export",
 	"sap/ui/core/util/ExportTypeCSV",
