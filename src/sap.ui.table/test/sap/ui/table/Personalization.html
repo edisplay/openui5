@@ -7,8 +7,7 @@
 <script src="shared-config.js"></script>
 <script id="sap-ui-bootstrap"
 		src="../../../../resources/sap-ui-core.js"
-		data-sap-ui-theme="sap_bluecrystal"
-		data-sap-ui-libs="sap.ui.commons,sap.ui.table">
+		data-sap-ui-libs="sap.m,sap.ui.table">
 </script>
 
 <style type="text/css">
@@ -32,10 +31,18 @@
 </style>
 
 <script>
-
-	jQuery(function() {
-
-		jQuery.sap.require("sap.ui.table.TablePersoController");
+	sap.ui.require([
+		"sap/ui/table/Table",
+		"sap/ui/table/Column",
+		"sap/ui/table/TablePersoController",
+		"sap/m/Toolbar",
+		"sap/m/Button",
+		"sap/m/ToggleButton",
+		"sap/m/Label",
+		"sap/m/MessageBox",
+		"sap/ui/core/CustomData",
+		"sap/ui/model/json/JSONModel"
+	], function(Table, Column, TablePersoController, Toolbar, Button, ToggleButton, Label, MessageBox, CustomData, JSONModel) {
 
 		const oData = {
 			items: [
@@ -47,55 +54,55 @@
 		};
 
 		//make sure table id suffix is set (this is necessary for personalization)
-		const oTable = new sap.ui.table.Table({
+		const oTable = new Table({
 			/**
 			 * @deprecated As of Version 1.117
 			 */
 			showColumnVisibilityMenu: true,
-			toolbar: new sap.ui.commons.Toolbar({
-				items: [
-					new sap.ui.commons.Button({
-						text: "Clear and Refresh",
-						icon: "sap-icon://refresh",
-						press: function(oEvent) {
-							oPersoService.delPersData();
-							oTPC.refresh().done(function() {
-								sap.ui.commons.MessageBox.show("Done!", "INFORMATION", "Refresh");
-							});
-						}
-					}),
-					new sap.ui.commons.Button({
-						text: "Save",
-						icon: "sap-icon://save",
-						press: function(oEvent) {
-							oTPC.savePersonalizations().done(function() {
-								sap.ui.commons.MessageBox.show("Done!", "INFORMATION", "Save");
-							});
-						}
-					})
-				],
-				rightItems: [
-					new sap.ui.commons.ToggleButton({
-						text: "AutoSave",
-						icon: "sap-icon://save",
-						pressed: true,
-						press: function(oEvent) {
-							oTPC.setAutoSave(this.getPressed());
-						}
-					})
-				]
-			}),
+			extension: [
+				new Toolbar({
+					content: [
+						new Button({
+							text: "Clear and Refresh",
+							icon: "sap-icon://refresh",
+							press: function(oEvent) {
+								oPersoService.delPersData();
+								oTPC.refresh().done(function() {
+									MessageBox.information("Done!", {title: "Refresh"});
+								});
+							}
+						}),
+						new Button({
+							text: "Save",
+							icon: "sap-icon://save",
+							press: function(oEvent) {
+								oTPC.savePersonalizations().done(function() {
+									MessageBox.information("Done!", {title: "Save"});
+								});
+							}
+						}),
+						new ToggleButton({
+							text: "AutoSave",
+							icon: "sap-icon://save",
+							pressed: true,
+							press: function(oEvent) {
+								oTPC.setAutoSave(this.getPressed());
+							}
+						})
+					]
+				})
+			],
 			columns: jQuery.map(oData.cols, function(sColumn) {
-				return new sap.ui.table.Column({
-					label: new sap.ui.commons.Label({text: sColumn}),
+				return new Column({
+					label: new Label({text: sColumn}),
 					visible: sColumn === "Color" ? false : true, // Color column should be invisible by default
-					template: new sap.ui.commons.Label({
+					template: new Label({
 						text: {
 							path: sColumn.toLowerCase()
 						}
 					}),
 					customData: [
-						new sap.ui.core.CustomData({ // PersoService: customDataKey
+						new CustomData({ // PersoService: customDataKey
 							key: "persoKey",
 							value: sColumn
 						})
@@ -105,14 +112,14 @@
 				});
 			}),
 			customData: [
-				new sap.ui.core.CustomData({ // PersoService: customDataKey
+				new CustomData({ // PersoService: customDataKey
 					key: "persoKey",
 					value: "PersoTable"
 				})
 			]
 		});
 
-		oTable.setModel(new sap.ui.model.json.JSONModel(oData));
+		oTable.setModel(new JSONModel(oData));
 		oTable.bindRows("/items");
 
 		const printPersoData = function(sJSON) {
@@ -150,10 +157,9 @@
 				oDeferred.resolve();
 				return oDeferred.promise();
 			}
-
 		};
 
-		const oTPC = new sap.ui.table.TablePersoController({
+		const oTPC = new TablePersoController({
 			table: oTable,
 			persoService: oPersoService
 		});
