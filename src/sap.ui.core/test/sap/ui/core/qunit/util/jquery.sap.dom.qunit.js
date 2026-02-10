@@ -335,6 +335,31 @@ sap.ui.define([
 			assert.ok(!oFocusableItem, "no focusable item should be found in the hidden container2");
 		});
 
+		QUnit.test("firstFocusableDomRef, element inside display: contents", function (assert) {
+			var oContainer = document.getElementById('container3');
+
+			// Create a div with display: contents
+			var oDisplayContentsDiv = document.createElement('div');
+			oDisplayContentsDiv.style.display = 'contents';
+			oDisplayContentsDiv.id = 'display-contents-wrapper';
+
+			// Add a focusable button inside the display: contents div
+			var oButton = document.createElement('button');
+			oButton.id = 'button-in-display-contents';
+			oButton.textContent = 'Focusable Button';
+
+			oDisplayContentsDiv.appendChild(oButton);
+			oContainer.appendChild(oDisplayContentsDiv);
+
+			var oFocusableItem = jQuery(oContainer).firstFocusableDomRef();
+
+			assert.ok(oFocusableItem, "a focusable item should be found inside display: contents");
+			assert.equal(oFocusableItem.id, 'button-in-display-contents', "the button inside display: contents should be found");
+
+			// Cleanup
+			oContainer.innerHTML = "";
+		});
+
 
 		// The following tests are related to scrollable containers being
 		// focusable. They are excluded from Safari because scrolling
