@@ -20,7 +20,7 @@
  * @author  SAP SE
  * @public
  * @fileoverview
- * @deprecated Version and buildtime information can be retrieved via sap/ui/core/Core.versionInfo
+ * @deprecated as of version 1.127. The version and buildtime information can be retrieved via {@link module:sap/ui/VersionInfo.load}.
  */
 
 /*global OpenAjax */

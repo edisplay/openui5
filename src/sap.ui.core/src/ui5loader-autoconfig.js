@@ -431,7 +431,7 @@
 			 * defaultValue: undefined
 			 * @private
 			 * @ui5-restricted sap.ui.core, sap.ui.fl, sap.ui.integration, sap.ui.export
-			 * @deprecated As of Version 1.120
+			 * @deprecated As of Version 1.120, without replacement as code execution with eval() is not supported anymore due to CSP compliance
 			 */
 			"Code": "code",
 			/**
