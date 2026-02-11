@@ -3150,6 +3150,9 @@ sap.ui.define([
 		}
 		var oNewLabel = null;
 		var sLanguage = Utils._language;
+		if (!Editor._oLanguages[sLanguage] && sLanguage.indexOf("-") > -1) {
+			sLanguage = sLanguage.substring(0, sLanguage.indexOf("-"));
+		}
 		if (sMode === Constants.EDITOR_MODE.TRANSLATION) {
 			if (oConfig.type !== "string") {
 				return;
@@ -3175,9 +3178,6 @@ sap.ui.define([
 			origLangFieldConfig.editable = false;
 			origLangFieldConfig.required = false;
 			//if has value transaltions, get value via language setting in core
-			if (!Editor._oLanguages[sLanguage] && sLanguage.indexOf("-") > -1) {
-				sLanguage = sLanguage.substring(0, sLanguage.indexOf("-"));
-			}
 			if (Editor._oLanguages[sLanguage]) {
 				var sTranslateText = this.getTranslationValueInTexts(sLanguage, oConfig.manifestpath);
 				if (sTranslateText) {
@@ -3237,8 +3237,7 @@ sap.ui.define([
 				oConfig._beforeLayerChange = oConfig.value;
 			}
 			//only get translations of string fields
-			if (oConfig.type === "string") {
-				sLanguage = this._language;
+			if (oConfig.type === "string" && Editor._oLanguages[sLanguage]) {
 				var sTranslateText = this.getTranslationValueInTexts(sLanguage, oConfig.manifestpath);
 				if (sTranslateText) {
 					oConfig.value = sTranslateText;
