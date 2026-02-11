@@ -229,6 +229,7 @@ sap.ui.define([
 				manifestReady: {},
 				fieldReady: {},
 				destinationReady: {},
+				childTreeDataReady: {},
 				UIReady: {},
 				ready: {}
 			}
@@ -932,11 +933,22 @@ sap.ui.define([
 							if (!oControl.isReady()) {
 								if (bChildTreeRendered === false && renderChildsTreePromise) {
 									renderChildsTreePromise.then(function() {
-										// add a timeout to make sure all UI updates are done before firing ready
-										setTimeout(function () {
-											oControl._ready = true;
-											oControl.fireReady();
-										}, 200);
+										if (oControl._oChildTree.getModel().getData()[0].dataReady) {
+											// add a timeout to make sure all UI updates are done before firing ready
+											setTimeout(function () {
+												oControl._ready = true;
+												oControl.fireReady();
+											}, 200);
+										} else {
+											// attach to child tree data ready event, then fire ready
+											oControl.attachEventOnce("childTreeDataReady", function() {
+												// add a timeout to make sure all UI updates are done before firing ready
+												setTimeout(function () {
+													oControl._ready = true;
+													oControl.fireReady();
+												}, 200);
+											});
+										}
 									});
 								} else {
 									oControl._ready = true;
@@ -946,11 +958,22 @@ sap.ui.define([
 						});
 					} else if (bChildTreeRendered === false && renderChildsTreePromise) {
 						renderChildsTreePromise.then(function() {
-							// add a timeout to make sure all UI updates are done before firing ready
-							setTimeout(function () {
-								oControl._ready = true;
-								oControl.fireReady();
-							}, 200);
+							if (oControl._oChildTree.getModel().getData()[0].dataReady) {
+								// add a timeout to make sure all UI updates are done before firing ready
+								setTimeout(function () {
+									oControl._ready = true;
+									oControl.fireReady();
+								}, 200);
+							} else {
+								// attach to child tree data ready event, then fire ready
+								oControl.attachEventOnce("childTreeDataReady", function() {
+									// add a timeout to make sure all UI updates are done before firing ready
+									setTimeout(function () {
+										oControl._ready = true;
+										oControl.fireReady();
+									}, 200);
+								});
+							}
 						});
 					} else {
 						oControl._ready = true;
@@ -1572,9 +1595,26 @@ sap.ui.define([
 			manifest: sMainManifest,
 			path: "",
 			selected: true,
+			textReady: true,
+			dataReady: false,
 			nodes: []
 		}];
 		var oModel = new JSONModel(oData);
+
+		// check if all texts are ready
+		var checkTextsReady = function (oDataNode) {
+			oDataNode = oDataNode || oData[0];
+			if (!oDataNode.textReady) {
+				return false;
+			}
+			var oNodes = oDataNode.nodes;
+			for (var i = 0; i < oNodes.length; i++) {
+				if (!checkTextsReady(oNodes[i])) {
+					return false;
+				}
+			}
+			return true;
+		};
 
 		var loadChildNode = function (sName, oChildConfig, sPath, sBaseUrl, sParentName) {
 			// calculate base url and manifest path for childs
@@ -1587,6 +1627,7 @@ sap.ui.define([
 				isChild: true,
 				path: sPath,
 				selected: false,
+				textReady: false,
 				nodes: []
 			};
 			if (oChildConfig.manifest) {
@@ -1614,17 +1655,42 @@ sap.ui.define([
 						} else if (oChildConfig.title) {
 							oNode.text = oChildConfig.title;
 						}
-						oModel.checkUpdate(true);
+						oNode.textReady = true;
+						// check if all texts are ready. If true, set dataReady true and fire event
+						if (checkTextsReady()) {
+							oData[0].dataReady = true;
+							oModel.checkUpdate(true);
+							that.fireChildTreeDataReady();
+						} else {
+							oModel.checkUpdate(true);
+						}
 					});
 				} catch (e) {
 					if (oChildConfig.title) {
 						oNode.text = oChildConfig.title;
 					}
-					oModel.checkUpdate(true);
+					oNode.textReady = true;
+					// check if all texts are ready. If true, set dataReady true and fire event
+					if (checkTextsReady()) {
+						oData[0].dataReady = true;
+						oModel.checkUpdate(true);
+						that.fireChildTreeDataReady();
+					} else {
+						oModel.checkUpdate(true);
+					}
 					Log.error("sap.ui.integration.editor.Editor: child edtior tree manifest load error: " + e);
 				}
 			} else if (oChildConfig.title) {
 				oNode.text = oChildConfig.title;
+				oNode.textReady = true;
+				// check if all texts are ready. If true, set dataReady true and fire event
+				if (checkTextsReady()) {
+					oData[0].dataReady = true;
+					oModel.checkUpdate(true);
+					that.fireChildTreeDataReady();
+				} else {
+					oModel.checkUpdate(true);
+				}
 			}
 			return oNode;
 		};
