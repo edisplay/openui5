@@ -21204,6 +21204,10 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			// code under test
 			assert.strictEqual(oBinding.getHeaderContext().isAggregated(), true,
 				"JIRA: CPOUI5ODATAV4-2760");
+			assert.throws(function () {
+				// code under test (JIRA: CPOUI5ODATAV4-3350)
+				oBinding.create({}, /*bSkipRefresh*/true);
+			}, new Error("Unsupported on aggregated data: " + oBinding));
 		});
 	});
 
@@ -24539,8 +24543,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	// predicates in case all key properties are available. Expect no unnecessary group levels in
 	// there!
 	// JIRA: CPOUI5ODATAV4-700
-	// Check that create is not supported.
-	// JIRA: CPOUI5ODATAV4-1851
 	//
 	// If key properties are known, late properties are requested (JIRA: CPOUI5ODATAV4-2756)
 	// No late property on collapsed group header (JIRA: CPOUI5ODATAV4-2756)
@@ -24632,11 +24634,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			assert.strictEqual(oContext.isAggregated(), false, "JIRA: CPOUI5ODATAV4-2760");
 			assert.strictEqual(oBinding.getHeaderContext().isAggregated(), false,
 				"JIRA: CPOUI5ODATAV4-2760");
-
-			assert.throws(function () {
-				// code under test (JIRA: CPOUI5ODATAV4-1851)
-				oBinding.create();
-			}, new Error("Cannot create in " + oBinding + " when using data aggregation"));
 
 			assert.throws(function () {
 				// code under test (JIRA: CPOUI5ODATAV4-3257)
@@ -25803,7 +25800,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			this.waitForChanges(assert)
 		]);
 
-		assert.deepEqual(aContexts.map(getNormalizedPath), [], "no data - no grand total");
+		assert.deepEqual(aContexts.map(getPath), [], "no data - no grand total");
 	});
 });
 
@@ -28008,6 +28005,11 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			function (oError) {
 				assert.strictEqual(oError.message, sErrorMessage);
 			});
+
+		assert.throws(function () {
+			// code under test (JIRA: CPOUI5ODATAV4-3350)
+			oListBinding.create({}, /*bSkipRefresh*/true);
+		}, new Error(sErrorMessage));
 	});
 
 	//*********************************************************************************************
@@ -28255,6 +28257,8 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	// Scenario: Filtering on a list binding with data aggregation does not split the filters if
 	// there is no data aggregation on leaf level.
 	// JIRA: CPOUI5ODATAV4-2745
+	//
+	// Check that create is supported (JIRA: CPOUI5ODATAV4-3350)
 	QUnit.test("Data Aggregation: filter w/o aggregation on leaves", async function (assert) {
 		const oModel = this.createAggregationModel({autoExpandSelect : true});
 
@@ -28268,6 +28272,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 					aggregate : {
 						SalesAmount : {grandTotal : true}
 					},
+					grandTotalAtBottomOnly : true,
 					group : {
 						Currency : {},
 						Id : {},
@@ -28283,7 +28288,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 					+ ",groupby((Currency,Id,Region),aggregate(SalesAmount))"
 				+ "/orderby(Region asc,SalesAmount desc)"
 				// Note: $count is requested automatically
-				+ "/concat(aggregate($count as UI5__count),top(99)))", {
+				+ "/concat(aggregate($count as UI5__count),top(100)))", {
 				value : [
 					{SalesAmount : "n/a", "SalesAmount@odata.type" : "#Decimal"},
 					{UI5__count : "1", "UI5__count@odata.type" : "#Decimal"},
@@ -28301,19 +28306,76 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			this.waitForChanges(assert)
 		]);
 
-		assert.strictEqual(aContexts[0].getPath(), "/BusinessPartners()");
-		assert.strictEqual(aContexts[0].isExpanded(), true);
-		assert.strictEqual(aContexts[0].getProperty("@$ui5.node.isTotal"), true, "grand total");
-		// code under test
-		assert.strictEqual(aContexts[0].isAggregated(), true, "JIRA: CPOUI5ODATAV4-2760");
-
-		assert.strictEqual(aContexts[1].getPath(), "/BusinessPartners(42)");
-		assert.strictEqual(aContexts[1].isExpanded(), undefined, "leaf");
-		assert.strictEqual(aContexts[1].getProperty("@$ui5.node.isTotal"), false);
-		// code under test
-		assert.strictEqual(aContexts[1].isAggregated(), false, "JIRA: CPOUI5ODATAV4-2760");
 		assert.strictEqual(oListBinding.getHeaderContext().isAggregated(), false,
 			"JIRA: CPOUI5ODATAV4-2760");
+
+		assert.strictEqual(aContexts[0].getPath(), "/BusinessPartners(42)");
+		assert.strictEqual(aContexts[0].isExpanded(), undefined, "leaf");
+		assert.strictEqual(aContexts[0].getProperty("@$ui5.node.isTotal"), false);
+		// code under test
+		assert.strictEqual(aContexts[0].isAggregated(), false, "JIRA: CPOUI5ODATAV4-2760");
+
+		assert.strictEqual(aContexts[1].getPath(), "/BusinessPartners()");
+		assert.strictEqual(aContexts[1].isExpanded(), true);
+		assert.strictEqual(aContexts[1].getProperty("@$ui5.node.isTotal"), true, "grand total");
+		// code under test
+		assert.strictEqual(aContexts[1].isAggregated(), true, "JIRA: CPOUI5ODATAV4-2760");
+
+		assert.strictEqual(oListBinding.getCount(), 1, "old count");
+		assert.strictEqual(oListBinding.getLength(), 2, "old length");
+
+		this.expectRequest("POST BusinessPartners", {
+				payload : {Region : "New"}
+			}, {
+				Currency : "EUR",
+				Id : 1, // Edm.Int16
+				Region : "New",
+				SalesAmount : "123"
+			});
+
+		// code under test (JIRA: CPOUI5ODATAV4-3350)
+		const oCreatedContext = oListBinding.create({Region : "New"}, /*bSkipRefresh*/true,
+			/*bAtEnd*/false, /*bInactive*/false);
+
+		assert.deepEqual(oCreatedContext.getObject(), {
+			"@$ui5.context.isTransient" : true,
+			"@$ui5.node.level" : 1,
+			Region : "New"
+		}, "transient");
+		assert.strictEqual(oCreatedContext.isTransient(), true);
+		assert.strictEqual(oListBinding.getCount(), 2, "new count");
+		assert.strictEqual(oListBinding.getLength(), 3, "new length");
+		// Note: ODLB#getCurrentContexts requires a UI on top!
+		assert.deepEqual(oListBinding._getAllExistingContexts().map(getNormalizedPath), [
+			"/BusinessPartners($uid=...)",
+			"/BusinessPartners(42)",
+			"/BusinessPartners()"
+		], "transient");
+		assert.strictEqual(oListBinding._getAllExistingContexts()[0], oCreatedContext);
+
+		await Promise.all([
+			oCreatedContext.created(),
+			this.waitForChanges(assert, "created")
+		]);
+
+		assert.deepEqual(oCreatedContext.getObject(), {
+			"@$ui5.context.isTransient" : false,
+			"@$ui5.node.isTotal" : false,
+			"@$ui5.node.level" : 1,
+			Currency : "EUR",
+			Id : 1,
+			Region : "New",
+			SalesAmount : "123"
+		}, "persisted");
+		assert.strictEqual(oCreatedContext.isTransient(), false);
+		assert.strictEqual(oListBinding.getCount(), 2, "unchanged");
+		assert.strictEqual(oListBinding.getLength(), 3, "unchanged");
+		assert.deepEqual(oListBinding._getAllExistingContexts().map(getPath), [
+			"/BusinessPartners(1)",
+			"/BusinessPartners(42)",
+			"/BusinessPartners()"
+		], "persisted");
+		assert.strictEqual(oListBinding._getAllExistingContexts()[0], oCreatedContext);
 	});
 
 	//*********************************************************************************************
@@ -28443,6 +28505,11 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 				"/BusinessPartners(Region='A')",
 				"/BusinessPartners(Region='B')"
 			]);
+
+			assert.throws(function () {
+				// code under test (JIRA: CPOUI5ODATAV4-3350)
+				oListBinding.create({}, /*bSkipRefresh*/true);
+			}, new Error('"grandTotal like 1.84" not supported: ' + oListBinding));
 		});
 	});
 
@@ -74131,7 +74198,7 @@ make root = ${bMakeRoot}`;
 			assert.strictEqual(oBinding.getLength(), 12);
 			assert.ok(oBinding.isLengthFinal());
 			assert.strictEqual(oBinding.isFirstCreateAtEnd(), true);
-			assert.deepEqual(oBinding.getAllCurrentContexts().map(getNormalizedPath), [
+			assert.deepEqual(oBinding.getAllCurrentContexts().map(getPath), [
 				// Note: created ones are at the top here
 				"/TEAMS('TEAM_B')",
 				"/TEAMS('TEAM_A')",
@@ -74188,7 +74255,7 @@ make root = ${bMakeRoot}`;
 			assert.strictEqual(oBinding.getLength(), 11);
 			assert.ok(oBinding.isLengthFinal());
 			assert.strictEqual(oBinding.isFirstCreateAtEnd(), true);
-			assert.deepEqual(oBinding.getAllCurrentContexts().map(getNormalizedPath), [
+			assert.deepEqual(oBinding.getAllCurrentContexts().map(getPath), [
 				// Note: created ones are at the top here
 				"/TEAMS('TEAM_A')",
 				// Note: the gap is not visible here
