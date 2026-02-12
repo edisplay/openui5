@@ -165,7 +165,6 @@ sap.ui.define([
 		const oTable = this.oTable;
 		const oScrollExtension = oTable._getScrollExtension();
 		let oVSb = oScrollExtension.getVerticalScrollbar();
-		const iOriginalApiVersion = TableRenderer.apiVersion;
 
 		assert.ok(oVSb.offsetWidth > 0 && oVSb.offsetHeight > 0, "Table content does not fit height -> Vertical scrollbar is visible");
 
@@ -174,9 +173,20 @@ sap.ui.define([
 		return oTable.qunit.whenRenderingFinished().then(function() {
 			oVSb = oScrollExtension.getVerticalScrollbar();
 			assert.ok(oVSb.offsetWidth === 0 && oVSb.offsetHeight === 0, "Table content fits height -> Vertical scrollbar is not visible");
+		});
+	});
 
-		}).then(function() {
-			// BCP: 1970484410
+	/** @deprecated As of version 1.120.0 */
+	QUnit.test("Vertical scrollbar visibility with renderer API version 1", function(assert) {
+		// BCP: 1970484410
+		const oTable = this.oTable;
+		const oScrollExtension = oTable._getScrollExtension();
+		let oVSb = oScrollExtension.getVerticalScrollbar();
+		const iOriginalApiVersion = TableRenderer.apiVersion;
+
+		oTable.getRowMode().setRowCount(6);
+
+		return oTable.qunit.whenRenderingFinished().then(function() {
 			TableRenderer.apiVersion = 1;
 			oTable.setModel(TableQUnitUtils.createJSONModelWithEmptyRows(7), "other");
 			oTable.bindRows({
