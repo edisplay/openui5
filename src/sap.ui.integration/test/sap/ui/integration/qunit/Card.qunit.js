@@ -2273,7 +2273,7 @@ sap.ui.define([
 			await nextCardReadyEvent(this.oCard);
 			await nextUIUpdate();
 
-			var oError = this.oCard.getCardContent().getAggregation("_blockingMessage");
+			let oError = this.oCard.getCardContent().getAggregation("_blockingMessage");
 			assert.ok(oError.isA("sap.ui.integration.controls.BlockingMessage"), "Error is displayed.");
 
 			this.oCard.refreshData();
@@ -2281,8 +2281,11 @@ sap.ui.define([
 			await nextCardContentReadyEvent(this.oCard);
 			await nextUIUpdate();
 
-			var oContent = this.oCard.getCardContent();
+			const oContent = this.oCard.getCardContent();
 			assert.ok(oContent.isA("sap.ui.integration.cards.BaseContent"), "Content is displayed correctly.");
+
+			oError = this.oCard.getCardContent().getAggregation("_blockingMessage");
+			assert.notOk(oError, "Error is not displayed.");
 		});
 
 		QUnit.module("Event stateChanged", {

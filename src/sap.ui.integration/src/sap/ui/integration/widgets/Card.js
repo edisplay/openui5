@@ -1392,6 +1392,7 @@ sap.ui.define([
 			return;
 		}
 
+		this.hideBlockingMessage();
 		this.refreshAllData();
 		this.resetPaginator();
 	};
