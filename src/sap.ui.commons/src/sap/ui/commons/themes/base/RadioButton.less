@@ -1,3 +1,8 @@
+/* =========================================== */
+/* CSS for control sap.ui.commons/RadioButton  */
+/* base theme                                  */
+/* =========================================== */
+
 .sapUiRb {
 	vertical-align: top;
 	line-height: @sapUiLineHeight;
@@ -14,7 +19,7 @@
 
 /* Do not invert for table */
 .sapUiInverted-CTX .sapUiTable .sapUiRb {
-	color: @sapUiBaseText;
+	color: var(--sapTextColor);
 }
 
 .sapUiRb > label {
@@ -24,11 +29,11 @@
 
 /* disabled */
 .sapUiRbDis > label {
-	color: @sapUiContentDisabledTextColor;
+	color: var(--sapContent_DisabledTextColor);
 }
 
 /* make outline on control borders because otherwise it is cut in layout containers using overflow: hidden */
-.sapUiRb:focus{
+.sapUiRb:focus {
 	outline: 1px dotted @sapUiBaseBorder;
 	outline-offset: -1px;
 }
