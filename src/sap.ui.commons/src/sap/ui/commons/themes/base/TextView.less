@@ -1,5 +1,10 @@
+/* ======================================== */
+/* CSS for control sap.ui.commons/TextView  */
+/* base theme                               */
+/* ======================================== */
+
 .sapUiTv {
-	font-family: @sapUiFontFamily;
+	font-family: var(--sapFontFamily);
 	font-size: @sapUiFontSize;
 	vertical-align: top;
 	line-height: @sapUiLineHeight;
@@ -12,46 +17,46 @@
 
 /* Do not invert for table */
 .sapUiInverted-CTX .sapUiTable .sapUiTv {
-	color: @sapUiBaseText;
+	color: var(--sapTextColor);
 }
 
 .sapUiTvH1 { /* be careful - used in other controls with title too */
 	font-size: @sapUiFontHeader1Size;
 	font-weight: bold;
 	line-height: 122%;
-	color: @sapUiTextTitle;
+	color: var(--sapTitleColor);
 }
 
 .sapUiTvH2 {
 	font-size: @sapUiFontHeader2Size;
 	font-weight: bold;
 	line-height: 122%;
-	color: @sapUiTextTitle;
+	color: var(--sapTitleColor);
 }
 
 .sapUiTvH3 {
 	font-size: @sapUiFontHeader3Size;
 	font-weight: bold;
 	line-height: 122%;
-	color: @sapUiTextTitle;
+	color: var(--sapTitleColor);
 }
 
 .sapUiTvH4 {
 	font-size: @sapUiFontHeader4Size;
 	font-weight: bold;
-	color: @sapUiTextTitle;
+	color: var(--sapTitleColor);
 }
 
 .sapUiTvH5 {
 	font-size: @sapUiFontHeader5Size;
 	font-weight: bold;
-	color: @sapUiTextTitle;
+	color: var(--sapTitleColor);
 }
 
 .sapUiTvH6 {
 	font-size: @sapUiFontHeader6Size;
 	font-weight: bold;
-	color: @sapUiTextTitle;
+	color: var(--sapTitleColor);
 }
 
 .sapUiTvItalic {
@@ -73,52 +78,53 @@
 /* disabled */
 .sapUiTvDsbl {
 	cursor: default;
-	-moz-user-select: none;
-	color: @sapUiContentDisabledTextColor;
+	-webkit-user-select: none;
+	user-select: none;
+	color: var(--sapContent_DisabledTextColor);
 	outline: none;
 }
 
 .sapUiInverted-CTX .sapUiTv.sapUiTvDsbl {
-	color: @sapUiContentDisabledTextColor;
+	color: var(--sapContent_DisabledTextColor);
 }
 
 /* success state */
 .sapUiTvSucc {
-	background-color: @sapUiFieldSuccessBackground;
+	background-color: var(--sapField_SuccessBackground);
 }
 
 .sapUiInverted-CTX .sapUiTvSucc {
-	color: @sapUiBaseText;
+	color: var(--sapTextColor);
 }
 
 /* Do not invert for table */
 .sapUiInverted-CTX .sapUiTable .sapUiTvSucc {
-	color: @sapUiFieldSuccessBackground;
+	color: var(--sapField_SuccessBackground);
 }
 
 /* invalid state */
 .sapUiTvErr {
-	color: @sapUiFieldInvalidColor;
-	border-color: @sapUiFieldInvalidColor;
-	background-color: @sapUiFieldInvalidBackground;
+	color: var(--sapField_InvalidColor);
+	border-color: var(--sapField_InvalidColor);
+	background-color: var(--sapField_InvalidBackground);
 }
 
 .sapUiInverted-CTX .sapUiTvErr {
-	color: @sapUiFieldInvalidColor;
+	color: var(--sapField_InvalidColor);
 }
 
 /* warning state */
 .sapUiTvWarn {
-	background-color: @sapUiFieldWarningBackground;
+	background-color: var(--sapField_WarningBackground);
 }
 
 .sapUiInverted-CTX .sapUiTvWarn {
-	color: @sapUiBaseText;
+	color: var(--sapTextColor);
 }
 
 /* Do not invert for table */
 .sapUiInverted-CTX .sapUiTable .sapUiTvWarn {
-	color: @sapUiBaseText;
+	color: var(--sapTextColor);
 }
 
 /* Designs */
@@ -143,7 +149,7 @@
 	position: absolute;
 	left: 0;
 	top: 0;
-	background-color: @sapBackgroundColor;
+	background-color: var(--sapBackgroundColor);
 }
 
 .sapUiTvWrap{
