@@ -2426,6 +2426,48 @@ sap.ui.define([
 		assert.notOk(oBeginButton.getEnabled(), "Begin button is disabled");
 	});
 
+	QUnit.test("onsapescape: closes dialog containing DatePicker", async function(assert) {
+		// Arrange
+		var oEvent = {
+			preventDefault: this.spy(),
+			setMarked: function() {}
+		},
+		model = new JSONModel({
+			"date": ""
+		}),
+		oDP = new DatePicker({value: "{ type: 'DateInterval',parts: [{path: '/date'}]}"}),
+		oDialog = new sap.m.Dialog({
+			content: [ oDP ]
+		}),
+		oButton = new sap.m.Button({
+			text: "Open Dialog",
+			press: function () {
+				oDialog.open();
+			}
+		});
+		oDialog.setModel(model);
+		oButton.placeAt("qunit-fixture");
+		await nextUIUpdate();
+
+		// open the dialog
+		qutils.triggerKeydown(oButton.getFocusDomRef(), KeyCodes.ENTER);
+		oDP._$input.focus();
+
+		// Act - press Escape
+		qutils.triggerKeydown(oDP._$input, KeyCodes.ESCAPE);
+		oDP.onsapescape(oEvent);
+
+		await nextUIUpdate();
+
+		// Assert
+		assert.equal(oEvent.preventDefault.callCount, 0, "PreventDefault is not called");
+
+		// Cleanup
+		oDP.destroy();
+		oButton.destroy();
+		oDialog.destroy();
+	});
+
 	QUnit.test("navigate", function (assert) {
 		// Act
 		qutils.triggerEvent("click", "EDP-icon");
