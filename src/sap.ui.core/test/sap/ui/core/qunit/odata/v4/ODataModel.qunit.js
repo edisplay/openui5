@@ -2649,7 +2649,7 @@ sap.ui.define([
 			.withExactArgs("group", sinon.match.same(aPaths)).resolves("~3");
 
 		// code under test
-		oPromise = oModel.requestSideEffects("group", aPaths);
+		oPromise = oModel.requestSideEffects(aPaths, "group");
 
 		assert.notOk(oPromise.isFulfilled());
 		return oPromise.then(function (aResults) {
@@ -2668,7 +2668,7 @@ sap.ui.define([
 		oModel.aAllBindings = [oBinding];
 		this.mock(oBinding).expects("requestAbsoluteSideEffects").never();
 
-		assert.strictEqual(oModel.requestSideEffects("group", []), undefined);
+		assert.strictEqual(oModel.requestSideEffects([], "group"), undefined);
 	});
 
 	//*********************************************************************************************
