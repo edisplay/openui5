@@ -6,7 +6,7 @@
 .sapMBreadcrumbs {
 
 	.sapMBreadcrumbsCurrentLocation:focus {
-		outline: 0.125rem dotted var(--sapHC_StandardForeground);
+		outline: 0.125rem dotted @sapHC_StandardForeground;
 		outline-offset: -0.125rem;
 	}
 
@@ -20,7 +20,7 @@
 		&:focus,
 		&:hover {
 
-			.sapMSltIcon:before {
+			.sapMSltIcon::before {
 				border-bottom: none;
 			}
 		}
