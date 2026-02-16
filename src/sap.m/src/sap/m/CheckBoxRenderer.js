@@ -35,6 +35,7 @@ sap.ui.define(["sap/ui/core/ControlBehavior", 'sap/ui/core/library', 'sap/ui/cor
 			bRequired = oCheckBox.getRequired(),
 			bInteractive = bEnabled && !bDisplayOnly,
 			bDisplayOnlyApplied = bEnabled && bDisplayOnly,
+			bReadOnly = !bEditable && bEnabled,
 			oCbLabel = oCheckBox.getAggregation("_label"),
 			sValueState = oCheckBox.getValueState(),
 			bInErrorState = ValueState.Error === sValueState,
@@ -49,7 +50,7 @@ sap.ui.define(["sap/ui/core/ControlBehavior", 'sap/ui/core/library', 'sap/ui/cor
 		oRm.class("sapMCb");
 		oRm.attr("data-ui5-accesskey", oCheckBox.getProperty("accesskey"));
 
-		if (!bEditable) {
+		if (bReadOnly) {
 			oRm.class("sapMCbRo");
 		}
 
@@ -109,13 +110,10 @@ sap.ui.define(["sap/ui/core/ControlBehavior", 'sap/ui/core/library', 'sap/ui/cor
 				selected: null,
 				required: oCheckBox._isRequired() || undefined,
 				checked: oCheckBox._getAriaChecked(),
+				readonly: (bReadOnly || bDisplayOnlyApplied) ? true : null,
 				describedby: sTooltip && bEditableAndEnabled ? sId + "-Descr" : undefined,
 				labelledby: { value: oCbLabel ? oCbLabel.getId() : undefined, append: true }
 			});
-
-			if (bDisplayOnlyApplied) {
-				oRm.attr("aria-readonly", true);
-			}
 		}
 
 		oRm.openEnd();		// DIV element
@@ -162,7 +160,7 @@ sap.ui.define(["sap/ui/core/ControlBehavior", 'sap/ui/core/library', 'sap/ui/cor
 				oRm.attr("disabled", "disabled");
 			}
 
-			if (!bEditable) {
+			if (bReadOnly) {
 				oRm.attr("readonly", "readonly");
 			}
 
