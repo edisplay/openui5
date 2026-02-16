@@ -1,0 +1,22 @@
+{
+  "1.146.0": {
+    "date": "February 2026",
+    "notes": [
+      {
+        "id": "2253af08656c158f22d5ed90ac80841aa5c0caaa",
+        "type": "FIX",
+        "text": " jquery/isHidden: treat display:contents elements as visible"
+      },
+      {
+        "id": "628506c075e4eb3227424200bbbb459bf95f15bf",
+        "type": "FIX",
+        "text": " Popups: Default popover padding is now removed"
+      },
+      {
+        "id": "b9e90cc52f6f65025dafa93aef8173f48cf4266b",
+        "type": "FIX",
+        "text": " core/Control: Improve focus restoration for busy indicator"
+      }
+    ]
+  }
+}

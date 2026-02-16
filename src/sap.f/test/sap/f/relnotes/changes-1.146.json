@@ -1,0 +1,12 @@
+{
+  "1.146.0": {
+    "date": "February 2026",
+    "notes": [
+      {
+        "id": "d5555fb5750c2385ae8d6d06766b3447c5b281bb",
+        "type": "FIX",
+        "text": " sap.f.AvatarGroup: Focus visual spec alignment for group avatars"
+      }
+    ]
+  }
+}

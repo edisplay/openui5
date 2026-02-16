@@ -3,9 +3,69 @@
     "date": "February 2026",
     "notes": [
       {
+        "id": "edce80d60e87b18e3293e65faec37c5c534cb919",
+        "type": "FIX",
+        "text": " We've now fixed the width of slideTile and genericTile when they are placed inside a ushell section in sap_fiori_3 theme"
+      },
+      {
+        "id": "b02ef01901baf1a097e901896f985c4b8f72deb7",
+        "type": "FIX",
+        "text": " sap.m.OverflowToolbar: onfocusfail no longer throws an error"
+      },
+      {
+        "id": "bee933c9f78451fa479b8be910fa78ffd9ac181f",
+        "type": "FIX",
+        "text": " sap.m.PlanningCalendar: week numbering in Week and OneMonth view are shown again."
+      },
+      {
+        "id": "ebbf97d186e0cca2309599d66ec7d1012e213f1c",
+        "type": "FEATURE",
+        "text": " sap.m.Menu: introduce 'open' event"
+      },
+      {
+        "id": "abd71b5e77cd0637d4d613605b432383be11ff0b",
+        "type": "FEATURE",
+        "text": " sap.m.SinglePlanningCalendarGrid: Sort appointments by start date"
+      },
+      {
+        "id": "89149df71994e528d2dd69b386f36bda28450371",
+        "type": "FIX",
+        "text": " sap.m.Datepicker/DateTimePicker/DateRangeSelection: align with VD specification"
+      },
+      {
+        "id": "a904015cd0d61c295889c23c4a6118cd9576e3e4",
+        "type": "FEATURE",
+        "text": " sap.m.Tokenizer: Align Tokenizer mobile title with spec"
+      },
+      {
+        "id": "628506c075e4eb3227424200bbbb459bf95f15bf",
+        "type": "FIX",
+        "text": " Popups: Default popover padding is now removed"
+      },
+      {
+        "id": "db67627ed32d616279a0c205656c2c59e9e4b4c9",
+        "type": "FIX",
+        "text": " sap.m.MultiComboBox: MultiComboBox does not throw errors onAfterClose"
+      },
+      {
+        "id": "b9e90cc52f6f65025dafa93aef8173f48cf4266b",
+        "type": "FIX",
+        "text": " core/Control: Improve focus restoration for busy indicator"
+      },
+      {
+        "id": "75db4bcc4c9eff012152023edb51b448ca907f32",
+        "type": "FEATURE",
+        "text": " sap.m.FormattedText: added <S> tag support"
+      },
+      {
         "id": "ec113e0f1f787a0999408210a657d53870a64f20",
         "type": "FIX",
         "text": " sap.m.DynamicDateRange: resize the popup depending on page"
+      },
+      {
+        "id": "d1233a80777f87e0dc1abb5e343ab05907b43dee",
+        "type": "FIX",
+        "text": " sap.m.StepInput: adapt to VD specs on mobile"
       }
     ]
   }

@@ -1,0 +1,22 @@
+{
+  "1.146.0": {
+    "date": "February 2026",
+    "notes": [
+      {
+        "id": "edce80d60e87b18e3293e65faec37c5c534cb919",
+        "type": "FIX",
+        "text": " We've now fixed the width of slideTile and genericTile when they are placed inside a ushell section in sap_fiori_3 theme"
+      },
+      {
+        "id": "d5555fb5750c2385ae8d6d06766b3447c5b281bb",
+        "type": "FIX",
+        "text": " sap.f.AvatarGroup: Focus visual spec alignment for group avatars"
+      },
+      {
+        "id": "cbd4baa108d1661c89354c2e7603811e203bfa57",
+        "type": "FIX",
+        "text": " sap.ui.integration.AnalyticalContent: Focus outline is no longer cut off"
+      }
+    ]
+  }
+}
