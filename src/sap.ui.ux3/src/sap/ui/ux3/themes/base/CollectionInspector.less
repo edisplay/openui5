@@ -1,6 +1,7 @@
-/* ====================================================== */
-/* CSS for control sap.ui.ux3/CollectionInspector.control */
-/* ====================================================== */
+/* =============================================== */
+/* CSS for control sap.ui.ux3/CollectionInspector  */
+/* base theme                                      */
+/* =============================================== */
 
 .sapUiUx3CI {
 	position: relative;
@@ -30,7 +31,7 @@
 	top: 30px;
 }
 
-.sapUiUx3CIFitParent  .sapUiUx3CISidebar button {
+.sapUiUx3CIFitParent .sapUiUx3CISidebar button {
 	position: absolute;
 	bottom: 0;
 }
@@ -103,11 +104,11 @@
 }
 
 .sapUiUx3CISidebarClosed .sapUiUx3CISidebar {
-	width: 0px;
+	width: 0;
 }
 
 .sapUiUx3CISidebarClosed .sapUiUx3CISidebar {
-	left: 0px;
+	left: 0;
 }
 
 ul.sapUiUx3CICollectionList {
@@ -125,7 +126,7 @@ ul.sapUiUx3CICollectionList li {
 	border: 0;
 	border-bottom: 1px solid @sapUiBaseBorder;
 	font-weight: bold;
-	color: @sapUiBaseText;
+	color: var(--sapTextColor);
 	cursor: pointer;
 }
 
@@ -141,7 +142,7 @@ ul.sapUiUx3CICollectionList li:focus {
 }
 
 ul.sapUiUx3CICollectionList li.sapUiUx3CICollectionListItemSelected {
-	background-color: @sapUiHighlight;
+	background-color: var(--sapHighlightColor);
 	color: @sapUiTextInverted;
 }
 
@@ -150,14 +151,14 @@ ul.sapUiUx3CICollectionList li:last-of-type {
 }
 
 .sapUiUx3CIContent {
-	left: 0px;
+	left: 0;
 }
 
-.sapUiUx3CIToolBar .sapUiSegmentedButton>button.sapUiBtnS.sapUiBtnNorm,
-.sapUiUx3CIToolBar>button.sapUiBtnS.sapUiBtnNorm,
-.sapUiUx3CIToolBar .sapUiSegmentedButton>button.sapUiBtnS.sapUiBtnNorm.sapUiBtnStd .sapUiToggleBtn,
-.sapUiUx3CIToolBar>button.sapUiBtnS.sapUiBtnNorm.sapUiBtnStd .sapUiToggleBtn,
-.sapUiUx3CIToolBar>button.sapUiBtnS.sapUiBtnNorm.sapUiBtnStd.sapUiToggleBtn.sapUiToggleBtnPressed {
+.sapUiUx3CIToolBar .sapUiSegmentedButton > button.sapUiBtnS.sapUiBtnNorm,
+.sapUiUx3CIToolBar > button.sapUiBtnS.sapUiBtnNorm,
+.sapUiUx3CIToolBar .sapUiSegmentedButton > button.sapUiBtnS.sapUiBtnNorm.sapUiBtnStd .sapUiToggleBtn,
+.sapUiUx3CIToolBar > button.sapUiBtnS.sapUiBtnNorm.sapUiBtnStd .sapUiToggleBtn,
+.sapUiUx3CIToolBar > button.sapUiBtnS.sapUiBtnNorm.sapUiBtnStd.sapUiToggleBtn.sapUiToggleBtnPressed {
 	font-weight: bold;
 	height: 22px;
 }
