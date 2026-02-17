@@ -1252,25 +1252,17 @@ sap.ui.define([
 
 	QUnit.test("Start with resolved relative binding and change context", async function(assert) {
 		this.oTable.destroy();
-		this.oLayout = new TableQUnitUtils.TestLayoutControl({
-			items: TableQUnitUtils.createTable({
-				rows: {
-					path: "",
-					parameters: {
-						$count: true
-					}
+		this.oTable = TableQUnitUtils.createTable(TableQUnitUtils.createSettingsForList({
+			tableSettings: {
+				objectBindings: {
+					path: "/Products"
 				},
-				columns: TableQUnitUtils.createTextColumn({label: "Name", text: "Name", bind: true}),
-				placeAt: false
-			}),
-			models: TableQUnitUtils.createModelForList(),
-			objectBindings: {
-				path: "/Products"
+				rows: {
+					path: ""
+				}
 			}
-		});
-		this.oTable = this.oLayout.getItems()[0];
-		this.oLayout.placeAt("qunit-fixture");
-		await this.oTable.qunit.whenRenderingFinished();
+		}));
+		await this.oTable.qunit.whenBindingChange();
 
 		this.assertHeaderSelector({
 			icon: TableUtils.ThemeParameters.checkboxIcon,
@@ -1283,7 +1275,7 @@ sap.ui.define([
 			tooltip: TableUtils.getResourceText("TBL_DESELECT_ALL")
 		});
 
-		this.oLayout.bindObject({path: "/Products2"});
+		this.oTable.bindObject({path: "/Products2"});
 		await this.oTable.qunit.whenBindingChange();
 		this.assertHeaderSelector({
 			icon: TableUtils.ThemeParameters.checkboxIcon,
@@ -1296,34 +1288,23 @@ sap.ui.define([
 			tooltip: TableUtils.getResourceText("TBL_DESELECT_ALL")
 		});
 
-		this.oLayout.unbindObject();
+		this.oTable.unbindObject();
 		this.assertHeaderSelector({
 			icon: TableUtils.ThemeParameters.checkboxIcon,
 			tooltip: TableUtils.getResourceText("TBL_SELECT_ALL"),
 			enabled: false
 		});
-
-		this.oLayout.destroy();
 	});
 
 	QUnit.test("Start with unresolved relative binding and resolve", async function(assert) {
 		this.oTable.destroy();
-		this.oLayout = new TableQUnitUtils.TestLayoutControl({
-			items: TableQUnitUtils.createTable({
+		this.oTable = TableQUnitUtils.createTable(TableQUnitUtils.createSettingsForList({
+			tableSettings: {
 				rows: {
-					path: "",
-					parameters: {
-						$count: true
-					}
-				},
-				columns: TableQUnitUtils.createTextColumn({label: "Name", text: "Name", bind: true}),
-				showNoData: false,
-				placeAt: false
-			}),
-			models: TableQUnitUtils.createModelForList()
-		});
-		this.oTable = this.oLayout.getItems()[0];
-		this.oLayout.placeAt("qunit-fixture");
+					path: ""
+				}
+			}
+		}));
 
 		this.assertHeaderSelector({
 			icon: TableUtils.ThemeParameters.checkboxIcon,
@@ -1331,7 +1312,7 @@ sap.ui.define([
 			enabled: false
 		});
 
-		this.oLayout.bindObject({path: "/Products"});
+		this.oTable.bindObject({path: "/Products"});
 		await this.oTable.qunit.whenBindingChange();
 		this.assertHeaderSelector({
 			icon: TableUtils.ThemeParameters.checkboxIcon,
@@ -1343,8 +1324,6 @@ sap.ui.define([
 			icon: TableUtils.ThemeParameters.clearSelectionIcon,
 			tooltip: TableUtils.getResourceText("TBL_DESELECT_ALL")
 		});
-
-		this.oLayout.destroy();
 	});
 
 	QUnit.test("Filter with $$clearSelectionOnFilter=false", async function(assert) {
@@ -1353,7 +1332,7 @@ sap.ui.define([
 				operationMode: "Server"
 			}
 		}));
-		await this.oTable.qunit.whenRenderingFinished();
+		await this.oTable.qunit.whenBindingChange();
 
 		this.oSelectionPlugin.setSelected(this.oTable.getRows()[0], true);
 		this.oTable.getBinding().filter(new Filter("Name", "EQ", "DoesNotExist"));
@@ -1391,7 +1370,7 @@ sap.ui.define([
 				$$clearSelectionOnFilter: true
 			}
 		});
-		await this.oTable.qunit.whenRenderingFinished();
+		await this.oTable.qunit.whenBindingChange();
 
 		this.oSelectionPlugin.setSelected(this.oTable.getRows()[0], true);
 		this.oTable.getBinding().filter(new Filter("Name", "EQ", "DoesNotExist"));
@@ -1504,12 +1483,9 @@ sap.ui.define([
 		const aRows = this.oTable.getRows();
 
 		await aRows[3].getBindingContext().expand();
-		await this.oTable.qunit.whenRenderingFinished();
 		this.oTable.setFirstVisibleRow(6);
-		await this.oTable.qunit.whenBindingChange();
 		await this.oTable.qunit.whenRenderingFinished();
 		await aRows[4].getBindingContext().expand();
-		await this.oTable.qunit.whenRenderingFinished();
 		this.oTable.setFirstVisibleRow(9);
 		await this.oTable.qunit.whenRenderingFinished();
 		this.assertHeaderSelector({
@@ -1518,7 +1494,6 @@ sap.ui.define([
 		});
 
 		await aRows[4].getBindingContext().expand();
-		await this.oTable.qunit.whenRenderingFinished();
 		this.oTable.setFirstVisibleRow(12);
 		await this.oTable.qunit.whenRenderingFinished();
 		this.assertHeaderSelector({
@@ -1539,7 +1514,6 @@ sap.ui.define([
 		});
 
 		aRows[1].getBindingContext().collapse();
-		await this.oTable.qunit.whenRenderingFinished();
 		this.assertHeaderSelector({
 			icon: TableUtils.ThemeParameters.clearSelectionIcon,
 			tooltip: TableUtils.getResourceText("TBL_DESELECT_ALL")
