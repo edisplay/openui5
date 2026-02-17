@@ -27,6 +27,7 @@ sap.ui.define([],
 			this.renderToolbar(oRm, oFilterBar);
 			this.renderItems(oRm, oFilterBar);
 
+			this.renderInvisibleTexts(oRm, oFilterBar);
 			this.renderHintText(oRm, oFilterBar);
 			/** @deprecated As of version 1.122 together with the content aggregation */
 			this.renderContent(oRm, oFilterBar);
@@ -34,6 +35,8 @@ sap.ui.define([],
 		};
 
 		FilterBarLayoutRenderer.addRootDivClasses = function (oRm, oFilterBar) {};
+
+		FilterBarLayoutRenderer.renderInvisibleTexts = function (oRm, oFilterBar) {};
 
 		FilterBarLayoutRenderer.renderToolbar = function (oRm, oFilterBar) {};
 
