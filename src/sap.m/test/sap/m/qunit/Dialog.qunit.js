@@ -1527,7 +1527,7 @@ sap.ui.define([
 		oDialog.destroy();
 	});
 
-	QUnit.test("Header focus is preserved after invalidation", function (assert) {
+	QUnit.test("Button focus is preserved after invalidation", function (assert) {
 		this.clock.restore();
 		const done = assert.async();
 		const oDialog = new Dialog({
@@ -1542,13 +1542,13 @@ sap.ui.define([
 
 		oDialog.open();
 		oDialog.attachAfterOpen(async () => {
-			assert.ok(document.activeElement?.classList.contains("sapMDialogTitleGroup"), "Focus should be set to the header");
+			assert.ok(document.activeElement?.classList.contains("sapMBtn"), "Focus should be set to the button");
 
 			// Act
 			oDialog.invalidate();
 			await nextUIUpdate();
 
-			assert.ok(document.activeElement?.classList.contains("sapMDialogTitleGroup"), "Header focus should be preserved");
+			assert.ok(document.activeElement?.classList.contains("sapMBtn"), "Button focus should be preserved");
 
 			oDialog.destroy();
 			done();
@@ -1747,7 +1747,7 @@ sap.ui.define([
 		await nextUIUpdate(oClock);
 
 		oDialog.open();
-		oClock.tick(300);
+		oClock.tick(400);
 		await nextUIUpdate(oClock);
 
 		assert.strictEqual(document.activeElement, oDialog.getDomRef("cont"), "Initial focus is set to the first keyboard scrollable container.");
@@ -2049,7 +2049,7 @@ sap.ui.define([
 		oDialog.destroy();
 	});
 
-	QUnit.test("Draggale/resizable dialog should have correct aria-roledescription for header", function(assert) {
+	QUnit.test("Draggale/resizable dialog should have correct aria-describedby", function(assert) {
 		// arrange
 		var oDialog = new Dialog({
 			draggable: true,
@@ -2061,11 +2061,11 @@ sap.ui.define([
 		this.clock.tick(500);
 
 		// assert
-		var sRenderedRoleDescription = oDialog.$().find('header .sapMDialogTitleGroup').attr('aria-roledescription');
+		var sDescribedbyId = oDialog.$().attr('aria-describedby');
+		var sAriaDescribedbyText =	Element.getElementById(sDescribedbyId).getText();
 		var oRb = Library.getResourceBundleFor("sap.m");
-		var sExpectedRoleDescription = oRb.getText("DIALOG_HEADER_ARIA_ROLE_DESCRIPTION");
-		assert.ok(sRenderedRoleDescription, "The aria-roledescription attrbute is present on a draggable/resizable dialog");
-		assert.strictEqual(sRenderedRoleDescription, sExpectedRoleDescription, "Aria-roledescription text has the correct value");
+		var sExpectedRoleDescription = oRb.getText("DIALOG_ARIA_DESCRIBEDBY_DRAGGABLE_RESIZABLE");
+		assert.strictEqual(sAriaDescribedbyText, sExpectedRoleDescription, "aria-describedby text has the correct value");
 
 		// cleanup
 		oDialog.destroy();
@@ -2101,7 +2101,7 @@ sap.ui.define([
 
 		// assert
 		var sAriaDescribedbyText = oDialog.$().find('header .sapMDialogTitleGroup > #' + oDialog.getId() + '-ariaDescribedbyText').attr('id');
-		assert.ok(oDialog.$().find('header .sapMDialogTitleGroup').attr('aria-describedby'), "The aria-describedby attrbute is present on a draggable/resizable dialog");
+		assert.ok(oDialog.$().find('.sapMDialogDragAndResizeHandler').attr('aria-describedby'), "The aria-describedby attribute is present on a draggable/resizable dialog");
 		assert.strictEqual(oDialog.$().find('header .sapMDialogTitleGroup').attr('aria-describedby'), sAriaDescribedbyText, "The aria-describedby attrbute points to the correct span");
 
 		// cleanup
@@ -2382,7 +2382,7 @@ sap.ui.define([
 			offsetY: 35,
 			preventDefault: function () {},
 			stopPropagation: function () {},
-			target: oDialog._getFocusableHeader()
+			target: oDialog.getDomRef("dragAndResizeHandler")
 		};
 
 		var oClientRect = oDialog.getDomRef().getBoundingClientRect();
@@ -2634,12 +2634,12 @@ sap.ui.define([
 		// Arrange
 		this.oDialog.setDraggable(true).open();
 		this.clock.tick(500);
-		var oTitle = this.oDialog._getFocusableHeader(),
+		var oDragAndResizeHandler = this.oDialog.getDomRef("dragAndResizeHandler"),
 			$withinArea = jQuery(this.oWithinArea);
 
 		// Act
 		for (var i = 0; i < 50; i++) {
-			qutils.triggerKeydown(oTitle, KeyCodes.ARROW_UP);
+			qutils.triggerKeydown(oDragAndResizeHandler, KeyCodes.ARROW_UP);
 		}
 		this.clock.tick(500);
 
@@ -2652,11 +2652,11 @@ sap.ui.define([
 		this.oDialog.setResizable(true).open();
 		this.clock.tick(500);
 		var $withinArea = jQuery(this.oWithinArea),
-			oTitle = this.oDialog._getFocusableHeader();
+			oDragAndResizeHandler = this.oDialog.getDomRef("dragAndResizeHandler");
 
 		// Act
 		for (var i = 0; i < 50; i++) {
-			qutils.triggerKeydown(oTitle, KeyCodes.ARROW_DOWN, true);
+			qutils.triggerKeydown(oDragAndResizeHandler, KeyCodes.ARROW_DOWN, true);
 		}
 
 		// Assert
@@ -2814,14 +2814,14 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("header focus", function(assert) {
+	QUnit.test("Drag and resize focus", function(assert) {
 		// act
 		this.oDialog.open();
 		this.clock.tick(500);
 
-		var oTitle = this.oDialog._getFocusableHeader();
+		var oDragAndResizeHandler = this.oDialog.getDomRef("dragAndResizeHandler");
 
-		assert.strictEqual(document.activeElement, oTitle, "header is focused");
+		assert.strictEqual(document.activeElement, this.oDialog.getContent()[0].getItems()[0].getFocusDomRef(), "List item is focused");
 
 		// act
 		this.oDialog.close();
@@ -2833,9 +2833,9 @@ sap.ui.define([
 		this.oDialog.open();
 		this.clock.tick(500);
 
-		oTitle = this.oDialog._getFocusableHeader();
+		oDragAndResizeHandler = this.oDialog.getDomRef("dragAndResizeHandler");
 
-		assert.notOk(oTitle, "header is not focused");
+		assert.notOk(oDragAndResizeHandler, "drag and resize handler is not rendered");
 	});
 
 	QUnit.test("drag", function(assert) {
@@ -2843,25 +2843,25 @@ sap.ui.define([
 		this.oDialog.open();
 		this.clock.tick(500);
 
-		var oTitle = this.oDialog._getFocusableHeader();
+		var oDragAndResizeHandler = this.oDialog.getDomRef("dragAndResizeHandler");
 		var mOffset1 = this.oDialog.$().offset();
 
-		qutils.triggerKeydown(oTitle, KeyCodes.ARROW_DOWN);
+		qutils.triggerKeydown(oDragAndResizeHandler, KeyCodes.ARROW_DOWN);
 		this.clock.tick(500);
 		var mOffset2 = this.oDialog.$().offset();
 		assert.ok(mOffset1.top < mOffset2.top, "the dialog is moved");
 
-		qutils.triggerKeydown(oTitle, KeyCodes.ARROW_UP);
+		qutils.triggerKeydown(oDragAndResizeHandler, KeyCodes.ARROW_UP);
 		this.clock.tick(500);
 		mOffset1 = this.oDialog.$().offset();
 		assert.ok(mOffset1.top < mOffset2.top, "the dialog is moved");
 
-		qutils.triggerKeydown(oTitle, KeyCodes.ARROW_RIGHT);
+		qutils.triggerKeydown(oDragAndResizeHandler, KeyCodes.ARROW_RIGHT);
 		this.clock.tick(500);
 		mOffset2 = this.oDialog.$().offset();
 		assert.ok(mOffset1.left < mOffset2.left, "the dialog is moved");
 
-		qutils.triggerKeydown(oTitle, KeyCodes.ARROW_LEFT);
+		qutils.triggerKeydown(oDragAndResizeHandler, KeyCodes.ARROW_LEFT);
 		this.clock.tick(500);
 		mOffset1 = this.oDialog.$().offset();
 		assert.ok(mOffset1.left < mOffset2.left, "the dialog is moved");
@@ -2872,26 +2872,26 @@ sap.ui.define([
 		this.oDialog.open();
 		this.clock.tick(500);
 
-		var oTitle = this.oDialog._getFocusableHeader();
+		var oDragAndResizeHandler = this.oDialog.getDomRef("dragAndResizeHandler");
 		var width1 = this.oDialog.$().width();
 		var height1 = this.oDialog.$().height();
 
-		qutils.triggerKeydown(oTitle, KeyCodes.ARROW_DOWN, true);
+		qutils.triggerKeydown(oDragAndResizeHandler, KeyCodes.ARROW_DOWN, true);
 		this.clock.tick(500);
 		var height2 = this.oDialog.$().height();
 		assert.ok(height2 > height1, "dialog is resized");
 
-		qutils.triggerKeydown(oTitle, KeyCodes.ARROW_UP, true);
+		qutils.triggerKeydown(oDragAndResizeHandler, KeyCodes.ARROW_UP, true);
 		this.clock.tick(500);
 		height1 = this.oDialog.$().height();
 		assert.ok(height2 > height1, "dialog is resized");
 
-		qutils.triggerKeydown(oTitle, KeyCodes.ARROW_RIGHT, true);
+		qutils.triggerKeydown(oDragAndResizeHandler, KeyCodes.ARROW_RIGHT, true);
 		this.clock.tick(500);
 		var width2 = this.oDialog.$().width();
 		assert.ok(width2 > width1, "dialog is resized");
 
-		qutils.triggerKeydown(oTitle, KeyCodes.ARROW_LEFT, true);
+		qutils.triggerKeydown(oDragAndResizeHandler, KeyCodes.ARROW_LEFT, true);
 		this.clock.tick(500);
 		width1 = this.oDialog.$().width();
 		assert.ok(width2 > width1, "dialog is resized");
@@ -2905,15 +2905,15 @@ sap.ui.define([
 		this.oDialog.open();
 		this.clock.tick(500);
 
-		var oTitle = this.oDialog._getFocusableHeader();
+		var oDragAndResizeHandler = this.oDialog.getDomRef("dragAndResizeHandler");
 		var mOffset = this.oDialog.$().offset();
 		var height = this.oDialog.$().height();
 
-		qutils.triggerKeydown(oTitle, KeyCodes.ARROW_DOWN);
+		qutils.triggerKeydown(oDragAndResizeHandler, KeyCodes.ARROW_DOWN);
 		this.clock.tick(500);
 		assert.strictEqual(mOffset.top, this.oDialog.$().offset().top, "dialog is not moved");
 
-		qutils.triggerKeydown(oTitle, KeyCodes.ARROW_DOWN, true);
+		qutils.triggerKeydown(oDragAndResizeHandler, KeyCodes.ARROW_DOWN, true);
 		this.clock.tick(500);
 		assert.ok(height < this.oDialog.$().height(), "dialog is resized");
 
@@ -2921,16 +2921,16 @@ sap.ui.define([
 		this.oDialog.setDraggable(true);
 		Core.applyChanges();
 
-		oTitle = this.oDialog._getFocusableHeader();
+		oDragAndResizeHandler = this.oDialog.getDomRef("dragAndResizeHandler");
 
 		mOffset = this.oDialog.$().offset();
 		height = this.oDialog.$().height();
 
-		qutils.triggerKeydown(oTitle, KeyCodes.ARROW_DOWN);
+		qutils.triggerKeydown(oDragAndResizeHandler, KeyCodes.ARROW_DOWN);
 		this.clock.tick(500);
 		assert.ok(mOffset.top < this.oDialog.$().offset().top, "dialog is moved");
 
-		qutils.triggerKeydown(oTitle, KeyCodes.ARROW_DOWN, true);
+		qutils.triggerKeydown(oDragAndResizeHandler, KeyCodes.ARROW_DOWN, true);
 		this.clock.tick(500);
 		assert.strictEqual(height, this.oDialog.$().height(), "dialog is not resized");
 
@@ -2938,16 +2938,16 @@ sap.ui.define([
 		this.oDialog.setDraggable(false);
 		Core.applyChanges();
 
-		oTitle = this.oDialog._getFocusableHeader();
+		oDragAndResizeHandler = this.oDialog.getDomRef("dragAndResizeHandler");
 
 		mOffset = this.oDialog.$().offset();
 		height = this.oDialog.$().height();
 
-		qutils.triggerKeydown(oTitle, KeyCodes.ARROW_DOWN);
+		qutils.triggerKeydown(oDragAndResizeHandler, KeyCodes.ARROW_DOWN);
 		this.clock.tick(500);
 		assert.strictEqual(mOffset.top, this.oDialog.$().offset().top, "dialog is not moved");
 
-		qutils.triggerKeydown(oTitle, KeyCodes.ARROW_DOWN, true);
+		qutils.triggerKeydown(oDragAndResizeHandler, KeyCodes.ARROW_DOWN, true);
 		this.clock.tick(500);
 		assert.strictEqual(height, this.oDialog.$().height(), "dialog is not resized");
 	});
@@ -2967,7 +2967,7 @@ sap.ui.define([
 		var iInitialTop = oClientRect.top;
 		var iInitialLeft = oClientRect.left;
 
-		qutils.triggerKeydown(this.oDialog._getFocusableHeader(), KeyCodes.ARROW_DOWN);
+		qutils.triggerKeydown(this.oDialog.getDomRef("dragAndResizeHandler"), KeyCodes.ARROW_DOWN);
 		this.clock.tick(500);
 
 		oClientRect = this.oDialog.getDomRef().getBoundingClientRect();
