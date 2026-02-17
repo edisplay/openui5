@@ -21,10 +21,8 @@
 
 		<script>
 		sap.ui.require([
-			"sap/base/Log",
-			"sap/m/Button",
-			"sap/m/MessageItem"
-		], function(Log, Button, MessageItem) {
+			"sap/base/Log"
+		], function(Log) {
 			"use strict";
 
 			var range = function (from, to) {
@@ -229,15 +227,6 @@
 				initiallyExpanded: false
 			});
 
-			const oMessagePopoverSingle = new sap.m.MessagePopover("mPopoverSingle", {
-				items: [new MessageItem({
-					type: "Error",
-					title: "This is the message title",
-					description: "This is a long message description. It provides more details about the message and can span multiple lines to ensure that all necessary information is conveyed to the user effectively.",
-					subtitle: "Subtitle of the message",
-				})]
-			});
-
 			oMessagePopover.setModel(oModel);
 			oMessagePopoverWithGrouping.setModel(oModel);
 			oMessagePopoverCollapsed.setModel(oModel);
@@ -267,15 +256,6 @@
 				press: function () {
 					oMessagePopoverCollapsed.toggle(this);
 				}
-			});
-
-			const oSingleMessagePopoverButton = new sap.m.Button("btnSingle",
-			 {
-				text: "1",
-				type: sap.m.ButtonType.Emphasized,
-				press: function () {
-					oMessagePopoverSingle.toggle(this);
-			 	}
 			});
 
 			var getAddPositionItems = function () {
@@ -438,8 +418,6 @@
 						oMessagePopoverWithGroupingButton,
 						new sap.m.ToolbarSpacer(),
 						oMessagePopoverCButton,
-						new sap.m.ToolbarSpacer(),
-						oSingleMessagePopoverButton,
 						new sap.m.CheckBox("compactMode", {
 							selected: false,
 							text: "Compact mode",
