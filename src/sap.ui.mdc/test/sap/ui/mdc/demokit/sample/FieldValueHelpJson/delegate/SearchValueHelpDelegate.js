@@ -4,14 +4,16 @@ sap.ui.define([
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
 	"sap/ui/mdc/condition/Condition",
-	"sap/ui/mdc/enums/ConditionValidated"
+	"sap/ui/mdc/enums/ConditionValidated",
+	"sap/ui/thirdparty/jquery"
 ], function (
 	ValueHelpDelegate,
 	StateUtil,
 	Filter,
 	FilterOperator,
 	Condition,
-	ConditionValidated
+	ConditionValidated,
+	jQuery
 ) {
 	"use strict";
 
@@ -35,6 +37,21 @@ sap.ui.define([
 		}
 
 		return aFilters;
+	};
+
+	SearchValueHelpDelegate.retrieveContent = function (oValueHelp, oContainer, sContentId) {
+
+		if (oContainer.isTypeahead()) {
+			const oField = oValueHelp.getControl();
+			if (oField) {
+				const oDomRef = oField.getDomRef();
+				const oContent = oContainer.getContent()[0];
+				const oTable = oContent.getTable();
+				oTable.setWidth(oDomRef.clientWidth + "px");
+			}
+		}
+
+		return ValueHelpDelegate.retrieveContent.apply(this, arguments);
 	};
 
 	return SearchValueHelpDelegate;
