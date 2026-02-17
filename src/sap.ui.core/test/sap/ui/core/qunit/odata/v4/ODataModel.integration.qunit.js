@@ -12,6 +12,7 @@ sap.ui.define([
 	"sap/m/MessageStrip",
 	"sap/m/Text",
 	"sap/ui/Device",
+	"sap/ui/base/BoundFilter", // import to avoid issues w/ lazy loading in Bound Filter tests
 	"sap/ui/base/EventProvider",
 	"sap/ui/base/SyncPromise",
 	"sap/ui/core/Messaging",
@@ -26,6 +27,7 @@ sap.ui.define([
 	"sap/ui/model/FilterOperator",
 	"sap/ui/model/FilterType",
 	"sap/ui/model/Sorter",
+	"sap/ui/model/json/JSONModel",
 	"sap/ui/model/odata/OperationMode",
 	"sap/ui/model/odata/type/Decimal",
 	"sap/ui/model/odata/v4/AnnotationHelper",
@@ -41,10 +43,11 @@ sap.ui.define([
 	// load Table resources upfront to avoid loading times > 1 second for the first test using Table
 	"sap/ui/table/Table"
 ], function (Log, Localization, uid, ColumnListItem, CustomListItem, FlexBox, _MessageStrip,
-		Text, Device, EventProvider, SyncPromise, Messaging, Rendering, Supportability, FieldHelp,
-		Message, Controller, View, ChangeReason, Filter, FilterOperator, FilterType, Sorter,
-		OperationMode, Decimal, AnnotationHelper, ODataListBinding, ODataMetaModel, ODataModel,
-		ODataPropertyBinding, ValueListType, _Helper, Security, TestUtils, XMLHelper) {
+		Text, Device, _BoundFilter, EventProvider, SyncPromise, Messaging, Rendering,
+		Supportability, FieldHelp, Message, Controller, View, ChangeReason, Filter, FilterOperator,
+		FilterType, Sorter, JSONModel, OperationMode, Decimal, AnnotationHelper, ODataListBinding,
+		ODataMetaModel, ODataModel, ODataPropertyBinding, ValueListType, _Helper, Security,
+		TestUtils, XMLHelper) {
 	/*eslint no-sparse-arrays: 0,
 		"max-len": ["error", {"code": 100, "ignorePattern": "\\{meta>"}] */
 	"use strict";
@@ -82889,5 +82892,107 @@ make root = ${bMakeRoot}`;
 			oTeamContext.requestSideEffects([""]),
 			this.waitForChanges(assert, "bind table + side-effects refresh")
 		]);
+	});
+
+	//*********************************************************************************************
+	// Scenario: Bound Filter used for instant filtering with an OData V4 model.
+	// Assert in addition that the following works as expected with bound filters
+	// - auto-$expand/$select
+	// - filter operators with two operands (BT)
+	// JIRA: CPOUI5MODELS-1998
+	QUnit.test("Bound Filter", async function (assert) {
+		const oModel = this.createSalesOrdersModel({autoExpandSelect : true});
+		const sView = `
+<Table id="table" items="{
+	path : '/ProductList',
+	suspended : true,
+	boundFilters : [{
+		path: 'Name',
+		operator: 'StartsWith',
+		value1: '{filter>/namePrefix}'
+	}, {
+		path: 'WeightMeasure',
+		operator: 'BT',
+		value1: '{filter>/weightMin}',
+		value2: '{filter>/weightMax}'
+	}, {
+		path: 'WeightUnit',
+		operator: 'EQ',
+		value1: 'KG'
+		}]
+	}">
+	<Text id="name" text="{Name}"/>
+	<Text id="weightMeasure" text="{WeightMeasure}"/>
+	<Text id="weightUnit" text="{WeightUnit}"/>
+</Table>`;
+
+		this.expectChange("name", [])
+			.expectChange("weightMeasure", [])
+			.expectChange("weightUnit", []);
+
+		await this.createView(assert, sView, oModel);
+
+		const oFilterModel = new JSONModel({
+			namePrefix : "Lap",
+			weightMin : undefined,
+			weightMax : undefined
+		});
+		this.oView.setModel(oFilterModel, "filter");
+
+		this.expectRequest("ProductList?"
+				+ "$filter=startswith(Name,'Lap') and WeightUnit eq 'KG'&"
+				+ "$select=Name,ProductID,WeightMeasure,WeightUnit&$skip=0&$top=100", {
+				value : [
+					{Name : "Lap0", ProductID : "id0", WeightMeasure : "2.5", WeightUnit : "KG"},
+					{Name : "Lap1", ProductID : "id1", WeightMeasure : "3.5", WeightUnit : "KG"}
+				]
+			})
+			.expectChange("name", ["Lap0", "Lap1"])
+			.expectChange("weightMeasure", ["2.500", "3.500"])
+			.expectChange("weightUnit", ["KG", "KG"]);
+
+		// resume only after filter model has been set to prevent canceled errors
+		this.oView.byId("table").getBinding("items").resume();
+
+		await this.waitForChanges(assert, "initial filtering");
+
+		// data cache created on setting weightMin is discarded when weightMax is set
+		this.rIgnoredCanceledErrors = /^Cache discarded as a new cache has been created$/;
+		this.expectRequest("ProductList?"
+				+ "$filter=startswith(Name,'Lap') and WeightMeasure ge 3.0"
+					+ " and WeightMeasure le 4.0 and WeightUnit eq 'KG'"
+				+ "&$select=Name,ProductID,WeightMeasure,WeightUnit&$skip=0&$top=100", {
+				value : [
+					{Name : "Lap1", ProductID : "id1", WeightMeasure : "3.5", WeightUnit : "KG"}
+				]
+			})
+			.expectChange("name", "Lap1", 0)
+			.expectChange("weightMeasure", "3.500", 0);
+
+		// code under test - set BT filter values
+		oFilterModel.setProperty("/weightMin", "3.0");
+		oFilterModel.setProperty("/weightMax", "4.0");
+
+		await this.waitForChanges(assert, "set BT filter values");
+
+		this.expectRequest("ProductList?$filter=WeightUnit eq 'KG'"
+				+ "&$select=Name,ProductID,WeightMeasure,WeightUnit&$skip=0&$top=100", {
+				value : [
+					{Name : "Mob0", ProductID : "id2", WeightMeasure : "0.5", WeightUnit : "KG"},
+					{Name : "Lap0", ProductID : "id0", WeightMeasure : "2.5", WeightUnit : "KG"},
+					{Name : "Lap1", ProductID : "id1", WeightMeasure : "3.5", WeightUnit : "KG"}
+				]
+			})
+			.expectChange("name", ["Mob0", "Lap0", "Lap1"])
+			.expectChange("weightMeasure", ["0.500", "2.500", "3.500"])
+			.expectChange("weightUnit", "KG", 1)
+			.expectChange("weightUnit", "KG", 2);
+
+		// code under test - reset all bound filter values
+		oFilterModel.setProperty("/namePrefix", undefined);
+		oFilterModel.setProperty("/weightMin", undefined);
+		oFilterModel.setProperty("/weightMax", undefined);
+
+		await this.waitForChanges(assert, "reset all bound filter values");
 	});
 });
