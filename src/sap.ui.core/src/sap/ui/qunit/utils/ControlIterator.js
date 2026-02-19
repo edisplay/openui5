@@ -103,6 +103,10 @@ sap.ui.define(['sap/ui/core/Core', "sap/ui/VersionInfo", "sap/ui/core/Lib"],
 		"sap.ui.core.mvc.View",
 		"sap.ui.core.mvc.XMLView",
 		/**
+		 * @deprecated since 1.120
+		 */
+		"sap.ui.core.mvc.XMLAfterRenderingNotifier",
+		/**
 		 * @deprecated since 1.56
 		 */
 		"sap.ui.core.tmpl.Template",
@@ -182,6 +186,10 @@ sap.ui.define(['sap/ui/core/Core', "sap/ui/VersionInfo", "sap/ui/core/Lib"],
 		"sap.ui.core.mvc.TemplateView",
 		"sap.ui.core.mvc.View",
 		"sap.ui.core.mvc.XMLView",
+		/**
+		 * @deprecated since 1.120
+		 */
+		"sap.ui.core.mvc.XMLAfterRenderingNotifier",
 		/**
 		 * @deprecated since 1.56
 		 */
