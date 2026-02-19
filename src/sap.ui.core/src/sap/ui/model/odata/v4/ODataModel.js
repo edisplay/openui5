@@ -1626,7 +1626,7 @@ sap.ui.define([
 			]);
 		}
 		_Helper.checkGroupId(sGroupId, false, true);
-		sGroupId ??= this.getUpdateGroupId();
+		sGroupId ??= this.sUpdateGroupId;
 		if (this.isApiGroup(sGroupId)) {
 			throw new Error("Illegal update group ID: " + sGroupId);
 		}

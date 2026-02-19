@@ -3496,8 +3496,9 @@ sap.ui.define([
 			sCanonicalPath = "/Entity('key')",
 			oContext,
 			oError = new Error(),
+			sExpectedGroupId = sGroupId || "update",
 			bInAllBindings = oFixture.bSuccess && !bServerOnly,
-			oModel = this.createModel("?sap-client=123"),
+			oModel = this.createModel("?sap-client=123", {updateGroupId : "update"}),
 			oPromise,
 			// w/o If-Match:*, 412 must not be ignored!
 			bSuccess = oFixture.bSuccess && !(bServerOnly && oFixture.iStatus === 412);
@@ -3512,14 +3513,12 @@ sap.ui.define([
 				.returns(SyncPromise.resolve(Promise.resolve("ETag")));
 		}
 		this.mock(_Helper).expects("checkGroupId").withExactArgs(sGroupId, false, true);
-		this.mock(oModel).expects("getUpdateGroupId").exactly(sGroupId ? 0 : 1)
-			.withExactArgs().returns("group");
-		this.mock(oModel).expects("isApiGroup").withExactArgs("group").returns(false);
+		this.mock(oModel).expects("isApiGroup").withExactArgs(sExpectedGroupId).returns(false);
 		this.mock(_Helper).expects("buildQuery")
 			.withExactArgs(sinon.match.same(oModel.mURLParameters))
 			.returns("?~");
 		this.mock(oModel).expects("lockGroup")
-			.withExactArgs("group", sinon.match.same(oModel), true, true)
+			.withExactArgs(sExpectedGroupId, sinon.match.same(oModel), true, true)
 			.returns("~groupLock~");
 		this.mock(oModel.oRequestor).expects("request")
 			.withExactArgs("DELETE", "Entity('key')?~", "~groupLock~",
@@ -3555,17 +3554,16 @@ sap.ui.define([
 	//*********************************************************************************************
 [undefined, "group"].forEach(function (sGroupId) {
 	QUnit.test("delete: API group " + sGroupId, function (assert) {
-		var oModel = this.createModel();
+		var sExpectedGroupId = sGroupId || "update",
+			oModel = this.createModel("", {updateGroupId : "update"});
 
-		this.mock(oModel).expects("getUpdateGroupId").exactly(sGroupId ? 0 : 1)
-			.withExactArgs().returns("group");
-		this.mock(oModel).expects("isApiGroup").withExactArgs("group").returns(true);
+		this.mock(oModel).expects("isApiGroup").withExactArgs(sExpectedGroupId).returns(true);
 		this.mock(oModel.oRequestor).expects("request").never();
 
 		assert.throws(function () {
 			// code under test
 			oModel.delete("/Entity('key')", sGroupId);
-		}, new Error("Illegal update group ID: group"));
+		}, new Error("Illegal update group ID: " + sExpectedGroupId));
 	});
 });
 
