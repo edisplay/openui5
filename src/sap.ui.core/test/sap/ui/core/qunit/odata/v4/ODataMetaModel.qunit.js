@@ -1602,7 +1602,7 @@ sap.ui.define([
 		this.oMetaModelMock.expects("_mergeAnnotations").throws(oError);
 
 		return this.oMetaModel.fetchEntityContainer().then(function () {
-			assert.ok(false, "unexpected success");
+			assert.ok(false, "Unexpected success");
 		}, function (oError0) {
 			assert.strictEqual(oError0, oError);
 		});
@@ -3059,7 +3059,7 @@ sap.ui.define([
 			.throws(oError);
 
 		return this.oMetaModel.fetchObject("/tea_busi_product.v0001.Product").then(function () {
-				assert.ok(false);
+				assert.ok(false, "Unexpected success");
 			}, function (oError0) {
 				assert.strictEqual(oError0, oError);
 			});
@@ -3084,7 +3084,7 @@ sap.ui.define([
 
 		// code under test
 		return this.oMetaModel.fetchObject("/tea_busi_product.v0001.Product").then(function () {
-				assert.ok(false);
+				assert.ok(false, "Unexpected success");
 			}, function (oError0) {
 				assert.strictEqual(oError0.message, sSchema + ": " + sMessage);
 			});
@@ -4057,7 +4057,7 @@ sap.ui.define([
 
 		// code under test
 		return this.oMetaModel.fetchUpdateData(sPath, oContext).then(function () {
-			assert.ok(false);
+			assert.ok(false, "Unexpected success");
 		}, function (oError) {
 			assert.strictEqual(oError, oExpectedError);
 		});
@@ -4180,7 +4180,7 @@ sap.ui.define([
 
 		// code under test
 		return this.oMetaModel.fetchCanonicalPath(oContext).then(function () {
-			assert.ok(false);
+			assert.ok(false, "Unexpected success");
 		}, function (oError) {
 			assert.strictEqual(oError.message, "Context " + oContext.getPath()
 				+ " does not point to an entity. It should be " + "/TEAMS('4711')");
@@ -4198,7 +4198,7 @@ sap.ui.define([
 
 		// code under test
 		return this.oMetaModel.fetchCanonicalPath(oContext).then(function () {
-			assert.ok(false);
+			assert.ok(false, "Unexpected success");
 		}, function (oError) {
 			assert.strictEqual(oError, oExpectedError);
 		});
@@ -4217,7 +4217,7 @@ sap.ui.define([
 
 		// code under test
 		return this.oMetaModel.fetchCanonicalPath(oContext).then(function () {
-			assert.ok(false);
+			assert.ok(false, "Unexpected success");
 		}, function (oError) {
 			assert.strictEqual(oError.message,
 				"/T€AMS/-1/EMPLOYEES: No canonical path for transient entity");
@@ -6009,7 +6009,7 @@ sap.ui.define([
 
 		// code under test
 		return this.oMetaModel.fetchValueListType(sPath).then(function () {
-			assert.ok(false);
+			assert.ok(false, "Unexpected success");
 		}, function (oError) {
 			assert.ok(oError.message, "No metadata for " + sPath);
 		});
@@ -6297,7 +6297,7 @@ sap.ui.define([
 		return this.oMetaModel.fetchValueListMappings(oValueListModel, "name.space.Action",
 			{$Name : "Category"}, aOverloads
 		).then(function () {
-			assert.ok(false);
+			assert.ok(false, "Unexpected success");
 		}, function (oError) {
 			assert.strictEqual(oError.message,
 				"Expected a single overload, but found " + aOverloads.length);
@@ -6376,7 +6376,7 @@ sap.ui.define([
 			return oMetaModel
 				.fetchValueListMappings(oValueListModel, "zui5_epm_sample.Product", oProperty)
 				.then(function () {
-					assert.ok(false);
+					assert.ok(false, "Unexpected success");
 				}, function (oError) {
 					assert.strictEqual(oError.message, oFixture.error);
 				});
@@ -6444,7 +6444,7 @@ sap.ui.define([
 			// code under test
 			return oModel.getMetaModel().requestValueListInfo(oFixture.sPropertyPath)
 				.then(function () {
-					assert.ok(false);
+					assert.ok(false, "Unexpected success");
 				}, function (oError) {
 					assert.strictEqual(oError.message,
 						oFixture.sExpectedError + " for " + oFixture.sPropertyPath);
@@ -6969,7 +6969,7 @@ sap.ui.define([
 
 			// code under test
 			return oModel.getMetaModel().requestValueListInfo(sPropertyPath).then(function () {
-				assert.ok(false);
+				assert.ok(false, "Unexpected success");
 			}, function (oError) {
 				assert.strictEqual(oError.message,
 					"Annotations 'com.sap.vocabularies.Common.v1.ValueList' with identical "
@@ -7510,14 +7510,14 @@ sap.ui.define([
 			// code under test
 			return this.oMetaModel.requestCodeList("T€RM")
 				.then(function () {
-					assert.ok(false);
+					assert.ok(false, "Unexpected success");
 				}, function (oError) {
 					assert.strictEqual(oError.message, oFixture.sErrorMessage);
 
 					// code under test
 					return that.oMetaModel.requestCodeList("T€RM")
 						.then(function () {
-							assert.ok(false);
+							assert.ok(false, "Unexpected success");
 						}, function (oError1) {
 							assert.strictEqual(oError1, oError);
 						});
@@ -7567,14 +7567,14 @@ sap.ui.define([
 			// code under test
 			return this.oMetaModel.requestCodeList("T€RM")
 				.then(function () {
-					assert.ok(false);
+					assert.ok(false, "Unexpected success");
 				}, function (oError0) {
 					assert.strictEqual(oError0.message, "Single key expected: /UnitsOfMeasure/");
 
 					// code under test
 					return that.oMetaModel.requestCodeList("T€RM")
 						.then(function () {
-							assert.ok(false);
+							assert.ok(false, "Unexpected success");
 						}, function (oError1) {
 							assert.strictEqual(oError1, oError0);
 						});
@@ -7637,7 +7637,7 @@ sap.ui.define([
 		// code under test
 		return this.oMetaModel.requestCodeList("T€RM", undefined, {/*context : oContext*/})
 			.then(function () {
-				assert.ok(false);
+				assert.ok(false, "Unexpected success");
 			}, function (oError0) {
 				assert.strictEqual(oError0, oError);
 			});
@@ -7677,7 +7677,7 @@ sap.ui.define([
 		// code under test
 		return this.oMetaModel.requestCodeList("T€RM")
 			.then(function () {
-				assert.ok(false);
+				assert.ok(false, "Unexpected success");
 			}, function (oError0) {
 				assert.strictEqual(oError0, oError);
 			});
@@ -7765,22 +7765,22 @@ sap.ui.define([
 		return Promise.all([
 			// code under test
 			this.oMetaModel.requestCodeList("A").then(function () {
-				assert.ok(false);
+				assert.ok(false, "Unexpected success");
 			}, function (oError) {
 				assert.strictEqual(oError.name, "~oErrorA~");
 			}),
 			this.oMetaModel.requestCodeList("B").then(function () {
-				assert.ok(false);
+				assert.ok(false, "Unexpected success");
 			}, function (oError) {
 				assert.strictEqual(oError.name, "~oErrorB~");
 			}),
 			this.oMetaModel.requestCodeList("C").then(function () {
-				assert.ok(false);
+				assert.ok(false, "Unexpected success");
 			}, function (oError) {
 				assert.strictEqual(oError.name, "~oErrorC~");
 			}),
 			this.oMetaModel.requestCodeList("D").then(function () {
-				assert.ok(false);
+				assert.ok(false, "Unexpected success");
 			}, function (oError) {
 				assert.strictEqual(oError.name, "~oErrorD~");
 			})
@@ -7851,7 +7851,7 @@ sap.ui.define([
 		// code under test
 		return this.oMetaModel.requestCodeList("T€RM")
 			.then(function () {
-				assert.ok(false);
+				assert.ok(false, "Unexpected success");
 			}, function (oError0) {
 				assert.strictEqual(oError0, oError);
 			});
@@ -7918,7 +7918,7 @@ sap.ui.define([
 		// code under test
 		return this.oMetaModel.requestCodeList("T€RM")
 			.then(function () {
-				assert.ok(false);
+				assert.ok(false, "Unexpected success");
 			}, function (oError0) {
 				assert.strictEqual(oError0, oError);
 			});

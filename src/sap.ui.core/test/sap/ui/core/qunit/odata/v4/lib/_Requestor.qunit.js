@@ -957,7 +957,7 @@ sap.ui.define([
 
 			// code under test
 			return oRequestor.sendRequest("GET", "").then(function () {
-				assert.ok(false);
+				assert.ok(false, "Unexpected success");
 			}, function (oError) {
 				assert.strictEqual(oError, oExpectedError);
 			});
@@ -1007,7 +1007,7 @@ sap.ui.define([
 
 			// code under test
 			return oRequestor.sendRequest("GET", "").then(function () {
-				assert.ok(false);
+				assert.ok(false, "Unexpected success");
 			}, function (oError) {
 				assert.strictEqual(oError, oExpectedError);
 			});
@@ -1321,7 +1321,7 @@ sap.ui.define([
 
 		// code under test
 		return oRequestor.sendRequest("GET", "Foo").then(function () {
-			assert.ok(false);
+			assert.ok(false, "Unexpected success");
 		}, (oError) => {
 			assert.strictEqual(oError, "~oError~");
 		});
@@ -2271,7 +2271,7 @@ sap.ui.define([
 		oRequestor = _Requestor.create("n/a", null, {}, {}, "4.0");
 
 		return oRequestor.oSecurityTokenPromise.then(function () {
-			assert.notOk(true);
+			assert.ok(false, "Unexpected success");
 			assert.strictEqual(oRequestor.oSecurityTokenPromise, null);
 		}, function (oError0) {
 			assert.strictEqual(oError0, "foo");
@@ -2303,7 +2303,7 @@ sap.ui.define([
 		oRequestor = _Requestor.create("n/a", null, {}, {}, "4.0");
 
 		return oRequestor.oSecurityTokenPromise.then(function () {
-			assert.notOk(true);
+			assert.ok(false, "Unexpected success");
 			assert.strictEqual(oRequestor.oSecurityTokenPromise, null);
 		}, function (oError0) {
 			assert.strictEqual(oError0, oError);
@@ -2984,7 +2984,7 @@ sap.ui.define([
 			bWaitingIsOver;
 
 		function unexpected() {
-			assert.ok(false);
+			assert.ok(false, "Unexpected success");
 		}
 
 		function assertError(oError) {
@@ -3063,7 +3063,7 @@ sap.ui.define([
 			oRequestor = _Requestor.create("/", oModelInterface, {}, {}, "4.0");
 
 		function unexpected() {
-			assert.ok(false);
+			assert.ok(false, "Unexpected success");
 		}
 
 		function assertError(oResultError) {
@@ -3077,7 +3077,7 @@ sap.ui.define([
 		aPromises.push(
 			oRequestor.request("GET", "ok", this.createGroupLock()).then(function (oResult) {
 				assert.deepEqual(oResult, {});
-			}).catch(unexpected));
+			}));
 
 		aPromises.push(oRequestor.request("GET", "fail", this.createGroupLock())
 			.then(unexpected, function (oResultError) {
@@ -3124,7 +3124,7 @@ sap.ui.define([
 			oRequestor = _Requestor.create("/", oModelInterface, {}, {}, "4.0");
 
 		function unexpected() {
-			assert.ok(false);
+			assert.ok(false, "Unexpected success");
 		}
 
 		function assertError(oResultError) {
@@ -3319,10 +3319,10 @@ sap.ui.define([
 
 		return oRequestor.sendBatch(aBatchRequests, sGroupId, bHasChanges)
 			.then(function (oPayload) {
-				assert.ok(sMessage === null, "unexpected success");
+				assert.ok(sMessage === null, "Unexpected success");
 				assert.strictEqual(oPayload, aExpectedResponses);
 			}, function (oError) {
-				assert.ok(sMessage !== null, "unexpected error");
+				assert.ok(sMessage !== null, "Unexpected error");
 				assert.ok(oError instanceof Error);
 				assert.strictEqual(oError.message,
 					"Unexpected 'sap-messages' response header for batch request");
@@ -3685,7 +3685,7 @@ sap.ui.define([
 			oRequestorMock = this.mock(oRequestor);
 
 		function unexpected() {
-			assert.ok(false);
+			assert.ok(false, "Unexpected success");
 		}
 
 		function rejected(iOrder, oError) {
@@ -3774,7 +3774,7 @@ sap.ui.define([
 				{"sap-client" : "123"}, "4.0");
 
 		function unexpected() {
-			assert.ok(false);
+			assert.ok(false, "Unexpected success");
 		}
 
 		function rejected(oError) {
@@ -3915,7 +3915,7 @@ sap.ui.define([
 		oPromise = oRequestor.request("PATCH", "Products('0')", this.createGroupLock(),
 			{"If-Match" : {/* product 0 */}}, {Name : "foo"}, undefined, fnCancel);
 		oTestPromise = oPromise.then(function () {
-				assert.ok(false);
+				assert.ok(false, "Unexpected success");
 			}, function (oError) {
 				assert.strictEqual(oError.canceled, true);
 			});
@@ -3948,7 +3948,7 @@ sap.ui.define([
 			oRequestor = _Requestor.create("/Service/", oModelInterface, {}, {}, "4.0");
 
 		function unexpected() {
-			assert.ok(false);
+			assert.ok(false, "Unexpected success");
 		}
 
 		function rejected(oError) {
@@ -4024,7 +4024,7 @@ sap.ui.define([
 			oRequestor.request("POST", "Products", this.createGroupLock(), {}, oBody, undefined,
 					fnCancel1)
 				.then(function () {
-					assert.ok(false);
+					assert.ok(false, "Unexpected success");
 				}, function (oError) {
 					assert.strictEqual(oError.canceled, true);
 				}),
@@ -4064,7 +4064,7 @@ sap.ui.define([
 		oTestPromise = oRequestor.request("POST", "Products", this.createGroupLock(), {}, oBody,
 				undefined, fnCancel)
 			.then(function () {
-					assert.ok(false);
+					assert.ok(false, "Unexpected success");
 				}, function (oError) {
 					assert.strictEqual(oError.canceled, true);
 				}
@@ -4322,7 +4322,7 @@ sap.ui.define([
 		return oRequestor.request("GET", "/FOO", oGroupLock, undefined, undefined, undefined,
 			bHasCancelFunction ? fnCancel : undefined
 		).then(function () {
-			assert.ok(false);
+			assert.ok(false, "Unexpected success");
 		}, function (oError) {
 			assert.strictEqual(fnCancel.callCount, bHasCancelFunction ? 1 : 0);
 			assert.strictEqual(oError.message, "Request already canceled");
@@ -6217,7 +6217,7 @@ sap.ui.define([
 		// code under test - conflict case
 		return oRequestor.request("POST", "some/url", oGroupLock.getUnlockedCopy())
 			.then(function () {
-				assert.notOk(true);
+				assert.ok(false, "Unexpected success");
 			}, function (oError) {
 				assert.strictEqual(oConflictError, oError);
 				assert.strictEqual(aRequests[0][0].url, "some/url");
