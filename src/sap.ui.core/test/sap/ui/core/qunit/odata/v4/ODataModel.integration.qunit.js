@@ -10047,7 +10047,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			aRequestPayloads.push(sPayload || sRequestLine);
 		});
 		oModel.setRetryAfterHandler(() => {
-			assert.ok(false);
+			assert.ok(false, "Unexpected call of setRetryAfterHandler");
 		});
 		const sView = `
 <Table id="table" items="{/SalesOrderList}">
@@ -22176,7 +22176,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 
 			return Promise.all([
 				oPromise.then(function () {
-					assert.notOk(true);
+					assert.ok(false, "Unexpected success");
 				}, function () {
 					assert.strictEqual(oBinding.getBoundContext(), null);
 				}),
@@ -39838,7 +39838,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			break;
 
 			default: // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-				assert.ok(false);
+				assert.ok(false, "Unexpected scenario " + iScenario);
 		}
 	});
 });
@@ -65348,12 +65348,12 @@ make root = ${bMakeRoot}`;
 				oModel.submitBatch("$auto"),
 				// Note: API call for GET intentionally before POST
 				oListBinding.getHeaderContext().requestSideEffects([""]).then(function () {
-					assert.ok(false);
+					assert.ok(false, "Unexpected success");
 				}, function (oError0) {
 					assert.strictEqual(oError0.message, sPreviousFailed);
 				}),
 				oModel.bindContext("/RegenerateEPMData(...)").invoke("$auto").then(function () {
-					assert.ok(false);
+					assert.ok(false, "Unexpected success");
 				}, function (oError0) {
 					assert.strictEqual(oError0.message, sPreviousFailed);
 				}),
@@ -78400,7 +78400,7 @@ make root = ${bMakeRoot}`;
 			return Promise.all([
 				// code under test
 				oActionBinding.invoke().then(function () {
-					assert.ok(false);
+					assert.ok(false, "Unexpected success");
 				}, function (oError0) {
 					assert.strictEqual(oError0.message, "Request intentionally failed");
 					assert.strictEqual(oError0.requestUrl,
@@ -78590,7 +78590,7 @@ make root = ${bMakeRoot}`;
 			oResetPromise = oModel.bindContext("", oContext).resetChanges();
 
 			oBinding.attachChange(function () {
-				assert.ok(false);
+				assert.ok(false, "Unexpected change event");
 				oBinding.getContexts(0, 4);
 				oBinding.getAllCurrentContexts();
 			});
@@ -79608,7 +79608,7 @@ make root = ${bMakeRoot}`;
 			// code under test
 			.invoke("$direct", /*bIgnoreETag*/true)
 			.then(function () {
-				assert.ok(false);
+				assert.ok(false, "Unexpected success");
 			}, function (oError) {
 				assert.strictEqual(oError.message, "Not a bound action: " + sPath);
 			});
@@ -82151,7 +82151,7 @@ make root = ${bMakeRoot}`;
 			const [oEmployee0] = oListBinding.getAllCurrentContexts();
 			// code under test (JIRA: CPOUI5ODATAV4-2778)
 			oEmployee0TeamPromise = oEmployee0.requestObject("EMPLOYEE_2_TEAM").then(function () {
-				assert.ok(false, "unexpected success");
+				assert.ok(false, "Unexpected success");
 			}, function (oError) {
 				assert.strictEqual(oError.canceled, true);
 				assert.strictEqual(oError.message, "$$separate: canceled EMPLOYEE_2_TEAM");
