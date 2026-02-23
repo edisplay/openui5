@@ -593,6 +593,7 @@ sap.ui.define([
 		press: handleLegend
 	});
 
+	/** @deprecated */
 	var oButtonReducedHeight = new ToggleButton("B_ReducedHeight", {
 		icon: "sap-icon://resize-vertical",
 		type: ButtonType.Transparent,
@@ -1426,6 +1427,7 @@ sap.ui.define([
 			oLegendLabel,
 			oButtonSwitchLegendAssociation,
 			new ToolbarSeparator(),
+			/** @deprecated */
 			oButtonReducedHeight,
 			oButtonToggleAlternatingRowColor,
 			oButtonToggleSpecNoWork,

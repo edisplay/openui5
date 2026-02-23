@@ -17,6 +17,8 @@
 
 		var app = new sap.m.App("myApp");
 		var UI5Date = sap.ui.require("sap/ui/core/date/UI5Date");
+
+		/** @deprecated */
 		var oButtonSwitchReducedHeight = new sap.m.Switch("reduced_height",{
 			state: false,
 			change: function (oEvent) {
@@ -28,6 +30,7 @@
 			})
 		});
 
+		/** @deprecated */
 		var oLegendLabelHeight = new sap.m.Label({
 			text: "Activate Reduced Height",
 			labelFor: oButtonSwitchReducedHeight.getId(),
@@ -46,7 +49,9 @@
 					}
 				})],
 				contentRight: [
+					/** @deprecated */
 					oLegendLabelHeight,
+					/** @deprecated */
 					oButtonSwitchReducedHeight,
 					oEventLabel,
 					new sap.m.Select('select_height', {
