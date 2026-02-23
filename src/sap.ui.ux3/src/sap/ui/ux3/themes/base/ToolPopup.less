@@ -1,21 +1,22 @@
-/* ============================================ */
-/* CSS for control sap.ui.ux3/ToolPopup.control */
-/* Base                                         */
-/* ============================================ */
+/* ===================================== */
+/* CSS for control sap.ui.ux3/ToolPopup  */
+/* base theme                            */
+/* ===================================== */
 
 .sapUiUx3TP {
 	padding: 10px 22px;
 	min-width: 50px;
 	min-height: 20px;
-	color: @sapUiBaseText;
+	color: var(--sapTextColor);
 	background-color: @sapUiExtraLightBG;
 	border: 1px solid @sapUiMediumBorder;
-	font-family: @sapUiFontFamily;
+	font-family: var(--sapFontFamily);
 	font-size: @sapUiFontSize;
 	outline: none;
 }
+
 .sapUiUx3TP.sapUiTPInverted {
-	color : @sapUiTextInverted;
+	color: @sapUiTextInverted;
 }
 
 .sapUiUx3TPTitle {
@@ -37,7 +38,7 @@
 }
 
 .sapUiUxTPFocus {
-	outline : none;
+	outline: none;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -74,7 +75,7 @@
 	text-align: right;
 }
 
-html[dir=rtl] .sapUiUx3TPBtnRow {
+html[dir='rtl'] .sapUiUx3TPBtnRow {
 	text-align: left;
 }
 
@@ -87,14 +88,14 @@ html[dir=rtl] .sapUiUx3TPBtnRow {
 }
 
 .sapUiUx3TPContent.sapUiUx3TPLargeContent {
-	bottom: 0px;
+	bottom: 0;
 	overflow-y: scroll;
 	height: 100%;
 }
 
 /* Control Adaptations */
 .sapUiUx3TP .sapUiMlt {
-	color: @sapUiBaseText;
+	color: var(--sapTextColor);
 }
 
 .sapUiUx3TP .sapUiMlt .sapUiTPInverted {
@@ -104,15 +105,15 @@ html[dir=rtl] .sapUiUx3TPBtnRow {
 /* But do not adapt inside children with a special CSS class "sapUiUx3TPResetColors".
    This class is used to allow controls with regular design inside a ToolPopup. */
 .sapUiUx3TP .sapUiUx3TPResetColors {
-	color: @sapUiBaseText;
+	color: var(--sapTextColor);
 	background-color: @sapUiExtraLightBG;
 }
 
 .sapUiUx3TP .sapUiUx3TPResetColors .sapUiLbl,
 .sapUiUx3TP .sapUiUx3TPResetColors .sapUiMlt {
-	color: @sapUiBaseText;
+	color: var(--sapTextColor);
 }
 
-.sapUiUx3TPButtonRowHidden{
+.sapUiUx3TPButtonRowHidden {
 	display: none;
 }
