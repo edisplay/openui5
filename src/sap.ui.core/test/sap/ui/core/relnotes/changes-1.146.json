@@ -3,6 +3,26 @@
     "date": "February 2026",
     "notes": [
       {
+        "id": "0e03e6368726c43215dd96c053316a2496e02d0d",
+        "type": "FIX",
+        "text": " sap.ui.test.RecordReplay: Improved selector for disabled controls"
+      },
+      {
+        "id": "66b3c6464411080494850f373154e96707fac498",
+        "type": "FEATURE",
+        "text": " OPA: keyDown and keyUp events to Press action are introduced"
+      },
+      {
+        "id": "66dad585ff4df2821255cf43bf59d19c8b189c7b",
+        "type": "FIX",
+        "text": " sap.ui.core.delegate.ScrollEnablement: prevent TypeError on null offsetParent"
+      },
+      {
+        "id": "ea926dc42ab2d80be578d2e185d4d2f5a7a7f205",
+        "type": "FEATURE",
+        "text": " Bound Filters for List Bindings"
+      },
+      {
         "id": "2253af08656c158f22d5ed90ac80841aa5c0caaa",
         "type": "FIX",
         "text": " jquery/isHidden: treat display:contents elements as visible"

@@ -3,6 +3,11 @@
     "date": "February 2026",
     "notes": [
       {
+        "id": "bbf0f71df5b33dfa2c59cec18b0002bc8a1621ae",
+        "type": "FIX",
+        "text": " sap.uxap.ObjectPageLayout: fix wrong aria-labelledBy id references"
+      },
+      {
         "id": "4b3ef09eb9e861ab52a21803f364167b7431dfdd",
         "type": "FIX",
         "text": " sap.uxap.ObjectPageLayout: Ensure subsection visibility is tracked correctly"

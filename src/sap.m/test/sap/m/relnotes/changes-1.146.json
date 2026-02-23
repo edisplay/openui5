@@ -3,9 +3,69 @@
     "date": "February 2026",
     "notes": [
       {
+        "id": "21d632ce9252204a06018b83ae843ace22a00be4",
+        "type": "FIX",
+        "text": " sap.m.MultiInput: Select all (ctrl+a) now selects the input text instead of all tokens"
+      },
+      {
+        "id": "6ce3285134dd41439195a1b405cd64d0093717a0",
+        "type": "FIX",
+        "text": " We've now fixed an issue in slide tile where the tile indicator buttons were not visible"
+      },
+      {
+        "id": "debf00a8f67d44ed0f8b80c5e7d801aeb304379a",
+        "type": "FIX",
+        "text": " sap.m.MultiInput:  Remove duplicate cut/copy handling to fix clipboard operations"
+      },
+      {
+        "id": "02a8957e04d5d758832a1c550e56b40802a6370d",
+        "type": "FIX",
+        "text": " sap.m.VariantManagement: copy items binding template into manage dialog"
+      },
+      {
+        "id": "ebf4f5161a54ac5926c05c7e9f0dbd470b0e631f",
+        "type": "FIX",
+        "text": " sap.m.MessagePopover: List view preserved after resize is now reverted"
+      },
+      {
+        "id": "66dad585ff4df2821255cf43bf59d19c8b189c7b",
+        "type": "FIX",
+        "text": " sap.ui.core.delegate.ScrollEnablement: prevent TypeError on null offsetParent"
+      },
+      {
+        "id": "04a5f0cd726d47c03ada19ba439d2fdbb01ba927",
+        "type": "FIX",
+        "text": " sap.m.PlanningCalendar: fixed focus of table rows in popin mode"
+      },
+      {
+        "id": "e05e40fa69b980baf534cf9e9a7e06a786ba8382",
+        "type": "FEATURE",
+        "text": " sap.m.Dialog: Focus goes on the entire dialog when we have drag or resize"
+      },
+      {
+        "id": "8e003605820668f1690f881fa226ba2071f227b6",
+        "type": "FIX",
+        "text": " sap.m.Input: resolve iPad Safari rendering issue"
+      },
+      {
+        "id": "ebe50905baf7a7e2c2d4fc158ac03706745b8389",
+        "type": "FIX",
+        "text": " sap.m.CheckBox: Fix state limitation for CheckBox"
+      },
+      {
+        "id": "c0c43571889c44f8aaf391ef73a4d18d68a64920",
+        "type": "FEATURE",
+        "text": " sap.m.Carousel: Responsive layout is now enabled"
+      },
+      {
         "id": "edce80d60e87b18e3293e65faec37c5c534cb919",
         "type": "FIX",
         "text": " We've now fixed the width of slideTile and genericTile when they are placed inside a ushell section in sap_fiori_3 theme"
+      },
+      {
+        "id": "ccf79517ab3787850b5e8a710c2e6bf14d62c9fe",
+        "type": "FIX",
+        "text": " sap.m.MessagePopover: List view is now preserved after resize"
       },
       {
         "id": "b02ef01901baf1a097e901896f985c4b8f72deb7",

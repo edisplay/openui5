@@ -3,6 +3,11 @@
     "date": "February 2026",
     "notes": [
       {
+        "id": "ecc4767d3c4abaeea582052ff772d27853f37832",
+        "type": "FIX",
+        "text": " sap.ui.unified.RecurrenceUtils: Comparison of UTC dates."
+      },
+      {
         "id": "bee933c9f78451fa479b8be910fa78ffd9ac181f",
         "type": "FIX",
         "text": " sap.m.PlanningCalendar: week numbering in Week and OneMonth view are shown again."
