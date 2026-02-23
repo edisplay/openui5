@@ -1254,6 +1254,7 @@ function(
 			!(this._getIsSuggestionPopupOpen())
 		) {
 			oTokenizer.setRenderMode(TokenizerRenderMode.Loose);
+			oTokenizer.scrollToEnd();
 			this._setValueVisible(true);
 		}
 
