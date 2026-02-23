@@ -1,13 +1,12 @@
-/* ============================================= */
-/* CSS for sap.ui.ux3.Shell.control (base theme) */
-/* ============================================= */
+/* ================================= */
+/* CSS for control sap.ui.ux3/Shell  */
+/* base theme                        */
+/* ================================= */
 
 /* Define function to make user-select consistent across browsers */
 .userSelect(@value) {
-	-webkit-user-select: @value;  /* Chrome all / Safari all */
-	-moz-user-select: @value;     /* Firefox all */
-	-ms-user-select: @value;      /* IE 10+ */
-	user-select: @value;          /* Likely future */
+	-webkit-user-select: @value;
+	user-select: @value;
 }
 
 .sapUiUx3Shell {
@@ -17,6 +16,7 @@
 	font-family: Arial, Helvetica, sans-serif;
 	width: 100%;
 	overflow-x: hidden;
+
 	.userSelect(none);
 }
 
@@ -67,6 +67,7 @@
 .sapUiUx3ShellHeader > .sapUiUx3ShellHeaderTitleLeft > span {
 	font-size: 0.75rem;
 	font-weight: bold;
+
 	.userSelect(none);
 }
 
@@ -75,6 +76,7 @@
 	max-height: 18px;
 	margin-right: 3px;
 	margin-top: -3px;
+
 	.userSelect(none);
 }
 
@@ -115,7 +117,7 @@
 }
 
 .sapUiUx3ShellHeader-logout:active {
-	background-color: @sapUiHighlight;
+	background-color: var(--sapHighlightColor);
 }
 
 /* Workset area and items */
@@ -158,12 +160,13 @@
 	background-position: right top;
 	padding-top: 12px;
 	line-height: 1px;
-	.userSelect(none);
 	z-index: 1; /* must be in front of the right-hand side Pane, otherwise that one will overlap when the window is very narrow */
+
+	.userSelect(none);
 }
 
 .sapUiUx3ShellNoTools .sapUiUx3ShellToolPaletteArea {
-	width: 0px;
+	width: 0;
 }
 
 .sapUiUx3ShellNoTools .sapUiUx3ShellToolPaletteArea > * {
@@ -185,7 +188,6 @@
 	text-align: center;
 	z-index: 0;
 }
-
 
 .sapUiUx3ShellToolFontIcon{
 	font-family: SAP-icons;
@@ -211,7 +213,7 @@ html[data-sap-ui-browser^="ff"] .sapUiUx3ShellToolFontIcon {
 
 .sapUiUx3ShellTool:active,
 .sapUiUx3ShellTool.sapUiUx3ShellToolSelected {
-	background-color: @sapUiHighlight;
+	background-color: var(--sapHighlightColor);
 }
 
 .sapUiUx3ShellTool > img {
@@ -222,7 +224,7 @@ html[data-sap-ui-browser^="ff"] .sapUiUx3ShellToolFontIcon {
 .sapUiUx3ShellToolSep {
 	display: inline-block;
 	width: 20px;
-	height: 0px;
+	height: 0;
 	margin: 0 0 4px 10px;
 	border: 1px solid @sapUiMediumBorder;
 }
@@ -241,7 +243,7 @@ html[data-sap-ui-browser^="ff"] .sapUiUx3ShellToolFontIcon {
 
 .sapUiUx3TP-feeder > .sapUiUx3TPContent > .sapUiFeeder {
 	width: 400px;
-	color: @sapUiBaseText;
+	color: var(--sapTextColor);
 	background-color: transparent;
 	border: none;
 }
@@ -269,7 +271,6 @@ html[data-sap-ui-browser^="ff"] .sapUiUx3ShellToolFontIcon {
 	outline: none;
 }
 
-
 /* pane bar */
 .sapUiUx3ShellPaneBar {
 	right: 0;
@@ -286,53 +287,46 @@ html[data-sap-ui-browser^="ff"] .sapUiUx3ShellToolFontIcon {
 
 .sapUiUx3ShellPaneBarRight {
 	position: absolute;
-	right: 0px;
-	top: 0px;
+	right: 0;
+	top: 0;
 	width: @sapUiUx3ShellSideBarBaseWidth;
 	display: inline-block;
 	height: 100%;
 	box-sizing: border-box;
+
 	.userSelect(none);
 }
 
 /** Overflow button and menu**/
 
 .sapUiUx3ShellPaneBarRight > .sapUiUx3ShellPaneOverflowButton {
-    position: absolute;
-    display: none;
-    bottom: 0;
-    right: 0;
-    margin: 0;
-
+	position: absolute;
+	display: none;
+	bottom: 0;
+	right: 0;
+	margin: 0;
 	box-sizing: border-box;
 	border-top: 1px solid lighten(@sapUiDarkBG, 20%);
-
-    width: @sapUiUx3ShellSideBarBaseWidth;
-    height: @sapUiUx3ShellPaneOverflowButtonHeight;
-
-    color: lighten(@sapUiMediumText, 10%);
-    cursor: pointer;
-    padding: 5px 0px 3px 0px;
-    text-align: center;
-    vertical-align: middle;
+	width: @sapUiUx3ShellSideBarBaseWidth;
+	height: @sapUiUx3ShellPaneOverflowButtonHeight;
+	color: lighten(@sapUiMediumText, 10%);
+	cursor: pointer;
+	padding: 5px 0 3px 0;
+	text-align: center;
+	vertical-align: middle;
 
 	margin-bottom: 5px;
 }
 
 .sapUiUx3ShellPaneBarRight > .sapUiUx3ShellPaneOverflowButton > .sapUiUx3ShellPaneOverflowWrapper {
-    -webkit-transform: rotate(90deg);
-    transform: rotate(90deg);
-
-    -webkit-transform-origin: 0% 0;
-    transform-origin: 0% 0;
-
-    white-space: nowrap;
-    text-overflow: ellipsis;
-
+	transform: rotate(90deg);
+	transform-origin: 0% 0;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 	position: absolute;
 	left: @sapUiUx3ShellSideBarBaseWidth;
 	height: @sapUiUx3ShellSideBarBaseWidth;
-    width: @sapUiUx3ShellPaneOverflowButtonHeight;
+	width: @sapUiUx3ShellPaneOverflowButtonHeight;
 	line-height: @sapUiUx3ShellSideBarBaseWidth;
 }
 
@@ -345,35 +339,29 @@ html[data-sap-ui-browser^="ff"] .sapUiUx3ShellToolFontIcon {
 	overflow: hidden;
 }
 
-
 .sapUiUx3ShellPaneEntries {
-    -webkit-transform: rotate(90deg);
-    transform: rotate(90deg);
-    white-space: nowrap;
-    margin: 0;
-    line-height: @sapUiUx3ShellSideBarBaseWidth;
-    padding-left: 26px;
+	transform: rotate(90deg);
+	white-space: nowrap;
+	margin: 0;
+	line-height: @sapUiUx3ShellSideBarBaseWidth;
+	padding-left: 26px;
 }
 
 .sapUiUx3ShellPaneEntry {
 	font-size: 14px;
 	font-weight: bold;
-	color: lighten(@sapUiBaseText, 60%); /*#999999*/
+	color: lighten(@sapUiBaseText, 60%);
 	cursor: pointer;
 	display: inline-block;
 	margin-right: 16px;
 	height: 36px;
 	vertical-align:top;
-	-webkit-transition-property: font-size, color;
-	-webkit-transition-duration: 0.3s;
 	transition-property: font-size, color;
 	transition-duration: 0.3s;
 }
 
 .sapUiUx3ShellPaneEntry:hover {
 	color: @sapUiUx3ShellHoverColor;
-	-webkit-transition-property: font-size, color;
-	-webkit-transition-duration: 0.3s;
 	transition-property: font-size, color;
 	transition-duration: 0.3s;
 }
@@ -381,19 +369,15 @@ html[data-sap-ui-browser^="ff"] .sapUiUx3ShellToolFontIcon {
 .sapUiUx3ShellPaneEntrySelected,
 .sapUiUx3ShellPaneEntrySelected:hover {
 	font-size: 18px;
-	color: @sapUiHighlight;
+	color: var(--sapHighlightColor);
 	background-position: center top;
 	background-repeat: no-repeat;
-	-webkit-transition-property: font-size, color;
-	-webkit-transition-duration: 0.3s;
 	transition-property: font-size, color;
 	transition-duration: 0.3s;
 }
 
 .sapUiUx3ShellPaneEntry:active {
-	color: @sapUiHighlight;
-	-webkit-transition-property: font-size, color;
-	-webkit-transition-duration: 0.3s;
+	color: var(--sapHighlightColor);
 	transition-property: font-size, color;
 	transition-duration: 0.3s;
 }
@@ -409,6 +393,7 @@ html[data-sap-ui-browser^="ff"] .sapUiUx3ShellToolFontIcon {
 	overflow: auto;
 	box-sizing: border-box;
 	border-right: 2px solid @sapUiMediumBorder;
+
 	.userSelect(text);
 }
 
@@ -431,11 +416,11 @@ html[data-sap-ui-browser^="ff"] .sapUiUx3ShellToolFontIcon {
 }
 
 .sapUiUx3ShellFullHeightContent .sapUiUx3ShellCanvas {
-	bottom: 0px;
+	bottom: 0;
 }
 
 .sapUiUx3ShellNoContentPadding .sapUiUx3ShellCanvas {
-	padding: 0px 0px 0px 0px;
+	padding: 0;
 }
 
 .sapUiUx3ShellCanvas > .sapUiUx3NavBar {
@@ -446,6 +431,7 @@ html[data-sap-ui-browser^="ff"] .sapUiUx3ShellToolFontIcon {
 	width: 100%;
 	-webkit-overflow-scrolling: touch;
 	overflow-x: auto;
+
 	.userSelect(text);
 }
 
@@ -466,7 +452,7 @@ html[data-sap-ui-browser^="ff"] .sapUiUx3ShellToolFontIcon {
 	right: 40px;
 	padding: 0 32px; /* Should be as wide as the canvas padding, so when making the window very small, they stay in sync */
 	min-width: 96px; /* = padding plus some space for the remaining content */
-	bottom: 0px;
+	bottom: 0;
 	top: 108px;
 }
 
@@ -529,7 +515,7 @@ html[data-sap-ui-browser^="ff"] .sapUiUx3ShellToolFontIcon {
 }
 
 .sapUiUx3Shell.sapUiUx3ShellHeadSlimNavigation > .sapUiUx3ShellWorksetBar > .sapUiUx3NavBar.sapUiUx3NavBarToplevel > .sapUiUx3NavBarList {
-	top: 0px;
+	top: 0;
 }
 
 .sapUiUx3Shell.sapUiUx3ShellHeadSlimNavigation > .sapUiUx3ShellWorksetBar > .sapUiUx3NavBar.sapUiUx3NavBarToplevel > .sapUiUx3NavBarList > li {
@@ -558,7 +544,7 @@ html[data-sap-ui-browser^="ff"] .sapUiUx3ShellToolFontIcon {
 	left: 40px;
 	right: 40px;
 	background-color: transparent;
-	height: 0px;
+	height: 0;
 	z-index: 2;
 }
 
