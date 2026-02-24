@@ -1012,7 +1012,6 @@ sap.ui.define([
 	};
 
 	PlanningCalendar.prototype._setProperties = function() {
-		//overriden setters
 		const bMultiSelect = this.getMultipleAppointmentsSelection(),
 			sIconShape = this.getIconShape(),
 			oStartDate = this.getStartDate(),
@@ -1022,6 +1021,9 @@ sap.ui.define([
 			bShowEmptyIntervalHeaders = this.getShowEmptyIntervalHeaders(),
 			sAppointmentsVisualization = this.getAppointmentsVisualization(),
 			oGroupAppointmentsMode = this.getGroupAppointmentsMode(),
+			/**
+			 * @deprecated Since version 1.119.
+			 */
 			bAppointmentsReducedHeight = this.getAppointmentsReducedHeight(),
 			vLegend = this.getLegend();
 		this.getRows().forEach(function (oRow) {
@@ -1038,6 +1040,9 @@ sap.ui.define([
 			oRowTimeline.setShowEmptyIntervalHeaders(bShowEmptyIntervalHeaders);
 			oRowTimeline.setAppointmentsVisualization(sAppointmentsVisualization);
 			oRowTimeline.setGroupAppointmentsMode(oGroupAppointmentsMode);
+			/**
+			 * @deprecated Since version 1.119.
+			 */
 			oRowTimeline.setAppointmentsReducedHeight(bAppointmentsReducedHeight);
 			oRowTimeline.setLegend(vLegend);
 		});
