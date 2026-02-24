@@ -1041,6 +1041,83 @@ sap.ui.define([
 		//cleanup
 	});
 
+	QUnit.test("onsapescape: closes popup and restores previous value without firing change", async function(assert) {
+		// Arrange
+		var oDRS = new DateRangeSelection({
+				value: "2014/03/16 - 2014/03/27"
+			});
+		oDRS.placeAt("qunit-fixture");
+		await nextUIUpdate();
+
+		// open the popover/calendar
+		qutils.triggerEvent("click", oDRS.getId() + "-icon");
+		await nextUIUpdate();
+
+		assert.ok(oDRS._oPopup && oDRS._oPopup.isOpen && oDRS._oPopup.isOpen(), "Popup opened");
+
+		// simulate user editing the input
+		oDRS._$input.val("invalid change").trigger("input");
+
+		// spy on change firing
+		var fnFireChangeSpy = this.spy(oDRS, "fireChange");
+
+		// Act - press Escape
+		qutils.triggerKeydown(oDRS._oPopup.getFocusDomRef(), KeyCodes.ESCAPE);
+
+		await nextUIUpdate();
+
+		// Assert
+		assert.ok(!oDRS._oPopup.isOpen(), "Popup closed after Escape");
+		assert.strictEqual(oDRS.getValue(), "2014/03/16 - 2014/03/27", "Original value restored after Escape");
+		assert.ok(fnFireChangeSpy.notCalled, "fireChange was not called on Escape");
+
+		// Cleanup
+		oDRS.destroy();
+	});
+
+	QUnit.test("onsapescape: closes dialog containing DateRangeSelection", async function(assert) {
+		// Arrange
+		var oEvent = {
+			preventDefault: this.spy(),
+			setMarked: function() {}
+		},
+		model = new JSONModel({
+			"startDate": "",
+			"endDate": ""
+		}),
+		oDRS = new DateRangeSelection({value: "{ type: 'DateInterval',parts: [{path: '/startDate'},{path: '/endDate'}]}"}),
+		oDialog = new sap.m.Dialog({
+			content: [ oDRS ]
+		}),
+		oButton = new sap.m.Button({
+			text: "Open Dialog",
+			press: function () {
+				oDialog.open();
+			}
+		});
+		oDialog.setModel(model);
+		oButton.placeAt("qunit-fixture");
+		await nextUIUpdate();
+
+		// open the dialog
+		qutils.triggerKeydown(oButton.getFocusDomRef(), KeyCodes.ENTER);
+		oDRS._$input.focus();
+
+		// Act - press Escape
+		qutils.triggerKeydown(oDRS._$input, KeyCodes.ESCAPE);
+		oDRS.onsapescape(oEvent);
+
+		await nextUIUpdate();
+
+		// Assert
+		assert.equal(oEvent.preventDefault.callCount, 0, "PreventDefault is not called");
+
+		// Cleanup
+		oDRS.destroy();
+		oButton.destroy();
+		oDialog.destroy();
+	});
+
 	QUnit.module("Accessibility");
 
 	QUnit.test("aria-roledescription", async function (assert) {
