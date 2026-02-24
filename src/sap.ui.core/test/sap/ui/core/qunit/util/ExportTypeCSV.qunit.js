@@ -1,5 +1,5 @@
 /* global QUnit */
-
+/** @deprecated As of version 1.73 */
 sap.ui.define([
 	"sap/ui/core/util/ExportTypeCSV"
 ], function(ExportTypeCSV) {
