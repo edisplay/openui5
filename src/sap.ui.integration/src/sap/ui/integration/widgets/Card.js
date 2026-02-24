@@ -297,7 +297,6 @@ sap.ui.define([
 
 				/**
 				 * Defines if the card should be displayed with mock data. To be used with component cards.
-				 * @experimental Since 1.109
 				 * @private
 				 * @since 1.109
 				 * @deprecated Since 1.112. Use <code>previewMode</code> instead.
@@ -3053,7 +3052,6 @@ sap.ui.define([
 	 * <b>Note:</b> Should be used after the <code>stateChanged</code> event is fired.
 	 *
 	 * @private
-	 * @experimental since 1.113
 	 * @deprecated since 1.114
 	 * @returns {boolean} Whether 'No Data' is displayed in the card
 	 */
@@ -3066,7 +3064,6 @@ sap.ui.define([
 	 * Should be used only by component cards, no earlier than the <code>onCardReady</code> lifecycle hook.
 	 *
 	 * @private
-	 * @experimental since 1.113
 	 * @deprecated since 1.114
 	 * @param {object} oSettings 'No Data' settings
 	 * @param {sap.m.IllustratedMessageType} oSettings.type Illustration type
