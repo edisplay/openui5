@@ -214,7 +214,7 @@ sap.ui.define([
 			this.oCodeEditorElement.attachValueHelpRequest(function () {
 				this.oCodeEditor._openCodeEditor.returnValues[0].then(function (oDialog) {
 					var oCodeEditor = oDialog.getContent()[0];
-					this.oCodeEditor.attachChangeAnnotation(function (oEvent) {
+					this.oCodeEditor.attachEventOnce("changeEnabledOfBeginButton", function (oEvent) {
 						EditorQunitUtils.wait().then(function () {
 							assert.strictEqual(oDialog.getBeginButton().getEnabled(), false, "Then the changes cannot be saved");
 							fnDone();
@@ -232,7 +232,7 @@ sap.ui.define([
 
 			this.oCodeEditorElement.attachValueHelpRequest(function () {
 				this.oCodeEditor._openCodeEditor.returnValues[0].then(function (oDialog) {
-					this.oCodeEditor.attachChangeAnnotation(function (oEvent) {
+					this.oCodeEditor.attachEventOnce("changeEnabledOfBeginButton", function (oEvent) {
 						EditorQunitUtils.wait().then(function () {
 							QUnitUtils.triggerEvent("tap", oDialog.getBeginButton().getDomRef());
 						});
