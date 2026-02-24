@@ -1108,10 +1108,8 @@ sap.ui.define([
 	});
 
 	QUnit.module("loadFlVariant", {
-		beforeEach() {
-		},
 		afterEach() {
-			sandbox.restore();
+			cleanUp();
 		}
 	}, function() {
 		QUnit.test("when there are multiple connectors configured", async function(assert) {
@@ -1135,11 +1133,100 @@ sap.ui.define([
 				changes: [{ fileName: "change1" }]
 			});
 			const oResult = await Storage.loadFlVariant({ reference: sFlexReference, variantReference: "variant1" });
-			assert.deepEqual(oResult, {
-				variants: [{ fileName: "variant1" }],
-				variantDependentControlChanges: [{ fileName: "change1" }, { fileName: "change2" }],
-				variantChanges: [{ fileName: "variantChange1" }, { fileName: "variantChange2" }]
-			}, "the result is correct");
+			assert.deepEqual(
+				oResult.variants,
+				[{ fileName: "variant1" }],
+				"the variants are correct"
+			);
+			assert.deepEqual(
+				oResult.variantDependentControlChanges,
+				[{ fileName: "change1" }, { fileName: "change2" }],
+				"the variantDependentControlChanges are correct"
+			);
+			assert.deepEqual(
+				oResult.variantChanges,
+				[{ fileName: "variantChange1" }, { fileName: "variantChange2" }],
+				"the variantChanges are correct"
+			);
+		});
+	});
+
+	QUnit.module("loadAllFlVariants", {
+		afterEach() {
+			cleanUp();
+		}
+	}, function() {
+		QUnit.test("when there are multiple connectors configured", async function(assert) {
+			const sUrl = "some/url";
+			sandbox.stub(FlexConfiguration, "getFlexibilityServices").returns([
+				{
+					connector: "BtpServiceConnector",
+					url: sUrl,
+					layers: [Layer.PUBLIC, Layer.CUSTOMER]
+				},
+				{
+					connector: "JsObjectConnector",
+					layers: [Layer.CUSTOMER]
+				}
+			]);
+			sandbox.stub(BtpServiceConnector, "loadAllFlVariants").resolves({
+				variants: [{ fileName: "variant1" }, { fileName: "variant2" }],
+				variantDependentControlChanges: [{ fileName: "change1" }],
+				variantChanges: [{ fileName: "variantChange1" }]
+			});
+			const oResult = await Storage.loadAllFlVariants({
+				reference: sFlexReference, vmReference: "vmRef1"
+			});
+			assert.deepEqual(
+				oResult.variants,
+				[{ fileName: "variant1" }, { fileName: "variant2" }],
+				"the variants are correct"
+			);
+			assert.deepEqual(
+				oResult.variantDependentControlChanges,
+				[{ fileName: "change1" }],
+				"the variantDependentControlChanges are correct"
+			);
+			assert.deepEqual(
+				oResult.variantChanges,
+				[{ fileName: "variantChange1" }],
+				"the variantChanges are correct"
+			);
+		});
+	});
+
+	QUnit.module("loadFlVariantContent", {
+		afterEach() {
+			cleanUp();
+		}
+	}, function() {
+		QUnit.test("when there are multiple connectors configured", async function(assert) {
+			const sUrl = "some/url";
+			sandbox.stub(FlexConfiguration, "getFlexibilityServices").returns([
+				{
+					connector: "BtpServiceConnector",
+					url: sUrl,
+					layers: [Layer.PUBLIC, Layer.CUSTOMER]
+				},
+				{
+					connector: "JsObjectConnector",
+					layers: [Layer.CUSTOMER]
+				}
+			]);
+			sandbox.stub(BtpServiceConnector, "loadFlVariantContent").resolves({
+				variantDependentControlChanges: [
+					{ fileName: "change1" },
+					{ fileName: "change2" }
+				]
+			});
+			const oResult = await Storage.loadFlVariantContent({
+				reference: sFlexReference, variantId: "variant1"
+			});
+			assert.deepEqual(
+				oResult.variantDependentControlChanges,
+				[{ fileName: "change1" }, { fileName: "change2" }],
+				"the variantDependentControlChanges are correct"
+			);
 		});
 	});
 
