@@ -1414,9 +1414,9 @@ sap.ui.define([
 	async function validateStateAgainstPropertyInfo(oTable) {
 		const oXConfig = oTable._getXConfig();
 		const mState = {
-			Sort: oTable._getSortedProperties().map((oSortCondition) => oSortCondition.name),
+			Sort: oTable._getSortedProperties().map((oSortCondition) => oSortCondition.key),
 			Filter: getFilteredProperties(oTable.getFilterConditions()),
-			"Group level": oTable._getGroupedProperties().map((oGroupCondition) => oGroupCondition.name),
+			"Group level": oTable._getGroupedProperties().map((oGroupCondition) => oGroupCondition.key),
 			Aggregation: Object.keys(oTable._getAggregatedProperties()),
 			"Column width": Object.keys(oXConfig?.aggregations?.columns || {}).filter((sKey) => oXConfig.aggregations.columns[sKey].width)
 		};
@@ -2982,8 +2982,8 @@ sap.ui.define([
 
 		aColumns.forEach(function(oColumn) {
 			const oProperty = oPropertyHelper.getProperty(oColumn.getPropertyKey());
-			const aSortableProperties = oProperty?.getSortableProperties().map((oProperty) => oProperty.name) ?? [];
-			const oSortCondition = this._getSortedProperties().find((oSortCondition) => aSortableProperties.includes(oSortCondition.name));
+			const aSortableProperties = oProperty?.getSortableProperties().map((oProperty) => oProperty.key) ?? [];
+			const oSortCondition = this._getSortedProperties().find((oSortCondition) => aSortableProperties.includes(oSortCondition.key));
 			let sSortOrder = SortOrder.None;
 
 			if (oSortCondition) {

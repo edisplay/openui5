@@ -464,10 +464,9 @@ sap.ui.define([
 					/**
 					 * @deprecated As of version 1.121
 					 */
-					if (oPropertyInfo.name === sPropertyKey) {
-						return true;
+					if ("name" in oPropertyInfo) {
+						return oPropertyInfo.name === sPropertyKey;
 					}
-
 					return oPropertyInfo.key === sPropertyKey;
 				};
 				if (sPropertyKey) {
