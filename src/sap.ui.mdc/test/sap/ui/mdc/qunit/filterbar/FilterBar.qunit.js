@@ -1678,8 +1678,6 @@ sap.ui.define([
 			this.oWarningSpy = sinon.spy(Log, "warning");
 			this.oApplySettingsSpy = sinon.spy(FilterBar.prototype, "applySettings");
 
-			PropertyInfoValidator._isValidationFeatureFlagEnabled = true;
-
 			this.oFB = null;
 
 			if (FlexUtil.handleChanges.restore) {
