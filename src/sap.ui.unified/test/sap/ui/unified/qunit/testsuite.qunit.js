@@ -262,6 +262,24 @@ sap.ui.define(function() {
 					only: ["sap/ui/unified/RecurrenceUtils"]
 				}
 			},
+			"RecurrenceRule":{
+				group: "RecurrenceRule",
+				qunit: {
+					reorder: false
+				},
+				coverage: {
+					only: ["sap/ui/unified/RecurrenceRule"]
+				}
+			},
+			"RecurringCalendarAppointment":{
+				group: "RecurringCalendarAppointment",
+				qunit: {
+					reorder: false
+				},
+				coverage: {
+					only: ["sap/ui/unified/RecurringCalendarAppointment"]
+				}
+			},
 			"TimeRange":{
 				group: "TimeRange",
 				qunit: {
