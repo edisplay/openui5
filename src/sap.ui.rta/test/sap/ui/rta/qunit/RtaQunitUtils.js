@@ -302,6 +302,9 @@ sap.ui.define([
 			visualizationButton: {
 				visible: false,
 				enabled: false
+			},
+			backButton: {
+				enabled: false
 			}
 		});
 	};
