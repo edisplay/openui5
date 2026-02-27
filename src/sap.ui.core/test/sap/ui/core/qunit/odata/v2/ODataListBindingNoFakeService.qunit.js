@@ -9,11 +9,12 @@ sap.ui.define([
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
 	"sap/ui/model/FilterProcessor",
+	"sap/ui/model/FilterType",
 	"sap/ui/model/odata/CountMode",
 	"sap/ui/model/odata/ODataUtils",
 	"sap/ui/model/odata/OperationMode",
 	"sap/ui/model/odata/v2/ODataListBinding"
-], function (Log, UI5Date, ChangeReason, Context, Filter, FilterOperator, FilterProcessor,
+], function (Log, UI5Date, ChangeReason, Context, Filter, FilterOperator, FilterProcessor, FilterType,
 		CountMode, ODataUtils, OperationMode, ODataListBinding
 ) {
 	/*global QUnit,sinon*/
@@ -3470,6 +3471,43 @@ sap.ui.define([
 		// code under test
 		assert.strictEqual(ODataListBinding.prototype.filter.call(oBinding), oBinding);
 	});
+
+	//*********************************************************************************************
+[FilterType.Application, FilterType.ApplicationBound].forEach((sFilterType) => {
+	QUnit.test("filter: support bound filters, filter type " + sFilterType, function (assert) {
+		const aComputedFilters = ["~oComputedFilter"];
+		const aControlFilters = ["~oControlFilter"];
+		const aNewFilters = ["~oNewFilter"];
+		const oBinding = {
+				computeApplicationFilters() {},
+				aFilters: aControlFilters,
+				bInitial: true, // simplify test by excluding code for non-initial bindings
+				oModel: {checkFilter() {}},
+				useClientMode() {}
+			};
+
+		this.mock(oBinding.oModel).expects("checkFilter").withExactArgs(sinon.match.same(aNewFilters));
+		this.mock(oBinding).expects("computeApplicationFilters")
+			.exactly(sFilterType === FilterType.Control ? 0 : 1)
+			.withExactArgs(sinon.match.same(aNewFilters), sFilterType)
+			.returns(aComputedFilters);
+		/** @deprecated As of version 1.22.0, reason sap.ui.model.odata.Filter.js */
+		(function() {
+			oBinding.convertFilters = function () {};
+			this.mock(oBinding).expects("convertFilters").withExactArgs();
+		}.bind(this)());
+		this.mock(FilterProcessor).expects("combineFilters")
+			.withExactArgs(sinon.match.same(aControlFilters), sinon.match.same(aComputedFilters))
+			.returns("~oCombinedFilter");
+		this.mock(oBinding).expects("useClientMode").withExactArgs().returns(true);
+
+		// code under test
+		assert.strictEqual(ODataListBinding.prototype.filter.call(oBinding, aNewFilters, sFilterType), oBinding);
+
+		assert.strictEqual(oBinding.aApplicationFilters, aComputedFilters);
+		assert.strictEqual(oBinding.oCombinedFilter, "~oCombinedFilter");
+	});
+});
 
 	//*********************************************************************************************
 	QUnit.test("_removePersistedCreatedContexts", function (assert) {

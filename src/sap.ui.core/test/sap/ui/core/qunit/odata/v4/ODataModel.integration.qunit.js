@@ -82971,7 +82971,8 @@ make root = ${bMakeRoot}`;
 	});
 
 	//*********************************************************************************************
-	// Scenario: Bound Filter used for instant filtering with an OData V4 model.
+	// Scenario: Bound Filter used for instant filtering with an OData V4 model, both initially via
+	// the list binding info and via filter API.
 	// Assert in addition that the following works as expected with bound filters
 	// - auto-$expand/$select
 	// - filter operators with two operands (BT)
@@ -83010,6 +83011,7 @@ make root = ${bMakeRoot}`;
 
 		const oFilterModel = new JSONModel({
 			namePrefix : "Lap",
+			nameSuffix : "1",
 			weightMin : undefined,
 			weightMax : undefined
 		});
@@ -83027,8 +83029,9 @@ make root = ${bMakeRoot}`;
 			.expectChange("weightMeasure", ["2.500", "3.500"])
 			.expectChange("weightUnit", ["KG", "KG"]);
 
+		const oListBinding = this.oView.byId("table").getBinding("items");
 		// resume only after filter model has been set to prevent canceled errors
-		this.oView.byId("table").getBinding("items").resume();
+		oListBinding.resume();
 
 		await this.waitForChanges(assert, "initial filtering");
 
@@ -83045,7 +83048,7 @@ make root = ${bMakeRoot}`;
 			.expectChange("name", "Lap1", 0)
 			.expectChange("weightMeasure", "3.500", 0);
 
-		// code under test - set BT filter values
+		// code under test
 		oFilterModel.setProperty("/weightMin", "3.0");
 		oFilterModel.setProperty("/weightMax", "4.0");
 
@@ -83064,11 +83067,64 @@ make root = ${bMakeRoot}`;
 			.expectChange("weightUnit", "KG", 1)
 			.expectChange("weightUnit", "KG", 2);
 
-		// code under test - reset all bound filter values
+		// code under test
 		oFilterModel.setProperty("/namePrefix", undefined);
 		oFilterModel.setProperty("/weightMin", undefined);
 		oFilterModel.setProperty("/weightMax", undefined);
 
 		await this.waitForChanges(assert, "reset all bound filter values");
+
+		this.expectRequest("ProductList?$select=Name,ProductID,WeightMeasure,WeightUnit"
+				+ "&$filter=endswith(Name,'1')&$skip=0&$top=100", {
+				value : [
+					{Name : "Lap1", ProductID : "id1", WeightMeasure : "3.5", WeightUnit : "KG"}
+				]
+			})
+			.expectChange("name", ["Lap1"])
+			.expectChange("weightMeasure", ["3.500"]);
+		const oBoundFilter = new Filter({path : "Name", operator : FilterOperator.EndsWith,
+			value1 : "{filter>/nameSuffix}"});
+
+		// code under test
+		oListBinding.filter(oBoundFilter, FilterType.ApplicationBound);
+
+		await this.waitForChanges(assert, "set new bound filter via API");
+
+		this.expectRequest("ProductList?$select=Name,ProductID,WeightMeasure,WeightUnit"
+				+ "&$filter=endswith(Name,'0')&$skip=0&$top=100", {
+				value : [
+					{Name : "Mob0", ProductID : "id2", WeightMeasure : "0.5", WeightUnit : "KG"},
+					{Name : "Lap0", ProductID : "id0", WeightMeasure : "2.5", WeightUnit : "KG"}
+				]
+			})
+			.expectChange("name", ["Mob0", "Lap0"])
+			.expectChange("weightMeasure", ["0.500", "2.500"])
+			.expectChange("weightUnit", "KG", 1);
+
+		// code under test
+		oFilterModel.setProperty("/nameSuffix", "0"); // value for new filter: is applied
+		oFilterModel.setProperty("/namePrefix", "Lap"); // value for previous filter: has no effect
+
+		await this.waitForChanges(assert, "set values for new and previous bound filter");
+
+		this.expectRequest("ProductList"
+				+ "?$select=Name,ProductID,WeightMeasure,WeightUnit"
+				+ "&$filter=WeightMeasure ge 2 and WeightUnit eq 'KG' and endswith(Name,'0')"
+				+ "&$skip=0&$top=100", {
+				value : [
+					{Name : "Lap0", ProductID : "id0", WeightMeasure : "2.5", WeightUnit : "KG"}
+				]
+			})
+			.expectChange("name", ["Lap0"])
+			.expectChange("weightMeasure", ["2.500"]);
+		const oConstantFilter0 = new Filter({path : "WeightMeasure", operator : FilterOperator.GE,
+			value1 : "2"});
+		const oConstantFilter1 = new Filter({path : "WeightUnit", operator : FilterOperator.EQ,
+			value1 : "KG"});
+
+		// code under test
+		oListBinding.filter([oConstantFilter0, oConstantFilter1], FilterType.Application);
+
+		await this.waitForChanges(assert, "new constant filters combined w/ existing bound filter");
 	});
 });
