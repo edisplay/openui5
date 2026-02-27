@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="UTF-8">
-		<title>ACC PDFViewer - sap.m</title>
+		<meta charset="utf-8">
 
-		<link href="PDFViewer.css" rel="stylesheet">
+		<title>ACC NewsContent - sap.m</title>
+
 		<script src="../shared-config.js"></script>
 		<script id="sap-ui-bootstrap"
 				src="../../../../resources/sap-ui-core.js"
 				data-sap-ui-async="true"
 				data-sap-ui-compatVersion="edge"
-				data-sap-ui-libs="sap.m"
-				data-sap-ui-onInit="module:local/PDFViewer"
+				data-sap-ui-libs="sap.m, sap.ui.layout"
+				data-sap-ui-onInit="module:local/NewsContent"
 				data-sap-ui-resourceRoots='{
 					"local": "./",
 					"qunit.internal.acc": "../../../../test-resources/sap/ui/core/qunit/internal/acc"
-				}'
-				data-sap-ui-theme="sap_belize" type="text/javascript"></script>
+				}'>
+		</script>
 	</head>
-	<body class="sapUiBody">
+	<body id="body" class="sapUiBody">
 		<div id="content"></div>
 	</body>
 </html>
