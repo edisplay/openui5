@@ -2201,6 +2201,10 @@ GenericTile.prototype._isNavigateActionEnabled = function() {
 		return this._sGridItemRole;
 	};
 
+	GenericTile.prototype._shouldRenderLink = function() {
+		return this.getUrl() && (!this._isInActionScope() || this.getMode() === GenericTileMode.IconMode) && this.getState() !== LoadState.Disabled && !this._isNavigateActionEnabled();
+	};
+
 	/**
 	 * Checks if any of the inner buttons in the Tile are focused or clicked
 	 * @param {object} event - jQuery event object
