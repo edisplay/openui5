@@ -456,6 +456,61 @@ sap.ui.define([
 		});
 	});
 
+	QUnit.module("ManifestUtils.getFlexBundleEntry", {}, function() {
+		QUnit.test("with a manifest JSON containing flexBundle", function(assert) {
+			const oFlexBundle = { bundle: "testBundle" };
+			const oManifest = {
+				"sap.ui5": {
+					flexBundle: oFlexBundle
+				}
+			};
+			assert.strictEqual(
+				ManifestUtils.getFlexBundleEntry(oManifest),
+				oFlexBundle,
+				"the flexBundle object is returned from raw manifest"
+			);
+		});
+
+		QUnit.test("with a manifest object containing flexBundle", function(assert) {
+			const oFlexBundle = { bundle: "testBundleObj" };
+			const oManifest = {
+				getEntry(sKey) {
+					if (sKey === "sap.ui5") {
+						return { flexBundle: oFlexBundle };
+					}
+					return undefined;
+				}
+			};
+			assert.strictEqual(
+				ManifestUtils.getFlexBundleEntry(oManifest),
+				oFlexBundle,
+				"the flexBundle object is returned from manifest object"
+			);
+		});
+
+		QUnit.test("with no flexBundle present", function(assert) {
+			const oManifest = {
+				"sap.ui5": {}
+			};
+			assert.strictEqual(
+				ManifestUtils.getFlexBundleEntry(oManifest),
+				undefined,
+				"undefined is returned when flexBundle is missing"
+			);
+		});
+
+		QUnit.test("with no sap.ui5 entry present", function(assert) {
+			const oManifest = {
+				"sap.app": {}
+			};
+			assert.strictEqual(
+				ManifestUtils.getFlexBundleEntry(oManifest),
+				undefined,
+				"undefined is returned when sap.ui5 is missing"
+			);
+		});
+	});
+
 	QUnit.module("ManifestUtils.isFlexExtensionPointHandlingEnabled", {
 		afterEach() {
 			sandbox.restore();
