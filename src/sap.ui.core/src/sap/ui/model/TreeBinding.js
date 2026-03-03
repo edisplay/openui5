@@ -3,8 +3,8 @@
  */
 /*eslint-disable max-len */
 // Provides an abstraction for tree bindings
-sap.ui.define(['./Binding', './Filter', './Sorter'],
-	function(Binding, Filter, Sorter) {
+sap.ui.define(['./AggregationBinding', './Binding', './Filter', './Sorter'],
+	function(asAggregationBinding, Binding, Filter, Sorter) {
 	"use strict";
 
 
@@ -38,11 +38,15 @@ sap.ui.define(['./Binding', './Filter', './Sorter'],
 	 * @public
 	 * @alias sap.ui.model.TreeBinding
 	 * @extends sap.ui.model.Binding
+	 * @mixes sap.ui.model.AggregationBinding
+	 * @borrows sap.ui.model.AggregationBinding#computeApplicationFilters as #computeApplicationFilters
 	 */
 	var TreeBinding = Binding.extend("sap.ui.model.TreeBinding", /** @lends sap.ui.model.TreeBinding.prototype */ {
 
 		constructor : function(oModel, sPath, oContext, aFilters, mParameters, aSorters){
 			Binding.call(this, oModel, sPath, oContext, mParameters);
+			asAggregationBinding.call(this); // initialize mixin members
+
 			this.aFilters = [];
 
 			this.aSorters = makeArray(aSorters, Sorter);
@@ -61,6 +65,8 @@ sap.ui.define(['./Binding', './Filter', './Sorter'],
 		}
 
 	});
+
+	asAggregationBinding(TreeBinding.prototype); // add mixin methods
 
 	function makeArray(a, FNClass) {
 		if ( Array.isArray(a) ) {
@@ -152,7 +158,9 @@ sap.ui.define(['./Binding', './Filter', './Sorter'],
 	 *   in {@link sap.ui.model.Model#bindTree}; a falsy value is treated as an empty array and thus removes all filters
 	 *   of the specified type
 	 * @param {sap.ui.model.FilterType} [sFilterType]
-	 *   The type of the filter to replace; if no type is given, the behavior depends on the model implementation
+	 *   The type of filter to replace. If no type is specified, the behavior depends on the model implementation.
+	 *   Since 1.146.0, you can use <code>sap.ui.model.FilterType.ApplicationBound</code> to set bound application
+	 *   filters if the model implementation supports it.
 	 *
 	 * @public
 	 */
