@@ -3,8 +3,8 @@
  */
 
 sap.ui.define([
-	'sap/m/p13n/Engine', 'sap/ui/mdc/flexibility/Util', 'sap/ui/fl/changeHandler/condenser/Classification'
-], (Engine, Util, CondenserClassification) => {
+	'sap/m/p13n/Engine', 'sap/ui/mdc/flexibility/Util', 'sap/ui/fl/changeHandler/condenser/Classification', 'sap/ui/mdc/util/getKey'
+], (Engine, Util, CondenserClassification, getKey) => {
 	"use strict";
 
 	/**
@@ -69,7 +69,7 @@ sap.ui.define([
 				});
 
 				let sOldValue = null;
-				const sPropertyKey = oChange.getContent().name;
+				const sPropertyKey = getKey(oChange.getContent());
 				const sProperty = resolveProperty(oChange);
 
 				const oPriorSection = oControl.getMetadata().hasAggregation(sAffectedAggregation)
@@ -81,8 +81,8 @@ sap.ui.define([
 				}
 
 				oChange.setRevertData(bDynamic
-					? {name: sPropertyKey, property: sProperty, value: sOldValue}
-					: {name: sPropertyKey, value: sOldValue}
+					? {key: sPropertyKey, property: sProperty, value: sOldValue}
+					: {key: sPropertyKey, value: sOldValue}
 				);
 
 				return Engine.getInstance().enhanceXConfig(oControl, {
@@ -90,6 +90,10 @@ sap.ui.define([
 						aggregation: sAffectedAggregation
 					},
 					property: sProperty,
+					key: sPropertyKey,
+					/**
+					 * @deprecated As of version 1.124.0
+					 */
 					name: sPropertyKey,
 					value: oChange.getContent().value,
 					propertyBag: mPropertyBag
@@ -98,12 +102,17 @@ sap.ui.define([
 		};
 
 		const fRevert = async function(oChange, oControl, mPropertyBag) {
+			const sPropertyKey = getKey(oChange.getRevertData());
 			await Engine.getInstance().enhanceXConfig(oControl, {
 				controlMeta: {
 					aggregation: sAffectedAggregation
 				},
 				property: bDynamic ? oChange.getRevertData().property : mMetaConfig.property,
-				name: oChange.getRevertData().name,
+				key: sPropertyKey,
+				/**
+				* @deprecated As of version 1.124.0
+				 */
+				name: sPropertyKey,
 				value: oChange.getRevertData().value,
 				propertyBag: mPropertyBag
 			});
@@ -117,7 +126,7 @@ sap.ui.define([
 				return {
 					classification: mMetaConfig.classification ?? CondenserClassification.LastOneWins,
 					affectedControl: oChange.getSelector(),
-					uniqueKey: oChange.getContent().name + "_" + sAffectedAggregation + "_" + resolveProperty(oChange)
+					uniqueKey: getKey(oChange.getContent())  + "_" + sAffectedAggregation + "_" + resolveProperty(oChange)
 				};
 			}
 		});

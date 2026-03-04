@@ -442,6 +442,9 @@ sap.ui.define([
 			if (oAction.getVisible()) {
 				aActions.push({
 					key: sId,
+					/**
+					 * @deprecated As of version 1.124.0
+					 */
 					name: sId,
 					alignment: oAction.getLayoutInformation().alignment
 				});

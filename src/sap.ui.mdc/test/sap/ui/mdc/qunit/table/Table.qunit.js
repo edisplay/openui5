@@ -3376,11 +3376,14 @@ sap.ui.define([
 
 	QUnit.test("Current state", function(assert) {
 		const aSortConditions = [{
-			name: "test",
+			key: "test",
 			descending: true
 		}];
 		const aSortConditionsResult = [{
 			name: "test",
+			/**
+			 * @deprecated As of version 1.124.0
+			 */
 			key: "test",
 			descending: true
 		}];
@@ -3404,12 +3407,20 @@ sap.ui.define([
 			propertyKey: "test"
 		}));
 		assert.deepEqual(this.oTable.getCurrentState(), {
-			items: [{key: "test", name: "test"}]
+			items: [{
+				key: "test",
+				/** @deprecated As of version 1.124.0 */
+				name: "test"
+			}]
 		}, "Add a column");
 
 		this.oTable.setP13nMode(["Column", "Sort"]);
 		assert.deepEqual(this.oTable.getCurrentState(), {
-			items: [{key: "test", name: "test"}],
+			items: [{
+				key: "test",
+				/** @deprecated As of version 1.124.0 */
+				name: "test"
+			}],
 			sorters: []
 		}, "Activate 'Sort'");
 
@@ -3417,20 +3428,32 @@ sap.ui.define([
 			sorters: aSortConditions
 		});
 		assert.deepEqual(this.oTable.getCurrentState(), {
-			items: [{key: "test", name: "test"}],
+			items: [{
+				key: "test",
+				/** @deprecated As of version 1.124.0 */
+				name: "test"
+			}],
 			sorters: aSortConditionsResult
 		}, "Set sort conditions");
 
 		this.oTable.setP13nMode(["Column", "Sort", "Filter"]);
 		assert.deepEqual(this.oTable.getCurrentState(), {
-			items: [{key: "test", name: "test"}],
+			items: [{
+				key: "test",
+				/** @deprecated As of version 1.124.0 */
+				name: "test"
+			}],
 			sorters: aSortConditionsResult,
 			filter: {}
 		}, "Activate 'Filter'");
 
 		this.oTable.setFilterConditions(oFilterConditions);
 		assert.deepEqual(this.oTable.getCurrentState(), {
-			items: [{key: "test", name: "test"}],
+			items: [{
+				key: "test",
+				/** @deprecated As of version 1.124.0 */
+				name: "test"
+			}],
 			sorters: aSortConditionsResult,
 			filter: oFilterConditions
 		}, "Set filter conditions");
@@ -3438,7 +3461,9 @@ sap.ui.define([
 		this.oTable.setP13nMode(["Column", "Filter"]);
 		assert.deepEqual(this.oTable.getCurrentState(), {
 			items: [{
-				key: "test", name: "test"
+				key: "test",
+				/** @deprecated As of version 1.124.0 */
+				name: "test"
 			}],
 			filter: oFilterConditions
 		}, "Deactivate 'Sort'");

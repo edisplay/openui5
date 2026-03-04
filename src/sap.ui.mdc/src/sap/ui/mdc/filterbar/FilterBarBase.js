@@ -576,6 +576,9 @@ sap.ui.define([
 				const sPropertyKey = oFilterField.getPropertyKey();
 				aItems.push({
 					key: sPropertyKey,
+					/**
+					 * @deprecated As of version 1.124.0
+					 */
 					name: sPropertyKey
 				});
 			});

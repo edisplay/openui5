@@ -251,7 +251,7 @@ sap.ui.define([
 			//an existing value has been changed --> removeCondition + addCondition
 			assert.equal(aDirtyChanges.length, 1, "The correct amount of changes has been created");
 			assert.equal(aDirtyChanges[0].getChangeType(), "addCondition", "The condition change for add has been created");
-			assert.equal(aDirtyChanges[0].getContent().name, "Boolean", "The correct property is affected");
+			assert.equal(aDirtyChanges[0].getContent().key, "Boolean", "The correct property is affected");
 
 			//we expect the retrieved staste to match the latest changes
 			StateUtil.retrieveExternalState(this.oFilterBar).then(function(oRetrievedState){
@@ -283,13 +283,13 @@ sap.ui.define([
 			//an existing value has been changed --> removeCondition + addCondition + addPropertyInfo
 			assert.equal(aDirtyChanges.length, 4, "The correct amount of changes has been created");
 			assert.equal(aDirtyChanges[0].getChangeType(), "addCondition", "The condition change for add has been created");
-			assert.equal(aDirtyChanges[0].getContent().name, "String", "The correct property is affected");
+			assert.equal(aDirtyChanges[0].getContent().key, "String", "The correct property is affected");
 			assert.equal(aDirtyChanges[1].getChangeType(), "addCondition", "The condition change for add has been created");
-			assert.equal(aDirtyChanges[1].getContent().name, "Boolean", "The correct property is affected");
+			assert.equal(aDirtyChanges[1].getContent().key, "Boolean", "The correct property is affected");
 			assert.equal(aDirtyChanges[2].getChangeType(), "addCondition", "The condition change for add has been created");
-			assert.equal(aDirtyChanges[2].getContent().name, "Decimal", "The correct property is affected");
+			assert.equal(aDirtyChanges[2].getContent().key, "Decimal", "The correct property is affected");
 			assert.equal(aDirtyChanges[3].getChangeType(), "addCondition", "The condition change for add has been created");
-			assert.equal(aDirtyChanges[3].getContent().name, "Date", "The correct property is affected");
+			assert.equal(aDirtyChanges[3].getContent().key, "Date", "The correct property is affected");
 
 			//the second time there should not be any changes
 			StateUtil.applyExternalState(this.oFilterBar, oExternalState).then(function(aDirtyChanges){
@@ -321,13 +321,13 @@ sap.ui.define([
 				//an existing value has been changed --> removeCondition + addCondition
 				assert.equal(aDirtyChanges.length, 4, "The correct amount of changes has been created");
 				assert.equal(aDirtyChanges[0].getChangeType(), "addCondition", "The condition change for add has been created");
-				assert.equal(aDirtyChanges[0].getContent().name, "String", "The correct property is affected");
+				assert.equal(aDirtyChanges[0].getContent().key, "String", "The correct property is affected");
 				assert.equal(aDirtyChanges[1].getChangeType(), "addCondition", "The condition change for add has been created");
-				assert.equal(aDirtyChanges[1].getContent().name, "Boolean", "The correct property is affected");
+				assert.equal(aDirtyChanges[1].getContent().key, "Boolean", "The correct property is affected");
 				assert.equal(aDirtyChanges[2].getChangeType(), "addCondition", "The condition change for add has been created");
-				assert.equal(aDirtyChanges[2].getContent().name, "Decimal", "The correct property is affected");
+				assert.equal(aDirtyChanges[2].getContent().key, "Decimal", "The correct property is affected");
 				assert.equal(aDirtyChanges[3].getChangeType(), "addCondition", "The condition change for add has been created");
-				assert.equal(aDirtyChanges[3].getContent().name, "Date", "The correct property is affected");
+				assert.equal(aDirtyChanges[3].getContent().key, "Date", "The correct property is affected");
 
 				//the second time there should not be any changes
 				const oResetState = {
@@ -366,13 +366,13 @@ sap.ui.define([
 				//an existing value has been changed --> removeCondition + addCondition
 				assert.equal(aDirtyChanges.length, 4, "The correct amount of changes has been created");
 				assert.equal(aDirtyChanges[0].getChangeType(), "addCondition", "The condition change for add has been created");
-				assert.equal(aDirtyChanges[0].getContent().name, "String", "The correct property is affected");
+				assert.equal(aDirtyChanges[0].getContent().key, "String", "The correct property is affected");
 				assert.equal(aDirtyChanges[1].getChangeType(), "addCondition", "The condition change for add has been created");
-				assert.equal(aDirtyChanges[1].getContent().name, "Boolean", "The correct property is affected");
+				assert.equal(aDirtyChanges[1].getContent().key, "Boolean", "The correct property is affected");
 				assert.equal(aDirtyChanges[2].getChangeType(), "addCondition", "The condition change for add has been created");
-				assert.equal(aDirtyChanges[2].getContent().name, "Decimal", "The correct property is affected");
+				assert.equal(aDirtyChanges[2].getContent().key, "Decimal", "The correct property is affected");
 				assert.equal(aDirtyChanges[3].getChangeType(), "addCondition", "The condition change for add has been created");
-				assert.equal(aDirtyChanges[3].getContent().name, "Date", "The correct property is affected");
+				assert.equal(aDirtyChanges[3].getContent().key, "Date", "The correct property is affected");
 
 				//the second time there should not be any changes
 				const oResetState = {
@@ -387,13 +387,13 @@ sap.ui.define([
 				StateUtil.applyExternalState(this.oFilterBar, oResetState).then(function(aDirtyChanges){
 					assert.equal(aDirtyChanges.length, 4, "Conditions will not be removed explicitly");
 					assert.equal(aDirtyChanges[0].getChangeType(), "removeCondition", "The condition change for remove has been created");
-					assert.equal(aDirtyChanges[0].getContent().name, "String", "The correct property is affected");
+					assert.equal(aDirtyChanges[0].getContent().key, "String", "The correct property is affected");
 					assert.equal(aDirtyChanges[1].getChangeType(), "removeCondition", "The condition change for remove has been created");
-					assert.equal(aDirtyChanges[1].getContent().name, "Boolean", "The correct property is affected");
+					assert.equal(aDirtyChanges[1].getContent().key, "Boolean", "The correct property is affected");
 					assert.equal(aDirtyChanges[2].getChangeType(), "removeCondition", "The condition change for remove has been created");
-					assert.equal(aDirtyChanges[2].getContent().name, "Decimal", "The correct property is affected");
+					assert.equal(aDirtyChanges[2].getContent().key, "Decimal", "The correct property is affected");
 					assert.equal(aDirtyChanges[3].getChangeType(), "removeCondition", "The condition change for remove has been created");
-					assert.equal(aDirtyChanges[3].getContent().name, "Date", "The correct property is affected");
+					assert.equal(aDirtyChanges[3].getContent().key, "Date", "The correct property is affected");
 					done();
 				});
 			}.bind(this));
@@ -407,9 +407,9 @@ sap.ui.define([
 		const done = assert.async();
 
 		const aItemState = [
-			{name: "String", position: 0},
-			{name: "Boolean", position: 1},
-			{name: "Date", position: 2}
+			{key: "String", position: 0},
+			{key: "Boolean", position: 1},
+			{key: "Date", position: 2}
 		];
 
 		const oExternalState = {
@@ -423,11 +423,11 @@ sap.ui.define([
 			//an existing value has been changed --> removeCondition + addCondition
 			assert.equal(aDirtyChanges.length, 3, "The correct amount of changes has been created");
 			assert.equal(aDirtyChanges[0].getChangeType(), "addFilter", "The condition change for add has been created");
-			assert.equal(aDirtyChanges[0].getContent().name, "String", "The correct property is affected");
+			assert.equal(aDirtyChanges[0].getContent().key, "String", "The correct property is affected"); // on Change level "name" is used, not "key"
 			assert.equal(aDirtyChanges[1].getChangeType(), "addFilter", "The condition change for add has been created");
-			assert.equal(aDirtyChanges[1].getContent().name, "Boolean", "The correct property is affected");
+			assert.equal(aDirtyChanges[1].getContent().key, "Boolean", "The correct property is affected");
 			assert.equal(aDirtyChanges[2].getChangeType(), "addFilter", "The condition change for add has been created");
-			assert.equal(aDirtyChanges[2].getContent().name, "Date", "The correct property is affected");
+			assert.equal(aDirtyChanges[2].getContent().key, "Date", "The correct property is affected");
 
 			//when applying the same state again, no changes should be created
 			StateUtil.applyExternalState(this.oFilterBar, oExternalState).then(function(aDirtyChanges){
@@ -442,9 +442,9 @@ sap.ui.define([
 		const done = assert.async();
 
 		const aItemState = [
-			{name: "String"},
-			{name: "Boolean"},
-			{name: "Date"}
+			{key: "String"},
+			{key: "Boolean"},
+			{key: "Date"}
 		];
 
 		const oExternalState = {
@@ -458,11 +458,11 @@ sap.ui.define([
 			//an existing value has been changed --> removeCondition + addCondition
 			assert.equal(aDirtyChanges.length, 3, "The correct amount of changes has been created");
 			assert.equal(aDirtyChanges[0].getChangeType(), "addFilter", "The condition change for add has been created");
-			assert.equal(aDirtyChanges[0].getContent().name, "String", "The correct property is affected");
+			assert.equal(aDirtyChanges[0].getContent().key, "String", "The correct property is affected"); // on Change level "name" is used, not "key"
 			assert.equal(aDirtyChanges[1].getChangeType(), "addFilter", "The condition change for add has been created");
-			assert.equal(aDirtyChanges[1].getContent().name, "Boolean", "The correct property is affected");
+			assert.equal(aDirtyChanges[1].getContent().key, "Boolean", "The correct property is affected");
 			assert.equal(aDirtyChanges[2].getChangeType(), "addFilter", "The condition change for add has been created");
-			assert.equal(aDirtyChanges[2].getContent().name, "Date", "The correct property is affected");
+			assert.equal(aDirtyChanges[2].getContent().key, "Date", "The correct property is affected");
 
 			//when applying the same state again, no changes should be created
 			StateUtil.applyExternalState(this.oFilterBar, oExternalState).then(function(aDirtyChanges){
@@ -477,9 +477,9 @@ sap.ui.define([
 		const done = assert.async();
 
 		const aItemState = [
-			{name: "String"},
-			{name: "Boolean"},
-			{name: "Date"}
+			{key: "String"},
+			{key: "Boolean"},
+			{key: "Date"}
 		];
 
 		const mFilterConditions = {
@@ -608,8 +608,8 @@ sap.ui.define([
 		this.oFilterBar.addFilterItem(fnCreateFilterItem("Boolean"));
 
 		const aItemState = [
-			{name: "String", visible: false},
-			{name: "Boolean", visible: false}
+			{key: "String", visible: false},
+			{key: "Boolean", visible: false}
 		];
 
 		const oExternalState = {
@@ -623,9 +623,9 @@ sap.ui.define([
 			//an existing value has been changed --> removeCondition + addCondition
 			assert.equal(aDirtyChanges.length, 2, "The correct amount of changes has been created");
 			assert.equal(aDirtyChanges[0].getChangeType(), "removeFilter", "The filter change for remove has been created");
-			assert.equal(aDirtyChanges[0].getContent().name, "String", "The correct property is affected");
+			assert.equal(aDirtyChanges[0].getContent().key, "String", "The correct property is affected"); // on Change level "name" is used, not "key"
 			assert.equal(aDirtyChanges[1].getChangeType(), "removeFilter", "The filter change for remove has been created");
-			assert.equal(aDirtyChanges[1].getContent().name, "Boolean", "The correct property is affected");
+			assert.equal(aDirtyChanges[1].getContent().key, "Boolean", "The correct property is affected");
 
 			//when applying the same state again, no changes should be created
 			StateUtil.applyExternalState(this.oFilterBar, oExternalState).then(function(aDirtyChanges){
@@ -653,8 +653,8 @@ sap.ui.define([
 		this.oFilterBar.addFilterItem(fnCreateFilterItem("Boolean"));
 
 		const aItemState = [
-			{name: "String", position: 1},
-			{name: "Double", position: 3}
+			{key: "String", position: 1},
+			{key: "Double", position: 3}
 		];
 
 		const oExternalState = {
@@ -672,8 +672,8 @@ sap.ui.define([
 
 			assert.equal(this.oFilterBar.getFilterItems().length, 4, "FilterBar still has 4 items");
 
-			assert.deepEqual(this.oFilterBar.getCurrentState().items[1].name, oExternalState.items[0].name, "the desired and actual state match");
-			assert.deepEqual(this.oFilterBar.getCurrentState().items[3].name, oExternalState.items[1].name, "the desired and actual state match");
+			assert.deepEqual(this.oFilterBar.getCurrentState().items[1].key, oExternalState.items[0].key, "the desired and actual state match");
+			assert.deepEqual(this.oFilterBar.getCurrentState().items[3].key, oExternalState.items[1].key, "the desired and actual state match");
 
 			//when applying the same state again, no changes should be created
 			StateUtil.applyExternalState(this.oFilterBar, oExternalState).then(function(aDirtyChanges){
@@ -699,8 +699,8 @@ sap.ui.define([
 		this.oFilterBar.addFilterItem(fnCreateFilterItem("Double"));
 
 		const aItemState = [
-			{name: "Date"},
-			{name: "Boolean"}
+			{key: "Date"},
+			{key: "Boolean"}
 		];
 
 		const oExternalState = {
@@ -718,8 +718,8 @@ sap.ui.define([
 
 			assert.equal(this.oFilterBar.getFilterItems().length, 4, "FilterBar still has 4 items");
 
-			assert.equal(this.oFilterBar.getFilterItems()[2].getPropertyKey(), oExternalState.items[0].name, "the item has been added on the correct positiion");
-			assert.equal(this.oFilterBar.getFilterItems()[3].getPropertyKey(), oExternalState.items[1].name, "the item has been added on the correct positiion");
+			assert.equal(this.oFilterBar.getFilterItems()[2].getPropertyKey(), oExternalState.items[0].key, "the item has been added on the correct positiion");
+			assert.equal(this.oFilterBar.getFilterItems()[3].getPropertyKey(), oExternalState.items[1].key, "the item has been added on the correct positiion");
 
 			//when applying the same state again, no changes should be created
 			StateUtil.applyExternalState(this.oFilterBar, oExternalState).then(function(aDirtyChanges){
@@ -767,6 +767,56 @@ sap.ui.define([
 	});
 
 	QUnit.test("Create columns via 'applyExternalState'", function(assert){
+
+		const done = assert.async();
+
+		const oState = {
+			items: [
+				{
+					key: "String"
+				},
+				{
+					key: "Boolean"
+				}
+			]
+		};
+
+		StateUtil.applyExternalState(this.oTable, oState).then(function(aChanges){
+			assert.equal(aChanges.length, oState.items.length, "Correct amount of changes created: " + aChanges.length);
+			assert.equal(aChanges[0].getChangeType(), "addColumn", "Correct change type created");
+			assert.equal(aChanges[1].getChangeType(), "addColumn", "Correct change type created");
+			assert.equal(this.oTable.getColumns().length, oState.items.length, "Number of created columns correct");
+
+			const oRemoveState = {
+				items: [
+					{
+						key: "String",
+						visible: false
+					},
+					{
+						key: "Boolean",
+						visible: false
+					}
+				]
+			};
+
+			StateUtil.applyExternalState(this.oTable, oRemoveState).then(function(aChanges){
+				assert.equal(aChanges.length, oRemoveState.items.length, "Correct amount of changes created: " + aChanges.length);
+				assert.equal(aChanges[0].getChangeType(), "removeColumn", "Correct change type created");
+				assert.equal(aChanges[1].getChangeType(), "removeColumn", "Correct change type created");
+
+				assert.equal(this.oTable.getColumns().length, 0, "Correct amount of columns removed");
+
+				done();
+			}.bind(this));
+
+		}.bind(this));
+	});
+
+	/**
+	 * @deprecated As of version 1.124.0
+	 */
+	QUnit.test("Create columns via 'applyExternalState' using 'name'", function(assert){
 
 		const done = assert.async();
 
@@ -821,6 +871,95 @@ sap.ui.define([
 			sorters: [
 				{
 					key: "String",
+					descending: true
+				}
+			],
+			items: [
+				{
+					key:  "Decimal"
+				},
+				{
+					key:  "Double"
+				}
+			]
+		};
+
+		const oCompareState = {
+			sorters: [
+				{
+					key: "String",
+					/**
+					 * @deprecated As of version 1.124.0
+					 */
+					name: "String",
+					descending: true
+				}
+			],
+			items: [
+				{
+					key:  "Decimal",
+					/**
+					 * @deprecated As of version 1.124.0
+					 */
+					name: "Decimal"
+				},
+				{
+					key:  "Double",
+					/**
+					 * @deprecated As of version 1.124.0
+					 */
+					name: "Double"
+				}
+			]
+		};
+
+		StateUtil.applyExternalState(this.oTable, oState).then(function(aChanges){
+			assert.equal(aChanges.length, 3, "Correct amount of changes created: " + aChanges.length);
+
+			assert.equal(aChanges[0].getChangeType(), "addColumn", "Correct change type created");
+			assert.equal(aChanges[1].getChangeType(), "addColumn", "Correct change type created");
+			assert.equal(aChanges[2].getChangeType(), "addSort", "Correct change type created");
+
+			assert.equal(this.oTable.getColumns().length, oCompareState.items.length, "Number of created columns correct");
+			assert.deepEqual(this.oTable.getSortConditions().sorters, oCompareState.sorters, "Correct sort object created");
+
+			StateUtil.retrieveExternalState(this.oTable).then(function(oTableState){
+				assert.deepEqual(oTableState.items, oCompareState.items, "Correct state retrieved");
+				assert.deepEqual(oTableState.sorters, oCompareState.sorters, "Correct state retrieved");
+				done();
+			});
+
+		}.bind(this));
+	});
+
+	/**
+	 * @deprecated As of version 1.124.0
+	 */
+	QUnit.test("Create columns and sorter via 'applyExternalState' using 'name'", function(assert){
+
+		const done = assert.async();
+
+		const oState = {
+			sorters: [
+				{
+					name: "String",
+					descending: true
+				}
+			],
+			items: [
+				{
+					name:  "Decimal"
+				},
+				{
+					name:  "Double"
+				}
+			]
+		};
+
+		const oCompareState = {
+			sorters: [
+				{
+					key: "String",
 					name: "String",
 					descending: true
 				}
@@ -844,12 +983,12 @@ sap.ui.define([
 			assert.equal(aChanges[1].getChangeType(), "addColumn", "Correct change type created");
 			assert.equal(aChanges[2].getChangeType(), "addSort", "Correct change type created");
 
-			assert.equal(this.oTable.getColumns().length, oState.items.length, "Number of created columns correct");
-			assert.deepEqual(this.oTable.getSortConditions().sorters, oState.sorters, "Correct sort object created");
+			assert.equal(this.oTable.getColumns().length, oCompareState.items.length, "Number of created columns correct");
+			assert.deepEqual(this.oTable.getSortConditions().sorters, oCompareState.sorters, "Correct sort object created");
 
 			StateUtil.retrieveExternalState(this.oTable).then(function(oTableState){
-				assert.deepEqual(oTableState.items, oState.items, "Correct state retrieved");
-				assert.deepEqual(oTableState.sorters, oState.sorters, "Correct state retrieved");
+				assert.deepEqual(oTableState.items, oCompareState.items, "Correct state retrieved");
+				assert.deepEqual(oTableState.sorters, oCompareState.sorters, "Correct state retrieved");
 				done();
 			});
 
@@ -864,6 +1003,18 @@ sap.ui.define([
 			sorters: [
 				{
 					key: "String",
+					descending: true
+				}
+			]
+		};
+
+		const oCompareState = {
+			sorters: [
+				{
+					key: "String",
+					/**
+					 * @deprecated As of version 1.124.0
+					 */
 					name: "String",
 					descending: true
 				}
@@ -875,9 +1026,10 @@ sap.ui.define([
 			assert.equal(aChanges.length, 1, "Correct amount of changes created: " + aChanges.length);
 
 			assert.equal(aChanges[0].getChangeType(), "addSort", "Correct change type created");
-			assert.deepEqual(this.oTable.getSortConditions().sorters, oState.sorters, "Correct sort object created");
+			assert.deepEqual(this.oTable.getSortConditions().sorters, oCompareState.sorters, "Correct sort object created");
 
 			oState.sorters[0].descending = false;
+			oCompareState.sorters[0].descending = false;
 
 			//change sort order
 			StateUtil.applyExternalState(this.oTable, oState).then(function(aChanges){
@@ -885,9 +1037,10 @@ sap.ui.define([
 
 				assert.equal(aChanges[0].getChangeType(), "removeSort", "Correct change type created");
 				assert.equal(aChanges[1].getChangeType(), "addSort", "Correct change type created");
-				assert.deepEqual(this.oTable.getSortConditions().sorters, oState.sorters, "Correct sort object created");
+				assert.deepEqual(this.oTable.getSortConditions().sorters, oCompareState.sorters, "Correct sort object created");
 
 				oState.sorters[0].sorted = false;
+				oCompareState.sorters[0].sorted = false;
 
 				//remove sorter via 'enabled'
 				StateUtil.applyExternalState(this.oTable, oState).then(function(aChanges){
@@ -983,7 +1136,7 @@ sap.ui.define([
 			StateUtil.applyExternalState(this.oTable, oResetState).then(function(aDirtyChanges){
 				assert.equal(aDirtyChanges.length, 1, "Every condition has been removed via 'removeCondition' change");
 				assert.equal(aDirtyChanges[0].getChangeType(), "addCondition", "The condition change for remove has been created");
-				assert.equal(aDirtyChanges[0].getContent().name, "Date", "The correct property is affected");
+				assert.equal(aDirtyChanges[0].getContent().key, "Date", "The correct property is affected");
 				assert.deepEqual(aDirtyChanges[0].getContent().condition, {"operator": OperatorName.EQ,"values":["2020-02-12"]}, "The correct value is affected");
 				done();
 			});
@@ -999,7 +1152,6 @@ sap.ui.define([
 			sorters: [
 				{
 					key: "String",
-					name: "String",
 					descending: true
 				}
 			],
@@ -1284,7 +1436,18 @@ sap.ui.define([
 		const oState = {
 			groupLevels: [
 				{
+					key: "String"
+				}
+			]
+		};
+
+		const oCompareState = {
+			groupLevels: [
+				{
 					key: "String",
+					/**
+					 * @deprecated As of version 1.124.0
+					 */
 					name: "String"
 				}
 			]
@@ -1295,7 +1458,52 @@ sap.ui.define([
 			assert.equal(aChanges.length, 1, "Correct amount of changes created: " + aChanges.length);
 
 			assert.equal(aChanges[0].getChangeType(), "addGroup", "Correct change type created");
-			assert.deepEqual(this.oTable.getGroupConditions().groupLevels, oState.groupLevels, "Correct groupLevels object created");
+			assert.deepEqual(this.oTable.getGroupConditions().groupLevels, oCompareState.groupLevels, "Correct groupLevels object created");
+
+			oState.groupLevels[0].grouped = false;
+
+			//remove grouping
+			StateUtil.applyExternalState(this.oTable, oState).then(function(aChanges){
+				assert.equal(aChanges.length, 1, "Correct amount of changes created: " + aChanges.length);
+
+				assert.equal(aChanges[0].getChangeType(), "removeGroup", "Correct change type created");
+				assert.deepEqual(this.oTable.getGroupConditions().groupLevels, [], "Correct groupLevels object created");
+
+				done();
+			}.bind(this));
+		}.bind(this));
+	});
+
+	/**
+	 * @deprecated As of version 1.124.0
+	 */
+	QUnit.test("Create different group changes via 'applyExternalState' using 'name'", function(assert){
+
+		const done = assert.async();
+
+		const oState = {
+			groupLevels: [
+				{
+					name: "String"
+				}
+			]
+		};
+
+		const oCompareState = {
+			groupLevels: [
+				{
+					name: "String",
+					key: "String"
+				}
+			]
+		};
+
+		//add new grouping
+		StateUtil.applyExternalState(this.oTable, oState).then(function(aChanges){
+			assert.equal(aChanges.length, 1, "Correct amount of changes created: " + aChanges.length);
+
+			assert.equal(aChanges[0].getChangeType(), "addGroup", "Correct change type created");
+			assert.deepEqual(this.oTable.getGroupConditions().groupLevels, oCompareState.groupLevels, "Correct groupLevels object created");
 
 			oState.groupLevels[0].grouped = false;
 
@@ -1440,6 +1648,10 @@ sap.ui.define([
 		const oState = {
 			items: [
 				{
+				  "key": "Industry",
+				  /**
+					 * @deprecated As of version 1.124.0
+				   */
 				  "name": "Industry",
 				  "role": "category"
 				}
@@ -1455,6 +1667,10 @@ sap.ui.define([
 			const oRemoveState = {
 				items: [
 					{
+						"key": "Industry",
+						/**
+						 * @deprecated As of version 1.124.0
+						 */
 						"name": "Industry",
 						"visible": false
 					}
@@ -1481,6 +1697,10 @@ sap.ui.define([
 		const oState = {
 			items: [
 				{
+				  "key": "Name",
+				  /**
+					 * @deprecated As of version 1.124.0
+					 */
 				  "name": "Name",
 				  "role": "series"
 				}
@@ -1508,11 +1728,17 @@ sap.ui.define([
 			sorters: [
 				{
 					"key": "Name",
+					/**
+					 * @deprecated As of version 1.124.0
+					 */
 					"name": "Name",
 					"descending": false
 				},
 				{
 					"key": "Date",
+					/**
+					 * @deprecated As of version 1.124.0
+					 */
 					"name": "Date",
 					"descending": true
 				}
@@ -1528,6 +1754,10 @@ sap.ui.define([
 			const oRemoveState = {
 				sorters: [
 				  {
+					  "key": "Name",
+					  /**
+					 * @deprecated As of version 1.124.0
+					 	 z*/
 					  "name": "Date",
 					  "sorted": false
 				  }]
@@ -1589,7 +1819,7 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Ceck attaching & detaching", function(assert) {
+	QUnit.test("Check attaching & detaching", function(assert) {
 
 		const fnHandler1 = function(){};
 		const fnHandler2 = function(){};
@@ -1609,18 +1839,18 @@ sap.ui.define([
 				sorters: [
 					{
 						position: 0,
-						name: "String",
+						key: "String",
 						descending: true
 					}
 				],
 				items: [
 					{
 						position: 0,
-						name: "Decimal"
+						key: "Decimal"
 					},
 					{
 						position: 1,
-						name: "Double"
+						key: "Double"
 					}
 				],
 				supplementaryConfig: {
@@ -1649,6 +1879,59 @@ sap.ui.define([
 				groupLevels: [
 					{
 						position: 0,
+						key: "String"
+					}
+				],
+				aggregations: {}
+			};
+		},
+		getCompareState: function() {
+			return {
+				sorters: [
+					{
+						position: 0,
+						key: "String",
+						name: "String",
+						descending: true
+					}
+				],
+				items: [
+					{
+						position: 0,
+						key: "Decimal"
+					},
+					{
+						position: 1,
+						key: "Double"
+					}
+				],
+				supplementaryConfig: {
+					aggregations : {
+						columns: {
+							String: {
+								width: "150px"
+							}
+						}
+					}
+				},
+				filter: {
+					String: [{
+						operator: OperatorName.Contains,
+						values: [
+							"Test"
+						]
+					}],
+					Boolean: [{
+						operator: OperatorName.EQ,
+						values: [
+							true
+						]
+					}]
+				},
+				groupLevels: [
+					{
+						position: 0,
+						key: "String",
 						name: "String"
 					}
 				],
@@ -1692,7 +1975,7 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Ceck empty diff between identical states", function(assert) {
+	QUnit.test("Check empty diff between identical states", function(assert) {
 
 		const done = assert.async();
 
@@ -1716,11 +1999,12 @@ sap.ui.define([
 
 	});
 
-	QUnit.test("Ceck empty diff after appliance", function(assert) {
+	QUnit.test("Check empty diff after appliance", function(assert) {
 
 		const done = assert.async();
 
 		const oSampleState = this.getSampleState();
+		const oCompareState = this.getCompareState();
 
 		let oInitialState;
 
@@ -1743,65 +2027,65 @@ sap.ui.define([
 			return StateUtil.diffState(this.oTable, oInitialState, oNewState);
 		}.bind(this))
 		.then(function(oStateDiff){
-			assert.deepEqual(oStateDiff, oSampleState, "The state diff is identical to the applied state");
+			assert.deepEqual(oStateDiff, oCompareState, "The state diff is identical to the applied state");
 			done();
 		});
 
 	});
 
-	QUnit.test("Ceck in case the position explicitly changed through an insert", function(assert) {
+	QUnit.test("Check in case the position explicitly changed through an insert", function(assert) {
 
 		const done = assert.async();
 
 		StateUtil.diffState(this.oTable, {
 			items: [{
-				name: "Single"
+				key: "Single"
 			},{
-				name: "Decimal"
+				key: "Decimal"
 			}]
 		}, {
 			items: [{
-				name: "String"
+				key: "String"
 			},{
-				name: "Single"
+				key: "Single"
 			},{
-				name: "Decimal"
+				key: "Decimal"
 			}]
 		})
 		.then(function(oStateDiff){
-			assert.equal(oStateDiff.items[0].name, "String", "The state diff includes the added item");
+			assert.equal(oStateDiff.items[0].key, "String", "The state diff includes the added item");
 			assert.equal(oStateDiff.items[0].position, 0, "The state diff includes the position for the added item");
 			done();
 		});
 
 	});
 
-	QUnit.test("Ceck diff takes position into account", function(assert) {
+	QUnit.test("Check diff takes position into account", function(assert) {
 
 		const done = assert.async();
 
 		const oInitialState = {
 			items: [{
-				name: "Single"
+				key: "Single"
 			},{
-				name: "Decimal"
+				key: "Decimal"
 			},{
-				name: "Double"
+				key: "Double"
 			},{
-				name: "Int32"
+				key: "Int32"
 			}]
 		};
 
 		const oNewState = {
 			items: [
 			{
-				name: "Double"
+				key: "Double"
 			},{
-				name: "Decimal"
+				key: "Decimal"
 			},{
-				name: "Single"
+				key: "Single"
 			},{
-				name: "Int32"
+				key: "Int32"
 			}]
 		};
 
@@ -1809,16 +2093,16 @@ sap.ui.define([
 		.then(function(oStateDiff){
 
 			assert.equal(oStateDiff.items.length, 2, "Two item diffed in state");
-			assert.equal(oStateDiff.items[0].name, "Double", "Correct key position");
+			assert.equal(oStateDiff.items[0].key, "Double", "Correct key position");
 			assert.equal(oStateDiff.items[0].position, 0, "Correct index position");
-			assert.equal(oStateDiff.items[1].name, "Decimal", "Correct key position");
+			assert.equal(oStateDiff.items[1].key, "Decimal", "Correct key position");
 			assert.equal(oStateDiff.items[1].position, 1, "Correct index position");
 			done();
 		});
 
 	});
 
-	QUnit.test("Ceck only diff returned between two different states", function(assert) {
+	QUnit.test("Check only diff returned between two different states", function(assert) {
 
 		const done = assert.async();
 
@@ -1871,7 +2155,7 @@ sap.ui.define([
 
 	});
 
-	QUnit.test("Ceck diff for aggregate changes", function(assert) {
+	QUnit.test("Check diff for aggregate changes", function(assert) {
 
 		const done = assert.async();
 
@@ -1894,7 +2178,7 @@ sap.ui.define([
 
 	});
 
-	QUnit.test("Ceck diff for aggregate changes", function(assert) {
+	QUnit.test("Check diff for aggregate changes", function(assert) {
 
 		const done = assert.async();
 

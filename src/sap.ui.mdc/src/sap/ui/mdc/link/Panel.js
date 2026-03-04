@@ -520,6 +520,9 @@ sap.ui.define([
 			if (oItem.getVisible()) {
 				aItems.push({
 					key: sId,
+					/**
+					 * @deprecated As of version 1.124.0
+					 */
 					name: sId
 				});
 			}

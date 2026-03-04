@@ -138,6 +138,10 @@ sap.ui.define([
 			control: oTable,
 			key: "Sort",
 			state: [{
+				key: mSettings.propertyKey,
+				/**
+				 * @deprecated As of version 1.124.0
+				 */
 				name: mSettings.propertyKey,
 				descending: mSettings.sortOrder === CoreLibrary.SortOrder.Descending,
 				sorted: mSettings.sortOrder !== CoreLibrary.SortOrder.None
@@ -165,6 +169,10 @@ sap.ui.define([
 			key: "Group",
 			state: [{
 				grouped: !bIsGrouped,
+				key: mSettings.propertyKey,
+				/**
+				 * @deprecated As of version 1.124.0
+				 */
 				name: mSettings.propertyKey
 			}],
 			applyAbsolute: oTable._isOfType("ResponsiveTable")
@@ -214,6 +222,10 @@ sap.ui.define([
 			control: oTable,
 			key: "Aggregate",
 			state: [{
+				key: mSettings.propertyKey,
+				/**
+				 * @deprecated As of version 1.124.0
+				 */
 				name: mSettings.propertyKey,
 				aggregated: !bHasAggregate
 			}],
@@ -234,6 +246,10 @@ sap.ui.define([
 			control: oTable,
 			key: "ColumnWidth",
 			state: [{
+				key: mSettings.column.getPropertyKey(),
+				/**
+				 * @deprecated As of version 1.124.0
+				 */
 				name: mSettings.column.getPropertyKey(),
 				width: mSettings.width
 			}],
@@ -260,6 +276,10 @@ sap.ui.define([
 			control: oTable,
 			key: "Column",
 			state: [{
+				key: mSettings.column.getPropertyKey(),
+				/**
+				 * @deprecated As of version 1.124.0
+				 */
 				name: mSettings.column.getPropertyKey(),
 				position: mSettings.index
 			}]
@@ -277,6 +297,10 @@ sap.ui.define([
 			control: oTable,
 			key: "ShowDetails",
 			state: [{
+				key: "ResponsiveTable",
+				/**
+				 * @deprecated As of version 1.124.0
+				 */
 				name: "ResponsiveTable",
 				showDetails: mSettings.showDetails
 			}],
@@ -295,6 +319,10 @@ sap.ui.define([
 			control: oTable,
 			key: "ColumnFreeze",
 			state: [{
+				key: "GridTable",
+				/**
+				 * @deprecated As of version 1.124.0
+				 */
 				name: "GridTable",
 				fixedColumnCount: mSettings.fixedColumnCount
 			}],

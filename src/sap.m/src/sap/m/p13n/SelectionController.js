@@ -340,7 +340,19 @@ sap.ui.define([
 		const fnSymbol = (o) => {
 			let sDiff = "";
 			aDeltaAttributes.forEach((sAttribute) => {
-				sDiff = sDiff + o[sAttribute];
+				let vAttribute = o[sAttribute];
+
+				/**
+				 * @deprecated As of version 1.124.0
+				 */
+				if ((sAttribute === "key" || sAttribute === "name") && !o.hasOwnProperty(sAttribute)) {
+					// Compat bridge for the key→name migration: fall back to the sibling property
+					// if the item was created by an unmigrated caller that still only carries the other one.
+					const sFallback = sAttribute === "key" ? "name" : "key";
+					vAttribute = o[sFallback];
+				}
+
+				sDiff = sDiff + vAttribute;
 			});
 			return sDiff;
 		};
@@ -474,6 +486,16 @@ sap.ui.define([
 		let bReturn = false;
 
 		aDeltaAttributes.some((sAttr) => {
+			/**
+			 * @deprecated As of version 1.124.0
+			 */
+			if (["key", "name"].indexOf(sAttr) >= 0 &&
+				(oSource.hasOwnProperty("key") || oSource.hasOwnProperty("name")) && (oTarget.hasOwnProperty("key") || oTarget.hasOwnProperty("name")) &&
+				((oSource["key"] || oSource["name"]) === (oTarget["key"] || oTarget["name"]))) {
+				// handle "key" and "name" as similar attributes
+				return bReturn;
+			}
+
 			if (!oSource.hasOwnProperty(sAttr) && oTarget.hasOwnProperty(sAttr) ||
 				oSource.hasOwnProperty(sAttr) && !oTarget.hasOwnProperty(sAttr) ||
 				(oSource[sAttr] != oTarget[sAttr])) {
@@ -682,7 +704,11 @@ sap.ui.define([
 				const bValueChanged = vOldValue !== vNewValue;
 				if (bValueChanged) {
 					aSetterChanges.push(this._createAddRemoveChange(oControl, sOperation, {
-						[oItem.hasOwnProperty("key") ? "key" : "name"]: oItem.key || oItem.name,
+						key: oItem.key || oItem.name,
+						/**
+						 * @deprecated As of version 1.124.0
+						 */
+						name: oItem.key || oItem.name,
 						targetAggregation: this.getTargetAggregation(),
 						value: oItem[sSetAttribute]
 					}));
@@ -710,6 +736,13 @@ sap.ui.define([
 			//set the presence attribute to false in case of an explicit remove
 			if (oChange.changeSpecificData.changeType === this.getChangeOperations()["remove"]) {
 				oStateDiffContent[this._getPresenceAttribute()] = false;
+			}
+
+			/**
+			 * @deprecated As of version 1.124.0
+			 */
+			if (oStateDiffContent.name && !oStateDiffContent.key) {
+				oStateDiffContent.key = oStateDiffContent.name;
 			}
 
 			aState.push(oStateDiffContent);

@@ -129,7 +129,7 @@ sap.ui.define([
                 return {
 					changeType: "moveAction",
 					content: {
-						name: "comp---view--Action5",
+						key: "comp---view--Action5",
                         index: 1
 					}
 				};
@@ -142,7 +142,7 @@ sap.ui.define([
 				return {
 					changeType: "moveAction",
 					content: {
-						name: "comp---view--Action5",
+						key: "comp---view--Action5",
                         index: 0
 					}
 				};
@@ -165,7 +165,7 @@ sap.ui.define([
                 return {
 					changeType: "moveAction",
 					content: {
-						name: "comp---view--Action5",
+						key: "comp---view--Action5",
                         index: 1
 					}
 				};
@@ -178,7 +178,7 @@ sap.ui.define([
 				return {
 					changeType: "moveAction",
 					content: {
-						name: "comp---view--Action5",
+						key: "comp---view--Action5",
                         index: 0
 					}
 				};
@@ -192,6 +192,44 @@ sap.ui.define([
 */
 
     elementActionTest("with Chart - Two moveAction changes condensed into none", {
+        xmlView: fnGetViewWithChart(),
+        jsOnly: true,
+        action: {
+            name: "settings",
+            controlId: "actionToolbarChart--toolbar",
+            parameter: function () {
+                return {
+					changeType: "moveAction",
+					content: {
+						key: "comp---view--Action5",
+                        index: 1
+					}
+				};
+            }
+        },
+        previousActions: [{
+			name: "settings",
+			controlId: "actionToolbarChart--toolbar",
+			parameter: function () {
+				return {
+					changeType: "moveAction",
+					content: {
+						key: "comp---view--Action5",
+                        index: 0
+					}
+				};
+			}
+		}],
+        changesAfterCondensing: 1,
+		afterAction: fnConfirmActionGotMoved("comp---view--actionToolbarChart--toolbar", "comp---view--Action5", 1),
+		afterUndo: fnConfirmInitialActionState("comp---view--actionToolbarChart--toolbar"),
+		afterRedo: fnConfirmActionGotMoved("comp---view--actionToolbarChart--toolbar", "comp---view--Action5", 1)
+    });
+
+    /**
+     * @deprecated As of version 1.124.0
+     */
+    elementActionTest("with Chart - Two moveAction changes condensed into none (using 'name' in content)", {
         xmlView: fnGetViewWithChart(),
         jsOnly: true,
         action: {
