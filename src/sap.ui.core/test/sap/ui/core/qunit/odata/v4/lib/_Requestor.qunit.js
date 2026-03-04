@@ -3586,7 +3586,7 @@ sap.ui.define([
 
 		return oFinalPromise;
 	});
-	//TODO ? //********** Part 4: two running change requests for different groups
+	//TODO: ? //********** Part 4: two running change requests for different groups
 
 	//*****************************************************************************************
 [
@@ -4860,7 +4860,7 @@ sap.ui.define([
 				{foo : [42]});
 		}, new Error("Unsupported collection-valued parameter: foo"));
 	});
-	//TODO what about actions & collections?
+	//TODO: what about actions & collections?
 
 	//*****************************************************************************************
 	QUnit.test("isActionBodyOptional", function (assert) {
@@ -6808,5 +6808,5 @@ sap.ui.define([
 		assert.strictEqual(oRequestor.hasOnlyPatchesWithoutSideEffects("$auto"), false);
 	});
 });
-// TODO: cancelChanges: what about existing GET requests in deferred queue (delete or not)?
-// TODO: tests for doConvertSystemQueryOptions missing. Only tested indirectly
+//TODO: cancelChanges: what about existing GET requests in deferred queue (delete or not)?
+//TODO: tests for doConvertSystemQueryOptions missing. Only tested indirectly

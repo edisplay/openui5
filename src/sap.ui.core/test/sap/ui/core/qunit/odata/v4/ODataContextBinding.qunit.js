@@ -834,7 +834,7 @@ sap.ui.define([
 		}, function (oError) {
 			assert.strictEqual(oError, oExpectedError);
 		});
-		// TODO should we destroy oElementContext in this case?
+		//TODO: should we destroy oElementContext in this case?
 	});
 
 	//*********************************************************************************************
@@ -1580,8 +1580,8 @@ sap.ui.define([
 			});
 		});
 	});
-	// TODO function returning collection
-	// TODO function overloads
+	//TODO: function returning collection
+	//TODO: function overloads
 
 	//*********************************************************************************************
 	[false, true].forEach(function (bBaseContext) {
@@ -1663,7 +1663,7 @@ sap.ui.define([
 
 					assert.strictEqual(oReturnValueContext, undefined);
 					if (oExpectation) {
-						//TODO avoid to invoke a request via getObject, which does not wait for
+						//TODO: avoid to invoke a request via getObject, which does not wait for
 						// results anyway!
 						assert.strictEqual(oExpectation.args[0][4](), oEntity);
 					}

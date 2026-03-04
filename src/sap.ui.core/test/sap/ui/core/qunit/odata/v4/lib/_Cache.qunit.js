@@ -533,9 +533,9 @@ sap.ui.define([
 	});
 });
 
-	//TODO adjust paths in mChangeRequests?
-	//TODO invoke update in case of isConcurrentModification?!
-	//TODO do it anyway? what and when to return, result of remove vs. re-read?
+	//TODO: adjust paths in mChangeRequests?
+	//TODO: invoke update in case of isConcurrentModification?!
+	//TODO: do it anyway? what and when to return, result of remove vs. re-read?
 
 	//*********************************************************************************************
 [false, true].forEach(function (bLock) {
@@ -9780,7 +9780,7 @@ sap.ui.define([
 
 		// code under test
 		oCache._delete(null, "TEAMS('0')/TEAM_2_EMPLOYEES",
-			sPathInCache + "/1", //TODO sPathInCache + sTransientPredicate
+			sPathInCache + "/1", //TODO: sPathInCache + sTransientPredicate
 			null, false, fnDeleteCallback);
 
 		assert.strictEqual(aCollection.$count, 41);
@@ -10019,7 +10019,7 @@ sap.ui.define([
 	});
 
 	//*********************************************************************************************
-	//TODO move to _Cache!
+	//TODO: move to _Cache!
 	QUnit.test("CollectionCache: create entity and has pending changes", function (assert) {
 		var mQueryOptions = {},
 			oCache = this.createCache("Employees", mQueryOptions),
@@ -10171,7 +10171,7 @@ sap.ui.define([
 	});
 
 	//*********************************************************************************************
-	//TODO move to _Cache!
+	//TODO: move to _Cache!
 	QUnit.test("CollectionCache: pending create forces update/_delete to fail", function (assert) {
 		var mQueryOptions = {},
 			oCache = this.createCache("Employees", mQueryOptions),
@@ -10219,7 +10219,7 @@ sap.ui.define([
 					"No 'update' allowed while waiting for server response",
 					oError.message);
 			});
-			oCache._delete(oDeleteGroupLock, "n/a", /*TODO sTransientPredicate*/"0")
+			oCache._delete(oDeleteGroupLock, "n/a", /*TODO: sTransientPredicate*/"0")
 				.then(function () {
 					assert.ok(false, "Unexpected success - _delete");
 				}, function (oError) {
@@ -10344,7 +10344,7 @@ sap.ui.define([
 	});
 
 	//*********************************************************************************************
-	//TODO move to _Cache!
+	//TODO: move to _Cache!
 	[
 		{createGroupId : "$direct"},
 		{createGroupId : "$auto"},
@@ -10477,7 +10477,7 @@ sap.ui.define([
 	});
 
 	//*********************************************************************************************
-	//TODO move to _Cache!
+	//TODO: move to _Cache!
 [false, true].forEach(function (bInactive) {
 	[false, true].forEach(function (bAtEndOfCreated) {
 		var sTitle = "CollectionCache: create entity without initial data, bInactive="
@@ -10908,7 +10908,7 @@ sap.ui.define([
 
 		// code under test
 		oDeletePromise = oCache._delete(null, "n/a",
-			/*TODO sTransientPredicate*/"0", null, false, function () {
+			/*TODO: sTransientPredicate*/"0", null, false, function () {
 				throw new Error();
 			});
 
@@ -10991,7 +10991,7 @@ sap.ui.define([
 				.returns(Promise.resolve());
 
 			// code under test
-			return oCache._delete(oDeleteGroupLock, sEditUrl, /*TODO sTransientPredicate*/"0",
+			return oCache._delete(oDeleteGroupLock, sEditUrl, /*TODO: sTransientPredicate*/"0",
 					null, fnCallback)
 				.then(function () {
 					sinon.assert.calledOnceWithExactly(fnCallback, 0, -1);
@@ -11086,7 +11086,7 @@ sap.ui.define([
 				oCacheMock = this.mock(oCache),
 				that = this;
 
-			//TODO this.fetchValue(_GroupLock.$cached, "").then(...) would be needed in _Cache in
+			//TODO: this.fetchValue(_GroupLock.$cached, "").then(...) would be needed in _Cache in
 			// case we do not wait for read() to finish here!
 			// Note: fill cache with more than just "visible" rows
 			return this.mockRequestAndRead(oCache, 0, sResourcePath, iFillStart, iFillLength,
@@ -12649,7 +12649,7 @@ sap.ui.define([
 		});
 	});
 });
-	//TODO with an expand on 1..n navigation properties, compute the count of the nested collection
+	//TODO: with an expand on 1..n navigation properties, compute the count of the nested collection
 	//   --> comes with implementation of $$inheritExpandSelect
 
 	//*********************************************************************************************
@@ -12817,7 +12817,7 @@ sap.ui.define([
 	});
 
 	//*********************************************************************************************
-	//TODO move to _Cache!
+	//TODO: move to _Cache!
 	QUnit.test("SingleCache: mChangeRequests", function (assert) {
 		var sResourcePath = "SOLineItemList(SalesOrderID='0',ItemPosition='0')",
 			oCache = this.createSingle(sResourcePath),
@@ -12906,7 +12906,7 @@ sap.ui.define([
 	});
 
 	//*********************************************************************************************
-	//TODO move to _Cache!
+	//TODO: move to _Cache!
 	QUnit.test("SingleCache: update, hasPendingChanges and resetChanges", function (assert) {
 		var sResourcePath = "SOLineItemList(SalesOrderID='0',ItemPosition='0')",
 			oCache = this.createSingle(sResourcePath),
@@ -13240,7 +13240,7 @@ sap.ui.define([
 		});
 	});
 });
-	//TODO CollectionCache#refreshSingle claims that
+	//TODO: CollectionCache#refreshSingle claims that
 	// "_Helper.updateExisting cannot be used because navigation properties cannot be handled"
 	// --> what does that mean for us? @see CPOUI5UISERVICESV3-1992
 
@@ -15296,6 +15296,6 @@ sap.ui.define([
 	});
 });
 //TODO: resetCache if error in update?
-// TODO we cannot update a single property with value null, because the read delivers "204 No
+//TODO: we cannot update a single property with value null, because the read delivers "204 No
 //      Content" and no oResult. -Hence we do not have the ETag et al.- We use the ETag header now!
-//TODO key predicate calculation in the result of operations?
+//TODO: key predicate calculation in the result of operations?
