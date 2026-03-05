@@ -114,7 +114,7 @@ sap.ui.define([
 				String : "foo"
 			}
 		},
-		//TODO "__metadata" : {} is actually unexpected here, in real life
+		//TODO: "__metadata" : {} is actually unexpected here, in real life
 		oExpectedResult : {__metadata : {}, String : "foo"}
 	}, {
 		bIsCollection : false,
@@ -283,7 +283,7 @@ sap.ui.define([
 			oRequestor.doConvertResponse(oResponsePayload, sMetaPath),
 			{value : [sOutput0, sOutput1]});
 	});
-	//TODO test with __count/__next?
+	//TODO: test with __count/__next?
 
 	//*********************************************************************************************
 	QUnit.test("doConvertResponse, 2.2.7.5 empty collection", function (assert) {
@@ -1134,7 +1134,7 @@ sap.ui.define([
 				v2type : "Edm.DateTime", result : "datetime'2015-05-23T13:47:26'"},
 			{value : "13:47:26", type : "Edm.TimeOfDay", v2type : "Edm.Time",
 				result : "time'PT13H47M26S'"}
-			// TODO V2 literal formatting does not support milliseconds
+			//TODO: V2 literal formatting does not support milliseconds
 			// {value : "13:47:26.123", type : "Edm.TimeOfDay", v2type: "Edm.Time",
 			//     result : "time'PT13H47M26.123S'"},
 		].forEach(function (oFixture) {
@@ -1225,7 +1225,7 @@ sap.ui.define([
 				oFixture.result || sFilter);
 		});
 	});
-	// TODO milliseconds in DateTimeOffset and TimeOfDay
+	//TODO: milliseconds in DateTimeOffset and TimeOfDay
 
 	//*********************************************************************************************
 	[{
