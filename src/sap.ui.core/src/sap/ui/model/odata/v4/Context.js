@@ -822,6 +822,8 @@ sap.ui.define([
 				return this.oBinding.fetchValue(this.sPath + "/$count", null, bCached)
 					.then((iCount) => {
 						return {
+							...(this.bOutdated !== undefined
+									&& {"@$ui5.context.isOutdated" : this.bOutdated}),
 							"@$ui5.context.isSelected" : this.bSelected,
 							$count : iCount,
 							$selectionCount : iSelectionCount

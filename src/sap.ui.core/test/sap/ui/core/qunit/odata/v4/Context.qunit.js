@@ -389,8 +389,10 @@ sap.ui.define([
 [undefined, "", "/foo"].forEach(function (sPath) {
 	[false, true].forEach((bSelected) => {
 		[undefined, 42].forEach((iSelectionCount) => {
-			const sTitle = "fetchValue: header context, path=" + JSON.stringify(sPath)
-				+ ", select all=" + bSelected + ", $selectionCount internally=" + iSelectionCount;
+			[undefined, false, true].forEach((bOutdated) => {
+	const sTitle = "fetchValue: header context, path=" + JSON.stringify(sPath)
+		+ ", select all=" + bSelected + ", $selectionCount internally=" + iSelectionCount
+		+ ", outdated=" + bOutdated;
 
 	QUnit.test(sTitle, function (assert) {
 		var oBinding = {
@@ -399,6 +401,9 @@ sap.ui.define([
 			},
 			oContext = Context.create(null, oBinding, "/foo");
 
+		if (bOutdated !== undefined) {
+			oContext.bOutdated = bOutdated;
+		}
 		oContext.bSelected = bSelected;
 		oContext.iSelectionCount = iSelectionCount;
 
@@ -408,13 +413,18 @@ sap.ui.define([
 			.returns(SyncPromise.resolve(Promise.resolve(42)));
 
 		return oContext.fetchValue(sPath, null, "bCached").then(function (oResult) {
-			assert.deepEqual(oResult, {
+			const oExpectedResult = {
 				"@$ui5.context.isSelected" : bSelected,
 				$count : 42,
 				$selectionCount : bSelected ? undefined : iSelectionCount ?? 0
-			});
+			};
+			if (bOutdated !== undefined) {
+				oExpectedResult["@$ui5.context.isOutdated"] = bOutdated;
+			}
+			assert.deepEqual(oResult, oExpectedResult);
 		});
 	});
+			});
 		});
 	});
 });

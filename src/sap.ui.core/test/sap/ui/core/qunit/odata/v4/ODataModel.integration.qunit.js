@@ -24580,6 +24580,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	// JIRA: CPOUI5ODATAV4-3258
 	//
 	// Context#setOutdated and Context#isOutdated are supported for header contexts.
+	// Context#getObject also returns "@$ui5.context.isOutdated" if it has been set at least once.
 	// JIRA: CPOUI5ODATAV4-3392
 	QUnit.test("Data Aggregation: leaves' key predicates", function (assert) {
 		var oBinding,
@@ -24646,6 +24647,12 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			// code under test (JIRA: CPOUI5ODATAV4-3392)
 			assert.strictEqual(oHeaderContext.isOutdated(), undefined);
 			assert.strictEqual(oHeaderContext.getProperty("@$ui5.context.isOutdated"), undefined);
+			assert.deepEqual(oHeaderContext.getObject(), {
+				// NO "@$ui5.context.isOutdated"
+				"@$ui5.context.isSelected" : false,
+				$count : 3,
+				$selectionCount : 0
+			});
 
 			that.expectChange("isOutdated", undefined);
 
@@ -24693,6 +24700,12 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 
 			assert.strictEqual(oHeaderContext.isOutdated(), true);
 			assert.strictEqual(oHeaderContext.getProperty("@$ui5.context.isOutdated"), true);
+			assert.deepEqual(oHeaderContext.getObject(), {
+				"@$ui5.context.isOutdated" : true,
+				"@$ui5.context.isSelected" : false,
+				$count : 3,
+				$selectionCount : 0
+			});
 
 			return that.waitForChanges(assert);
 		}).then(function () {
@@ -24784,6 +24797,12 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 
 			assert.strictEqual(oHeaderContext.isOutdated(), false);
 			assert.strictEqual(oHeaderContext.getProperty("@$ui5.context.isOutdated"), false);
+			assert.deepEqual(oHeaderContext.getObject(), {
+				"@$ui5.context.isOutdated" : false,
+				"@$ui5.context.isSelected" : false,
+				$count : 2,
+				$selectionCount : 0
+			});
 
 			await that.waitForChanges(assert);
 
