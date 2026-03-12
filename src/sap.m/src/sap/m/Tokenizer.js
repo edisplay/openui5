@@ -1452,6 +1452,10 @@ sap.ui.define([
 	};
 
 	Tokenizer.prototype.onsaphide = function(oEvent) {
+		if (oEvent.isMarked()) {
+			return;
+		}
+
 		this._togglePopup(this.getTokensPopup());
 	};
 
