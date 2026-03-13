@@ -1405,7 +1405,7 @@ sap.ui.define([
 	 *   Whether this context is outdated, or <code>undefined</code> if the outdated state has not
 	 *   yet been determined
 	 *
-	 * @experimental As of version 1.147.0
+	 * @ui5-experimental-since 1.147
 	 * @public
 	 */
 	Context.prototype.isOutdated = function () {
