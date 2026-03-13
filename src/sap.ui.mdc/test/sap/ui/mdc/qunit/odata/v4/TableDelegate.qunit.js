@@ -84,6 +84,15 @@ sap.ui.define([
 			}
 		};
 
+		TestDelegate.addItem = function(oTable, sPropertyKey) {
+			const oProperty = oTable.getPropertyHelper().getProperty(sPropertyKey);
+			return Promise.resolve(new Column({
+				header: oProperty.label,
+				propertyKey: sPropertyKey,
+				template: new Text({text: "{" + oProperty.path + "}"})
+			}));
+		};
+
 		return TestDelegate;
 	});
 
@@ -900,6 +909,84 @@ sap.ui.define([
 				dataType: "String",
 				extension: {
 					technicallyGroupable: true
+				}
+			}]
+		});
+		await this.oTable.rebind();
+		this.verify$$aggregation({
+			aggregate: {},
+			grandTotalAtBottomOnly: true,
+			subtotalsAtBottomOnly: true,
+			group: {
+				CountryPath: {}
+			},
+			groupLevels: []
+		});
+	});
+
+	QUnit.test("Group condition for inactive property", async function(assert) {
+		await this.initTable({
+			propertyKeys: ["Country", "InactiveGroup"],
+			groupConditions: {
+				groupLevels: [{
+					name: "InactiveGroup"
+				}]
+			}
+		}, [], {
+			propertyInfo: [{
+				key: "Country",
+				path: "CountryPath",
+				label: "Country Label",
+				dataType: "String",
+				extension: {
+					technicallyGroupable: true
+				}
+			}, {
+				key: "InactiveGroup",
+				path: "InactiveGroupPath",
+				label: "InactiveGroup Label",
+				dataType: "String",
+				isActive: false,
+				extension: {
+					technicallyGroupable: true
+				}
+			}]
+		});
+		await this.oTable.rebind();
+		this.verify$$aggregation({
+			aggregate: {},
+			grandTotalAtBottomOnly: true,
+			subtotalsAtBottomOnly: true,
+			group: {
+				CountryPath: {}
+			},
+			groupLevels: []
+		});
+	});
+
+	QUnit.test("Aggregate condition for inactive property", async function(assert) {
+		await this.initTable({
+			propertyKeys: ["Country", "InactiveSales"],
+			aggregateConditions: {
+				InactiveSales: {}
+			}
+		}, [], {
+			propertyInfo: [{
+				key: "Country",
+				path: "CountryPath",
+				label: "Country Label",
+				dataType: "String",
+				extension: {
+					technicallyGroupable: true
+				}
+			}, {
+				key: "InactiveSales",
+				path: "InactiveSalesPath",
+				label: "InactiveSales Label",
+				dataType: "String",
+				isActive: false,
+				extension: {
+					technicallyAggregatable: true
 				}
 			}]
 		});
@@ -1887,6 +1974,52 @@ sap.ui.define([
 			"Data aggregation disabled");
 	});
 
+	QUnit.test("Sort and filter exclude inactive property", async function(assert) {
+		await this.initTable({
+			p13nMode: ["Sort", "Filter"],
+			propertyKeys: ["Name", "Inactive"],
+			sortConditions: {
+				sorters: [
+					{name: "Name", descending: true},
+					{name: "Inactive", descending: false}
+				]
+			},
+			filterConditions: {
+				Name: [{
+					isEmpty: null,
+					operator: OperatorName.EQ,
+					validated: ConditionValidated.NotValidated,
+					values: ["test"]
+				}],
+				Inactive: [{
+					isEmpty: null,
+					operator: OperatorName.EQ,
+					validated: ConditionValidated.NotValidated,
+					values: ["test"]
+				}]
+			}
+		}, [{
+			key: "Name",
+			path: "Name_Path",
+			label: "Name_Label",
+			dataType: "String"
+		}, {
+			key: "Inactive",
+			path: "Inactive_Path",
+			label: "Inactive_Label",
+			dataType: "String",
+			isActive: false
+		}]);
+
+		const oBindingInfo = {};
+		TableDelegate.updateBindingInfo(this.oTable, oBindingInfo);
+
+		assert.equal(oBindingInfo.sorter.length, 1, "Only one sorter in binding info");
+		assert.equal(oBindingInfo.sorter[0].sPath, "Name_Path", "Sorter is for the active property");
+		assert.equal(oBindingInfo.filters.length, 1, "Only one filter in binding info");
+		assert.equal(oBindingInfo.filters[0].sPath, "Name_Path", "Filter is for the active property");
+	});
+
 	QUnit.test("$$aggregation.expandTo binding parameter", async function(assert) {
 		await this.initTable();
 
@@ -2535,6 +2668,63 @@ sap.ui.define([
 			validation: MessageType.Information,
 			message: oResourceBundle.getText("table.PERSONALIZATION_DIALOG_GROUP_RESTRICTION_VISIBLE")
 		}, "Removing the column that contains a grouped property with ResponsiveTable type");
+	});
+
+	QUnit.test("Restrictions for inactive property", async function(assert) {
+		this.oTable.destroy();
+		this.oTable = new Table({
+			p13nMode: ["Group", "Aggregate"],
+			propertyKeys: ["Name", "Inactive"],
+			delegate: {
+				name: "odata.v4.TestDelegate",
+				payload: {
+					propertyInfo: [{
+						key: "Name",
+						label: "Name",
+						path: "Name",
+						dataType: "String",
+						groupable: true,
+						aggregatable: true
+					}, {
+						key: "Inactive",
+						label: "Inactive",
+						path: "Inactive",
+						dataType: "String",
+						groupable: true,
+						aggregatable: true,
+						isActive: false
+					}]
+				}
+			}
+		});
+		await this.oTable.initialized();
+
+		assert.deepEqual(this.oTable.validateState({
+			items: [{name: "Name"}],
+			sorters: [{name: "Inactive"}]
+		}, "Sort"), {
+			validation: MessageType.None,
+			message: undefined
+		}, "Sort: inactive property does not trigger restriction message");
+
+		this.oTable.setType(TableType.ResponsiveTable);
+		assert.deepEqual(this.oTable.validateState({
+			items: [{name: "Name"}],
+			groupLevels: [{name: "Inactive"}]
+		}, "Group"), {
+			validation: MessageType.None,
+			message: undefined
+		}, "Group: inactive property does not trigger restriction message on ResponsiveTable");
+
+		this.oTable.setType(TableType.Table);
+		assert.deepEqual(this.oTable.validateState({
+			items: [{name: "Name"}],
+			sorters: [{name: "Inactive"}],
+			aggregations: {Inactive: {}}
+		}, "Column"), {
+			validation: MessageType.None,
+			message: undefined
+		}, "Column: inactive property with sort and aggregate does not trigger restriction messages");
 	});
 
 	QUnit.module("API", {

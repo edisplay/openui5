@@ -184,6 +184,14 @@ sap.ui.define(['./util/EnvHelper', "sap/base/util/merge"], function (EnvHelper, 
 				},
 				sinon: true
 			},
+			"DynamicPropertiesUtil": {
+				group: "Util",
+				module: "./util/DynamicPropertiesUtil.qunit",
+				coverage: {
+					only: "[sap/ui/mdc/util]"
+				},
+				sinon: true
+			},
 			"EnforceSemanticRendering": {
 				title: "QUnit Page for Semantic Rendering Coverage"
 			},
@@ -275,6 +283,11 @@ sap.ui.define(['./util/EnvHelper', "sap/base/util/merge"], function (EnvHelper, 
 				coverage: {
 					only: "[sap/ui/mdc/util]"
 				},
+				sinon: true
+			},
+			"DynamicPropertiesMixin": {
+				group: "Mixin",
+				module: "./mixin/DynamicPropertiesMixin.qunit",
 				sinon: true
 			},
 			"PromiseMixin": {
