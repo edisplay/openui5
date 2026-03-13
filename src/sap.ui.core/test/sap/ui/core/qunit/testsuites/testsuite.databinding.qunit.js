@@ -335,6 +335,18 @@ sap.ui.define(function() {
 					"test-resources/sap/ui/core/qunit/odata/ODataMetaModelNoFakeService.qunit"
 				],
 				title: "sap.ui.model.odata.ODataMetaModel (ODataMetaModelNoFakeService.qunit) - QUnit Tests"
+			},
+			// *************************************************************************
+			// OPA Test for Bound Filters
+			// *************************************************************************
+			"OPA.BoundFilters.FilteredListInTable" : {
+				loader : {
+					paths : {
+						"sap/ui/core/sample" : "test-resources/sap/ui/core/demokit/sample"
+					}
+				},
+				module : ["sap/ui/core/sample/BoundFilters/FilteredListInTable/Opa.qunit"],
+				title : "OPA test sap.ui.core.sample.BoundFilters.FilteredListInTable"
 			}
 		}
 	};
