@@ -12,12 +12,12 @@
 		},
 		{
 			"control": "sap.ui.core.LocalBusyIndicator",
-			"url": "../LocalBusyIndicator.html",
+			"url": "LocalBusyIndicator.html",
 			"appComponent": "CA-UI5-COR"
 		},
 		{
 			"control": "sap.ui.core.BusyIndicator",
-			"url": "../BusyIndicator.html",
+			"url": "BusyIndicator.html",
 			"appComponent": "CA-UI5-COR"
 		}
 	]
