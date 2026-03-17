@@ -221,6 +221,13 @@ sap.ui.define([
 		}
 	}
 
+	function getEnumerableKeys(obj) {
+		const keys = [];
+		for (const name in obj) {
+			keys.push(name);
+		}
+		return keys;
+	}
 
 	QUnit.module("Core API");
 
@@ -243,9 +250,6 @@ sap.ui.define([
 		assert.notStrictEqual(new RenderManager().getInterface(), new RenderManager().getInterface(), "Core.createRenderManager should always return a new RenderManager instance");
 	});
 
-	/**
-	 * @deprecated As of 1.111
-	 */
 	QUnit.module("Interfaces");
 
 	var aCommonMethods = ["renderControl", "cleanupControlWithoutRendering"];
@@ -257,7 +261,14 @@ sap.ui.define([
 	var aDomRendererMethods = ["openStart", "openEnd", "close", "voidStart", "voidEnd", "text", "attr", "class", "style",
 		"accessibilityState", "icon", "unsafeHtml"];
 
-	var aInterfaceMethods = aCommonMethods.concat(aStringRendererMethods, aDomRendererMethods);
+	const aInterfaceMethods = [
+		...aCommonMethods,
+		...aDomRendererMethods,
+		/**
+		 * @deprecated As of 1.92 (String based rendering is replaced with the Semantic Rendering)
+		 */
+		...aStringRendererMethods
+	];
 
 	var aNonRendererFunctions = ["render", "flush", "destroy"];
 
@@ -265,26 +276,77 @@ sap.ui.define([
 		var rm = new RenderManager().getInterface();
 		var aAllFunctions = aInterfaceMethods.concat(aNonRendererFunctions);
 
-		for (var i = 0; i < aInterfaceMethods.length; i++) {
-			assert.ok(rm[aAllFunctions[i]] !== undefined, "expected interface method should actually exist: " + aInterfaceMethods[i]);
-		}
-		for (var s in rm) {
-			assert.ok(aAllFunctions.indexOf(s) >= 0, "Full Interface provides function '" + s + "'.");
-		}
+		assert.deepEqual(
+			getEnumerableKeys(rm).sort(),
+			aAllFunctions.sort(),
+			"RenderManager interface should contain exactly the expected methods"
+		);
 	});
 
-	QUnit.test("Renderer Interface", function(assert) {
+	/**
+	 * @deprecated As of 1.92 (String based rendering is replaced with the Semantic Rendering)
+	 * The TestControl only uses the string based rendering API in its renderer
+	 */
+	QUnit.test("Interface provided to Renderer with apiVersion 1", function(assert) {
 		var rm = new RenderManager().getInterface();
 		var oControl0 = new TestControl("TestContr0");
 		fnCheckRendererInterface = function(rmIf) {
-			for (var s in rmIf) {
-				assert.ok(aInterfaceMethods.indexOf(s) >= 0, "Renderer Interface provides function '" + s + "'.");
-			}
+			assert.deepEqual(
+				getEnumerableKeys(rmIf).sort(),
+				aInterfaceMethods.sort(),
+				"Interface given to control renderer should contain exactly the expected methods");
 		};
 		rm.renderControl(oControl0);
 		fnCheckRendererInterface = null;
 	});
 
+	QUnit.test("Interface provided to Renderer with apiVersion 2", function(assert) {
+		const aDomInterfaceMethods = [...aCommonMethods, ...aDomRendererMethods];
+		const TestControlV2 = Control.extend("TestControlV2", {
+			renderer: {
+				apiVersion: 2,
+				render(oRM, oControl) {
+					oRM.openStart("div", oControl).openEnd().close("div");
+					assert.deepEqual(
+						getEnumerableKeys(oRM).sort(),
+						aDomInterfaceMethods.sort(),
+						"Interface given to control renderer should contain exactly the expected methods");
+				}
+			}
+		});
+
+		const rm = new RenderManager().getInterface();
+		const oControl = new TestControlV2();
+		rm.renderControl(oControl);
+
+		// cleanup
+		rm.destroy();
+		oControl.destroy();
+	});
+
+	QUnit.test("Interface provided to Renderer with apiVersion 4", function(assert) {
+		const aDomInterfaceMethods = [...aCommonMethods, ...aDomRendererMethods];
+		const TestControlV4 = Control.extend("TestControlV4", {
+			renderer: {
+				apiVersion: 4,
+				render(oRM, oControl) {
+					oRM.openStart("div", oControl).openEnd().close("div");
+					assert.deepEqual(
+						getEnumerableKeys(oRM).sort(),
+						aDomInterfaceMethods.sort(),
+						"Interface given to control renderer should contain exactly the expected methods");
+				}
+			}
+		});
+
+		const rm = new RenderManager().getInterface();
+		const oControl = new TestControlV4();
+		rm.renderControl(oControl);
+
+		// cleanup
+		rm.destroy();
+		oControl.destroy();
+	});
 
 	/**
 	 * @deprecated As of 1.92 (String based rendering is replaced with the Semantic Rendering)
@@ -739,8 +801,13 @@ sap.ui.define([
 	});
 
 	QUnit.test("RenderManager.openStart - invalid tag", function (assert) {
-		this.oRM.openStart("1");
-		assert.equal(this.oAssertionSpy.callCount, 1);
+		try {
+			this.oRM.openStart("1");
+		} catch (oErr) {
+			// catch the error to avoid failing the test, assertion is done in the finally block
+		} finally {
+			assert.equal(this.oAssertionSpy.callCount, 1);
+		}
 	});
 
 	QUnit.test("RenderManager.openStart - nested", function (assert) {
@@ -764,8 +831,13 @@ sap.ui.define([
 	});
 
 	QUnit.test("RenderManager.voidStart - invalid tag", function (assert) {
-		this.oRM.voidStart("?");
-		assert.equal(this.oAssertionSpy.callCount, 1);
+		try {
+			this.oRM.voidStart("?");
+		} catch (oErr) {
+			// catch the error to avoid failing the test, assertion is done in the finally block
+		} finally {
+			assert.equal(this.oAssertionSpy.callCount, 1);
+		}
 	});
 
 	QUnit.test("RenderManager.voidStart - nested", function (assert) {

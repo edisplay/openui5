@@ -842,6 +842,7 @@ sap.ui.define([
 				assert.ok(oControl, "control with id '" + sId + "' should exist");
 				assert.ok(oControl.getDomRef(), "control with id '" + sId + "' should have DOM");
 				assert.notOk(document.getElementById(RenderManager.RenderPrefixes.Dummy + sId), "there should be no more Dummy-Element for id '" + sId + "'");
+				/** @deprecated since 1.120 because the 'Temporary' prefix is used for the deprecated feature: HTML and SVG support */
 				assert.notOk(document.getElementById(RenderManager.RenderPrefixes.Temporary + sId), "there should be no more Temporary-Element for id '" + sId + "'");
 			});
 
