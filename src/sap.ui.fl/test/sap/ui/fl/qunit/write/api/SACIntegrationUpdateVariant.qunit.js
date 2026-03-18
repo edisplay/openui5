@@ -1,12 +1,15 @@
+
+/* global QUnit */
+
 sap.ui.define([
 	"sap/ui/core/Control",
 	"sap/ui/core/UIComponent",
 	"sap/ui/fl/apply/_internal/flexState/FlexState",
 	"sap/ui/fl/initial/_internal/ManifestUtils",
+	"sap/ui/fl/initial/_internal/Settings",
 	"sap/ui/fl/initial/_internal/Storage",
 	"sap/ui/fl/initial/_internal/StorageUtils",
-	"sap/ui/fl/initial/_internal/Settings",
-	"sap/ui/fl/write/_internal/Storage",
+	"sap/ui/fl/write/_internal/flexState/FlexObjectManager",
 	"sap/ui/fl/write/api/SACIntegrationUpdateVariant",
 	"sap/ui/fl/Layer",
 	"sap/ui/fl/Utils",
@@ -16,10 +19,10 @@ sap.ui.define([
 	UIComponent,
 	FlexState,
 	ManifestUtils,
+	Settings,
 	InitialStorage,
 	StorageUtils,
-	Settings,
-	WriteStorage,
+	FlexObjectManager,
 	SACIntegrationUpdateVariant,
 	Layer,
 	Utils,
@@ -261,8 +264,8 @@ sap.ui.define([
 			sandbox.restore();
 		}
 	}, function() {
-		QUnit.test("and all prerequisites are matched", function(assert) {
-			const oWriteStorageUpdateStub = sandbox.stub(WriteStorage, "update").resolves({
+		QUnit.test("and all prerequisites are matched", async function(assert) {
+			const oSaveFlexObjectsStub = sandbox.stub(FlexObjectManager, "saveFlexObjects").resolves({
 				response: {}
 			});
 			sandbox.stub(InitialStorage, "loadFlexData").resolves({
@@ -315,21 +318,22 @@ sap.ui.define([
 				content: oContent
 			};
 
-			return FlexState.initialize({
+			await FlexState.initialize({
 				reference: sReference,
 				reInitialize: true
-			}).then(() => {
-				return SACIntegrationUpdateVariant(mPropertyBag).then(() => {
-					assert.equal(oWriteStorageUpdateStub.callCount, 1, "the variant was persisted once");
-					const oArgs = oWriteStorageUpdateStub.getCall(0).args;
-					assert.equal(oArgs.length, 1, "one entity is passed");
-					const oUpdatedVariant = oArgs[0].flexObject;
-					assert.equal(oUpdatedVariant.fileName, sVariantId, "the correct variant is used");
-					assert.deepEqual(oUpdatedVariant.content, oContent, "the content is passed");
-				});
 			});
+			await SACIntegrationUpdateVariant(mPropertyBag);
+
+			assert.strictEqual(oSaveFlexObjectsStub.callCount, 1, "the variant was persisted once");
+			const oArgs = oSaveFlexObjectsStub.getCall(0).args;
+			assert.strictEqual(oArgs.length, 1, "one entity is passed");
+			const oUpdatedVariant = oArgs[0].flexObjects[0];
+			assert.strictEqual(oUpdatedVariant.getId(), sVariantId, "the correct variant is used");
+			assert.deepEqual(oUpdatedVariant.getContent(), oContent, "the content is passed");
 		});
 	});
-});
 
-/* global QUnit */
+	QUnit.done(function() {
+		document.getElementById("qunit-fixture").style.display = "none";
+	});
+});
