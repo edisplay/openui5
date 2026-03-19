@@ -212,13 +212,6 @@ sap.ui.define([
 					]
 				}
 			},
-			"cards/BaseListContent": {
-				coverage: {
-					only: [
-						"sap/ui/integration/cards/BaseListContent"
-					]
-				}
-			},
 			"cards/Footer": {},
 			"cards/actions/CardActions": {
 				module: [
@@ -424,8 +417,7 @@ sap.ui.define([
 						"sap/ui/integration/util/DataProviderFactory",
 						"sap/ui/integration/util/DataProvider",
 						"sap/ui/integration/util/RequestDataProvider",
-						"sap/ui/integration/util/CacheAndRequestDataProvider",
-						"sap/ui/integration/util/ServiceDataProvider"
+						"sap/ui/integration/util/CacheAndRequestDataProvider"
 					]
 				}
 			},
@@ -442,13 +434,6 @@ sap.ui.define([
 			"util/CsrfTokenHandler": {
 				coverage: {
 					only: ["sap/ui/integration/util/CsrfTokenHandler"]
-				}
-			},
-			"util/ServiceManager": {
-				coverage: {
-					only: [
-						"sap/ui/integration/util/ServiceManager"
-					]
 				}
 			},
 			"util/Utils": {
