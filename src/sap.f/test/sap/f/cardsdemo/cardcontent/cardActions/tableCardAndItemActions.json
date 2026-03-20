@@ -167,6 +167,17 @@
 				}
 			  }
 			]
+		  },
+		  {
+			"text": "No Action Button"
+		  },
+		  {
+			"type": "Link",
+			"text": "Link No Action"
+		  },
+		  {
+			"text": "Empty Action Object",
+			"actions": [{}]
 		  }
 		]
 	  }
