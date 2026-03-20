@@ -211,8 +211,13 @@ sap.ui.define([
 						if (sPredicate === undefined) {
 							return;
 						}
-						strictEqual(oListBinding.oCache.aElements.$byPredicate[sPredicate],
-							oElement, `${sPredicate} in $byPredicate`, oElement);
+						const oActual = oListBinding.oCache.aElements.$byPredicate[sPredicate];
+						if (oActual !== oElement) {
+							assert.ok(false, `${sPredicate} in $byPredicate:\n`
+								+ JSON.stringify(_Helper.publicClone(oActual)) + "\nvs.\n"
+								+ JSON.stringify(_Helper.publicClone(oElement))
+							);
+						}
 					};
 
 					checkByPredicate("predicate");
@@ -483,7 +488,8 @@ sap.ui.define([
 			aExpectedPaths.forEach((vExpectedPath, i) => {
 				if (typeof vExpectedPath !== "string") {
 					if (vExpectedPath !== aAllExistingContexts[i]) {
-						assert.ok(false, `${sTitle}: Context not same @${i}: ${vExpectedPath}`);
+						assert.ok(false, `${sTitle}: Context not same @${i}:`
+							+ ` ${aAllExistingContexts[i]} vs. ${vExpectedPath}`);
 					}
 					aExpectedPaths[i] = getNormalizedPath(vExpectedPath);
 				}
@@ -692,12 +698,7 @@ sap.ui.define([
 			if (oElement) {
 				sDetails += ": " + JSON.stringify(_Helper.publicClone(oElement));
 			}
-			if (vActual && Object.keys(vActual).length > 12
-				|| vExpected && Object.keys(vExpected).length > 12) {
-				assert.ok(false, sTitle + ": " + sDetails);
-			} else {
-				assert.strictEqual(vActual, vExpected, sTitle + ": " + sDetails);
-			}
+			assert.strictEqual(vActual, vExpected, sTitle + ": " + sDetails);
 		} // else: do not spam the output ;-)
 	}
 
