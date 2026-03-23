@@ -3,6 +3,21 @@
     "date": "March 2026",
     "notes": [
       {
+        "id": "032737fb5c793c98563fa21aa2d71bf5ca5b1976",
+        "type": "FIX",
+        "text": " OPA5: Add viewNamespace support at page object level"
+      },
+      {
+        "id": "3b37d2f04f1bf5e102864c6e70ec27b2727ae76a",
+        "type": "FEATURE",
+        "text": " core/RenderManager: Add renderAndFlush() method"
+      },
+      {
+        "id": "db46d0c94d215accb16afb943e782efcb79e8af2",
+        "type": "FIX",
+        "text": " sap.m.StepInput: change event is fired when the value is changed and the precision isn't correct"
+      },
+      {
         "id": "9fda08715f15baaf157dccc70141ef8a2dbfd4ee",
         "type": "FIX",
         "text": " sap.ui.test.autoWaiter: stabilize NavigationContainerWaiter flaky tests"

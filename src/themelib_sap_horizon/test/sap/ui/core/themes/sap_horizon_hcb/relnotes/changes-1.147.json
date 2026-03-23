@@ -3,6 +3,16 @@
     "date": "March 2026",
     "notes": [
       {
+        "id": "3354954adf1e18e363a3a3b795e2af6a6351423e",
+        "type": "FEATURE",
+        "text": " sap.m.Switch: readonly mode"
+      },
+      {
+        "id": "12ecaf76d995edea061f401d060a1cb3fc13132c",
+        "type": "FIX",
+        "text": " sap.m.Button: Emphasized button has correct font"
+      },
+      {
         "id": "01ce64d5e34de65c31df73be6324a627a07e1971",
         "type": "FIX",
         "text": " sap.m.Switch: Font is according to VD spec now"

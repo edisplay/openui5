@@ -3,6 +3,51 @@
     "date": "March 2026",
     "notes": [
       {
+        "id": "61c6e216fa5b936f8b07726ea40608ca0ed53962",
+        "type": "FIX",
+        "text": " sap.m.Link: fixed error message in icon and endIcon setters"
+      },
+      {
+        "id": "d55d8e4f9d68cc9b7b177abf4c65a09f32286649",
+        "type": "FIX",
+        "text": " sap.m.Link: fixed endIcon reset/clear"
+      },
+      {
+        "id": "4006811b299adc07fa997163f0945b8f7790392f",
+        "type": "FIX",
+        "text": " sap.m.Tokenizer: Fix unstable qUnit test"
+      },
+      {
+        "id": "ccde3a9c51e4d8116ad46cc046681f2aac6aaa55",
+        "type": "FIX",
+        "text": " sap.m.MultiComboBox: qUnit test is now fixed for v2.x build"
+      },
+      {
+        "id": "3354954adf1e18e363a3a3b795e2af6a6351423e",
+        "type": "FEATURE",
+        "text": " sap.m.Switch: readonly mode"
+      },
+      {
+        "id": "db46d0c94d215accb16afb943e782efcb79e8af2",
+        "type": "FIX",
+        "text": " sap.m.StepInput: change event is fired when the value is changed and the precision isn't correct"
+      },
+      {
+        "id": "62997507e10b646c04c3246a81e52f0c1fc2325b",
+        "type": "FIX",
+        "text": " sap.m.MultiComboBox: qUnit test is now fixed for v2.x build"
+      },
+      {
+        "id": "1c8c1e363489ae1e5aa79ec2d4230753e970a323",
+        "type": "FIX",
+        "text": " sap.m.semantic.DetailPage: getAggregation returns null for unset aggregations"
+      },
+      {
+        "id": "9af8659988fd087077b6eb1eb6df207a4e76cd38",
+        "type": "FIX",
+        "text": " sap.m.Toolbar: Update sample"
+      },
+      {
         "id": "79d875300892f2d5a566df53c5f22a1ace258237",
         "type": "FIX",
         "text": " sap.m.DynamicDateRange: has correct tooltip for date/time options"
