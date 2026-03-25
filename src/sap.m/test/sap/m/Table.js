@@ -266,7 +266,7 @@ sap.ui.define([
 	});
 
 	const oItemActionCount = new Slider({
-		min: 0,
+		min: -1,
 		max: 2,
 		value: 2,
 		width: "150px",
