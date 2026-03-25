@@ -162,6 +162,7 @@ sap.ui.define([
 		this._iWidth = 0; //to be calculated later
 		this._iHeight = 0; //to be calculated later
 		this._isRendering = true;
+		this._bRestoreFocusAfterRendering = false;
 
 		this._iResizeListenerId = null;
 		this._$lightBox = null;
@@ -248,6 +249,11 @@ sap.ui.define([
 
 		if (isLightBoxIsHigherThanTheViewPort) {
 			this.getAggregation("_errorMessage").setIllustrationSize(IllustratedMessageSize.Auto);
+		}
+
+		if (this._bRestoreFocusAfterRendering && this.isOpen()) {
+			this._setInitialFocus();
+			this._bRestoreFocusAfterRendering = false;
 		}
 	};
 
@@ -406,6 +412,7 @@ sap.ui.define([
 
 		if (sNewState !== LightBoxLoadingStates.Loading && !this._isRendering) {
 			this.invalidate();
+			this._bRestoreFocusAfterRendering = true;
 		}
 	};
 
@@ -427,13 +434,29 @@ sap.ui.define([
 	 * @private
 	 */
 	LightBox.prototype._fnPopupOpened = function() {
-		this.$().firstFocusableDomRef()?.focus();
+		this._setInitialFocus();
 
 		this._onResize();
 
 		jQuery("#sap-ui-blocklayer-popup").on("click", function() {
 			this.close();
 		}.bind(this));
+	};
+
+	/**
+	 * Sets initial focus on the first focusable element, preferring the close button if available.
+	 *
+	 * @private
+	 */
+	LightBox.prototype._setInitialFocus = function() {
+		const oCloseButton = this.getAggregation("_closeButton");
+		const oFocusableElement = oCloseButton && oCloseButton.getDomRef();
+
+		if (oFocusableElement) {
+			oCloseButton.focus();
+		} else {
+			this.$().firstFocusableDomRef()?.focus();
+		}
 	};
 
 	/**
@@ -713,7 +736,7 @@ sap.ui.define([
 	LightBox.prototype.onsapescape = function (oEvent) {
 		var sOpenState = this._oPopup.getOpenState();
 
-		if (sOpenState !== OpenState.CLOSED || sOpenState !== OpenState.CLOSING) {
+		if (sOpenState !== OpenState.CLOSED && sOpenState !== OpenState.CLOSING) {
 			this.close();
 			//event should not trigger any further actions
 			oEvent.stopPropagation();
