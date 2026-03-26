@@ -2295,11 +2295,7 @@ sap.ui.define([
 		assert.ok(oToken.getTruncated(), "Token should be truncated");
 
 		// Act
-		this.tokenizer.ontap({
-			getMark: function (sId) {
-				return sId === "tokenTap" ? oToken : null;
-			}
-		});
+		qutils.triggerEvent("tap", oToken.getDomRef(), { target: oToken.getDomRef() });
 
 		// Assert
 		assert.strictEqual(oSpy.callCount, 1, "fnOnNMorePress should be called once.");
