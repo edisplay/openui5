@@ -270,7 +270,7 @@ sap.ui.define([
 					if (typeof fn === "function") {
 						fn();
 					} else {
-						Log.warning("[Deprecated] Do not use inline JavaScript code with the oninit attribute."
+						Log.warning("[DEPRECATED] Do not use inline JavaScript code with the oninit attribute."
 							+ " Use the module:... syntax or the name of a global function");
 						/*
 						 * In contrast to eval(), window.eval() executes the given string
@@ -1926,7 +1926,7 @@ sap.ui.define([
 			METHOD =  "sap.ui.core.Core.initLibrary()";
 
 		if ( bLegacyMode ) {
-			Log.error("[Deprecated] library " + sLibName + " uses old fashioned initLibrary() call (rebuild with newest generator)");
+			Log.error("[DEPRECATED] library " + sLibName + " uses old fashioned initLibrary() call (rebuild with newest generator)");
 		}
 
 		if (!sLibName) {

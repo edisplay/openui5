@@ -79,7 +79,7 @@ sap.ui.define([
 		"tooltip" : function(sValue, mSettings, fnClass) {
 			// TODO: Remove this key / value when deprecation is removed
 			mSettings["tooltip"] = sValue;
-			Log.warning('[Deprecated] Control "' + mSettings.id + '": The attribute "tooltip" is not prefixed with "data-*". Future version of declarative support will only suppport attributes with "data-*" prefix.');
+			Log.warning('[DEPRECATED] Control "' + mSettings.id + '": The attribute "tooltip" is not prefixed with "data-*". Future version of declarative support will only suppport attributes with "data-*" prefix.');
 		},
 		"class":true,
 		"style" : true,
@@ -517,7 +517,7 @@ sap.ui.define([
 		if (sAttribute.indexOf("data-") === 0) {
 			sAttribute = sAttribute.substr(5);
 		} else if (bDeprecationWarning) {
-			Log.warning('[Deprecated] Control "' + sId + '": The attribute "' + sAttribute + '" is not prefixed with "data-*". Future version of declarative support will only suppport attributes with "data-*" prefix.');
+			Log.warning('[DEPRECATED] Control "' + sId + '": The attribute "' + sAttribute + '" is not prefixed with "data-*". Future version of declarative support will only suppport attributes with "data-*" prefix.');
 		} else {
 			throw new Error('Control "' + sId + '": The attribute "' + sAttribute + '" is not prefixed with "data-*".');
 		}

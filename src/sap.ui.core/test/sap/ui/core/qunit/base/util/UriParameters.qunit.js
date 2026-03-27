@@ -153,6 +153,9 @@ sap.ui.define(['sap/base/Log', 'sap/base/util/UriParameters'], function(Log, Uri
 		assert.throws(() => UriParameters.fromQuery({ query: "?x=1" }), /query parameter must be a string/);
 	});
 
+	/**
+	 * @deprecated
+	 */
 	QUnit.test("Deprecated Access to get(...,true)", function(assert) {
 		sinon.stub(Log, "warning");
 		try {
@@ -160,7 +163,7 @@ sap.ui.define(['sap/base/Log', 'sap/base/util/UriParameters'], function(Log, Uri
 			assert.deepEqual(aValues, ["1", "2"], "all values should be returned");
 			assert.ok(
 				Log.warning.calledWith(
-					sinon.match(/Deprecated/)
+					sinon.match(/[DEPRECATED]/)
 					.and(sinon.match(/must not be used, use getAll/))),
 				"A warning should be logged");
 		} finally {
@@ -168,6 +171,9 @@ sap.ui.define(['sap/base/Log', 'sap/base/util/UriParameters'], function(Log, Uri
 		}
 	});
 
+	/**
+	 * @deprecated
+	 */
 	QUnit.test("Deprecated Access to mParams", function(assert) {
 		sinon.stub(Log, "warning");
 		try {
@@ -177,7 +183,7 @@ sap.ui.define(['sap/base/Log', 'sap/base/util/UriParameters'], function(Log, Uri
 			assert.deepEqual(mParams, {x:["1"], y: ["2"]}, "mParams should have the expected content");
 			assert.ok(
 				Log.warning.calledWith(
-					sinon.match(/Deprecated/)
+					sinon.match(/[DEPRECATED]/)
 					.and(sinon.match(/mParams must not be accessed/))),
 				"A warning should be logged");
 

@@ -775,7 +775,7 @@ sap.ui.define([
 	/**
 	 * @deprecated as of version 1.42.0, replaced by <code>markers</code> aggregation.
 	 */
-	QUnit.module("[Deprecated] Dynamic Marker States", {
+	QUnit.module("[DEPRECATED] Dynamic Marker States", {
 		before: async function() {
 			this.markerId = "marker-OLI";
 			this.markerOli = new ObjectListItem({
