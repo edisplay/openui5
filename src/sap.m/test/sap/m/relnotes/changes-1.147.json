@@ -3,9 +3,70 @@
     "date": "March 2026",
     "notes": [
       {
+        "id": "0acf36a75184319a7177aba6098225539774e17a",
+        "type": "FIX",
+        "text": " sap.m.PlanningCalendar: render week numbers for custom view keys"
+      },
+      {
+        "id": "b82f977846a476b27a75643392fee2357218d637",
+        "type": "FIX",
+        "text": " sap.m.Tokenizer: Prevent tap event propagation to parent controls"
+      },
+      {
+        "id": "c3ad6d08d43067c298844a78a4b6e4f4ff2a5633",
+        "type": "FIX",
+        "text": " sap.m.LightBox: Focus is restored after image loading error"
+      },
+      {
+        "id": "058ee2a49a6cad6ff5eddbaef950d774516d9223",
+        "type": "FIX",
+        "text": " sap.m.Menu: focus parent menu item on F2 in EndContent"
+      },
+      {
+        "id": "503077cb695feedfb9e1b81d99ed90c01dd1f3b7",
+        "type": "FIX",
+        "text": " sap.m.PlanningCalendarHeader: has aria-labelledby for the views"
+      },
+      {
+        "id": "235b6239294a71903df93189d2e29b85454341f8",
+        "type": "FIX",
+        "text": " sap.m.MessageView: SegmentedButton icons color adjusted when active"
+      },
+      {
+        "id": "be1bd83f618d6e1618bd6c4b2642eb3918e2e957",
+        "type": "FIX",
+        "text": " sap.m.RadioButton: Disabled and Read-only radio buttons are now displayed as disabled only"
+      },
+      {
+        "id": "beec3face3ceb15bd4473ca2423e9dd0b6a69d8e",
+        "type": "FIX",
+        "text": " sap.m.MultiInput: Remove focus outline of the control when focus goes to a token",
+        "references": [
+          {
+            "type": "BCP",
+            "reference": ""
+          }
+        ]
+      },
+      {
+        "id": "de58bd5e02193a2146808eca7044dddbc4cec941",
+        "type": "FIX",
+        "text": " sap.m.RadioButton: Documentation for 'select' event parameter is updated"
+      },
+      {
         "id": "61c6e216fa5b936f8b07726ea40608ca0ed53962",
         "type": "FIX",
         "text": " sap.m.Link: fixed error message in icon and endIcon setters"
+      },
+      {
+        "id": "c4ebcfb12efcdd856f4b67cddc0e8c262aad6e4b",
+        "type": "FIX",
+        "text": " sap.m.Select: Update sample"
+      },
+      {
+        "id": "8b94f3958908f3de40dbd9892b158104b8389a35",
+        "type": "FIX",
+        "text": " sap.m.OverflowToolbar: Update sample"
       },
       {
         "id": "d55d8e4f9d68cc9b7b177abf4c65a09f32286649",

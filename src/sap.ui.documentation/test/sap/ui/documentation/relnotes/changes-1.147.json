@@ -3,6 +3,11 @@
     "date": "March 2026",
     "notes": [
       {
+        "id": "8c6b268b25e5be32cef6c36f91b104cf1c69d57b",
+        "type": "FIX",
+        "text": " DemoKit: Notify controls of content density change in sample iFrame"
+      },
+      {
         "id": "d7bddfe52831705596565b477170d3ee4d2c31ae",
         "type": "FIX",
         "text": " DemoKit: Button id corrected"

@@ -3,6 +3,11 @@
     "date": "March 2026",
     "notes": [
       {
+        "id": "a823c2b74135e8a64f1101db273e1b76d44c10a7",
+        "type": "FIX",
+        "text": " sap.m.RadioButton: Hover state is now applied on hovering text"
+      },
+      {
         "id": "3354954adf1e18e363a3a3b795e2af6a6351423e",
         "type": "FEATURE",
         "text": " sap.m.Switch: readonly mode"

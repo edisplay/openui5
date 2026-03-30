@@ -3,6 +3,16 @@
     "date": "March 2026",
     "notes": [
       {
+        "id": "8e0cf63fa0e4cb4bbe0ccaacf131c4aa05215806",
+        "type": "FIX",
+        "text": " uiloader-autoconfig: Fix ConfigurationProvider registration"
+      },
+      {
+        "id": "26c6877ab838768fe73537f4396afdefcb9e19ee",
+        "type": "FIX",
+        "text": " sap.ui.test.matchers.Properties: prevent match failure with global RegExp"
+      },
+      {
         "id": "032737fb5c793c98563fa21aa2d71bf5ca5b1976",
         "type": "FIX",
         "text": " OPA5: Add viewNamespace support at page object level"

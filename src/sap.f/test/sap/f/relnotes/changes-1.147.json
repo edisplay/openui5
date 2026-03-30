@@ -3,6 +3,11 @@
     "date": "March 2026",
     "notes": [
       {
+        "id": "000991e9e648d85e300245ef9637baf77320489a",
+        "type": "FIX",
+        "text": " Integration cards: Microchart is now visible when mainIndicator is absent"
+      },
+      {
         "id": "2f1e067a97bb51126c62da216fdf943ce32dc04b",
         "type": "FEATURE",
         "text": " Integration Cards: Added customSettings for Mobile SDK"
