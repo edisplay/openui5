@@ -3783,7 +3783,16 @@ sap.ui.define([
 	 * @override
 	 * @see sap.ui.model.odata.v4.ODataParentBinding#isUnchangedParameter
 	 */
-	ODataListBinding.prototype.isUnchangedParameter = function (sName, vOtherValue) {
+	// * @param {string[]} [aExceptions=[]]
+	// *   Properties of $$aggregation to be ignored
+	ODataListBinding.prototype.isUnchangedParameter = function (sName, vOtherValue, aExceptions) {
+		function ignoreExceptions(oClone) {
+			if (aExceptions) {
+				aExceptions.forEach((sProperty) => delete oClone[sProperty]);
+			}
+			return oClone;
+		}
+
 		if (sName === "$$aggregation") {
 			if (!vOtherValue) {
 				return this.mParameters.$$aggregation === vOtherValue;
@@ -3795,8 +3804,8 @@ sap.ui.define([
 			_AggregationHelper.buildApply(vOtherValue);
 
 			return _Helper.deepEqual(
-				_Helper.cloneNo$(this.mParameters.$$aggregation),
-				_Helper.cloneNo$(vOtherValue)
+				ignoreExceptions(_Helper.cloneNo$(this.mParameters.$$aggregation)),
+				ignoreExceptions(_Helper.cloneNo$(vOtherValue))
 			);
 		}
 
@@ -5072,7 +5081,7 @@ sap.ui.define([
 	 *       context when switching the use case of data aggregation (recursive hierarchy, pure data
 	 *       aggregation, or none at all),
 	 *     <li> there are pending changes (unless the aggregation is unchanged), including created
-	 *       contexts (since 1.147.0),
+	 *       contexts (since 1.147.0) unless only <code>search</code> is changed,
 	 *     <li> a recursive hierarchy is requested, but the model does not use the
 	 *       <code>autoExpandSelect</code> parameter,
 	 *     <li> the binding is part of a {@link #create deep create} because it is relative to a
@@ -5127,7 +5136,9 @@ sap.ui.define([
 		if (this.hasFilterNone()) {
 			throw new Error("Cannot combine Filter.NONE with $$aggregation");
 		}
-		if (this.iCreatedContexts || this.hasPendingChanges()) {
+		if (this.iCreatedContexts
+				&& !this.isUnchangedParameter("$$aggregation", oAggregation, ["search"])
+			|| this.hasPendingChanges()) {
 			throw new Error("Cannot set $$aggregation due to pending changes");
 		}
 		const bOldUseCase = useCase(this.mParameters.$$aggregation);

@@ -433,17 +433,20 @@ sap.ui.define([
 	const sTitle = "setAggregation: pending changes/iCreatedContexts=" + iCreatedContexts;
 
 	QUnit.test(sTitle, function (assert) {
-		var oBinding = this.bindList("/EMPLOYEES");
+		var oBinding = this.bindList("/EMPLOYEES"),
+			oBindingMock = this.mock(oBinding);
 
 		oBinding.iCreatedContexts = iCreatedContexts;
-		this.mock(oBinding).expects("checkTransient").withExactArgs();
-		this.mock(oBinding).expects("isUnchangedParameter")
+		oBindingMock.expects("checkTransient").withExactArgs();
+		oBindingMock.expects("isUnchangedParameter")
 			.withExactArgs("$$aggregation", "~oAggregation~").returns(false);
-		this.mock(oBinding).expects("hasFilterNone").withExactArgs().returns(false);
-		this.mock(oBinding).expects("hasPendingChanges").exactly(1 - iCreatedContexts)
+		oBindingMock.expects("hasFilterNone").withExactArgs().returns(false);
+		oBindingMock.expects("isUnchangedParameter").exactly(iCreatedContexts ? 1 : 0)
+			.withExactArgs("$$aggregation", "~oAggregation~", ["search"]).returns(false);
+		oBindingMock.expects("hasPendingChanges").exactly(1 - iCreatedContexts)
 			.withExactArgs().returns(true);
-		this.mock(oBinding).expects("hasEffectivelyKeptAlive").never();
-		this.mock(oBinding).expects("applyParameters").never();
+		oBindingMock.expects("hasEffectivelyKeptAlive").never();
+		oBindingMock.expects("applyParameters").never();
 
 		assert.throws(function () {
 			// code under test
@@ -489,12 +492,16 @@ sap.ui.define([
 	//*********************************************************************************************
 [0, 1, 2].forEach(function (i) {
 	[0, 1, 2].forEach(function (j) {
-		if (!i && !j) {
-			return; // tested separately, see "unchanged aggregation"
-		}
+		[0, 1].forEach((iCreatedContexts) => {
+			const sTitle = "setAggregation: " + i + " <-> " + j
+				+ ", iCreatedContexts=" + iCreatedContexts;
+			if (!i && !j) {
+				return; // tested separately, see "unchanged aggregation"
+			}
 
-	QUnit.test("setAggregation: " + i + " <-> " + j, function (assert) {
+	QUnit.test(sTitle, function (assert) {
 		var oBinding = this.bindList("/EMPLOYEES"),
+			oBindingMock = this.mock(oBinding),
 			mExpectedNewParameters = {
 				$$groupId : "foo",
 				$filter : "bar",
@@ -524,19 +531,23 @@ sap.ui.define([
 		if (oNewAggregation !== undefined) {
 			mExpectedNewParameters.$$aggregation = "~oNewAggregation~cloned~";
 		}
-		this.mock(oBinding).expects("checkTransient").withExactArgs();
-		this.mock(oBinding).expects("isUnchangedParameter")
+		oBinding.iCreatedContexts = iCreatedContexts;
+		oBindingMock.expects("checkTransient").withExactArgs();
+		oBindingMock.expects("isUnchangedParameter")
 			.withExactArgs("$$aggregation", sinon.match.same(oNewAggregation)).returns(false);
-		this.mock(oBinding).expects("hasPendingChanges").withExactArgs().returns(false);
-		this.mock(oBinding).expects("hasEffectivelyKeptAlive").exactly(i === j ? 0 : 1)
+		oBindingMock.expects("isUnchangedParameter").exactly(iCreatedContexts ? 1 : 0)
+			.withExactArgs("$$aggregation", sinon.match.same(oNewAggregation), ["search"])
+			.returns(true);
+		oBindingMock.expects("hasPendingChanges").withExactArgs().returns(false);
+		oBindingMock.expects("hasEffectivelyKeptAlive").exactly(i === j ? 0 : 1)
 			.withExactArgs().returns(true);
-		this.mock(oBinding).expects("resetKeepAlive").never();
+		oBindingMock.expects("resetKeepAlive").never();
 		this.mock(_Helper).expects("clone")
 			.exactly(i === j && oNewAggregation !== undefined ? 1 : 0)
 			.withExactArgs(sinon.match.same(oNewAggregation))
 			.returns("~oNewAggregation~cloned~");
 		// idea: #setAggregation(o) is like #changeParameters({$$aggregation : o})
-		this.mock(oBinding).expects("applyParameters").exactly(i === j ? 1 : 0)
+		oBindingMock.expects("applyParameters").exactly(i === j ? 1 : 0)
 			.withExactArgs(mExpectedNewParameters, "");
 
 		if (i === j) {
@@ -549,6 +560,7 @@ sap.ui.define([
 			}, new Error("Cannot set $$aggregation due to a kept-alive context"));
 		}
 	});
+		});
 	});
 });
 
@@ -11424,6 +11436,48 @@ sap.ui.define([
 			oBinding.isUnchangedParameter("$$aggregation", {hierarchyQualifier : "X"}),
 			true,
 			"1 is the default");
+	});
+
+	//*********************************************************************************************
+	QUnit.test("isUnchangedParameter: $$aggregation w/ exceptions", function (assert) {
+		const oAggregation = {
+			expandTo : 1,
+			hierarchyQualifier : "X",
+			search : "old"
+		};
+		const oBinding = this.bindList("/EMPLOYEES");
+		// Note: autoExpandSelect at model would be required for hierarchyQualifier, but that leads
+		// too far :-(
+		oBinding.mParameters.$$aggregation = oAggregation;
+
+		let oNewAggregation = {...oAggregation, expandTo : 42};
+		assert.strictEqual(
+			// code under test
+			oBinding.isUnchangedParameter("$$aggregation", oNewAggregation, ["search"]),
+			false);
+
+		oNewAggregation = {...oAggregation, search : "new"};
+		assert.strictEqual(
+			// code under test
+			oBinding.isUnchangedParameter("$$aggregation", oNewAggregation),
+			false);
+
+		assert.strictEqual(
+			// code under test
+			oBinding.isUnchangedParameter("$$aggregation", oNewAggregation, ["search"]),
+			true);
+
+		oNewAggregation = {...oAggregation, expandTo : 42, search : "new"};
+		assert.strictEqual(
+			// code under test
+			oBinding.isUnchangedParameter("$$aggregation", oNewAggregation, ["expandTo", "search"]),
+			true);
+
+		oNewAggregation = {...oAggregation, foo : "bar"};
+		assert.strictEqual(
+			// code under test
+			oBinding.isUnchangedParameter("$$aggregation", oNewAggregation, ["foo"]),
+			true);
 	});
 
 	//*********************************************************************************************
