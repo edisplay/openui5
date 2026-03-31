@@ -28495,6 +28495,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	// Create at start is supported (JIRA: CPOUI5ODATAV4-3350)
 	// Create at end of start is supported (JIRA: CPOUI5ODATAV4-3351)
 	// Inactive elements, even w/ (side-effects) refresh and scrolling (JIRA: CPOUI5ODATAV4-3409)
+	// Changing "search" inside $$aggregation w/ created rows (JIRA: CPOUI5ODATAV4-3409)
 	//
 	// Update the outdated flags if an active entity is created or an inactive entity is activated.
 	// JIRA: CPOUI5ODATAV4-3392
@@ -29090,28 +29091,52 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			[, bActivate || "",, true, true, 0, "", "", "35,100", "EUR"]
 		], (bActivate ? 27 : 26) + 3);
 
-		// for simplicity, ignore all POSTs above
-		this.expectRequest(sUrl.replace("top(4)", "top(2)"), new Promise(function (resolve) {
-				fnRespond = resolve.bind(null, {value : aResults.slice(0, 2 + 2)});
-			}));
+		const sNewUrl = sUrl.replace("/search(covfefe)/", "/search(lorem ipsum)/");
+		const expectDuringAfter = async (oPromise, sMethod) => {
+			this.expectRequest(sNewUrl.replace("top(4)", "top(2)"), new Promise(function (resolve) {
+					// for simplicity, ignore all POSTs above
+					fnRespond = resolve.bind(null, {value : aResults.slice(0, 2 + 2)});
+				}));
 
-		// code under test (JIRA: CPOUI5ODATAV4-3409)
-		const oRefreshPromise = oListBinding.requestRefresh();
+			await "next tick";
 
-		await "next tick";
+			assert.deepEqual(oStartOfStartContext.getObject(), {
+				"@$ui5.context.isInactive" : true,
+				"@$ui5.context.isTransient" : true,
+				"@$ui5.node.isTotal" : false,
+				"@$ui5.node.level" : 1,
+				Region : "Start Of Start"
+			}, "data available");
+			assert.strictEqual(oAgainEndOfStartContext.getProperty("Region"),
+				"Again At End Of Start");
+			checkTable(`during ${sMethod}`, assert, oTable, [
+				oStartOfStartContext,
+				oAgainEndOfStartContext
+			], null, 10 + 2, /*bLengthFinal*/false);
 
-		assert.deepEqual(oStartOfStartContext.getObject(), {
-			"@$ui5.context.isInactive" : true,
-			"@$ui5.context.isTransient" : true,
-			"@$ui5.node.isTotal" : false,
-			"@$ui5.node.level" : 1,
-			Region : "Start Of Start"
-		}, "data available");
-		assert.strictEqual(oAgainEndOfStartContext.getProperty("Region"), "Again At End Of Start");
-		checkTable("during refresh", assert, oTable, [
-			oStartOfStartContext,
-			oAgainEndOfStartContext
-		], null, 10 + 2, /*bLengthFinal*/false);
+			fnRespond();
+
+			await Promise.all([
+				oPromise,
+				this.waitForChanges(assert, sMethod)
+			]);
+
+			assert.strictEqual(oCreatedContext.getBinding(), undefined,
+				"destroyed because it was not inactive anymore");
+			checkTable(`after ${sMethod}`, assert, oTable, [
+				oStartOfStartContext,
+				oAgainEndOfStartContext,
+				"/BusinessPartners(1)",
+				"/BusinessPartners(2)",
+				"/BusinessPartners()"
+			], [ // Inactive|Outdated|Transient|Expanded|Total|level|Id|Region|SalesAmount|Currency
+				[true,, true,, false, 1, "", "Start Of Start", "", ""],
+				[true,, true,, false, 1, "", "Again At End Of Start", "", ""],
+				[,,,, false, 1, "1", "A", "195.583", "DEM"],
+				[,,,, false, 1, "2", "B", "200", "EUR"],
+				[,,, true, true, 0, "", "", "35,100", "EUR"]
+			], 26 + 3);
+		};
 
 		if (bActivate) {
 			this.expectChange("count", "26")
@@ -29120,29 +29145,18 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 				// sync with the order in the backend so the outdated flag is reset
 				.expectChange("isOutdatedHeader", false);
 		}
+		// code under test (JIRA: CPOUI5ODATAV4-3409)
+		const oSearchPromise = oListBinding.setAggregation({
+			...oListBinding.getAggregation(),
+			search : "lorem ipsum"
+		});
 
-		fnRespond();
+		await expectDuringAfter(oSearchPromise, "search");
 
-		await Promise.all([
-			oRefreshPromise,
-			this.waitForChanges(assert, "refresh")
-		]);
+		// code under test (JIRA: CPOUI5ODATAV4-3409)
+		const oRefreshPromise = oListBinding.requestRefresh();
 
-		assert.strictEqual(oCreatedContext.getBinding(), undefined,
-			"destroyed because it was not inactive anymore");
-		checkTable("after refresh", assert, oTable, [
-			oStartOfStartContext,
-			oAgainEndOfStartContext,
-			"/BusinessPartners(1)",
-			"/BusinessPartners(2)",
-			"/BusinessPartners()"
-		], [ // Inactive|Outdated|Transient|Expanded|Total|level|Id|Region|SalesAmount|Currency
-			[true,, true,, false, 1, "", "Start Of Start", "", ""],
-			[true,, true,, false, 1, "", "Again At End Of Start", "", ""],
-			[,,,, false, 1, "1", "A", "195.583", "DEM"],
-			[,,,, false, 1, "2", "B", "200", "EUR"],
-			[,,, true, true, 0, "", "", "35,100", "EUR"]
-		], 26 + 3);
+		await expectDuringAfter(oRefreshPromise, "refresh");
 	});
 });
 
