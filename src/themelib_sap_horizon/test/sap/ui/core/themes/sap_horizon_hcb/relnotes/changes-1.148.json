@@ -1,0 +1,12 @@
+{
+  "1.148.0": {
+    "date": "April 2026",
+    "notes": [
+      {
+        "id": "084eb44f12dded2b61ab80fda464e6c2dbd9f1e0",
+        "type": "FIX",
+        "text": " sap.f.DynamicPage: hover of expand/collapse and pin button fixed"
+      }
+    ]
+  }
+}

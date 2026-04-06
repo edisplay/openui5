@@ -1,0 +1,27 @@
+{
+  "1.148.0": {
+    "date": "April 2026",
+    "notes": [
+      {
+        "id": "84efc0c66cf12d655984a3714bcbd0f07a131ed9",
+        "type": "FIX",
+        "text": " sap.m.Popover: Prevent shifting of root html element to ensure correct positioning"
+      },
+      {
+        "id": "ae91197d8aede42ac389cd209ecb4b21c6a1932e",
+        "type": "FIX",
+        "text": " sap.m.Breadcrumbs: Align mobile overflow dialog with VD"
+      },
+      {
+        "id": "dedfc5db5d9a7c3fa7730b82645c5ced8c9e0376",
+        "type": "FIX",
+        "text": " sap.m.PlanningCalendar, SPC: header higher z-index is only"
+      },
+      {
+        "id": "eb657646e389028382004c1e8ef42d63d9106e92",
+        "type": "FIX",
+        "text": " sap.m.TimePicker: remove redundant placeholder announcement"
+      }
+    ]
+  }
+}

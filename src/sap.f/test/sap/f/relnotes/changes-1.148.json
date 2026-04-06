@@ -1,0 +1,12 @@
+{
+  "1.148.0": {
+    "date": "April 2026",
+    "notes": [
+      {
+        "id": "e0359e7bc2cb2a9287af5878c66f229668d0a293",
+        "type": "FIX",
+        "text": " sap.f.AvatarGroup: fix infinite re-rendering due to sub-pixel rounding"
+      }
+    ]
+  }
+}
