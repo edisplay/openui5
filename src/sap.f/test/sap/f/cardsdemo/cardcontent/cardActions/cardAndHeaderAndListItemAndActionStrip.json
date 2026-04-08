@@ -85,6 +85,10 @@
 						}
 					  }
 					]
+				  },
+				  {
+					"text": "No Action Item",
+					"buttonType": "Default"
 				  }
 			  ]
 			},
@@ -119,6 +123,26 @@
 				  }
 				}
 			  ]
+			},
+			{
+			  "text": "No Action Footer",
+			  "buttonType": "Default"
+			},
+			{
+			  "text": "Empty Actions",
+			  "actions": []
+			},
+			{
+			  "type": "Link",
+			  "text": "Link No Action"
+			},
+			{
+			  "buttonType": "Accept",
+			  "text": "Accept No Action"
+			},
+			{
+			  "buttonType": "Reject",
+			  "text": "Reject No Action"
 			}
 		  ]
 		}

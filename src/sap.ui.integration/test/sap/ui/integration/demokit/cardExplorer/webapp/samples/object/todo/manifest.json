@@ -56,7 +56,12 @@
 			"actionsStrip": [
 				{
 					"text": "Send Reminder",
-					"buttonType": "Accept"
+					"buttonType": "Accept",
+					"actions": [
+						{
+							"type": "Custom"
+						}
+					]
 				}
 			]
 		}
