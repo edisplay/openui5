@@ -2949,6 +2949,29 @@ sap.ui.define([
 	};
 
 	/**
+	 * Returns the collection's $count: a number representing the sum of the element count on the
+	 * server-side and the number of active transient elements created on the client.
+	 *
+	 * @returns {number|undefined} - The collection's $count; initially <code>undefined</code>
+	 *
+	 * @public
+	 */
+	_CollectionCache.prototype.getCount = function () {
+		return this.aElements.$count;
+	};
+
+	/**
+	 * Returns the number of all (client-side) created elements (active or inactive).
+	 *
+	 * @returns {number} - The number of created elements
+	 *
+	 * @public
+	 */
+	_CollectionCache.prototype.getCreated = function () {
+		return this.aElements.$created;
+	};
+
+	/**
 	 * Returns a filter that excludes all created entities in this cache's collection and all
 	 * entities that have been deleted on the client, but not on the server yet.
 	 *

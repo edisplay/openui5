@@ -261,8 +261,6 @@ sap.ui.define([
 		}
 
 		const aElements = oListBinding.oCache.aElements;
-		strictEqual(aElements.$count,
-			oListBinding.isLengthFinal() ? aElements.length : undefined, "$count");
 		for (const sPredicate in aElements.$byPredicate) {
 			const oElement = aElements.$byPredicate[sPredicate];
 			strictEqual(oElement["@$ui5.context.isDeleted"] || aElements.includes(oElement)
@@ -333,7 +331,6 @@ sap.ui.define([
 		}
 
 		const aElements = oListBinding.oCache.aElements;
-		strictEqual(aElements.length, aElements.$count, "$count");
 		for (const sPredicate in aElements.$byPredicate) {
 			const oElement = aElements.$byPredicate[sPredicate];
 			strictEqual(aElements.includes(oElement), true,

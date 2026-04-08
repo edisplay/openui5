@@ -7293,6 +7293,24 @@ sap.ui.define([
 	});
 
 	//*********************************************************************************************
+	QUnit.test("CollectionCache#getCount", function (assert) {
+		const oCache = this.createCache("Employees");
+		oCache.aElements.$count = "~$count~";
+
+		// code under test
+		assert.strictEqual(oCache.getCount(), "~$count~");
+	});
+
+	//*********************************************************************************************
+	QUnit.test("CollectionCache#getCreated", function (assert) {
+		const oCache = this.createCache("Employees");
+		oCache.aElements.$created = "~$created~";
+
+		// code under test
+		assert.strictEqual(oCache.getCreated(), "~$created~");
+	});
+
+	//*********************************************************************************************
 [
 	{single : true, filter : "not (EmployeeId eq '42')"},
 	{deleted : true, filter : "not (EmployeeId eq '12' or EmployeeId eq '23')"},
