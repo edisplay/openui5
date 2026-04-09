@@ -1,21 +1,21 @@
-/* ============================================ */
-/* CSS for control sap.ui.ux3/FeedChunk.control */
-/* ============================================ */
+/* ===================================== */
+/* CSS for control sap.ui.ux3/FeedChunk  */
+/* base theme                            */
+/* ===================================== */
 
 /* default image for thumbnails in feedChunk*/
-@_sap_ui_ux3_FeedChunk_PersonPlaceholder: url("img/feed/person_placeholder_48.png");
+@_sap_ui_ux3_FeedChunk_PersonPlaceholder: url('img/feed/person_placeholder_48.png');
 
 .sapUiFeedChunk {
 	border: 1px solid @sapUiMediumBorder;
-/*  width: 100%;*/
-	background-color: @sapUiFieldBackground;
+	background-color: var(--sapField_Background);
 	display: block;
 	box-sizing: border-box;
 	position: relative;
 }
 
 .sapUiFeedChunk a {
-	color: @sapUiLink;
+	color: var(--sapLinkColor);
 }
 
 .sapUiFeedChunk a:focus,
@@ -41,22 +41,11 @@
 	display: inline-block;
 	float: left;
 }
-/*
-.sapUiFeedChunkNoThumb{
-	background-image: url(img/feed/person_placeholder_48.png);
-	background-position: top left;
-	background-repeat: no-repeat;
-	background-size: 100% 100%;
-	-webkit-background-size: 100% 100%;
-	color: transparent;
-	font-size: 0;
-}
-*/
+
 .sapUiFeedChunkText {
-	color: @sapUiBaseText;
+	color: var(--sapTextColor);
 	vertical-align: top;
 	min-height: 48px;
-/*	display: inline-block;*/
 }
 
 .sapUiFeedChunkText > .sapUiMenuButton > .sapUiMenuButtonIco {
@@ -71,12 +60,9 @@
 
 .sapUiFeedChunkStatusIcons {
 	list-style: none;
-	-moz-user-select: none;
 	-webkit-user-select: none;
+	user-select: none;
 	cursor: default;
-}
-
-.sapUiFeedChunkFlagged {
 }
 
 .sapUiFeedChunkByline {
@@ -108,7 +94,6 @@
 	display: block;
 	position: relative;
 	border-top: 1px solid @sapUiMediumBorder;
-
 }
 
 .sapUiFeedChunk > section > header > a {
