@@ -24299,10 +24299,10 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 		this.expectRequest("ProductList?$apply="
 				+ "filter(DimUnit eq 'CM' and CurrencyCode eq 'EUR' and WeightUnit eq 'KG')"
 				+ "/groupby((Category,SupplierID,TaxTarifCode,TypeCode)"
-					+ ",filter($these/aggregate(Depth) gt 111 and $these/aggregate(Height) gt 222"
-						+ " and $these/aggregate(Width) gt 333 and DimUnit eq 'CM'"
-						+ " and $these/aggregate(Price) gt 444 and CurrencyCode eq 'EUR'"
-						+ " and $these/aggregate(WeightMeasure) gt 555 and WeightUnit eq 'KG'"
+					+ ",filter(DimUnit eq 'CM' and CurrencyCode eq 'EUR' and WeightUnit eq 'KG'"
+						+ " and $these/aggregate(Depth) gt 111 and $these/aggregate(Height) gt 222"
+						+ " and $these/aggregate(Width) gt 333 and $these/aggregate(Price) gt 444"
+						+ " and $these/aggregate(WeightMeasure) gt 555"
 				+ "))/groupby((Category))&$count=true&$skip=0&$top=100", {
 				// actual results do not matter here, simulate empty response
 				"@odata.count" : "0",
@@ -24531,10 +24531,12 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	// Test v4.Context#getFilter (JIRA: CPOUI5ODATAV4-2768)
 	// No late property on aggregated leaf (JIRA: CPOUI5ODATAV4-2756)
 	// Delete on aggregated data is not allowed, even w/o visual grouping (JIRA: CPOUI5ODATAV4-3229)
+	// Avoid unsupported (by RAP) duplicate filter for unit (JIRA: CPOUI5ODATAV4-3458)
 	QUnit.test("Data Aggregation: $$aggregation w/ grand total w/ unit", function (assert) {
 		var oModel = this.createSalesOrdersModel({autoExpandSelect : true}),
 			sView = '\
 <Table id="table" items="{path : \'/SalesOrderList\',\
+		filters : [{path : \'CurrencyCode\', operator : \'EQ\', value1 : \'EUR\'}],\
 		parameters : {\
 			$$aggregation : {\
 				aggregate : {\
@@ -24556,7 +24558,8 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 </Table>',
 			that = this;
 
-		this.expectRequest("SalesOrderList?$apply=concat(aggregate(GrossAmount,CurrencyCode)"
+		this.expectRequest("SalesOrderList?$apply=filter(CurrencyCode eq 'EUR')"
+				+ "/concat(aggregate(GrossAmount,CurrencyCode)"
 				+ ",groupby((LifecycleStatus,LifecycleStatusDesc)"
 					+ ",aggregate(GrossAmount,CurrencyCode))"
 				+ "/orderby(LifecycleStatusDesc asc)"
@@ -24566,7 +24569,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 					{UI5__count : "2", "UI5__count@odata.type" : "#Decimal"},
 					{CurrencyCode : "EUR", GrossAmount : "1", LifecycleStatus : "Z",
 						LifecycleStatusDesc : "<Z>"},
-					{CurrencyCode : "GBP", GrossAmount : "2", LifecycleStatus : "Y",
+					{CurrencyCode : "EUR", GrossAmount : "2", LifecycleStatus : "Y",
 						LifecycleStatusDesc : "<Y>"}
 				]
 			})
@@ -24576,7 +24579,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			.expectChange("lifecycleStatus", [null, "Z", "Y"])
 			.expectChange("lifecycleStatusDesc", [null, "<Z>", "<Y>"])
 			.expectChange("grossAmount", ["12345", "1", "2"])
-			.expectChange("currencyCode", ["", "EUR", "GBP"]);
+			.expectChange("currencyCode", ["", "EUR", "EUR"]);
 
 		return this.createView(assert, sView, oModel).then(async function () {
 			var oTable = that.oView.byId("table"),
@@ -24595,8 +24598,8 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 
 			// code under test
 			assert.strictEqual(oListBinding.getDownloadUrl(),
-				sSalesOrderService + "SalesOrderList"
-				+ "?$apply=groupby((LifecycleStatus,LifecycleStatusDesc)"
+				sSalesOrderService + "SalesOrderList?$apply=filter(CurrencyCode%20eq%20'EUR')"
+					+ "/groupby((LifecycleStatus,LifecycleStatusDesc)"
 					+ ",aggregate(GrossAmount,CurrencyCode))/orderby(LifecycleStatusDesc%20asc)",
 				"CPOUI5ODATAV4-609");
 			assert.strictEqual(oListBinding.getLength(), 3, "table length");
