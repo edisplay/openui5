@@ -11514,6 +11514,113 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	});
 
 	//*********************************************************************************************
+	// Scenario: Create a new entity via ODataListBinding#create. The POST response contains
+	// additional properties that are not part of the table's $select. A subsequent call to
+	// Context#requestProperty must not trigger a separate late property GET. When the ETag changes
+	// due to a subsequent PATCH, the cached extra properties are invalidated and a later
+	// Context#requestProperty must trigger a late property GET.
+	// SNOW: DINC0830729
+	QUnit.test("DINC0830729", async function (assert) {
+		const oModel = this.createSalesOrdersModel({autoExpandSelect : true});
+		const sView = `
+<Table id="table" items="{/BusinessPartnerList}">
+	<Text id="id" text="{BusinessPartnerID}"/>
+	<Text id="name" text="{CompanyName}"/>
+</Table>`;
+
+		this.expectRequest("BusinessPartnerList?$select=BusinessPartnerID,CompanyName"
+				+ "&$skip=0&$top=100", {
+				value : [{
+					BusinessPartnerID : "1",
+					CompanyName : "SAP"
+				}]
+			})
+			.expectChange("id", ["1"])
+			.expectChange("name", ["SAP"]);
+
+		await this.createView(assert, sView, oModel);
+
+		const oBinding = this.oView.byId("table").getBinding("items");
+
+		this.expectChange("id", ["", "1"])
+			.expectChange("name", ["TECUM", "SAP"])
+			.expectRequest("POST BusinessPartnerList", {
+				payload : {CompanyName : "TECUM"}
+			}, {
+				"@odata.etag" : "etag2.0",
+				Address : {Country : "DE"}, // extra property - complex type
+				BusinessPartnerID : "2",
+				CompanyName : "TECUM",
+				CurrencyCode : "n/a" // extra property - won't be used due to later ETag change
+			})
+			.expectChange("id", ["2"]);
+
+		const oCreatedContext = oBinding.create({CompanyName : "TECUM"}, /*bSkipRefresh*/true);
+
+		await Promise.all([
+			oCreatedContext.created(),
+			this.waitForChanges(assert, "create")
+		]);
+
+		this.oLogMock.expects("error")
+			.withArgs("Failed to drill-down into ('2')/Address/Country, invalid segment: Address");
+		// code under test: ensure property is not yet imported
+		assert.strictEqual(oCreatedContext.getProperty("Address/Country"), undefined);
+
+		assert.deepEqual(oCreatedContext.getObject(), {
+			"@$ui5.context.isTransient" : false,
+			"@odata.etag" : "etag2.0",
+			// Address : {Country : "DE"}, // not yet imported
+			BusinessPartnerID : "2",
+			CompanyName : "TECUM"
+		});
+
+		const [sCountry] = await Promise.all([
+			// code under test
+			oCreatedContext.requestProperty("Address/Country"),
+			this.waitForChanges(assert, "requestProperty - no late property request")
+		]);
+
+		assert.strictEqual(sCountry, "DE");
+		assert.strictEqual(oCreatedContext.getProperty("Address/Country"), "DE");
+		assert.deepEqual(oCreatedContext.getObject(), {
+			"@$ui5.context.isTransient" : false,
+			"@odata.etag" : "etag2.0",
+			Address : {Country : "DE"},
+			BusinessPartnerID : "2",
+			CompanyName : "TECUM"
+		});
+
+		this.expectChange("name", ["TECUM*"])
+			.expectRequest("PATCH BusinessPartnerList('2')", {
+				headers : {"If-Match" : "etag2.0"},
+				payload : {CompanyName : "TECUM*"}
+			}, {
+				"@odata.etag" : "etag2.1",
+				BusinessPartnerID : "2",
+				CompanyName : "TECUM*"
+			});
+
+		await Promise.all([
+			oCreatedContext.setProperty("CompanyName", "TECUM*"),
+			this.waitForChanges(assert, "setProperty")
+		]);
+
+		this.expectRequest("BusinessPartnerList('2')?$select=CurrencyCode", {
+				"@odata.etag" : "etag2.1",
+				CurrencyCode : "EUR"
+			});
+
+		const [sCurrencyCode] = await Promise.all([
+			// code under test
+			oCreatedContext.requestProperty("CurrencyCode"),
+			this.waitForChanges(assert, "requestProperty - late property request after ETag change")
+		]);
+
+		assert.strictEqual(sCurrencyCode, "EUR");
+	});
+
+	//*********************************************************************************************
 	// Scenario: Create multiple w/o refresh: (2) Create two new entities without save in between,
 	// save (JIRA: CPOUI5UISERVICESV3-1759)
 	//
