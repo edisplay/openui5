@@ -3017,7 +3017,8 @@ sap.ui.define([
 	Table.prototype._updateRowCountForHeader = function() {
 		if (this._bAnnounceTableUpdate && !this._bSkipAnnounceTableUpdate) {
 			this._bAnnounceTableUpdate = false;
-			MTableUtil.announceTableUpdate(this.getHeader(), this.getShowRowCount() ? this.getRowBinding().getCount() : undefined);
+			const iCount = this.getRowBinding().getCount();
+			MTableUtil.announceTableUpdate(this.getHeader(), (this.getShowRowCount() || iCount === 0) ? iCount : undefined);
 		}
 	};
 

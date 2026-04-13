@@ -4204,6 +4204,7 @@ sap.ui.define([
 	QUnit.test("ACC Announcement of table after a FilterBar search", function(assert) {
 		this.oTable.destroy();
 		this.oTable = new Table({
+			header: "Test Table",
 			delegate: {
 				name: sDelegatePath,
 				payload: {
@@ -4248,6 +4249,26 @@ sap.ui.define([
 			this.stub(oBinding, "getCount").returns(1);
 			oBinding.fireDataReceived(); // invoke event handler manually since we have a JSONModel
 			assert.equal(fnAnnounceTableUpdate.callCount, 1, "MTableUtil.announceTableUpdate call");
+			fnAnnounceTableUpdate.resetHistory();
+
+			this.oTable.setShowRowCount(false);
+			oFilter.fireSearch();
+			assert.ok(true, "Search is triggered.");
+			assert.equal(this.oTable._bAnnounceTableUpdate, true, "Table internal flag _bAnnounceTableUpdate is set to true");
+			oBinding.fireDataReceived(); // invoke event handler manually since we have a JSONModel
+			assert.ok(fnAnnounceTableUpdate.calledOnceWithExactly("Test Table", undefined),
+				"MTableUtil.announceTableUpdate called with correct parameters when showRowCount is false and row count > 0.");
+			fnAnnounceTableUpdate.resetHistory();
+
+			oBinding.getCount.returns(0);
+			oFilter.fireSearch();
+			assert.ok(true, "Search is triggered.");
+			assert.equal(this.oTable._bAnnounceTableUpdate, true, "Table internal flag _bAnnounceTableUpdate is set to true");
+			oBinding.fireDataReceived(); // invoke event handler manually since we have a JSONModel
+			assert.ok(fnAnnounceTableUpdate.calledOnceWithExactly("Test Table", 0),
+				"MTableUtil.announceTableUpdate called with correct parameters when showRowCount is false and row count = 0.");
+
+			this.oTable.setShowRowCount(true);
 
 			fnAnnounceTableUpdate.resetHistory();
 			oBinding.getCount.returns(2);
