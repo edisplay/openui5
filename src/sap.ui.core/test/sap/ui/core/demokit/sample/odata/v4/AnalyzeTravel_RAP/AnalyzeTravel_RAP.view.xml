@@ -33,12 +33,8 @@
 	</m:HBox>
 
 	<!-- Note: for $$aggregation, see controller's onInit! -->
-	<!-- Note: BookingStatus is either 'B' or 'N', filter is just kiddin' ;-) -->
 	<Table id="table" ariaLabelledBy="title" rowActionCount="{:= %{ui>/bBookingID} ? 1 : 0 }"
-		rows="{path : '_AnalyzeBooking',
-			filters : {path : 'BookingStatus', operator : 'NE', value1 : ''},
-			parameters : {$count : true, $$ownRequest : true},
-			sorter : [{path : 'BookingStatus'}, {path : 'FlightPrice', descending : true}]}"
+		rows="{path : '_AnalyzeBooking', parameters : {$count : true, $$ownRequest : true}}"
 		selectionMode="None" threshold="100">
 		<dependents>
 			<plugins:ODataV4Aggregation/>
@@ -83,25 +79,25 @@
 		<rowMode>
 			<rm:Interactive rowCount="{ui>/iVisibleRowCount}" fixedTopRowCount="1" minRowCount="2"/>
 		</rowMode>
-		<Column sortProperty="AirlineID" width="20em">
+		<Column filterProperty="AirlineID" sortProperty="AirlineID" width="20em">
 			<m:Label text="Airline"/>
 			<template>
 				<m:Text text="{AirlineID} - {CarrierName}" wrapping="false"/>
 			</template>
 		</Column>
-		<Column hAlign="End" sortProperty="ConnectionID" width="7em">
+		<Column filterProperty="ConnectionID" hAlign="End" sortProperty="ConnectionID" width="7em">
 			<m:Label text="Connection ID"/>
 			<template>
 				<m:Text text="{ConnectionID}" wrapping="false"/>
 			</template>
 		</Column>
-		<Column sortProperty="FlightDate" width="9em">
+		<Column filterProperty="FlightDate" sortProperty="FlightDate" width="9em">
 			<m:Label text="Flight Date"/>
 			<template>
 				<demo:ValueHelp enabled="{= !%{@$ui5.node.isTotal} }" value="{FlightDate}"/>
 			</template>
 		</Column>
-		<Column sortProperty="BookingStatus" width="8em">
+		<Column filterProperty="BookingStatus" sortProperty="BookingStatus" width="8em">
 			<m:Label text="Booking Status"/>
 			<template>
 				<m:Select change=".onBookingStatusChanged" enabled="{= !%{@$ui5.node.isTotal} }"
@@ -113,19 +109,20 @@
 				</m:Select>
 			</template>
 		</Column>
-		<Column sortProperty="BookingDate" width="7em">
+		<Column filterProperty="BookingDate" sortProperty="BookingDate" width="7em">
 			<m:Label text="Booking Date"/>
 			<template>
 				<m:Text text="{BookingDate}" wrapping="false"/>
 			</template>
 		</Column>
-		<Column hAlign="End" sortProperty="BookingID" visible="{ui>/bBookingID}" width="6em">
+		<Column filterProperty="BookingID" hAlign="End" sortProperty="BookingID"
+				visible="{ui>/bBookingID}" width="6em">
 			<m:Label text="Booking ID"/>
 			<template>
 				<m:Text text="{BookingID}" wrapping="false"/>
 			</template>
 		</Column>
-		<Column sortProperty="FlightPrice" hAlign="End" width="7em">
+		<Column filterProperty="FlightPrice" sortProperty="FlightPrice" hAlign="End" width="7em">
 			<m:Label text="Flight Price"/>
 			<template>
 				<m:Input editable="{= !%{@$ui5.node.isTotal} }" value="{
@@ -140,7 +137,7 @@
 					}"/>
 			</template>
 		</Column>
-		<Column sortProperty="CurrencyCode" width="6em">
+		<Column filterProperty="CurrencyCode" sortProperty="CurrencyCode" width="6em">
 			<m:Label text="Currency"/>
 			<template>
 				<demo:ValueHelp enabled="{= !%{@$ui5.node.isTotal} }" value="{CurrencyCode}"/>
