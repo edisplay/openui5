@@ -1030,32 +1030,31 @@ sap.ui.define([
 		oTable.destroy();
 	});
 
-	QUnit.test("Change visibility of table and suspension state of binding", async function(assert) {
+	QUnit.test("Change visibility of table and suspension state of binding", function(assert) {
 		const oBinding = oTable.getBinding();
 
 		this.spy(oBinding, "getContexts");
 
 		oTable.setVisible(false);
 		oBinding.suspend();
-		await TableQUnitUtils.wait(100);
+		oBinding.getContexts.resetHistory();
+		oTable._getRowContexts();
 		assert.ok(oBinding.getContexts.notCalled, "Table hidden, binding suspended: Contexts not requested");
 
-		oBinding.getContexts.resetHistory();
-		oTable.invalidate();
 		oBinding.resume();
-		await TableQUnitUtils.wait(100);
+		oBinding.getContexts.resetHistory();
+		oTable._getRowContexts();
 		assert.ok(oBinding.getContexts.called, "Table hidden, binding not suspended: Contexts requested");
 
-		oBinding.getContexts.resetHistory();
 		oTable.setVisible(true);
 		oBinding.suspend();
-		await TableQUnitUtils.wait(100);
+		oBinding.getContexts.resetHistory();
+		oTable._getRowContexts();
 		assert.ok(oBinding.getContexts.called, "Table visible, binding suspended: Contexts requested");
 
-		oBinding.getContexts.resetHistory();
-		oTable.invalidate();
 		oBinding.resume();
-		await TableQUnitUtils.wait(100);
+		oBinding.getContexts.resetHistory();
+		oTable._getRowContexts();
 		assert.ok(oBinding.getContexts.called, "Table visible, binding not suspended: Contexts requested");
 	});
 
@@ -3587,8 +3586,8 @@ sap.ui.define([
 		let iCallCountUpdateTableCellOnTable = 0;
 		let iCallCountUpdateTableCell = 0;
 		const fnTest = function() {
-			assert.equal(iCallCountUpdateTableCellOnTable, 4, "UpdateTableCell callback called on table ok");
-			assert.equal(iCallCountUpdateTableCell, 4, "UpdateTableCell callback called on cell ok");
+			assert.equal(iCallCountUpdateTableCellOnTable, 2, "UpdateTableCell callback called on table ok");
+			assert.equal(iCallCountUpdateTableCell, 2, "UpdateTableCell callback called on cell ok");
 			iCallCountUpdateTableCellOnTable = 0;
 			iCallCountUpdateTableCell = 0;
 			oTable.attachEventOnce("rowsUpdated", fnTestScroll);

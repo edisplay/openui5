@@ -79,6 +79,11 @@ sap.ui.define([
 
 			if (sCurrentHierarchyMode !== sMode) {
 				TableToHierarchyModeMap.set(oTable, sMode);
+
+				for (const oRow of oTable.getRows()) {
+					oRow._refreshRowState();
+				}
+
 				oTable.invalidate();
 			}
 		},
@@ -484,8 +489,7 @@ sap.ui.define([
 			Hook.register(oTable, Hook.Keys.Row.Collapse, oTable._experimentalGroupingCollapse);
 
 			// the table need to fetch the updated/changed contexts again, therefore requires the binding to fire a change event
-			oTable._mTimeouts.groupingFireBindingChange = oTable._mTimeouts.groupingFireBindingChange || window.setTimeout(
-				function() { oBinding._fireChange(); }, 0);
+			oBinding._fireChange();
 		},
 
 		/**
