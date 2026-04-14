@@ -417,22 +417,29 @@ sap.ui.define([
 	};
 
 	Carousel.prototype._resize = function() {
-		var $inner = this.$().find('> .sapMCrslList > .sapMCrslInner');
+		var iNumberOfItemsToShow = this._getNumberOfItemsToShow();
 
-		if (this._iResizeTimeoutId) {
-			clearTimeout(this._iResizeTimeoutId);
-			delete this._iResizeTimeoutId;
+		if (iNumberOfItemsToShow !== this._iNumberOfItemsToShow) {
+			this._iNumberOfItemsToShow = iNumberOfItemsToShow;
+
+			var $inner = this.$().find('> .sapMCrslList > .sapMCrslInner');
+
+			if (this._iResizeTimeoutId) {
+				clearTimeout(this._iResizeTimeoutId);
+				delete this._iResizeTimeoutId;
+			}
+
+			$inner.addClass("sapMCrslNoTransition");
+			$inner.addClass("sapMCrslHideNonActive");
+
+			this._iResizeTimeoutId = setTimeout(function () {
+				$inner.removeClass("sapMCrslNoTransition");
+				$inner.removeClass("sapMCrslHideNonActive");
+			});
+			this.invalidate();
+		} else {
+			this._initialize();
 		}
-
-		$inner.addClass("sapMCrslNoTransition");
-		$inner.addClass("sapMCrslHideNonActive");
-
-		this._iResizeTimeoutId = setTimeout(function () {
-			$inner.removeClass("sapMCrslNoTransition");
-			$inner.removeClass("sapMCrslHideNonActive");
-		});
-
-		this.invalidate();
 	};
 
 	/**
@@ -495,6 +502,7 @@ sap.ui.define([
 			Theming.attachApplied(this._handleThemeAppliedBound);
 		}
 
+		this._iNumberOfItemsToShow = this._getNumberOfItemsToShow();
 		this._sResizeListenerId = ResizeHandler.register($innerDiv, this._resize.bind(this));
 	};
 
