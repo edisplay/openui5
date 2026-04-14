@@ -12,7 +12,6 @@ sap.ui.define([
 	"sap/ui/core/Lib",
 	"sap/ui/thirdparty/jquery",
 	"sap/ui/integration/util/Manifest",
-	"sap/ui/integration/util/ServiceManager",
 	"sap/base/Log",
 	"sap/base/util/merge",
 	"sap/base/util/deepEqual",
@@ -51,7 +50,6 @@ sap.ui.define([
 	Library,
 	jQuery,
 	CardManifest,
-	ServiceManager,
 	Log,
 	merge,
 	deepEqual,
@@ -91,7 +89,6 @@ sap.ui.define([
 		CONTENT: "/sap.card/content",
 		FOOTER: "/sap.card/footer",
 		PAGINATOR: "/sap.card/footer/paginator",
-		SERVICES: "/sap.ui5/services",
 		APP_TYPE: "/sap.app/type",
 		PARAMS: "/sap.card/configuration/parameters",
 		DESTINATIONS: "/sap.card/configuration/destinations",
@@ -1528,11 +1525,6 @@ sap.ui.define([
 			this._oCardManifest.destroy();
 			this._oCardManifest = null;
 		}
-		if (this._oServiceManager) {
-			this._oServiceManager.destroy();
-			this._oServiceManager = null;
-		}
-
 		if (this._oDestinations) {
 			this._oDestinations.destroy();
 			this._oDestinations = null;
@@ -2076,7 +2068,6 @@ sap.ui.define([
 		this._applyModelSizeLimit();
 
 		this._applyLoadingDelay();
-		this._applyServiceManifestSettings();
 		this._applyFilterBarManifestSettings();
 		this._applyDataManifestSettings();
 		this._applyActionManifestSettings();
@@ -2147,7 +2138,7 @@ sap.ui.define([
 			this._oDataProvider.destroy();
 		}
 
-		this._oDataProvider = this._oDataProviderFactory.create(oDataSettings, this._oServiceManager);
+		this._oDataProvider = this._oDataProviderFactory.create(oDataSettings);
 
 		if (oDataSettings.name) {
 			oModel = this.getModel(oDataSettings.name);
@@ -2234,22 +2225,6 @@ sap.ui.define([
 		});
 
 		this._oActions = oActions;
-	};
-
-	/**
-	 * Register all required services in the ServiceManager based on the card manifest.
-	 *
-	 * @private
-	 */
-	Card.prototype._applyServiceManifestSettings = function () {
-		var oServiceFactoryReferences = this._oCardManifest.get(MANIFEST_PATHS.SERVICES);
-		if (!oServiceFactoryReferences) {
-			return;
-		}
-
-		if (!this._oServiceManager) {
-			this._oServiceManager = new ServiceManager(oServiceFactoryReferences, this);
-		}
 	};
 
 	/**
@@ -2519,7 +2494,6 @@ sap.ui.define([
 			oContent = this.createContent({
 				cardType: sCardType,
 				contentManifest: oContentManifest,
-				serviceManager: this._oServiceManager,
 				dataProviderFactory: this._oDataProviderFactory,
 				iconFormatter: this._oIconFormatter,
 				noDataConfiguration: this._oCardManifest.get(MANIFEST_PATHS.NO_DATA_MESSAGES),
@@ -3096,7 +3070,6 @@ sap.ui.define([
 			return new Promise((resolve, reject) => {
 				this._oDataProviderFactory
 				.create({ request: oResult },
-					undefined,
 					undefined,
 					undefined,
 					true)
