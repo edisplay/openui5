@@ -199,11 +199,15 @@ sap.ui.define([
 
 	AdaptFiltersPanelContent.prototype._getToolbar = function() {
 		if (!this._oToolbar) {
+			const oSearchField = this._getSearchField();
+			if (oSearchField) {
+				oSearchField.setPlaceholder(this._getResourceText("p13nDialog.ADAPT_FILTER_SEARCH"));
+			}
 			this._oToolbar = new OverflowToolbar(this.getId() + "-toolbar", {
 				content: [
 					new Title(this.getId() + "-title", { text: this._getResourceText("adaptFiltersPanel.TOOLBAR_TITLE") }),
 					new ToolbarSpacer(),
-					this._getSearchField(),
+					oSearchField,
 					this._getModeButton()
 				]
 			});
