@@ -1468,6 +1468,25 @@ if (sModeName === "Modern") {
 		fnChangeSpy.restore();
 	});
 
+	QUnit.test("SearchField placeholder is set correctly", async function(assert){
+		// Arrange
+		this.oAFPanel.setP13nModel(new JSONModel(this.oP13nData));
+		this.oAFPanel.switchView("list");
+		await nextUIUpdate();
+
+		const oViewContent = this.oAFPanel.getCurrentViewContent();
+		const oSearchField = oViewContent._getSearchField();
+
+		// Assert
+		assert.ok(oSearchField, "SearchField exists");
+		assert.ok(oSearchField.isA("sap.m.SearchField"), "SearchField is of correct type");
+
+		const sPlaceholder = oSearchField.getPlaceholder();
+		assert.ok(sPlaceholder, "Placeholder is set");
+		assert.equal(sPlaceholder, oViewContent._getResourceText("p13nDialog.ADAPT_FILTER_SEARCH"),
+			"Placeholder matches the i18n text key");
+	});
+
 	QUnit.test("Test _enhanceP13nData: re-insert filtered invisible items at their old position", async function(assert){
 		this.oAFPanel.setP13nModel(new JSONModel(this.oP13nData));
 		this.oAFPanel.switchView("list");
