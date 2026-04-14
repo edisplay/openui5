@@ -33,11 +33,15 @@ sap.ui.define([
 	"sap/m/LinkTileContent",
 	"sap/m/TileInfo",
 	"sap/ui/qunit/utils/nextUIUpdate",
+	"sap/m/TextArea",
+	"sap/m/VBox",
+	"sap/m/Label",
 	// used only indirectly
 	"sap/ui/events/jquery/EventExtension"
 ], function(Localization, Element, jQuery, GenericTile, TileContent, NumericContent, ImageContent, Device, IntervalTrigger, ResizeHandler, GenericTileLineModeRenderer,
 	Button, Text, ScrollContainer, FlexBox, GenericTileRenderer, library, isEmptyObject, KeyCodes, oCore, GridContainerItemLayoutData, GridContainerSettings,
-	GridContainer, FormattedText, NewsContent, Parameters, qutils, DragInfo, GridDropInfo, Theming, LinkTileContent, Badge, nextUIUpdate) {
+	GridContainer, FormattedText, NewsContent, Parameters, qutils, DragInfo, GridDropInfo, Theming, LinkTileContent, Badge, nextUIUpdate,
+	TextArea, VBox, Label) {
 	"use strict";
 
 	// shortcut for sap.m.Size
@@ -5916,6 +5920,57 @@ QUnit.test("Check for visibilty of content in header mode in 2*1 tile ", async f
 			assert.equal(getComputedStyle(document.querySelector(".sapMGTBadge")).backgroundColor,hexToRgb(sColor),"Color has been applied");
 			fnDone();
 		}
+	});
+
+	QUnit.module("Interactive elements inside GenericTile", {
+		beforeEach: async function() {
+			this.oTextArea = new TextArea("interactive-textarea", {
+				width: "100%",
+				rows: 3,
+				placeholder: "Enter note"
+			});
+
+			this.oGenericTile = new GenericTile("interactive-tile", {
+				mode: GenericTileMode.ActionMode,
+				header: "Test Tile",
+				frameType: FrameType.TwoByOne,
+				state: LoadState.Loaded,
+				pressEnabled: true,
+				url: "https://www.sap.com",
+				tileContent: new TileContent("interactive-tile-cont", {
+					content: new VBox({
+						items: [
+							new Label({ text: "Note:", design: "Bold" }),
+							this.oTextArea
+						]
+					})
+				}),
+				actionButtons: [
+					new Button("interactive-approve-btn", { text: "Approve", type: "Accept" }),
+					new Button("interactive-reject-btn", { text: "Reject", type: "Reject" })
+				]
+			}).placeAt("qunit-fixture");
+
+			await nextUIUpdate();
+		},
+		afterEach: function() {
+			this.oGenericTile.destroy();
+			this.oGenericTile = null;
+			this.oTextArea = null;
+		}
+	});
+
+	QUnit.test("Tapping TextArea should not fire tile press event", function(assert) {
+		//Arrange
+		var oPressSpy = sinon.spy();
+		this.oGenericTile.attachPress(oPressSpy);
+
+		//Act
+		var oTextAreaDomRef = this.oTextArea.getFocusDomRef();
+		qutils.triggerEvent("tap", oTextAreaDomRef);
+
+		//Assert
+		assert.strictEqual(oPressSpy.callCount, 0, "Tile press event should not be fired when TextArea is tapped");
 	});
 
 });
