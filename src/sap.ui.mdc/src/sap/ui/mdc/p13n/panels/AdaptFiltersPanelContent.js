@@ -950,7 +950,7 @@ sap.ui.define([
 		setTimeout(() => {
 			const aListItems = this._oListControl.getItems().filter((oItem) => oItem.getVisible());
 			aListItems[iNewIndex - 1].focus();
-		}, 0);
+		}, 100);
 	};
 
 	AdaptFiltersPanelContent.prototype._selectKey = function(oComboBox) {
