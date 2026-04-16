@@ -3,9 +3,19 @@
     "date": "April 2026",
     "notes": [
       {
+        "id": "ed630b0e3f2116a7ae9752653ed8c8fc80ad986e",
+        "type": "FIX",
+        "text": " FESR: Fix excessive interaction recording on livechange events"
+      },
+      {
         "id": "81c2cbdd556818f2506547e948f739ced28a7448",
         "type": "FIX",
         "text": " Component.create: Enforce async behavior of API"
+      },
+      {
+        "id": "a075e483d2f82cca623a233b57d09870e003b79c",
+        "type": "FIX",
+        "text": " sap/ui/core/Component#destroy: call Component#exit before destroy manifest created artifacts"
       }
     ]
   }

@@ -3,6 +3,46 @@
     "date": "April 2026",
     "notes": [
       {
+        "id": "f3a1ee82ece8eb91e34617f771c7ee264bd3fdae",
+        "type": "FIX",
+        "text": " sap.m.Text: Skip unstable test in Chrome"
+      },
+      {
+        "id": "5f803ee4a904171eb70dc64b01a0e6cec7ff879e",
+        "type": "FEATURE",
+        "text": " sap.m.MenuButton: implement IFormContent interface"
+      },
+      {
+        "id": "0a440b7b4540d804623c2f3e815668a02b0ea603",
+        "type": "FIX",
+        "text": " sap.m.VariantManagement: Template binding title fallback to text"
+      },
+      {
+        "id": "2762ef489d05cdda1392ca638d0b5a5733de4bd9",
+        "type": "FIX",
+        "text": " sap.m.DynamicDateRange: increase StepInput width in standard options"
+      },
+      {
+        "id": "4916cbe552bd12ff912d6f18782432a6fa3804e3",
+        "type": "FIX",
+        "text": "sap.m.Tokenizer: One long token visibility is now adjusted"
+      },
+      {
+        "id": "ee9e9a395642c9201914a12c8db0199412b95725",
+        "type": "FIX",
+        "text": " sap.m.Text: Stabilize the failing test"
+      },
+      {
+        "id": "c73f79f1559ac2ea141d64c1c55ab77253eac792",
+        "type": "FIX",
+        "text": " sap.m.Carousel: flickering is fixed"
+      },
+      {
+        "id": "ed53094fd539ad3bdad7b81cce3b475c94a9e35b",
+        "type": "FIX",
+        "text": " We've fixed the valueColor border overflow in generic tile by adding overflow:hidden class to clip the border within tile boundaries"
+      },
+      {
         "id": "70f60f0a97030feff5f1fdaaa912b2fc5574a55c",
         "type": "FIX",
         "text": " sap.m.Text: Stabilize tests"

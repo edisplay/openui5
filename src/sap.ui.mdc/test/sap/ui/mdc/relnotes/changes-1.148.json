@@ -1,0 +1,27 @@
+{
+  "1.148.0": {
+    "date": "April 2026",
+    "notes": [
+      {
+        "id": "c620201cb900b62926c054ac521e57445b113c50",
+        "type": "FIX",
+        "text": "AdaptFiltersPanel: Scrollbar should not be visible"
+      },
+      {
+        "id": "6c74c240a4dc648b21b8d5aba1600ada118bb78c",
+        "type": "FIX",
+        "text": "Adapt Filters Panel: Search Field get correct announcement"
+      },
+      {
+        "id": "548b967d9041d646707388c6187f1ae33103eedb",
+        "type": "FIX",
+        "text": "Adapt Filters Panel: reordered item get not focused after reodering"
+      },
+      {
+        "id": "283fb2755b9daa404dcfe7ccbcde986581e422c4",
+        "type": "FIX",
+        "text": "AdaptFiltersPanel: Fix high contrast issue with reordering icon"
+      }
+    ]
+  }
+}
