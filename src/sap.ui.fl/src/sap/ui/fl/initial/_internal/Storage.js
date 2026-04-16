@@ -56,6 +56,8 @@ sap.ui.define([
 			if (oFlexInfoSession.adaptationMode || window.sessionStorage.getItem(`sap.ui.rta.restart.${Layer.CUSTOMER}`)) {
 				oConnectorSpecificPropertyBag.allContexts = true;
 				delete oConnectorSpecificPropertyBag.cacheKey;
+				// todos#18: this property is not set yet because the client cannot handle lazy loading of Comp variant contents.
+				// It will be added as soon as the client can handle the full scenario.
 				delete oConnectorSpecificPropertyBag.lazyLoadingViewsEnabled;
 			}
 			return oConnectorConfig.loadConnectorModule.loadFlexData(oConnectorSpecificPropertyBag)
@@ -288,6 +290,20 @@ sap.ui.define([
 	 */
 	Storage.loadFlVariantContent = function(mPropertyBag) {
 		return loadVariantDataFromConnectors(mPropertyBag, "loadFlVariantContent");
+	};
+
+	/**
+	 * Loads all comp variants and their changes for a given persistency key.
+	 * Used for lazy loading when opening the Manage Views dialog or saving
+	 * a new variant (to avoid duplicate titles).
+	 *
+	 * @param {object} mPropertyBag - Object with the necessary properties
+	 * @param {string} mPropertyBag.reference - Flexibility reference
+	 * @param {string} mPropertyBag.persistencyKey - Persistency key of the SVM control
+	 * @returns {Promise<object>} Resolves with merged comp variant data in storage response format
+	 */
+	Storage.loadAllCompVariants = function(mPropertyBag) {
+		return loadVariantDataFromConnectors(mPropertyBag, "loadAllCompVariants");
 	};
 
 	return Storage;
