@@ -382,9 +382,6 @@ sap.ui.define([
 
 			oTable.addItem(oItem);
 		}.bind(this));
-
-		//workaround until actions refactor
-		this.fireEvent("_actionContentReady");
 	};
 
 	/**
