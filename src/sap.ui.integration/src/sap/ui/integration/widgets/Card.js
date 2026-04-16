@@ -106,8 +106,6 @@ sap.ui.define([
 
 	const SemanticRole = fLibrary.cards.SemanticRole;
 
-	const ActionArea = library.CardActionArea;
-
 	const CardArea = library.CardArea;
 
 	const CardDataMode = library.CardDataMode;
@@ -2218,7 +2216,6 @@ sap.ui.define([
 		});
 
 		oActions.attach({
-			area: ActionArea.Card,
 			enabledPropertyName: "interactive",
 			actions: oActionsSettings,
 			control: this
