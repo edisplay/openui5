@@ -67137,6 +67137,8 @@ make root = ${bMakeRoot}`;
 	// A nested list binding inside a table row is destroyed before data for its refresh arrives.
 	// If the nested list binding uses E.C.D., addt'l issues have to be avoided.
 	// BCP: 360698 / 2021
+	//
+	// $select/$expand are enriched by the Sorter's groupPaths (JIRA: CPOUI5ODATAV4-3151)
 [
 	undefined,
 	"AGE",
@@ -67157,20 +67159,20 @@ make root = ${bMakeRoot}`;
 			},
 			oModel = this.createTeaBusiModel({autoExpandSelect : true}),
 			oTable,
-			sView = '\
-<Table growing="true" id="table" items="{\
-		groupHeaderFactory : \'.getGroupHeader\',\
-		path : \'/EMPLOYEES\',\
-		sorter : {group : true, path : \'AGE\'}\
-	}">\
-	<Text id="age" text="{AGE}"/>\
-	<List growing="true" items="{path : \'EMPLOYEE_2_EQUIPMENTS\', templateShareable : false}">\
-		<CustomListItem>\
-			<Text id="category" text="{Category}"/>\
-		</CustomListItem>\
-	</List>\
-	<Text id="name" text="{Name}"/>\
-</Table>';
+			sView = `
+<Table growing="true" id="table" items="{
+		groupHeaderFactory : '.getGroupHeader',
+		path : '/EMPLOYEES',
+		sorter : {group : true, path : 'AGE', groupPaths : ['STATUS', 'EMPLOYEE_2_TEAM/Name']}
+	}">
+	<Text id="age" text="{AGE}"/>
+	<List growing="true" items="{path : 'EMPLOYEE_2_EQUIPMENTS', templateShareable : false}">
+		<CustomListItem>
+			<Text id="category" text="{Category}"/>
+		</CustomListItem>
+	</List>
+	<Text id="name" text="{Name}"/>
+</Table>`;
 		//TODO: <Text id="age" text="{AGE}"/> should not be needed for auto-$expand/$select here!
 
 		function checkItems(aItems, aExpectedMetadataNames, aExpectedContent) {
@@ -67190,23 +67192,30 @@ make root = ${bMakeRoot}`;
 			}), aExpectedContent);
 		}
 
-		this.expectRequest("EMPLOYEES?$orderby=AGE&$select=AGE,ID,Name"
-				+ "&$expand=EMPLOYEE_2_EQUIPMENTS($select=Category,ID)&$skip=0&$top=20", {
+		this.expectRequest("EMPLOYEES?$select=AGE,ID,Name,STATUS"
+				+ "&$expand=EMPLOYEE_2_EQUIPMENTS($select=Category,ID)"
+				+ ",EMPLOYEE_2_TEAM($select=Name,Team_Id)&$orderby=AGE&$skip=0&$top=20", {
 				value : [{
 					AGE : 23,
 					EMPLOYEE_2_EQUIPMENTS : [{Category : "F1", ID : 21}],
+					EMPLOYEE_2_TEAM : {Name : "Team 01", Team_Id : "TEAM_01"},
 					ID : "2",
-					Name : "Frederic Fall"
+					Name : "Frederic Fall",
+					STATUS : "Available"
 				}, {
 					AGE : 42,
 					EMPLOYEE_2_EQUIPMENTS : [{Category : "J1", ID : 31}],
+					EMPLOYEE_2_TEAM : {Name : "Team 02", Team_Id : "TEAM_02"},
 					ID : "3",
-					Name : "Jonathan Smith"
+					Name : "Jonathan Smith",
+					STATUS : "Occupied"
 				}, {
 					AGE : 42,
 					EMPLOYEE_2_EQUIPMENTS : [{Category : "P1", ID : 41}],
+					EMPLOYEE_2_TEAM : {Name : "Team 02", Team_Id : "TEAM_02"},
 					ID : "4",
-					Name : "Peter Burke"
+					Name : "Peter Burke",
+					STATUS : "Available"
 				}]
 			})
 			.expectChange("age", ["23", "42", "42"])
@@ -67230,6 +67239,10 @@ make root = ${bMakeRoot}`;
 				"sap.m.ColumnListItem"
 			], ["23", "23,F1,Frederic Fall", "42", "42,J1,Jonathan Smith", "42,P1,Peter Burke"]);
 
+			const [oContext0] = oItemsBinding.getCurrentContexts();
+			assert.strictEqual(oContext0.getProperty("STATUS"), "Available");
+			assert.strictEqual(oContext0.getProperty("EMPLOYEE_2_TEAM/Name"), "Team 01");
+
 			//TODO: how could changes to a property affect the list's grouping?
 			// @see v2.ODataListBinding#checkUpdate
 			// oItemsBinding.getCurrentContexts()[0].setProperty("AGE", 42, null);
@@ -67237,26 +67250,33 @@ make root = ${bMakeRoot}`;
 			// code under test
 			oItemsBinding.enableExtendedChangeDetection(false, vKey);
 
-			that.expectRequest("EMPLOYEES?$orderby=AGE&$select=AGE,ID,Name"
-					+ "&$expand=EMPLOYEE_2_EQUIPMENTS($select=Category,ID)&$skip=0&$top=20", {
+			that.expectRequest("EMPLOYEES?$select=AGE,ID,Name,STATUS"
+					+ "&$expand=EMPLOYEE_2_EQUIPMENTS($select=Category,ID)"
+					+ ",EMPLOYEE_2_TEAM($select=Name,Team_Id)&$orderby=AGE&$skip=0&$top=20", {
 					value : [{
 						AGE : 42, // surprise!
 						EMPLOYEE_2_EQUIPMENTS : [{Category : "F1*", ID : 21}],
+						EMPLOYEE_2_TEAM : {Name : "Team 01", Team_Id : "TEAM_01"},
 						ID : "2",
-						Name : "Frederic Fall"
+						Name : "Frederic Fall",
+						STATUS : "Available"
 					}, {
 						AGE : 42,
 						EMPLOYEE_2_EQUIPMENTS : [],
+						EMPLOYEE_2_TEAM : {Name : "Team 02", Team_Id : "TEAM_02"},
 						ID : "3",
-						Name : "Jonathan Smith"
+						Name : "Jonathan Smith",
+						STATUS : "Occupied"
 					}, {
 						AGE : 42,
 						EMPLOYEE_2_EQUIPMENTS : [
 							{Category : "P1", ID : 41},
 							{Category : "P2", ID : 42}
 						],
+						EMPLOYEE_2_TEAM : {Name : "Team 02", Team_Id : "TEAM_02"},
 						ID : "4",
-						Name : "Peter Burke"
+						Name : "Peter Burke",
+						STATUS : "Available"
 					}]
 				})
 				.expectCanceledError("Failed to get contexts for " + sTeaBusi
