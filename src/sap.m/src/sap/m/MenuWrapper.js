@@ -226,20 +226,35 @@ sap.ui.define([
 			// Go to the previous selectable item
 			this._setHoveredItem(this._getPrevFocusableItem(iIdx, 1), true);
 		} else if (oEvent.keyCode === iLeftArrow) {
-			// Close submenu (if opened) or go to the previous end content control (if any)
-			const aEndContent = this.oHoveredItem ? this.oHoveredItem.getEndContent() : [];
-			if (aEndContent.length) {
-				this._handleEndContentNavigation(oEvent, aEndContent);
+			if (this.oFocusedEndContentItem) {
+				// Navigate backward through endContent; if at first, return to menu item
+				const aEndContent = this._getFocusableEndContentItems();
+				const iContentIdx = aEndContent.indexOf(this.oFocusedEndContentItem);
+				if (iContentIdx > 0) {
+					this._focusEndContentItem(aEndContent[iContentIdx - 1]);
+				} else {
+					this.oHoveredItem.focus();
+					this.oFocusedEndContentItem = null;
+				}
 			} else if (this.getIsSubmenu()) {
 				this.fireClosePopover();
 			}
 		} else if (oEvent.keyCode === iRightArrow) {
-			// Open submenu (if any) or go to the next end content control (if any)
-			const aEndContent = this.oHoveredItem ? this.oHoveredItem.getEndContent() : [];
-			if (this.oHoveredItem && this.oHoveredItem._hasSubmenu()) {
+			if (this.oFocusedEndContentItem) {
+				// Navigate forward through endContent actions
+				const aEndContent = this._getFocusableEndContentItems();
+				const iContentIdx = aEndContent.indexOf(this.oFocusedEndContentItem);
+				if (iContentIdx < aEndContent.length - 1) {
+					this._focusEndContentItem(aEndContent[iContentIdx + 1]);
+				}
+			} else if (this.oHoveredItem && this.oHoveredItem._hasSubmenu()) {
 				this._handleSubmenusAppearance(this.oHoveredItem, true);
-			} else if (aEndContent.length) {
-				this._handleEndContentNavigation(oEvent, aEndContent);
+			} else if (this.oHoveredItem) {
+				// Enter endContent from menu item
+				const aEndContent = this._getFocusableEndContentItems();
+				if (aEndContent.length) {
+					this._focusEndContentItem(aEndContent[0]);
+				}
 			}
 		} else if (oEvent.keyCode === KeyCodes.ESCAPE) {
 			this.fireClosePopover();
@@ -259,14 +274,40 @@ sap.ui.define([
 			// Go to the next page of items
 			this._setHoveredItem(this._getNextFocusableItem(iIdx, this._getPageSize()), true);
 		} else if (oEvent.keyCode === KeyCodes.TAB) {
-			// Close the popover and focus the next/previous element
-			if (this.getIsSubmenu()){
+			if (this.oFocusedEndContentItem) {
+				// Cycle through focusable endContent actions with Tab/Shift+Tab
+				const aFocusable = this._getFocusableEndContentItems();
+				if (aFocusable.length) {
+					const iIdx = aFocusable.indexOf(this.oFocusedEndContentItem);
+					let iNewIdx;
+					if (oEvent.shiftKey) {
+						iNewIdx = iIdx - 1 < 0 ? aFocusable.length - 1 : iIdx - 1;
+					} else {
+						iNewIdx = (iIdx + 1) % aFocusable.length;
+					}
+					this._focusEndContentItem(aFocusable[iNewIdx]);
+				}
 				oEvent.preventDefault();
+			} else {
+				// Close the popover and focus the next/previous element
+				if (this.getIsSubmenu()) {
+					oEvent.preventDefault();
+				}
+				this.fireClosePopover();
 			}
-			this.fireClosePopover();
-		} else if ((oEvent.keyCode === KeyCodes.F6 || oEvent.keyCode === KeyCodes.F2) && this.oFocusedEndContentItem) {
-			this.oHoveredItem.focus();
-			this.oFocusedEndContentItem = null;
+		} else if (oEvent.keyCode === KeyCodes.F2) {
+			if (this.oFocusedEndContentItem) {
+				// Return focus to the menu item
+				this.oHoveredItem.focus();
+				this.oFocusedEndContentItem = null;
+			} else if (this.oHoveredItem) {
+				// Move focus to the first focusable endContent control
+				const aEndContent = this.oHoveredItem.getEndContent();
+				const oFirstFocusable = aEndContent.find((oControl) => oControl.isFocusable && oControl.isFocusable());
+				if (oFirstFocusable) {
+					this._focusEndContentItem(oFirstFocusable);
+				}
+			}
 		} else {
 			// Do not prevent default for keys that are not handled by the menu
 			bPreventDefault = false;
@@ -418,31 +459,6 @@ sap.ui.define([
 				this.fireClosePopover({ bubbleToRoot: true, origin: oItem });
 			}
 			this._bPreventPopoverClose = false;
-		}
-	};
-
-	MenuWrapper.prototype._handleEndContentNavigation = function(oEvent, aEndContent) {
-		const iIdx = this.oFocusedEndContentItem ? aEndContent.indexOf(this.oFocusedEndContentItem) : -1,
-			bRtl = Localization.getRTL(),
-			iRightArrow = bRtl ? KeyCodes.ARROW_LEFT : KeyCodes.ARROW_RIGHT;
-		let iNewIdx;
-
-		if (oEvent.keyCode === iRightArrow) {
-			iNewIdx = iIdx + 1 >= aEndContent.length ? aEndContent.length - 1 : iIdx + 1;
-		} else {
-			iNewIdx = iIdx - 1 < 0 ? 0 : iIdx - 1;
-		}
-
-		const oFocusableItem = aEndContent[iNewIdx];
-
-		if (!oFocusableItem) {
-			this.oFocusedEndContentItem = null;
-			return;
-		}
-
-		if (oFocusableItem && oFocusableItem !== this.oFocusedEndContentItem && oFocusableItem.isFocusable()) {
-			this.oFocusedEndContentItem = oFocusableItem;
-			oFocusableItem.focus();
 		}
 	};
 
@@ -612,6 +628,27 @@ sap.ui.define([
 	 */
 	MenuWrapper.prototype._getPageSize = function() {
 		return 5;
+	};
+
+	/**
+	 * Returns the focusable end content controls of the currently hovered menu item.
+	 *
+	 * @returns {sap.ui.core.Control[]} The focusable end content controls
+	 * @private
+	 */
+	MenuWrapper.prototype._getFocusableEndContentItems = function() {
+		return this.oHoveredItem ? this.oHoveredItem.getEndContent().filter((oControl) => oControl.isFocusable && oControl.isFocusable()) : [];
+	};
+
+	/**
+	 * Sets the focused end content item and moves focus to it.
+	 *
+	 * @param {sap.ui.core.Control} oItem The end content control to focus
+	 * @private
+	 */
+	MenuWrapper.prototype._focusEndContentItem = function(oItem) {
+		this.oFocusedEndContentItem = oItem;
+		oItem.focus();
 	};
 
 	/**
