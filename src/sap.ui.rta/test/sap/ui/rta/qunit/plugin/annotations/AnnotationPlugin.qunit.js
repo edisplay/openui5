@@ -86,7 +86,6 @@ sap.ui.define([
 			this.oAnnotationPlugin.registerElementOverlay(this.oButtonOverlay);
 
 			assert.strictEqual(this.oAnnotationPlugin.isAvailable([this.oButtonOverlay]), false, "then isAvailable returns false");
-			assert.strictEqual(this.oAnnotationPlugin.isEnabled([this.oButtonOverlay]), false, "then isEnabled returns false");
 			assert.strictEqual(this.oAnnotationPlugin._isEditable(this.oButtonOverlay), false, "then _isEditable returns false");
 		});
 
@@ -132,12 +131,12 @@ sap.ui.define([
 
 			const aMenuItems = await this.oAnnotationPlugin.getMenuItems([this.oButtonOverlay]);
 			assert.strictEqual(this.oAnnotationPlugin.isAvailable([this.oButtonOverlay]), true, "then isAvailable returns true");
-			assert.strictEqual(this.oAnnotationPlugin.isEnabled([this.oButtonOverlay]), true, "then isEnabled returns true");
+			assert.strictEqual(this.oAnnotationPlugin.isEnabled([this.oButtonOverlay], aMenuItems[0]), true, "then isEnabled returns true");
 			assert.strictEqual(this.oAnnotationPlugin._isEditable(this.oButtonOverlay), true, "then _isEditable returns true");
 			assert.strictEqual(aMenuItems[0].id, "CTX_ANNOTATION_annotationChange1", "then the menu item id is correct");
 			assert.strictEqual(aMenuItems[0].text, "My Action Title", "then the menu item text is correct");
 			assert.strictEqual(aMenuItems[0].icon, "sap-icon://request", "then the menu item icon is correct");
-			assert.strictEqual(aMenuItems[0].enabled, true, "then the menu item is enabled");
+			assert.strictEqual(aMenuItems[0].enabled([this.oButtonOverlay], aMenuItems[0]), true, "then the menu item is enabled");
 			assert.strictEqual(aMenuItems[0].rank, 300, "then the menu item rank is correct");
 		});
 
@@ -197,7 +196,6 @@ sap.ui.define([
 			this.oAnnotationPlugin.registerElementOverlay(this.oButtonOverlay);
 
 			assert.strictEqual(this.oAnnotationPlugin.isAvailable([this.oButtonOverlay]), true, "then isAvailable returns true");
-			assert.strictEqual(this.oAnnotationPlugin.isEnabled([this.oButtonOverlay]), true, "then isEnabled returns true");
 			assert.strictEqual(this.oAnnotationPlugin._isEditable(this.oButtonOverlay), true, "then _isEditable returns true");
 
 			const aMenuItems = await this.oAnnotationPlugin.getMenuItems([this.oButtonOverlay]);
@@ -205,19 +203,19 @@ sap.ui.define([
 			assert.strictEqual(aMenuItems[0].id, "CTX_ANNOTATION_annotationChange1", "then the first menu item id is correct");
 			assert.strictEqual(aMenuItems[0].text, sActionTitle1, "then the first menu item text is correct");
 			assert.strictEqual(aMenuItems[0].icon, "pathToAnnotationChange1Icon", "then the first menu item icon is correct");
-			assert.strictEqual(aMenuItems[0].enabled, false, "then the first menu item is disabled");
+			assert.strictEqual(aMenuItems[0].enabled([this.oButtonOverlay], aMenuItems[0]), false, "then the first menu item is disabled");
 			assert.strictEqual(aMenuItems[0].rank, 300, "then the first menu item rank is correct");
 
 			assert.strictEqual(aMenuItems[1].id, "CTX_ANNOTATION_annotationChange2", "then the second menu item id is correct");
 			assert.strictEqual(aMenuItems[1].text, sActionTitle2, "then the second menu item text is correct");
 			assert.strictEqual(aMenuItems[1].icon, "pathToAnnotationChange2Icon", "then the second menu item icon is correct");
-			assert.strictEqual(aMenuItems[1].enabled, true, "then the second menu item is enabled");
+			assert.strictEqual(aMenuItems[1].enabled([this.oButtonOverlay], aMenuItems[1]), true, "then the second menu item is enabled");
 			assert.strictEqual(aMenuItems[1].rank, 301, "then the second menu item rank is correct");
 
 			assert.strictEqual(aMenuItems[2].id, "CTX_ANNOTATION_annotationChange3", "then the third menu item id is correct");
 			assert.strictEqual(aMenuItems[2].text, sActionTitle2, "then the third menu item text is correct");
 			assert.strictEqual(aMenuItems[2].icon, "sap-icon://edit", "then the third menu item icon is correct");
-			assert.strictEqual(aMenuItems[2].enabled, true, "then the third menu item is enabled");
+			assert.strictEqual(aMenuItems[2].enabled([this.oButtonOverlay], aMenuItems[2]), true, "then the third menu item is enabled");
 			assert.strictEqual(aMenuItems[2].rank, 302, "then the third menu item rank is correct");
 
 			assert.strictEqual(
@@ -227,20 +225,21 @@ sap.ui.define([
 			);
 			assert.strictEqual(aMenuItems[3].text, sActionTitle2, "then the third menu item text is correct");
 			assert.strictEqual(aMenuItems[3].icon, "sap-icon://edit", "then the third menu item icon is correct");
-			assert.strictEqual(aMenuItems[3].enabled, true, "then the third menu item is enabled");
+			assert.strictEqual(aMenuItems[3].enabled([this.oButtonOverlay], aMenuItems[3]), true, "then the third menu item is enabled");
 			assert.strictEqual(aMenuItems[3].rank, 15, "then the third menu item rank is correct");
 		});
 
-		QUnit.test("When an overlay has an annotation action in the designtime metadata and the control has no stable ID", function(assert) {
+		QUnit.test("When an overlay has an annotation action in the designtime metadata and the control has no stable ID", async function(assert) {
 			configureDefaultActionAndUpdateOverlay.call(this, this.oButtonNoStableIDOverlay);
 			assert.ok(this.oAnnotationPlugin.getAction(this.oButtonNoStableIDOverlay), "the action is defined");
 
+			const aMenuItems = await this.oAnnotationPlugin.getMenuItems([this.oButtonNoStableIDOverlay]);
 			assert.strictEqual(
 				this.oAnnotationPlugin.isAvailable([this.oButtonNoStableIDOverlay]),
 				true,
 				"then isAvailable returns true"
 			);
-			assert.strictEqual(this.oAnnotationPlugin.isEnabled([this.oButtonNoStableIDOverlay]), true, "then isEnabled returns true");
+			assert.strictEqual(this.oAnnotationPlugin.isEnabled([this.oButtonNoStableIDOverlay], aMenuItems[0]), true, "then isEnabled returns true");
 			assert.strictEqual(this.oAnnotationPlugin._isEditable(this.oButtonNoStableIDOverlay), true, "then _isEditable returns true");
 		});
 
@@ -289,14 +288,14 @@ sap.ui.define([
 			configureDefaultActionAndUpdateOverlay.call(this);
 
 			assert.strictEqual(this.oAnnotationPlugin.isAvailable([this.oButtonOverlay]), true, "then isAvailable returns true");
-			assert.strictEqual(this.oAnnotationPlugin.isEnabled([this.oButtonOverlay]), true, "then isEnabled returns true");
 			assert.strictEqual(this.oAnnotationPlugin._isEditable(this.oButtonOverlay), true, "then _isEditable returns true");
 
 			const aMenuItems = await this.oAnnotationPlugin.getMenuItems([this.oButtonOverlay]);
+			assert.strictEqual(this.oAnnotationPlugin.isEnabled([this.oButtonOverlay], aMenuItems[0]), true, "then isEnabled returns true");
 			assert.strictEqual(aMenuItems[0].id, "CTX_ANNOTATION_annotationChange1", "then the menu item id is correct");
 			assert.strictEqual(aMenuItems[0].text, "My Action Title", "then the menu item text is correct");
 			assert.strictEqual(aMenuItems[0].icon, "sap-icon://request", "then the menu item icon is set to the default value");
-			assert.strictEqual(aMenuItems[0].enabled, true, "then the menu item is enabled");
+			assert.strictEqual(aMenuItems[0].enabled([this.oButtonOverlay], aMenuItems[0]), true, "then the menu item is enabled");
 			assert.strictEqual(aMenuItems[0].rank, 300, "then the menu item rank is correct");
 		});
 
@@ -388,7 +387,7 @@ sap.ui.define([
 
 			const aMenuItems = await this.oAnnotationPlugin.getMenuItems([this.oButtonOverlay]);
 			const oMenuItem = aMenuItems[0];
-			await oMenuItem.handler([this.oButtonOverlay]);
+			await oMenuItem.handler([this.oButtonOverlay], { menuItem: oMenuItem });
 		});
 
 		QUnit.test("When the dialog returns a change and singleRename set to true", async function(assert) {
@@ -451,7 +450,7 @@ sap.ui.define([
 
 			const aMenuItems = await this.oAnnotationPlugin.getMenuItems([this.oButtonOverlay]);
 			const oMenuItem = aMenuItems[0];
-			await oMenuItem.handler([this.oButtonOverlay]);
+			await oMenuItem.handler([this.oButtonOverlay], { menuItem: oMenuItem });
 		});
 
 		QUnit.test("When the dialog returns no changes", async function(assert) {
@@ -461,7 +460,7 @@ sap.ui.define([
 
 			const aMenuItems = await this.oAnnotationPlugin.getMenuItems([this.oButtonOverlay]);
 			const oMenuItem = aMenuItems[0];
-			const oCommand = await oMenuItem.handler([this.oButtonOverlay]);
+			const oCommand = await oMenuItem.handler([this.oButtonOverlay], { menuItem: oMenuItem });
 			assert.strictEqual(oCommand, undefined, "then no command is created");
 		});
 
@@ -484,7 +483,7 @@ sap.ui.define([
 			const aMenuItems = await this.oAnnotationPlugin.getMenuItems([this.oButtonOverlay]);
 			const oMenuItem = aMenuItems[0];
 			try {
-				await oMenuItem.handler([this.oButtonOverlay]);
+				await oMenuItem.handler([this.oButtonOverlay], { menuItem: oMenuItem });
 			} catch (oError) {
 				assert.ok(oError, "then an error is thrown");
 				fnDone();
@@ -500,7 +499,7 @@ sap.ui.define([
 			const aMenuItems = await this.oAnnotationPlugin.getMenuItems([this.oButtonOverlay]);
 			const oMenuItem = aMenuItems[0];
 			try {
-				await oMenuItem.handler([this.oButtonOverlay]);
+				await oMenuItem.handler([this.oButtonOverlay], { menuItem: oMenuItem });
 			} catch (oError) {
 				assert.ok(oError, "then an error is thrown");
 				fnDone();
@@ -514,7 +513,7 @@ sap.ui.define([
 
 			const aMenuItems = await this.oAnnotationPlugin.getMenuItems([this.oButtonOverlay]);
 			const oMenuItem = aMenuItems[0];
-			await oMenuItem.handler([this.oButtonOverlay]);
+			await oMenuItem.handler([this.oButtonOverlay], { menuItem: oMenuItem });
 			this.oAnnotationPlugin.destroy();
 			assert.ok(
 				oDialog.bIsDestroyed,
@@ -576,7 +575,7 @@ sap.ui.define([
 			});
 			const aMenuItems = await this.oAnnotationPlugin.getMenuItems([this.oButtonOverlay]);
 			const oMenuItem = aMenuItems[0];
-			await oMenuItem.handler([this.oButtonOverlay]);
+			await oMenuItem.handler([this.oButtonOverlay], { menuItem: oMenuItem });
 		});
 	});
 
