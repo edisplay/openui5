@@ -3,6 +3,11 @@
     "date": "April 2026",
     "notes": [
       {
+        "id": "3108257ef5fda8501a2b031a5ba4314ac6d3a048",
+        "type": "FIX",
+        "text": " sap.ui.core: Fix cross-browser OwnStatics test"
+      },
+      {
         "id": "ed630b0e3f2116a7ae9752653ed8c8fc80ad986e",
         "type": "FIX",
         "text": " FESR: Fix excessive interaction recording on livechange events"
