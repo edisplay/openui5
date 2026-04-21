@@ -887,9 +887,10 @@ sap.ui.define([
 
 	/**
 	 * Synchronizes tokenizer content with the list of selected file names.
+	 * @param {boolean} [bFocus] Set to true to focus the file uploader after the next rendering
 	 * @private
 	 */
-	FileUploader.prototype._updateTokenizer = function() {
+	FileUploader.prototype._updateTokenizer = function(bFocus) {
 		const oTokenizer = this._getTokenizer();
 
 		// Remove all existing tokens
@@ -904,7 +905,9 @@ sap.ui.define([
 			}));
 		});
 
-		this._bFocusFileUploader = true;
+		if (bFocus) {
+			this._bFocusFileUploader = true;
+		}
 	};
 
 	/**
@@ -1302,8 +1305,18 @@ sap.ui.define([
 		this.oBrowse.setType(sButtonType);
 	};
 
+	/**
+	 * Checks whether the control is currently focused.
+
+	 * @returns {boolean} true if <code>this</code> is focused
+	 * @private
+	 */
+	FileUploader.prototype._isFocused = function() {
+		return containsOrEquals(this.getDomRef(), document.activeElement);
+	};
+
 	FileUploader.prototype.setValueState = function(sValueState) {
-		const bControlFocused = containsOrEquals(this.getDomRef(), document.activeElement);
+		const bControlFocused = this._isFocused();
 
 		this.setProperty("valueState", sValueState, false);
 
@@ -1394,7 +1407,7 @@ sap.ui.define([
 			if (bUpload) {
 				this.upload();
 			}
-			this._updateTokenizer();
+			this._updateTokenizer(this._isFocused());
 		}
 		return this;
 	};
@@ -1913,7 +1926,7 @@ sap.ui.define([
 
 			// Update Tokenizer with selected file names
 			this._selectedFileNames = aFileNames;
-			this._updateTokenizer();
+			this._updateTokenizer(true);
 		}
 	};
 
