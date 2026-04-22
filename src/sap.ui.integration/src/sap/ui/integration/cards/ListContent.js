@@ -474,9 +474,6 @@ sap.ui.define([
 			}
 			oList.addItem(oListItem);
 		});
-
-		//workaround until actions refactor
-		this.fireEvent("_actionContentReady");
 	};
 
 	/**
