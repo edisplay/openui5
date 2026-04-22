@@ -25057,6 +25057,8 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	// refreshes, only a single grand total request is sent. If there are sorters, the outdated flag
 	// at the header context is set.
 	// JIRA: CPOUI5ODATAV4-3300, CPOUI5ODATAV4-3287
+	//
+	// Client-side annotation updates do not influence the outdated flags (JIRA: CPOUI5ODATAV4-3436)
 ["context refresh", "request properties of a context via side effects"].forEach((sScenario) => {
 	[false, true].forEach(function (bWithSorter) {
 		const sTitle = "Data Aggregation: update grand total; " + sScenario + "; with sorters: "
@@ -25080,6 +25082,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			$count : true
 		}${bWithSorter ? ", sorter : {path : 'LifecycleStatus', descending : true}" : ""} }">
 	<Text id="isOutdated" text="{= %{@$ui5.context.isOutdated} }"/>
+	<Text id="isSelected" text="{= %{@$ui5.context.isSelected} }"/>
 	<Text id="isExpanded" text="{= %{@$ui5.node.isExpanded} }"/>
 	<Text id="isTotal" text="{= %{@$ui5.node.isTotal} }"/>
 	<Text id="level" text="{= %{@$ui5.node.level} }"/>
@@ -25102,6 +25105,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 				]
 			})
 			.expectChange("isOutdated", [undefined, undefined, undefined, undefined])
+			.expectChange("isSelected", [undefined, undefined, undefined, undefined])
 			.expectChange("isExpanded", [true, undefined, undefined, undefined])
 			.expectChange("isTotal", [true, false, false, true])
 			.expectChange("level", [0, 1, 1, 0])
@@ -25122,10 +25126,26 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 
 		await this.waitForChanges(assert, "set header context");
 
+		const [oGrandTotalContext, oContext25, oContext24] = oBinding.getCurrentContexts();
+		this.expectChange("isSelected", [, true]);
+
+		// code under test (JIRA: CPOUI5ODATAV4-3436)
+		oContext25.setProperty("@$ui5.context.isSelected", true);
+
+		await this.waitForChanges(assert,
+			"Client-side annotation updates do not influence the outdated flags");
+
+		this.expectChange("isSelected", [, false]);
+
+		// code under test (JIRA: CPOUI5ODATAV4-3436)
+		oContext25.setSelected(false);
+
+		await this.waitForChanges(assert,
+			"v4.Context#setSelected does not influence the outdated flags");
+
 		const iBatchNo = this.iBatchNo + 1; // don't care about exact no.
 		const sGrandTotalURL = `#${iBatchNo} SalesOrderList?sap-client=123`
 			+ "&$apply=aggregate(GrossAmount)";
-		const [oGrandTotalContext, oContext25, oContext24] = oBinding.getCurrentContexts();
 
 		if (bWithSorter) {
 			this.expectChange("isOutdatedHeader", true);
