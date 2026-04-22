@@ -1385,7 +1385,7 @@ sap.ui.define([
 		 */
 		splitFilter : function (oFilter, oAggregation) {
 			var aFiltersNoAggregate = [],
-				aFiltersNoThese = [],
+				aFiltersNoThese = [], // filters for some aggregate's unit
 				aFiltersOnAggregate = [];
 
 			/*
@@ -1400,6 +1400,25 @@ sap.ui.define([
 				return oFilter0.getFilters()
 					? oFilter0.getFilters().some(isRelatedToAggregate)
 					: oFilter0.getPath() in oAggregation.aggregate;
+			}
+
+			/*
+			 * Tells whether the given filter path relates to the unit of an aggregate and one of
+			 * the given filters relates to that same aggregate.
+			 *
+			 * @param {string} sPath
+			 *   A filter's path (must not be <code>undefined</code>!)
+			 * @param {sap.ui.model.Filter[]} aFilters
+			 *   Some filters
+			 * @returns {boolean}
+			 *   Whether the path relates (via the unit) to a filter for an aggregate
+			 */
+			function isRelatedToFilter4Aggregate(sPath, aFilters) {
+				return aFilters.some((oFilter0) => {
+					return oFilter0.getFilters()
+						? isRelatedToFilter4Aggregate(sPath, oFilter0.getFilters())
+						: oAggregation.aggregate[oFilter0.getPath()]?.unit === sPath;
+				});
 			}
 
 			/*
@@ -1429,7 +1448,6 @@ sap.ui.define([
 				} else if (oFilter0.getPath() && isRelatedToUnit(oFilter0.getPath())) {
 					aFiltersNoAggregate.push(oFilter0);
 					aFiltersNoThese.push(oFilter0); // avoid "$these/..." here
-					aFiltersOnAggregate.push(oFilter0);
 				} else {
 					(isRelatedToAggregate(oFilter0) ? aFiltersOnAggregate : aFiltersNoAggregate)
 						.push(oFilter0);
@@ -1458,8 +1476,11 @@ sap.ui.define([
 			}
 
 			split(oFilter);
-			let aResult = [wrap(aFiltersOnAggregate), wrap(aFiltersNoAggregate)];
+			aFiltersOnAggregate.unshift(...aFiltersNoThese.filter((oUnitFilter) => {
+				return isRelatedToFilter4Aggregate(oUnitFilter.getPath(), aFiltersOnAggregate);
+			}));
 
+			let aResult = [wrap(aFiltersOnAggregate), wrap(aFiltersNoAggregate)];
 			if (oAggregation.groupLevels.length
 					|| !oAggregation["grandTotal like 1.84"]
 					&& _AggregationHelper.hasGrandTotal(oAggregation.aggregate)) {
