@@ -28739,7 +28739,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 		<trm:Fixed rowCount="5" fixedBottomRowCount="1"/>
 	</t:rowMode>
 	<Text id="isInactive" text="{= %{@$ui5.context.isInactive} }"/>
-	<Text id="isOutdated" text="{= %{@$ui5.context.isOutdated} }"/>
+	<Text text="{= %{@$ui5.context.isOutdated} }"/>
 	<Text text="{= %{@$ui5.context.isTransient} }"/>
 	<Text text="{= %{@$ui5.node.isExpanded} }"/>
 	<Text text="{= %{@$ui5.node.isTotal} }"/>
@@ -28756,7 +28756,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			+ "/orderby(Region asc,SalesAmount desc)"
 			// Note: $count is requested automatically
 			+ "/concat(aggregate($count as UI5__count),top(4)))";
-		// data model: Id 1 ...26, Region "A"..."Z", SalesAmount : "100" ... "2600" (in EUR)
+		// data model: Id 1...26, Region "A"..."Z", SalesAmount "100"..."2600" (in EUR)
 		const aResults = [{
 				Currency : "EUR",
 				SalesAmount : "" + 13 * 27 * 100,
@@ -28803,7 +28803,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 
 		this.expectChange("isOutdatedHeader", undefined);
 
-		// code under test
 		this.oView.setModel(oModel, "headerContext")
 			.setBindingContext(oListBinding.getHeaderContext(), "headerContext");
 
@@ -29355,6 +29354,97 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 		const oRefreshPromise = oListBinding.requestRefresh();
 
 		await expectDuringAfter(oRefreshPromise, "refresh");
+	});
+});
+
+	//*********************************************************************************************
+	// Scenario: Create at end is supported (JIRA: CPOUI5ODATAV4-3410)
+[false, true].forEach((bAtBottom) => {
+	const sTitle = "Data Aggregation: create at end; grand total at bottom: " + bAtBottom;
+
+	QUnit.test(sTitle, async function (assert) {
+		const oModel = this.createAggregationModel({autoExpandSelect : true});
+		const sView = `
+<t:Table id="table" rows="{
+			path : '/BusinessPartners',
+			parameters : {
+				$$aggregation : {
+					aggregate : {
+						SalesAmount : {grandTotal : true, unit : 'Currency'}
+					},
+					${bAtBottom ? "grandTotalAtBottomOnly : true," : ""}
+					groupLevels : ['Id']
+				}
+			}
+		}">
+	<t:rowMode>
+		<trm:Fixed fixedBottomRowCount="${bAtBottom ? 1 : 0}"/>
+	</t:rowMode>
+	<Text text="{= %{@$ui5.node.isExpanded} }"/>
+	<Text text="{= %{@$ui5.node.isTotal} }"/>
+	<Text text="{= %{@$ui5.node.level} }"/>
+	<Text id="id" text="{Id}"/>
+	<Text text="{SalesAmount}"/>
+	<Text text="{Currency}"/>
+</t:Table>`;
+
+		this.expectRequest("BusinessPartners?$apply=concat(aggregate(SalesAmount,Currency)"
+					+ ",groupby((Id),aggregate(SalesAmount,Currency))"
+				// Note: $count is requested automatically
+				+ "/concat(aggregate($count as UI5__count),top(109)))", {
+				value : [{
+					Currency : "EUR",
+					SalesAmount : "123", // unrealistic, but easier to tell apart
+					"SalesAmount@odata.type" : "#Decimal"
+				},
+				{UI5__count : "1", "UI5__count@odata.type" : "#Decimal"},
+				{
+					Currency : "EUR",
+					Id : 1, // Edm.Int16
+					SalesAmount : "100"
+				}]
+			})
+			.expectChange("id", bAtBottom ? ["1", null] : [null, "1"]);
+
+		await this.createView(assert, sView, oModel);
+
+		const oTable = this.oView.byId("table");
+		const oListBinding = oTable.getBinding("rows");
+
+		this.expectChange("id", bAtBottom ? [, null, null] : [,, null])
+			.expectRequest("POST BusinessPartners", {
+				Currency : "EUR",
+				Id : 2, // Edm.Int16
+				SalesAmount : "200"
+			})
+			.expectChange("id", bAtBottom ? [, "2"] : [,, "2"]);
+
+		// code under test (JIRA: CPOUI5ODATAV4-3410)
+		const oCreatedContext = oListBinding.create({}, /*bSkipRefresh*/true, /*bAtEnd*/true,
+			/*bInactive*/false);
+
+		await Promise.all([
+			oCreatedContext.created(),
+			this.waitForChanges(assert, "create at end")
+		]);
+
+		// Note: ODLB#_getAllExistingContexts => "in no special order" (at least not in view order)
+		const aExpectedContexts = bAtBottom ? [
+			oCreatedContext,
+			"/BusinessPartners(1)",
+			"/BusinessPartners()"
+		] : [
+			oCreatedContext,
+			"/BusinessPartners()",
+			"/BusinessPartners(1)"
+		];
+		checkTable("after create at end", assert, oTable, aExpectedContexts, [
+			// Expanded|Total|level|Id|SalesAmount|Currency
+			bAtBottom || [true, true, 0, "", "123", "EUR"],
+			[, false, 1, "1", "100", "EUR"],
+			[, false, 1, "2", "200", "EUR"],
+			bAtBottom && [true, true, 0, "", "123", "EUR"]
+		]);
 	});
 });
 
