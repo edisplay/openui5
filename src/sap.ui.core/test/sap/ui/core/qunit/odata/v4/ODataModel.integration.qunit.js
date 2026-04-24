@@ -24663,6 +24663,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	// No late property on collapsed group header (JIRA: CPOUI5ODATAV4-2756)
 	// Delete a single entity (JIRA: CPOUI5ODATAV4-3229)
 	// When deleting an entity the count is decreased (JIRA: CPOUI5ODATAV4-3229)
+	// Delete a single entity via model using canonical path (JIRA: CPOUI5ODATAV4-3460)
 	//
 	// Refreshing a single entity without bAllowRemoval is allowed if there is no visual grouping.
 	// JIRA: CPOUI5ODATAV4-3257
@@ -24998,6 +24999,41 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 				$count : 2,
 				$selectionCount : 0
 			});
+		}).then(function () {
+			checkTable("before delete via model", assert, oTable, [
+				"/SalesOrderList()",
+				"/SalesOrderList('25')",
+				"/SalesOrderList('24')",
+				"/SalesOrderList($isTotal=true)"
+			], [ // isOutdated|isExpanded|isTotal|level|LifecycleStatus|GrossAmount|SalesOrderID
+				["", "true", "true", "0", "", "15", ""],
+				["", "", "false", "1", "Y", "7", "25"],
+				["", "", "false", "1", "X", "8", "24"],
+				["", "", "true", "0", "", "15", ""]
+			]);
+
+			that.expectRequest("#6 DELETE SalesOrderList('25')?sap-client=123", {
+					groupId : "$single",
+					headers : {
+						"If-Match" : "*"
+					}
+				})
+				// update is done before entry is deleted, change at index 3
+				.expectChange("isOutdated", [true,,, true])
+				.expectChange("isOutdatedHeader", true)
+				// after row is deleted
+				.expectChange("isOutdated", [,, true])
+				.expectChange("isTotal", [,, true])
+				.expectChange("level", [,, 0])
+				.expectChange("lifecycleStatus", [, "X", null])
+				.expectChange("grossAmount", [, "8", "15"])
+				.expectChange("salesOrderID", [, "24", null]);
+
+			return Promise.all([
+				// code under test (JIRA: CPOUI5ODATAV4-3460)
+				oModel.delete("/SalesOrderList('25')", "$single"),
+				that.waitForChanges(assert, "delete via model")
+			]);
 		}).then(function () {
 			that.expectRequest("SalesOrderList?sap-client=123&$apply=groupby((LifecycleStatus))"
 					+ "&$count=true&$skip=0&$top=100", {
