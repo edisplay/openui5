@@ -786,9 +786,13 @@ sap.ui.define([
 		}
 
 		const bOnlyVisibleColumns = aStates ? aStates.every((oState) => {
-			return aPropertyKeys.find((sPropertyKey) => {
-				return oState.name ? oState.name === sPropertyKey : oState === sPropertyKey;
-			});
+			const sPropertyKey = oState.name ?? oState;
+
+			if (!oTable.getPropertyHelper().getProperty(sPropertyKey)) {
+				return true; // Inactive properties should not trigger a restriction message.
+			}
+
+			return aPropertyKeys.includes(sPropertyKey);
 		}) : true;
 
 		return !bOnlyVisibleColumns;

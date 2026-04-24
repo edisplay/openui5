@@ -2,7 +2,7 @@
  * ${copyright}
  */
 
-sap.ui.define(['./FilterItemFlex', './ConditionFlex', './PropertyInfoFlex'], (FilterItemFlex, ConditionFlex, PropertyInfoFlex) => {
+sap.ui.define(['./FilterItemFlex', './ConditionFlex', './PropertyInfoFlex', "./xConfigFlex"], (FilterItemFlex, ConditionFlex, PropertyInfoFlex, xConfigFlex) => {
 	"use strict";
 
 	/**
@@ -22,6 +22,10 @@ sap.ui.define(['./FilterItemFlex', './ConditionFlex', './PropertyInfoFlex'], (Fi
                 /**
                  * @deprecated since 1.100
                  */
-		"addPropertyInfo": PropertyInfoFlex.addPropertyInfo
+		"addPropertyInfo": PropertyInfoFlex.addPropertyInfo,
+		"setPropertyAttribute": xConfigFlex.createSetChangeHandler({
+			aggregation: "propertyInfo",
+			property: (oChange) => oChange.getContent().attribute
+		})
 	};
 }, /* bExport= */ true);
