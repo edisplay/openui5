@@ -25,7 +25,11 @@ sap.ui.define([
 	"sap/ui/core/library",
 	"sap/m/p13n/MessageStrip",
 	"sap/ui/core/InvisibleText",
-	"sap/m/table/Util"
+	"sap/m/table/Util",
+	"sap/m/ListMode",
+	"sap/m/ListKeyboardMode"
+
+
 ], (
 	Element,
 	Library,
@@ -49,7 +53,9 @@ sap.ui.define([
 	coreLibrary,
 	MessageStrip,
 	InvisibleText,
-	TableUtil
+	TableUtil,
+	ListMode,
+	ListKeyboardMode
 ) => {
 	"use strict";
 
@@ -601,8 +607,10 @@ sap.ui.define([
 
 	BasePanel.prototype._getListControlConfig = function() {
 		return {
-			mode: "MultiSelect",
+			mode: ListMode.MultiSelect,
 			rememberSelections: true,
+			rememberFocus: false,
+			keyboardMode: ListKeyboardMode.Edit,
 			itemPress: [this._onItemPressed, this],
 			selectionChange: [this._onSelectionChange, this],
 			sticky: ["HeaderToolbar", "ColumnHeaders", "InfoToolbar"],
