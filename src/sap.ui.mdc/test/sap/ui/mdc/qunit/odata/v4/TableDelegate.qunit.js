@@ -2816,6 +2816,7 @@ sap.ui.define([
 		oSelectionPlugin = PluginBase.getPlugin(this.oTable._oTable, "sap.ui.table.plugins.ODataV4Selection");
 		assert.ok(oSelectionPlugin?.isA("sap.ui.table.plugins.ODataV4MultiSelection"), "Set selection mode to Multi: Applied ODataV4MultiSelection");
 		assert.ok(oSelectionPlugin.getEnabled(), "Plugin enabled");
+		assert.notOk(oSelectionPlugin.getProperty("leafSelectionDisabled"), "leafSelectionDisabled defaults to false");
 		this.oTable.getType().setSelectionLimit(123);
 		assert.equal(oSelectionPlugin.getLimit(), 123, "A 'selectionLimit' change correctly affects ODataV4MultiSelection");
 		this.oTable.getType().setShowHeaderSelector(true);
@@ -3142,6 +3143,75 @@ sap.ui.define([
 			this.oTable.attachEventOnce("_bindingChange", resolve);
 		});
 		assert.deepEqual(this.oTable.getSelectedContexts().map((oContext) => oContext.getPath()), [], "Selected contexts");
+	});
+
+	QUnit.test("isLeafSelectionDisabled returns true with TreeTableType", async function(assert) {
+		sap.ui.define("odata.v4.LeafSelectionDisabledDelegate", [
+			"odata.v4.TestDelegate"
+		], function(TestDelegate) {
+			const CustomDelegate = Object.assign({}, TestDelegate);
+			CustomDelegate.isLeafSelectionDisabled = function() {
+				return true;
+			};
+			return CustomDelegate;
+		});
+
+		await this.initTable({
+			selectionMode: SelectionMode.Multi,
+			type: new TreeTableType(),
+			delegate: {
+				name: "odata.v4.LeafSelectionDisabledDelegate",
+				payload: {
+					collectionPath: "/Products",
+					propertyInfo: [{
+						key: "ProductName",
+						path: "Name",
+						label: "Product Name",
+						dataType: "String"
+					}]
+				}
+			}
+		});
+		await this.oTable.initialized();
+
+		const oSelectionPlugin = PluginBase.getPlugin(this.oTable._oTable, "sap.ui.table.plugins.ODataV4Selection");
+		assert.ok(oSelectionPlugin.isA("sap.ui.table.plugins.ODataV4MultiSelection"), "ODataV4MultiSelection applied");
+		assert.ok(oSelectionPlugin.getProperty("leafSelectionDisabled"), "leafSelectionDisabled is true on the plugin");
+	});
+
+	QUnit.test("isLeafSelectionDisabled is not applied for GridTableType", async function(assert) {
+		sap.ui.define("odata.v4.LeafSelectionDisabledGridDelegate", [
+			"odata.v4.TestDelegate"
+		], function(TestDelegate) {
+			const CustomDelegate = Object.assign({}, TestDelegate);
+			CustomDelegate.isLeafSelectionDisabled = function() {
+				return true;
+			};
+			return CustomDelegate;
+		});
+
+		await this.initTable({
+			selectionMode: SelectionMode.Multi,
+			type: new GridTableType(),
+			delegate: {
+				name: "odata.v4.LeafSelectionDisabledGridDelegate",
+				payload: {
+					collectionPath: "/Products",
+					propertyInfo: [{
+						key: "ProductName",
+						path: "Name",
+						label: "Product Name",
+						dataType: "String"
+					}]
+				}
+			}
+		});
+		await this.oTable.initialized();
+
+		const oSelectionPlugin = PluginBase.getPlugin(this.oTable._oTable, "sap.ui.table.plugins.ODataV4Selection");
+		assert.ok(oSelectionPlugin.isA("sap.ui.table.plugins.ODataV4MultiSelection"), "ODataV4MultiSelection applied");
+		assert.notOk(oSelectionPlugin.getProperty("leafSelectionDisabled"),
+			"leafSelectionDisabled is not set for GridTableType even if delegate returns true");
 	});
 
 	QUnit.module("Rebind with invalid state", {
