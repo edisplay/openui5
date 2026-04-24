@@ -27,6 +27,7 @@ sap.ui.define([
 	// get resource translation bundle;
 	const oLibraryResourceBundle = Library.getResourceBundleFor("sap.m");
 	const InvisibleMessageMode = coreLibrary.InvisibleMessageMode;
+	const TitleLevel = coreLibrary.TitleLevel;
 
 	/**
 	 * Media types that can be previewed.
@@ -500,7 +501,7 @@ sap.ui.define([
 			const oActiveItem = this._getActiveUploadSetwithTableItem();
 			const oDialog = new Dialog({
 				customHeader: new Bar({
-					contentLeft: [new Title({ text:  oActiveItem.getFileName()}).addStyleClass("sapMDialogTitle")]
+					contentLeft: [new Title({ text:  oActiveItem.getFileName(), level: TitleLevel.H1}).addStyleClass("sapMDialogTitle")]
 				}),
 				content: this._oCarousel,
 				horizontalScrolling: false,
