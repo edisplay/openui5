@@ -1028,7 +1028,7 @@ sap.ui.define([
 				"default": {value: "attribute:additionalComplexAttribute.subAttribute"}
 			},
 			defaultValueUndefined: {
-				type: "Boolean",
+				type: "boolean",
 				"default": {value: undefined},
 				inComplexProperty: {allowed: true}
 			}
