@@ -3,6 +3,11 @@
     "date": "April 2026",
     "notes": [
       {
+        "id": "933717c82d07147e6fa5df1f167a7cb3ce729fc8",
+        "type": "FIX",
+        "text": " sap.ui.core: Harden script loading in internal bootstrap scripts"
+      },
+      {
         "id": "3108257ef5fda8501a2b031a5ba4314ac6d3a048",
         "type": "FIX",
         "text": " sap.ui.core: Fix cross-browser OwnStatics test"

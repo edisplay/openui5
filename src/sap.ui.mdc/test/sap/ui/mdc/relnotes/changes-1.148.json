@@ -3,6 +3,11 @@
     "date": "April 2026",
     "notes": [
       {
+        "id": "d4ed8dd8fa6acf8a0826afd395b1b258591e9ef4",
+        "type": "FEATURE",
+        "text": " sap.ui.mdc: Dynamic properties for MDC controls"
+      },
+      {
         "id": "8affe09b118defd9e2a2e44ae5a11e3e0b61104e",
         "type": "FIX",
         "text": "AdaptFiltersPanel: fix announcements"

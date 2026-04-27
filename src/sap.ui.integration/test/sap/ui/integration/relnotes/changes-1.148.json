@@ -3,6 +3,11 @@
     "date": "April 2026",
     "notes": [
       {
+        "id": "ad7a2481f936d5f71bff5c3ce15a42fabbcef9dc",
+        "type": "FIX",
+        "text": " sap.ui.integration.CardActions: Enabled property now is applied correctly when no type is defined"
+      },
+      {
         "id": "2c1aee90a850abdfc51a7bb3f8494d1bac48a50c",
         "type": "FIX",
         "text": " Integration Cards: List items with empty icons no longer have incorrect height"

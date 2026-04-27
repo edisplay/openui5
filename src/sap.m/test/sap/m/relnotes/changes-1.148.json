@@ -3,6 +3,71 @@
     "date": "April 2026",
     "notes": [
       {
+        "id": "ff4320a82b37b9163ace2673d35c0df0bda7a897",
+        "type": "FIX",
+        "text": " sap.m.Dialog: Fixed missing header shadow"
+      },
+      {
+        "id": "b825393ac8990bcc9d1a1f239c6bbfe2f86ead45",
+        "type": "FIX",
+        "text": " sap.m.Popover: ValueStateHeader reference removed from aria-labelledby"
+      },
+      {
+        "id": "d4ed8dd8fa6acf8a0826afd395b1b258591e9ef4",
+        "type": "FEATURE",
+        "text": " sap.ui.mdc: Dynamic properties for MDC controls"
+      },
+      {
+        "id": "4aa2fb57cb3213b486f528c61e97fb1183be48b9",
+        "type": "FIX",
+        "text": " sap.m.DateRangeSelection: selection via keyboard is working"
+      },
+      {
+        "id": "e774c796aa1fbeecfb3ae82035ae7176a81b27ac",
+        "type": "FIX",
+        "text": " sap.m.MultiComboBox: Group header is visible on opening"
+      },
+      {
+        "id": "87ba59f12003c3c61ab360565ce70521ffb7d502",
+        "type": "FIX",
+        "text": " IllustrationExplorer: Fix unstable OPA test for deprecated illustrations"
+      },
+      {
+        "id": "66a1f5706427cea51939284721a32ba2df0ac6f0",
+        "type": "FIX",
+        "text": " sap.m.PlanningCalendar: announce custom row header content"
+      },
+      {
+        "id": "5c2a1723a773719b928dd689a34df86f5ea737cd",
+        "type": "FIX",
+        "text": " sap.m.ColorPalettePopover: update button active and hover colors"
+      },
+      {
+        "id": "e851b3c8d8bfc65c50875dc0fa17ad1fde14fb16",
+        "type": "FIX",
+        "text": " sap.m.Wizard: Accessibility test page enhancement"
+      },
+      {
+        "id": "684fa309dc9e248b7b852b0664b337406d6db366",
+        "type": "FIX",
+        "text": " sap.m.Popover: Firefox now correctly detects overflow and shows the scrollbar"
+      },
+      {
+        "id": "43a3f196a2b3513ba95b7c8400c2960f0ff3a308",
+        "type": "FEATURE",
+        "text": " sap.m.MessageStrip: Inline icons in formatted text are now enabled"
+      },
+      {
+        "id": "aee9d20a23f3bcba4348aca3e50e9a3171e70b26",
+        "type": "FIX",
+        "text": " We've now fixed an issue where a tile is clicked on while selecting the text area inside an action tile"
+      },
+      {
+        "id": "568e9912e954b9d937a5bef17b1a9b29296a028d",
+        "type": "FIX",
+        "text": " sap.m.Select: Fix JAWS not announcing value after enabling"
+      },
+      {
         "id": "f3a1ee82ece8eb91e34617f771c7ee264bd3fdae",
         "type": "FIX",
         "text": " sap.m.Text: Skip unstable test in Chrome"

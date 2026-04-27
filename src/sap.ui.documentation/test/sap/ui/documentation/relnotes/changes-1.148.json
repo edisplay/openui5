@@ -1,0 +1,17 @@
+{
+  "1.148.0": {
+    "date": "April 2026",
+    "notes": [
+      {
+        "id": "f939c55aa0773186caf8ef482ad54a3c0a6f4209",
+        "type": "FIX",
+        "text": " DemoKit: Link to openui5.org releases updated"
+      },
+      {
+        "id": "f9222f3e93dafdf94c424c81fdb33eb8410d7294",
+        "type": "FIX",
+        "text": " Demo Kit: Release Notes text is now conditionally rendered for OpenUI5 and SAPUI5"
+      }
+    ]
+  }
+}

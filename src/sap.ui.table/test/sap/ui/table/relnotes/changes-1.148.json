@@ -1,0 +1,12 @@
+{
+  "1.148.0": {
+    "date": "April 2026",
+    "notes": [
+      {
+        "id": "f791d88abb7a0a0ed4e1f38d0f7e18b4afb4562b",
+        "type": "FEATURE",
+        "text": " ui.Table: Prevent focus change on touch move"
+      }
+    ]
+  }
+}
