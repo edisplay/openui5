@@ -24964,7 +24964,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			assert.strictEqual(oBinding.getCount(), 3);
 
 			const iBatchNo = that.iBatchNo + 1; // don't care about exact no.
-			that.expectRequest(`#${iBatchNo} DELETE SalesOrderList('26')`)
+			that.expectRequest(`#${iBatchNo} DELETE SalesOrderList('26')?sap-client=123&custom=foo`)
 				.expectRequest(`#${iBatchNo} SalesOrderList?sap-client=123&custom=foo`
 					+ "&$apply=filter(LifecycleStatus gt 'P' and GrossAmount lt 100)"
 					+ "/search(covfefe)/aggregate(GrossAmount)", {
@@ -42628,7 +42628,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 		// code under test (JIRA: CPOUI5ODATAV4-3049)
 		assert.strictEqual(oBinding.getCount(), 10);
 
-		this.expectRequest("DELETE Artists(ArtistID='11',IsActiveEntity=false)")
+		this.expectRequest("DELETE Artists(ArtistID='11',IsActiveEntity=false)?custom=foo")
 			.expectRequest(sCountUrl, 42); // dummy to show #getCount takes its value from here
 
 		await Promise.all([
@@ -43065,7 +43065,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			this.waitForChanges(assert, "(8) side-effects refresh")
 		]);
 
-		this.expectRequest("DELETE Artists(ArtistID='1',IsActiveEntity=false)")
+		this.expectRequest("DELETE Artists(ArtistID='1',IsActiveEntity=false)?custom=foo")
 			.expectRequest(sCountUrl, 5)
 			.expectRequest(baseUrl(sExpandLevels)
 				+ "&$select=ArtistID,IsActiveEntity,Name,_/DescendantCount,_/DistanceFromRoot"
