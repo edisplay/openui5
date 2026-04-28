@@ -1327,6 +1327,7 @@ sap.ui.define([
 			this.oModel.getDependentBindings(oContext).forEach(function (oBinding) {
 				oBinding.resetChanges();
 			});
+			this.setOutdated?.(true);
 			this.delete(null, sCanonicalPath.slice(1), oContext);
 		}
 	};

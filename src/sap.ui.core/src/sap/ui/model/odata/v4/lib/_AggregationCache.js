@@ -75,8 +75,8 @@ sap.ui.define([
 	/**
 	 * Deletes a node on the server and in the cached data.
 	 *
-	 * @param {sap.ui.model.odata.v4.lib._GroupLock} oGroupLock
-	 *   A lock for the group ID to be used for the DELETE request
+	 * @param {sap.ui.model.odata.v4.lib._GroupLock} [oGroupLock]
+	 *   A lock for the group ID to be used for the DELETE request; w/o a lock, no requests are sent
 	 * @param {string} sEditUrl
 	 *   The node's edit URL to be used for the DELETE request
 	 * @param {string} sIndexOrPredicate
@@ -121,11 +121,11 @@ sap.ui.define([
 			this.createCountPromise();
 		}
 
-		return SyncPromise.all([
+		return SyncPromise.all(oGroupLock ? [
 			this.oRequestor.request("DELETE", sEditUrl, oGroupLock, {"If-Match" : oElement}),
 			this.readCount(oGroupLock),
 			this.readGrandTotal(oGroupLock)
-		]).then(() => {
+		] : []).then(() => {
 			this.oTreeState.delete(oElement);
 			if (this.aElements.length === 0) {
 				return; // concurrent side-effects refresh takes care of cleanup
