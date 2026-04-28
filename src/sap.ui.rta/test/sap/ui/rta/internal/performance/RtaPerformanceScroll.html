@@ -12,8 +12,6 @@
 		<title>Adaptation at Runtime - Apply Styles for Scroll Test</title>
 		<script src="../../shared-config.js"></script>
 		<script>
-			var __sPathPrefix = document.location.pathname.match(/(.*)\/test-resources\//)[1];
-
 			window["sap-ui-config"] = window["sap-ui-config"] || {};
 			window["sap-ui-config"].onInit = "module:rta/performance/scroll/main";
 			window["sap-ui-config"].async = "true";
@@ -24,8 +22,10 @@
 				"test-resources": "../../../../../../test-resources"
 			};
 			window["sap-ui-config"].flexibilityServices = '[{"connector": "SessionStorageConnector"}]';
-
-			document.write('<script src="' + __sPathPrefix + '/resources/sap-ui-core.js"><' + '/script>');
+			const basePath = document.location.pathname.match(/(.*)\/test-resources\//)[1];
+			const script = document.createElement("script");
+			script.src = `${window.location.origin}${basePath}/resources/sap-ui-core.js`;
+			document.head.appendChild(script);
 		</script>
 		<script src="RtaPerformanceScroll.js"></script>
 	</head>
