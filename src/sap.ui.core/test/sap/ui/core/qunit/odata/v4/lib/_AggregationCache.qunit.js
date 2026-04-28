@@ -6875,6 +6875,9 @@ sap.ui.define([
 		oHelperMock.expects("getPrivateAnnotation")
 			.withExactArgs(sinon.match.same(oElement), "predicate")
 			.returns("~predicate~");
+		this.mock(this.oRequestor).expects("buildQueryString")
+			.withExactArgs("/Foo", sinon.match.same(oCache.mQueryOptions), true)
+			.returns("?foo=bar");
 		this.mock(oCache).expects("createCountPromise").exactly(bCount ? 1 : 0).withExactArgs();
 		const mock = () => {
 			this.mock(oCache.oTreeState).expects("delete")
@@ -6909,7 +6912,7 @@ sap.ui.define([
 			mock();
 		}
 		this.mock(this.oRequestor).expects("request").exactly(bGroupLock ? 1 : 0)
-			.withExactArgs("DELETE", "~editUrl~", "~oGroupLock~", {
+			.withExactArgs("DELETE", "~editUrl~?foo=bar", "~oGroupLock~", {
 				"If-Match" : sinon.match.same(oElement)
 			})
 			.callsFake(() => {
@@ -6960,9 +6963,12 @@ sap.ui.define([
 			.returns("~sPredicate~");
 		oHelperMock.expects("getPrivateAnnotation").withExactArgs("~oElement~", "parent")
 			.returns("~oParentCache~");
+		this.mock(this.oRequestor).expects("buildQueryString")
+			.withExactArgs("/Foo", sinon.match.same(oCache.mQueryOptions), true)
+			.returns("?foo=bar");
 		this.mock(oCache).expects("createCountPromise").exactly(bCount ? 1 : 0).withExactArgs();
 		this.mock(this.oRequestor).expects("request")
-			.withExactArgs("DELETE", "~editUrl~", "~oGroupLock~", {
+			.withExactArgs("DELETE", "~editUrl~?foo=bar", "~oGroupLock~", {
 				"If-Match" : "~oElement~"
 			})
 			.callsFake(() => {
@@ -6988,8 +6994,11 @@ sap.ui.define([
 		const oElement = {};
 
 		oCache.aElements[2] = oElement;
+		this.mock(this.oRequestor).expects("buildQueryString")
+			.withExactArgs("/Foo", sinon.match.same(oCache.mQueryOptions), true)
+			.returns("?foo=bar");
 		this.mock(this.oRequestor).expects("request")
-			.withExactArgs("DELETE", "~editUrl~", "~oGroupLock~",
+			.withExactArgs("DELETE", "~editUrl~?foo=bar", "~oGroupLock~",
 				{"If-Match" : sinon.match.same(oElement)})
 			.returns(Promise.reject("~error~"));
 		this.mock(oCache).expects("readCount").withExactArgs("~oGroupLock~");
@@ -7033,6 +7042,7 @@ sap.ui.define([
 		this.mock(oParentCache).expects("_delete")
 			.withExactArgs("~oGroupLock~", "~editUrl~", "~transientPredicate~")
 			.returns("~promise~");
+		this.mock(this.oRequestor).expects("buildQueryString").never();
 		this.mock(oCache).expects("readCount").never();
 		this.mock(oCache).expects("readGrandTotal").never();
 
@@ -7055,6 +7065,7 @@ sap.ui.define([
 
 		this.mock(_Helper).expects("getPrivateAnnotation")
 			.withExactArgs(sinon.match.same(oElement), "predicate").returns("(42)");
+		this.mock(this.oRequestor).expects("buildQueryString").never();
 		this.mock(this.oRequestor).expects("request").never();
 		this.mock(oCache).expects("removeElement").never();
 		this.mock(_Helper).expects("updateAll").never();
@@ -7071,6 +7082,7 @@ sap.ui.define([
 		const oCache = _AggregationCache.create(this.oRequestor, "Foo", "", {}, {
 				hierarchyQualifier : "X"
 			});
+		this.mock(this.oRequestor).expects("buildQueryString").never();
 		this.mock(oCache).expects("removeElement").never();
 		this.mock(_Helper).expects("updateAll").never();
 		this.mock(oCache).expects("readCount").never();

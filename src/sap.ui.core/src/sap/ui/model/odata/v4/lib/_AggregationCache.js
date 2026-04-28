@@ -117,6 +117,7 @@ sap.ui.define([
 				_Helper.getPrivateAnnotation(oElement, "transientPredicate"));
 		}
 
+		sEditUrl += this.oRequestor.buildQueryString(this.sMetaPath, this.mQueryOptions, true);
 		if (this.oCountPromise) {
 			this.createCountPromise();
 		}
