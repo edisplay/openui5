@@ -2269,7 +2269,10 @@ sap.ui.define([
 						_Helper.getPrivateAnnotation(oGrandTotalCopy, "predicate"), oGrandTotalCopy,
 						oResult.value[0]);
 				}
-				this.setGrandTotalOutdated(false);
+				if (!oGrandTotal["@$ui5.context.isOutdated"]) {
+					// if grand total got outdated in between, update values but keep it outdated
+					this.setGrandTotalOutdated(false);
+				}
 			}, (oError) => {
 				this.setGrandTotalOutdated(true);
 				throw oError;
@@ -2817,6 +2820,18 @@ sap.ui.define([
 	};
 
 	/**
+	 * @override
+	 * @see sap.ui.model.odata.v4.lib._Cache#update
+	 */
+	_AggregationCache.prototype.update = function (sPropertyPath, _vValue, oParameters) {
+		return SyncPromise.all([
+			_AggregationHelper.isUsedForGrandTotal(sPropertyPath, this.oAggregation.aggregate)
+				&& this.readGrandTotal(oParameters.oGroupLock),
+			_Cache.prototype.update.apply(this, arguments)
+		]);
+	};
+
+	/**
 	 * Validates for all nodes which contribute to the ExpandLevels parameter whether they are a
 	 * descendant of the given node. If a node is a descendant, its expand info is deleted.
 	 *
@@ -2824,7 +2839,7 @@ sap.ui.define([
 	 *   An unlocked lock for the group to associate the request with
 	 * @param {object} oGroupNode
 	 *   A collapsed(!) group node
-	 * @return {Promise<void>}
+	 * @returns {Promise<void>}
 	 *   A promise resolving when the expand info objects have been deleted
 	 *
 	 * @private
