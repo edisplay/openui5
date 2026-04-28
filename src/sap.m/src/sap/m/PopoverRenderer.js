@@ -36,7 +36,8 @@ sap.ui.define([
 		PopoverRenderer.render = function(oRm, oControl) {
 			oRm.openStart("div", oControl);
 			var aClassNames = this.generateRootClasses(oControl),
-				sContentWidth = oControl._getActualContentWidth();
+				sContentWidth = oControl._getActualContentWidth(),
+				sMaxHeight = oControl.getMaxHeight();
 
 			if (!oControl.isOpen() && oControl.oPopup?.eOpenState !== OpenState.OPENING) {
 				oRm.class("sapMPopoverHidden");
@@ -61,6 +62,10 @@ sap.ui.define([
 
 			if (oControl.isResized() && sContentWidth) {
 				oRm.style("width", sContentWidth);
+			}
+
+			if (sMaxHeight) {
+				oRm.style("max-height", sMaxHeight);
 			}
 
 			oRm.attr("tabindex", "-1")
