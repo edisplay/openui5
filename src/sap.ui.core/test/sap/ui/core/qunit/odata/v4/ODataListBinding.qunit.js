@@ -8047,6 +8047,62 @@ sap.ui.define([
 	});
 
 	//*********************************************************************************************
+[false, true].forEach(function (bAutoExpandSelect) {
+	[/*no sorter*/undefined, false, true].forEach(function (bHasSorterWithGroupPaths) {
+		[false, true].forEach(function (bHasSelect) {
+	const sTitle = "getQueryOptionsFromParameters: add groupPaths to $select"
+		+ ", autoExpandSelect = " + bAutoExpandSelect
+		+ ", has sorter with groupPaths = " + bHasSorterWithGroupPaths
+		+ ", has $select = " + bHasSelect;
+
+	QUnit.test(sTitle, function (assert) {
+		const oBinding = this.bindList("/EMPLOYEES");
+		oBinding.oModel.bAutoExpandSelect = bAutoExpandSelect;
+		if (bHasSorterWithGroupPaths) {
+			oBinding.aSorters = [
+				new Sorter({path : "n/a", groupPaths : ["a"]}),
+				new Sorter({path : "n/a"}),
+				new Sorter({path : "n/a", groupPaths : ["b", "c"]})
+			];
+		} else if (bHasSorterWithGroupPaths === false) {
+			oBinding.aSorters = [new Sorter({path : "n/a"})];
+		}
+		oBinding.mQueryOptions = {$expand : "~expand~"};
+		if (bHasSelect) {
+			oBinding.mQueryOptions.$select = ["~select~"];
+		}
+		const sOriginalQueryOptions = JSON.stringify(oBinding.mQueryOptions);
+		const bExpectAddToSelect = bAutoExpandSelect && bHasSorterWithGroupPaths;
+		this.mock(_Helper).expects("addToSelect").exactly(bExpectAddToSelect ? 1 : 0)
+			.withExactArgs(/*NOT match.same*/oBinding.mQueryOptions, ["a", "b", "c"])
+			.callsFake(function (mQueryOptions0) {
+				if (mQueryOptions0.$select) {
+					mQueryOptions0.$select.push("MODIFIED"); // addToSelect operates on reference
+				} else {
+					mQueryOptions0.$select = "MODIFIED"; // ... and creates $select if not present
+				}
+			});
+
+		// code under test
+		const mResult = oBinding.getQueryOptionsFromParameters();
+
+		if (bExpectAddToSelect) {
+			assert.deepEqual(mResult, {
+				$expand : "~expand~",
+				$select : bHasSelect ? ["~select~", "MODIFIED"] : "MODIFIED"
+			});
+			assert.notStrictEqual(mResult, oBinding.mQueryOptions);
+		} else {
+			assert.strictEqual(mResult, oBinding.mQueryOptions);
+		}
+		assert.strictEqual(JSON.stringify(oBinding.mQueryOptions), sOriginalQueryOptions,
+			"both mQueryOptions and its $select are unchanged");
+	});
+		});
+	});
+});
+
+	//*********************************************************************************************
 	QUnit.test("inheritQueryOptions - binding with parameters", function (assert) {
 		var oBinding = this.bindList("/EMPLOYEES", undefined, undefined, undefined,
 				{$$operationMode : OperationMode.Server}),

@@ -3489,7 +3489,24 @@ sap.ui.define([
 	 * @see sap.ui.model.odata.v4.ODataParentBinding#getQueryOptionsFromParameters
 	 */
 	ODataListBinding.prototype.getQueryOptionsFromParameters = function () {
-		return this.mQueryOptions;
+		let mQueryOptions = this.mQueryOptions;
+		if (this.oModel.bAutoExpandSelect) {
+			const aGroupPaths = [];
+			this.aSorters.forEach((oSorter) => {
+				const aPaths = oSorter.getGroupPaths();
+				if (aPaths) {
+					aGroupPaths.push(...aPaths);
+				}
+			});
+			if (aGroupPaths.length) {
+				mQueryOptions = {...mQueryOptions};
+				// avoid that this.mQueryOptions.$select is modified
+				mQueryOptions.$select &&= mQueryOptions.$select.slice();
+				_Helper.addToSelect(mQueryOptions, aGroupPaths);
+			}
+		}
+
+		return mQueryOptions;
 	};
 
 	/**
