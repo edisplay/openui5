@@ -653,9 +653,7 @@ sap.ui.define([
 	 */
 	AdaptFiltersPanelContent.prototype._createFilterLabel = function(oContext) {
 		const sIdSuffix = _getIdSuffixFromContext(oContext);
-		const bGrouped = this._oViewModel.getProperty("/grouped");
-		const sViewKey = bGrouped ? this.GROUP_KEY : this.LIST_KEY;
-		const sLabelId = this.getId() + "-filterLabel-" + sViewKey + "-view-" + sIdSuffix;
+		const sLabelId = this.getId() + "-filterLabel-" + sIdSuffix;
 
 		let oLabel = this._mLabelCache[sLabelId];
 		if (oLabel && !oLabel.bIsDestroyed) {
