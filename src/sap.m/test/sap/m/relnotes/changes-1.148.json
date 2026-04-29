@@ -3,9 +3,29 @@
     "date": "April 2026",
     "notes": [
       {
+        "id": "4d9e7b8ff00352c1d839cae1d0f8995e29e7af01",
+        "type": "FIX",
+        "text": " sap.m.Dialog: Fix layout when no vertical scrolling"
+      },
+      {
+        "id": "610c4ed04ffd9776beb39bc1436c55239c826a72",
+        "type": "FIX",
+        "text": " sap.m.PlanningCalendar: firstDayOfWeek is set correctly when singleSelection is off"
+      },
+      {
+        "id": "28a16938bea12a94a75186aa46e4ab8896830bc2",
+        "type": "FIX",
+        "text": " DemoKit: Hardened script loading in internal bootstrap processes for Card Explorer and Accessibility Guide applications"
+      },
+      {
         "id": "ff4320a82b37b9163ace2673d35c0df0bda7a897",
         "type": "FIX",
         "text": " sap.m.Dialog: Fixed missing header shadow"
+      },
+      {
+        "id": "59217116297fd9bd8618ff2f6f2b3f2fc2e28d00",
+        "type": "FIX",
+        "text": " sap.m.Dialog: Header text alignement is now fixed in compact mode"
       },
       {
         "id": "b825393ac8990bcc9d1a1f239c6bbfe2f86ead45",

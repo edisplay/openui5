@@ -3,6 +3,16 @@
     "date": "April 2026",
     "notes": [
       {
+        "id": "4d9e7b8ff00352c1d839cae1d0f8995e29e7af01",
+        "type": "FIX",
+        "text": " sap.m.Dialog: Fix layout when no vertical scrolling"
+      },
+      {
+        "id": "28a16938bea12a94a75186aa46e4ab8896830bc2",
+        "type": "FIX",
+        "text": " DemoKit: Hardened script loading in internal bootstrap processes for Card Explorer and Accessibility Guide applications"
+      },
+      {
         "id": "ad7a2481f936d5f71bff5c3ce15a42fabbcef9dc",
         "type": "FIX",
         "text": " sap.ui.integration.CardActions: Enabled property now is applied correctly when no type is defined"

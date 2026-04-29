@@ -3,6 +3,21 @@
     "date": "April 2026",
     "notes": [
       {
+        "id": "9e85d08847c2fa38461c40bb4ccdd168964aad0d",
+        "type": "FIX",
+        "text": " AdaptFiltersPanel: Fix stableId in Adapt Filters Panel"
+      },
+      {
+        "id": "dac5777dd22904836e0308a87d3157b740164067",
+        "type": "FIX",
+        "text": " Table, Chart: insertAction fails if simple Control is inserted"
+      },
+      {
+        "id": "fa1f739fb635984277e9592ddf2d59ae6e8342a0",
+        "type": "FEATURE",
+        "text": " MDCTable: TableRowActionType for the ResponsiveTable extended"
+      },
+      {
         "id": "d4ed8dd8fa6acf8a0826afd395b1b258591e9ef4",
         "type": "FEATURE",
         "text": " sap.ui.mdc: Dynamic properties for MDC controls"

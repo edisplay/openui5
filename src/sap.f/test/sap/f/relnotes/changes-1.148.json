@@ -3,6 +3,11 @@
     "date": "April 2026",
     "notes": [
       {
+        "id": "a8bea557ce2f14370b22d89d05ce36546fb81902",
+        "type": "FIX",
+        "text": " Integration Cards: Fixed border around the chart bar"
+      },
+      {
         "id": "9a2ce48c779b85c527b9936616cd7eb55ba5449d",
         "type": "FIX",
         "text": " sap.f.DynamicPage: Cache scrollbar width to avoid excessive style recalculations"
