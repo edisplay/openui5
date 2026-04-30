@@ -10,6 +10,7 @@
     "sdk": "npm run sdk --workspace src/testsuite",
     "build-sdk": "npm run build-sdk --workspace src/testsuite",
     "serve-sdk": "npm run serve-sdk --workspace src/testsuite",
+    "update-jsdoc-template": "node lib/builder/updateTemplate.mjs",
     "test": "npm run lint",
     "lint": "eslint ./src --quiet --cache",
     "lint:styles": "stylelint \"src/**/*.less\"",
