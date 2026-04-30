@@ -6149,6 +6149,9 @@ sap.ui.define([
 						oHelperMock.expects("removeByPath")
 							.withExactArgs(sinon.match.same(oCache.mPostRequests),
 								"~sTransientPredicate~", sinon.match.same(oEntityData));
+						oHelperMock.expects("updateTransientPaths")
+							.withExactArgs(sinon.match.same(oCache.mChangeListeners),
+								"~sTransientPredicate~", "('ABC')");
 						that.mock(oCache.oTreeState).expects("setOutOfPlace")
 							.exactly(bAtEndOfCreated ? 0 : 1)
 							.withExactArgs(sinon.match.same(oEntityData),
@@ -6390,6 +6393,9 @@ sap.ui.define([
 						oHelperMock.expects("removeByPath")
 							.withExactArgs(sinon.match.same(oCache.mPostRequests),
 								"~sTransientPredicate~", sinon.match.same(oEntityData));
+						oHelperMock.expects("updateTransientPaths")
+							.withExactArgs(sinon.match.same(oCache.mChangeListeners),
+								"~sTransientPredicate~", "('ABC')");
 						const oRequestRankExpectation = that.mock(oCache).expects("requestRank")
 							.withExactArgs(sinon.match.same(oEntityData), "~oGroupLock~")
 							.resolves(iRank);
