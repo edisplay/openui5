@@ -558,6 +558,29 @@ sap.ui.define([
 		},
 
 		/**
+		 * Recursively copies ETags from the source object to the target object. If the source
+		 * object has an <code>"@odata.etag"</code> property, it is copied to the target object.
+		 *
+		 * @param {object} oSource - The source object containing ETags
+		 * @param {object} oTarget - The target object to receive the ETags
+		 *
+		 * @public
+		 */
+		copyETags : function (oSource, oTarget) {
+			oTarget["@odata.etag"] = oSource["@odata.etag"];
+
+			for (const sKey in oSource) {
+				const vSourceProperty = oSource[sKey];
+				const vTargetProperty = oTarget[sKey];
+
+				if (vSourceProperty && vTargetProperty && typeof vSourceProperty === "object"
+						&& !Array.isArray(vSourceProperty)) {
+					_Helper.copyETags(vSourceProperty, vTargetProperty);
+				}
+			}
+		},
+
+		/**
 		 * Returns an <code>Error</code> instance from a jQuery XHR wrapper.
 		 *
 		 * @param {object} jqXHR
