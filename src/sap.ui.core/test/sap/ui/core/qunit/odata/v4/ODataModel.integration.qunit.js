@@ -25254,12 +25254,19 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	// It is not supported to update a property w/o PATCH which would set any outdated flag or
 	// affect the grand total.
 	// JIRA: CPOUI5ODATAV4-3436
+	//
+	// Handle Context#requestSideEffects with property paths in the same way as Context#setProperty
+	// regarding reading the grand total and setting the outdated flags.
+	// JIRA: CPOUI5ODATAV4-3464
 [
 	"context refresh",
-	"request properties of a context via side effects",
+	"requestSideEffects-combine calls and request grand total once",
 	"setProperty-GrossAmount",
+	"requestSideEffects-GrossAmount",
 	"setProperty-CurrencyCode",
+	"requestSideEffects-CurrencyCode",
 	"setProperty-LifecycleStatus",
+	"requestSideEffects-LifecycleStatus",
 	"multiple setProperty in one $batch",
 	"multiple setProperty in multiple $batches"
 ].forEach((sScenario) => {
@@ -25406,7 +25413,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			assert.strictEqual(oGrandTotalContext.getProperty("@$ui5.context.isOutdated"),
 				bWithFilter);
 			assert.strictEqual(oGrandTotalContext.isOutdated(), bWithFilter);
-		} else if (sScenario === "request properties of a context via side effects") {
+		} else if (sScenario === "requestSideEffects-combine calls and request grand total once") {
 			this.expectChangeIf(bWithFilter, "isOutdated", [true,,, true])
 				.expectChangeIf(iSorterCase || bWithFilter, "isOutdatedHeader", true)
 				.expectRequest("#2 SalesOrderList('25')?sap-client=123"
@@ -25419,16 +25426,18 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 				})
 				.expectChange("lifecycleStatus", [, "Y*"])
 				.expectChange("grossAmount", bWithFilter ? [, "7"] : ["11", "7",, "11"])
-				// requestSideEffects also reads the grand total and the outdated flags of
-				// the grand total rows are set to false (JIRA: CPOUI5ODATAV4-3392)
+				// requestSideEffects also reads the grand total if a grand total related property
+				// is affected and the grand total is not yet marked as outdated. In that case the
+				// outdated flags of the grand total rows are set to false.
+				// (JIRA: CPOUI5ODATAV4-3392, CPOUI5ODATAV4-3481)
 				.expectChangeIf(!bWithFilter, "isOutdated", [false,,, false]);
 
 			await Promise.all([
 				// code under test (JIRA: CPOUI5ODATAV4-3389)
 				oContext25.requestSideEffects(["LifecycleStatus"]),
 				oContext25.requestSideEffects(["GrossAmount", /*ignored:*/"NoteLanguage"]),
-				this.waitForChanges(assert, "without filter the grand total is up-to-date after"
-					+ " Context#requestSideEffects (JIRA: CPOUI5ODATAV4-3392)")
+				this.waitForChanges(assert, sScenario + ", without filter the grand total is"
+					+ " up-to-date after Context#requestSideEffects (JIRA: CPOUI5ODATAV4-3392)")
 			]);
 
 			assert.strictEqual(oGrandTotalContext.getProperty("@$ui5.context.isOutdated"),
@@ -25468,6 +25477,20 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 						assert.strictEqual(oError.message, sNoPatchError);
 					}),
 				this.waitForChanges(assert, "update GrossAmount w/o PATCH always fails")
+			]);
+		} else if (sScenario === "requestSideEffects-GrossAmount") {
+			this.expectRequest("#2 SalesOrderList('25')?sap-client=123&$select=GrossAmount",
+					{GrossAmount : "42"})
+				.expectRequest("#2 " + sGrandTotalURL, {
+					value : [{CurrencyCode : "EUR", GrossAmount : "46"}]
+				})
+				.expectChange("isOutdated", [false,,, false])
+				.expectChange("grossAmount", ["46", "42",, "46"]);
+
+			await Promise.all([
+				// code under test (JIRA: CPOUI5ODATAV4-3481)
+				oContext25.requestSideEffects(["GrossAmount"]),
+				this.waitForChanges(assert, "update GrossAmount -> grand total is requested")
 			]);
 		} else if (sScenario === "setProperty-CurrencyCode") {
 			this.expectChangeIf(bWithFilter, "isOutdated", [true,,, true])
@@ -25509,6 +25532,23 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 					}),
 				this.waitForChanges(assert, "update CurrencyCode w/o PATCH always fails")
 			]);
+		} else if (sScenario === "requestSideEffects-CurrencyCode") {
+			this.expectChangeIf(bWithFilter, "isOutdated", [true,,, true])
+				.expectChangeIf(iSorterCase || bWithFilter, "isOutdatedHeader", true)
+				.expectRequest("#2 SalesOrderList('25')?sap-client=123&$select=CurrencyCode",
+					{CurrencyCode : "EUR*"})
+				.expectChange("currencyCode", [, "EUR*"])
+				.expectRequestIf(!bWithFilter, "#2 " + sGrandTotalURL, {
+					value : [{CurrencyCode : "EUR", GrossAmount : "5"}]
+				})
+				.expectChangeIf(!bWithFilter, "grossAmount", ["5",,, "5"])
+				.expectChangeIf(!bWithFilter, "isOutdated", [false,,, false]);
+
+			await Promise.all([
+				// code under test (JIRA: CPOUI5ODATAV4-3481)
+				oContext25.requestSideEffects(["CurrencyCode"]),
+				this.waitForChanges(assert, sScenario)
+			]);
 		} else if (sScenario === "setProperty-LifecycleStatus") {
 			this.expectChangeIf(bWithFilter, "isOutdated", [true,,, true])
 				.expectChangeIf(iSorterCase || bWithFilter, "isOutdatedHeader", true)
@@ -25549,6 +25589,18 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 					}),
 				this.waitForChanges(assert,
 					"update LifecycleStatus w/o PATCH only fails if used in filter or sorter")
+			]);
+		} else if (sScenario === "requestSideEffects-LifecycleStatus") {
+			this.expectChangeIf(bWithFilter, "isOutdated", [true,,, true])
+				.expectChangeIf(iSorterCase || bWithFilter, "isOutdatedHeader", true)
+				.expectRequest("SalesOrderList('25')?sap-client=123&$select=LifecycleStatus",
+					{LifecycleStatus : "Y*"})
+				.expectChange("lifecycleStatus", [, "Y*"]);
+
+			await Promise.all([
+				// code under test (JIRA: CPOUI5ODATAV4-3481)
+				oContext25.requestSideEffects(["LifecycleStatus"]),
+				this.waitForChanges(assert, sScenario)
 			]);
 		} else if (sScenario === "multiple setProperty in one $batch") {
 			this.expectChange("grossAmount", [, "42"])
