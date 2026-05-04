@@ -849,14 +849,7 @@ sap.ui.define([
 					return bVisible ? "sap-icon://show" : "sap-icon://hide";
 				}
 			},
-			tooltip: {
-				path: `${this.P13N_MODEL}>${this.PRESENCE_ATTRIBUTE}`,
-				formatter: (bVisible) => {
-					return bVisible
-						? this._getResourceText("adaptFiltersPanel.ACTION_VISIBILITY_SHOW")
-						: this._getResourceText("adaptFiltersPanel.ACTION_VISIBILITY_HIDE");
-				}
-			},
+			tooltip: this._getResourceText("adaptFiltersPanel.ACTION_VISIBILITY_SHOW"),
 			ariaLabelledBy: oLabel,
 			press: (oEvent) => {
 				const oButton = oEvent.getSource();
