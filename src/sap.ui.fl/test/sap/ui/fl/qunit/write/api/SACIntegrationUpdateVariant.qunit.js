@@ -85,28 +85,22 @@ sap.ui.define([
 		QUnit.test("because the variant does not exists", function(assert) {
 			sandbox.stub(InitialStorage, "loadFlexData").resolves({
 				...StorageUtils.getEmptyFlexDataResponse(),
-				changes: [],
-				comp: {
-					variants: [{
-						fileName: sVariantId,
-						name: "F Variant",
-						fileType: "variant",
-						layer: Layer.USER,
-						content: {},
-						favorite: true,
-						selector: {
-							persistencyKey: sPersistencyKey
-						},
-						texts: {
-							variantName: {
-								value: "A variant"
-							}
+				compVariants: [{
+					fileName: sVariantId,
+					name: "F Variant",
+					fileType: "variant",
+					layer: Layer.USER,
+					content: {},
+					favorite: true,
+					selector: {
+						persistencyKey: sPersistencyKey
+					},
+					texts: {
+						variantName: {
+							value: "A variant"
 						}
-					}],
-					changes: [],
-					standardVariants: [],
-					defaultVariants: []
-				}
+					}
+				}]
 			});
 
 			const mPropertyBag = {
@@ -140,13 +134,7 @@ sap.ui.define([
 							value: "A variant"
 						}
 					}
-				}],
-				comp: {
-					variants: [],
-					changes: [],
-					standardVariants: [],
-					defaultVariants: []
-				}
+				}]
 			});
 
 			const mPropertyBag = {
@@ -167,28 +155,22 @@ sap.ui.define([
 			QUnit.test(`because the variant is in the ${sLayer} layer`, function(assert) {
 				sandbox.stub(InitialStorage, "loadFlexData").resolves({
 					...StorageUtils.getEmptyFlexDataResponse(),
-					changes: [],
-					comp: {
-						variants: [{
-							fileName: sVariantId,
-							fileType: "variant",
-							name: "F Variant",
-							layer: sLayer,
-							content: {},
-							favorite: true,
-							selector: {
-								persistencyKey: sPersistencyKey
-							},
-							texts: {
-								variantName: {
-									value: "A variant"
-								}
+					compVariants: [{
+						fileName: sVariantId,
+						fileType: "variant",
+						name: "F Variant",
+						layer: sLayer,
+						content: {},
+						favorite: true,
+						selector: {
+							persistencyKey: sPersistencyKey
+						},
+						texts: {
+							variantName: {
+								value: "A variant"
 							}
-						}],
-						changes: [],
-						standardVariants: [],
-						defaultVariants: []
-					}
+						}
+					}]
 				});
 
 				const mPropertyBag = {
@@ -209,31 +191,25 @@ sap.ui.define([
 		QUnit.test("because the variant is in the PUBLIC layer, but the user is not authorized to edit it (no key user nor author)", async function(assert) {
 			sandbox.stub(InitialStorage, "loadFlexData").resolves({
 				...StorageUtils.getEmptyFlexDataResponse(),
-				changes: [],
-				comp: {
-					variants: [{
-						fileName: sVariantId,
-						fileType: "variant",
-						name: "F Variant",
-						layer: Layer.PUBLIC,
-						content: {},
-						favorite: true,
-						selector: {
-							persistencyKey: sPersistencyKey
-						},
-						support: {
-							user: "NORRISC"
-						},
-						texts: {
-							variantName: {
-								value: "A variant"
-							}
+				compVariants: [{
+					fileName: sVariantId,
+					fileType: "variant",
+					name: "F Variant",
+					layer: Layer.PUBLIC,
+					content: {},
+					favorite: true,
+					selector: {
+						persistencyKey: sPersistencyKey
+					},
+					support: {
+						user: "NORRISC"
+					},
+					texts: {
+						variantName: {
+							value: "A variant"
 						}
-					}],
-					changes: [],
-					standardVariants: [],
-					defaultVariants: []
-				}
+					}
+				}]
 			});
 
 			const mPropertyBag = {
@@ -270,45 +246,39 @@ sap.ui.define([
 			});
 			sandbox.stub(InitialStorage, "loadFlexData").resolves({
 				...StorageUtils.getEmptyFlexDataResponse(),
-				changes: [],
-				comp: {
-					variants: [{
-						fileName: sVariantId,
-						name: "F Variant",
-						layer: Layer.USER,
-						reference: "sac",
-						fileType: "variant",
-						content: {},
-						favorite: true,
-						selector: {
-							persistencyKey: sPersistencyKey
-						},
-						texts: {
-							variantName: {
-								value: "A variant"
-							}
+				compVariants: [{
+					fileName: sVariantId,
+					name: "F Variant",
+					layer: Layer.USER,
+					reference: "sac",
+					fileType: "variant",
+					content: {},
+					favorite: true,
+					selector: {
+						persistencyKey: sPersistencyKey
+					},
+					texts: {
+						variantName: {
+							value: "A variant"
 						}
-					}, {
-						fileName: "another_variant_id",
-						name: "F Variant",
-						layer: Layer.USER,
-						reference: "sac",
-						fileType: "variant",
-						content: {},
-						favorite: true,
-						selector: {
-							persistencyKey: sPersistencyKey
-						},
-						texts: {
-							variantName: {
-								value: "A variant"
-							}
+					}
+				}, {
+					fileName: "another_variant_id",
+					name: "F Variant",
+					layer: Layer.USER,
+					reference: "sac",
+					fileType: "variant",
+					content: {},
+					favorite: true,
+					selector: {
+						persistencyKey: sPersistencyKey
+					},
+					texts: {
+						variantName: {
+							value: "A variant"
 						}
-					}],
-					changes: [],
-					standardVariants: [],
-					defaultVariants: []
-				}
+					}
+				}]
 			});
 
 			const oContent = { someKey: "someValue" };

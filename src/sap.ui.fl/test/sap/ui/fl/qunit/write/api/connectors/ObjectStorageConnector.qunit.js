@@ -446,9 +446,9 @@ sap.ui.define([
 				})
 				.then(function(aResponses) {
 					assert.strictEqual(aResponses.length, 1, "load draft data has a response");
-					assert.strictEqual(aResponses[0].comp.variants.length, 2, "two variant is save");
-					assert.strictEqual(aResponses[0].comp.variants[0].fileName, "oVariant1", "the file name is correct");
-					assert.strictEqual(aResponses[0].comp.variants[1].fileName, "oVariant2", "the file name is correct");
+					assert.strictEqual(aResponses[0].compVariants.length, 2, "two variant are saved");
+					assert.strictEqual(aResponses[0].compVariants[0].fileName, "oVariant1", "the file name is correct");
+					assert.strictEqual(aResponses[0].compVariants[1].fileName, "oVariant2", "the file name is correct");
 					return loadVersionFromStorage(mPropertyBag);
 				})
 				.then(function(aResponses) {
@@ -468,9 +468,9 @@ sap.ui.define([
 				})
 				.then(function(aResponses) {
 					assert.strictEqual(aResponses.length, 1, "load data has a response");
-					assert.strictEqual(aResponses[0].comp.variants.length, 2, "there are two variants");
-					assert.strictEqual(aResponses[0].comp.variants[0].fileName, "oVariant1", "the file name is correct");
-					assert.strictEqual(aResponses[0].comp.variants[1].fileName, "oVariant2", "the file name is correct");
+					assert.strictEqual(aResponses[0].compVariants.length, 2, "there are two variants");
+					assert.strictEqual(aResponses[0].compVariants[0].fileName, "oVariant1", "the file name is correct");
+					assert.strictEqual(aResponses[0].compVariants[1].fileName, "oVariant2", "the file name is correct");
 					return loadVersionFromStorage(mPropertyBag);
 				})
 				.then(function(aResponses) {
@@ -487,8 +487,8 @@ sap.ui.define([
 				})
 				.then(function(aResponses) {
 					assert.strictEqual(aResponses.length, 1, "load draft data has a response");
-					assert.strictEqual(aResponses[0].comp.variants.length, 1, "a change and a draft change is save");
-					assert.strictEqual(aResponses[0].comp.variants[0].fileName, "oVariant2", "the file name is correct");
+					assert.strictEqual(aResponses[0].compVariants.length, 1, "a change and a draft change is save");
+					assert.strictEqual(aResponses[0].compVariants[0].fileName, "oVariant2", "the file name is correct");
 					return loadVersionFromStorage(mPropertyBag);
 				})
 				.then(function(aResponses) {
@@ -503,9 +503,9 @@ sap.ui.define([
 				})
 				.then(function(aResponses) {
 					assert.strictEqual(aResponses.length, 1, "load draft data has a response");
-					assert.strictEqual(aResponses[0].comp.variants.length, 2, "a change is save");
-					assert.strictEqual(aResponses[0].comp.variants[0].fileName, "oVariant1", "the file name is correct");
-					assert.strictEqual(aResponses[0].comp.variants[1].fileName, "oVariant2", "the file name is correct");
+					assert.strictEqual(aResponses[0].compVariants.length, 2, "a change is save");
+					assert.strictEqual(aResponses[0].compVariants[0].fileName, "oVariant1", "the file name is correct");
+					assert.strictEqual(aResponses[0].compVariants[1].fileName, "oVariant2", "the file name is correct");
 				});
 			});
 
