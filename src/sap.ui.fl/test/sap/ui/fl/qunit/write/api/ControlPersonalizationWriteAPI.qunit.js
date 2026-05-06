@@ -107,17 +107,18 @@ sap.ui.define([
 			}));
 
 			return oViewPromise.then(function() {
+				this.oVMControl = new VariantManagement("variantManagement");
 				this.oVariantModel = new VariantModel({
 					variantManagement: {
 						variants: []
 					}
 				}, {
-					appComponent: this.oComp
+					appComponent: this.oComp,
+					vmReference: "variantManagement",
+					vmControl: this.oVMControl
 				});
-				return this.oVariantModel.initialize();
 			}.bind(this))
 			.then(function() {
-				this.oComp.setModel(this.oVariantModel, ControlVariantApplyAPI.getVariantModelName());
 				this.oCompContainer.placeAt("qunit-fixture");
 
 				this.oObjectPageLayout = Element.getElementById("testComponent---mockview--ObjectPageLayout");
@@ -193,6 +194,7 @@ sap.ui.define([
 			});
 		},
 		afterEach() {
+			this.oVMControl.destroy();
 			sandbox.restore();
 			ControlPersonalizationWriteAPI.detachAllChangeCreationListeners();
 		},
@@ -642,17 +644,18 @@ sap.ui.define([
 			}));
 
 			oViewPromise.then(function() {
+				this.oVMControl2 = new VariantManagement("variantManagement");
 				this.oVariantModel = new VariantModel({
 					variantManagement: {
 						variants: []
 					}
 				}, {
-					appComponent: this.oComp
+					appComponent: this.oComp,
+					vmReference: "variantManagement",
+					vmControl: this.oVMControl2
 				});
-				return this.oVariantModel.initialize();
 			}.bind(this))
 			.then(function() {
-				this.oComp.setModel(this.oVariantModel, ControlVariantApplyAPI.getVariantModelName());
 				this.oCompContainer = new ComponentContainer({
 					component: this.oComp
 				}).placeAt("qunit-fixture");
@@ -707,6 +710,7 @@ sap.ui.define([
 			}.bind(this));
 		},
 		afterEach() {
+			this.oVMControl2.destroy();
 			sandbox.restore();
 		},
 		after() {
