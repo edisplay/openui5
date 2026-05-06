@@ -80724,9 +80724,13 @@ make root = ${bMakeRoot}`;
 	// the deletion is successful, UI switches to the active version and the draft is deleted also
 	// on the client (as a cleanup). Property bindings on the object page must not become unresolved
 	// in between, because default values would be used by controls then, for example for "visible".
-	//
 	// BCP: 109953 / 2023 (002075129500001099532023)
-	QUnit.test("BCP: 109953 / 2023 - delete context on server only", function (assert) {
+	//
+	// Ensure to use "If-Match" header only if ETags are used (JIRA: CPOUI5ODATAV4-3506)
+[false, true].forEach((bETag) => {
+	const sTitle = "BCP: 109953 / 2023 - delete context on server only; w/ ETag: " + bETag;
+
+	QUnit.test(sTitle, function (assert) {
 		var oActiveContext,
 			oDraftContext,
 			sMessage1 = "It sure feels fine to see one's name in print",
@@ -80747,7 +80751,7 @@ make root = ${bMakeRoot}`;
 
 			that.expectRequest("Artists(ArtistID='42',IsActiveEntity=false)"
 					+ "?$select=ArtistID,IsActiveEntity,Messages,Name", {
-					"@odata.etag" : "ETag",
+					...(bETag && {"@odata.etag" : "ETag"}),
 					ArtistID : "42",
 					IsActiveEntity : false,
 					Messages : [{
@@ -80793,7 +80797,7 @@ make root = ${bMakeRoot}`;
 			oActiveContext = aResults[0];
 
 			that.expectRequest("DELETE Artists(ArtistID='42',IsActiveEntity=false)", {
-					headers : {"If-Match" : "ETag"}
+					headers : bETag ? {"If-Match" : "ETag"} : {}
 				}, undefined, {
 					"sap-messages" : JSON.stringify([{
 						code : "foo-42",
@@ -80834,7 +80838,7 @@ make root = ${bMakeRoot}`;
 			that.oLogMock.expects("error")
 				.withArgs("Failed to delete /Artists(ArtistID='42',IsActiveEntity=false)");
 			that.expectRequest("DELETE Artists(ArtistID='42',IsActiveEntity=false)", {
-					headers : {"If-Match" : "ETag"}
+					headers : bETag ? {"If-Match" : "ETag"} : {}
 				}, createErrorInsideBatch({target : "ArtistID"}))
 				.expectMessages([{
 					message : sMessage1,
@@ -80872,6 +80876,7 @@ make root = ${bMakeRoot}`;
 			]);
 		});
 	});
+});
 
 	//*********************************************************************************************
 	// Scenario: When working with group $auto, first call ODLB#create and then immediately call
