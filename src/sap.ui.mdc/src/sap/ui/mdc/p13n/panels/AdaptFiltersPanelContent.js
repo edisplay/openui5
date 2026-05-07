@@ -301,7 +301,9 @@ sap.ui.define([
 					if (oControl.isA("sap.ui.mdc.FilterField")) {
 						oControl.setEditMode("Editable");
 					} else {
-						oControl.setEnabled?.(true);
+						if (!oControl._bDefaultDisabled) {
+							oControl.setEnabled?.(true);
+						}
 					}
 				}
 			}
