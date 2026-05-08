@@ -509,8 +509,8 @@ sap.ui.define([
 		},
 
 		/**
-		 * Recursively copies ETags from the source object to the target object. If the source
-		 * object has an <code>"@odata.etag"</code> property, it is copied to the target object.
+		 * Recursively copies ETags from the source object to the target object. Does nothing if
+		 * the key predicates of source and target differ.
 		 *
 		 * @param {object} oSource - The source object containing ETags
 		 * @param {object} oTarget - The target object to receive the ETags
@@ -518,6 +518,10 @@ sap.ui.define([
 		 * @public
 		 */
 		copyETags : function (oSource, oTarget) {
+			if (_Helper.getPrivateAnnotation(oSource, "predicate")
+					!== _Helper.getPrivateAnnotation(oTarget, "predicate")) {
+				return;
+			}
 			oTarget["@odata.etag"] = oSource["@odata.etag"];
 
 			for (const sKey in oSource) {
