@@ -330,9 +330,6 @@ sap.ui.define([
 		assert.strictEqual(fn, undefined, "correction method was returned");
 	});
 
-	/**
-	 * @deprecated
-	 */
 	QUnit.test("restricted globals should not be resolved from global fallback", function(assert) {
 		assert.strictEqual(resolveReference("eval"), undefined,
 			"eval should not be resolved");
@@ -374,9 +371,6 @@ sap.ui.define([
 			"eval.apply from variables should not be resolved");
 	});
 
-	/**
-	 * @deprecated
-	 */
 	QUnit.test("globals accessed via Window context should not be resolved", function(assert) {
 		assert.strictEqual(resolveReference("parent.eval"), undefined,
 			"parent.eval should not be resolved");
@@ -408,12 +402,12 @@ sap.ui.define([
 		assert.strictEqual(oContext, oModule, "correct context was bound");
 	});
 
-	/**
-	 * @deprecated
-	 */
 	QUnit.test("jQuery.globalEval and jQuery.sap.globalEval should not be resolved", function(assert) {
 		assert.strictEqual(resolveReference("jQuery.globalEval"), undefined,
 			"jQuery.globalEval should not be resolved");
+		/**
+		 * @deprecated
+		 */
 		assert.strictEqual(resolveReference("jQuery.sap.globalEval"), undefined,
 			"jQuery.sap.globalEval should not be resolved");
 
