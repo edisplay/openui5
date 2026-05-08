@@ -104,7 +104,9 @@ sap.ui.define([
 		onRowActionPress: function(oEvent) {
 			const oDialog = new Dialog({
 				title: oEvent.getSource().getText(),
-				content: new sap.m.Text({text: "Row action triggered for " + oEvent.getParameter("bindingContext").getProperty("name")}),
+				content: new sap.m.Text({
+					text: "Row action triggered for " + oEvent.getParameter("bindingContext").getProperty("firstName") +
+							" " + oEvent.getParameter("bindingContext").getProperty("lastName")}),
 				endButton: new sap.m.Button({
 					text: "Close",
 					press: function() {
