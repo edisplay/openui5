@@ -92,10 +92,10 @@ sap.ui.define(function() {
 					qunitBridge: true
 				}
 			},
-			/* Commented out until unstable voter issue are fixed.
 			TooltipBase: {
+				skip: true, // Skipped until unstable voter issues are fixed.
 				title: "sap.ui.core.TooltipBase"
-			},*/
+			},
 			"util/SelectionModel": {
 				title: "sap.ui.core.SelectionModel"
 			}
