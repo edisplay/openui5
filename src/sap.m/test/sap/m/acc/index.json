@@ -237,7 +237,7 @@
 		},
 		{
 			"control": "sap.m.Label",
-			"url": "../Label.html",
+			"url": "Label.html",
 			"appComponent": "CA-UI5-CTR-ROD"
 		},
 		{
@@ -609,17 +609,6 @@
 				"name": "sap.m.StepInput",
 				"title": "ACC test for sap.m.StepInput",
 				"module": "./stepinput.qunit"
-			}
-		},
-		{
-			"control": "sap.m.SuggestionsList",
-			"url": "../SearchField_Suggestions.html",
-			"desc" : "Suggestions list of the Search Field",
-			"appComponent": "CA-UI5-CTR-ROD",
-			"accTest": {
-				"name": "sap.m.SuggestionsList",
-				"title": "ACC test for sap.m.SuggestionsList",
-				"module": "./suggestionslist.qunit"
 			}
 		},
 		{
