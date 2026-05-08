@@ -25343,8 +25343,9 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	// JIRA: CPOUI5ODATAV4-3436
 	//
 	// Handle Context#requestSideEffects with property paths in the same way as Context#setProperty
-	// regarding reading the grand total and setting the outdated flags.
-	// JIRA: CPOUI5ODATAV4-3464
+	// regarding reading the grand total and setting the outdated flags. Support also "*" as a
+	// side-effects path.
+	// JIRA: CPOUI5ODATAV4-3481
 [
 	"context refresh",
 	"requestSideEffects-combine calls and request grand total once",
@@ -25354,6 +25355,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	"requestSideEffects-CurrencyCode",
 	"setProperty-LifecycleStatus",
 	"requestSideEffects-LifecycleStatus",
+	"requestSideEffects-*",
 	"multiple setProperty in one $batch",
 	"multiple setProperty in multiple $batches"
 ].forEach((sScenario) => {
@@ -25687,6 +25689,31 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			await Promise.all([
 				// code under test (JIRA: CPOUI5ODATAV4-3481)
 				oContext25.requestSideEffects(["LifecycleStatus"]),
+				this.waitForChanges(assert, sScenario)
+			]);
+		} else if (sScenario === "requestSideEffects-*") {
+			this.expectChangeIf(bWithFilter, "isOutdated", [true,,, true])
+				.expectChangeIf(iSorterCase || bWithFilter, "isOutdatedHeader", true)
+				.expectRequest("#2 SalesOrderList('25')?sap-client=123"
+					+ "&$select=CurrencyCode,GrossAmount,LifecycleStatus,Messages,SalesOrderID", {
+						CurrencyCode : "EUR*",
+						GrossAmount : "7",
+						LifecycleStatus : "Y*",
+						Messages : [],
+						SalesOrderID : "25"
+					})
+				.expectChange("currencyCode", [, "EUR*"])
+				.expectChange("grossAmount", [, "7"])
+				.expectChange("lifecycleStatus", [, "Y*"])
+				.expectRequestIf(!bWithFilter, "#2 " + sGrandTotalURL, {
+					value : [{CurrencyCode : "EUR", GrossAmount : "11"}]
+				})
+				.expectChangeIf(!bWithFilter, "grossAmount", ["11",,, "11"])
+				.expectChangeIf(!bWithFilter, "isOutdated", [false,,, false]);
+
+			await Promise.all([
+				// code under test (JIRA: CPOUI5ODATAV4-3481)
+				oContext25.requestSideEffects(["*"]),
 				this.waitForChanges(assert, sScenario)
 			]);
 		} else if (sScenario === "multiple setProperty in one $batch") {
