@@ -36417,8 +36417,11 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	// Combine delete with a side-effects refresh in one $batch (JIRA: CPOUI5ODATAV4-3070)
 	// Update bound $count (header context) when deleting nodes (JIRA: CPOUI5ODATAV4-3063)
 [false, true].forEach(function (bExpanded) {
-	const sState = bExpanded ? "expanded" : "collapsed";
-	QUnit.test(`Recursive Hierarchy: delete single ${sState} child`, async function (assert) {
+	[false, true].forEach(function (bDeleteViaModel) {
+		const sTitle = "Recursive Hierarchy: delete single "
+			+ (bExpanded ? "expanded" : "collapsed") + " child, via model = " + bDeleteViaModel;
+
+	QUnit.test(sTitle, async function (assert) {
 		var oTable;
 
 		const oModel = this.createTeaBusiModel({autoExpandSelect : true});
@@ -36438,9 +36441,9 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	<Text id="name" text="{Name}"/>
 </Table>`;
 
-		function expectTable(sTitle, bExpanded0) {
+		function expectTable(sTitle0, bExpanded0) {
 			if (bExpanded0) {
-				checkTable(sTitle, assert, oTable, [
+				checkTable(sTitle0, assert, oTable, [
 					"/EMPLOYEES('0')",
 					"/EMPLOYEES('1')",
 					"/EMPLOYEES('2')",
@@ -36452,7 +36455,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 					[false, 1, "3", "", "Delta"]
 				], 4);
 			} else {
-				checkTable(sTitle, assert, oTable, [
+				checkTable(sTitle0, assert, oTable, [
 					"/EMPLOYEES('0')",
 					"/EMPLOYEES('1')",
 					"/EMPLOYEES('3')"
@@ -36587,19 +36590,26 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 		if (bExpanded) {
 			this.expectChange("expanded", [, false]); // Beta is collapsed before being deleted
 		}
-		this.expectRequest("#5 DELETE EMPLOYEES('1')")
-			.expectRequest("#5 EMPLOYEES/$count",
+		this.expectRequest("#5 DELETE EMPLOYEES('1')",
+				bDeleteViaModel ? {headers : {"If-Match" : "*"}} : undefined)
+			.expectRequest("EMPLOYEES/$count", {batchNo : bDeleteViaModel ? 6 : 5},
 				42) // dummy to show #getCount takes its value from here
 			.expectChange("count", "42")
 			.expectChange("expanded", [undefined]) // Alpha is now a leaf
 			.expectChange("name", [, "Delta"]);
+		const fnRequestCount = () => {
+			// code under test (JIRA: CPOUI5ODATAV4-3067)
+			return oHeaderContext.requestProperty("$count").then(function (iResult) {
+				assert.strictEqual(iResult, 42);
+			});
+		};
 
 		await Promise.all([
-			oBeta.delete(), // code under test
-			// code under test (JIRA: CPOUI5ODATAV4-3067)
-			oHeaderContext.requestProperty("$count").then(function (iResult) {
-				assert.strictEqual(iResult, 42);
-			}),
+			// code under test (JIRA: CPOUI5ODATAV4-3495)
+			bDeleteViaModel && oModel.delete(oBeta.getCanonicalPath()).then(fnRequestCount),
+			// code under test (JIRA: CPOUI5ODATAV4-2224)
+			bDeleteViaModel || oBeta.delete(),
+			bDeleteViaModel || fnRequestCount(),
 			this.waitForChanges(assert, "delete Beta")
 		]);
 
@@ -36615,9 +36625,10 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 
 		const oDelta = oListBinding.getAllCurrentContexts()[1];
 
-		this.expectRequest("#6 DELETE EMPLOYEES('3')")
-			.expectRequest("#6 EMPLOYEES/$count", 1)
-			.expectRequest("#6 EMPLOYEES?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels"
+		const sHash = "#" + (this.iBatchNo + 1) + " "; // don't care about exact no.
+		this.expectRequest(sHash + "DELETE EMPLOYEES('3')")
+			.expectRequest(sHash + "EMPLOYEES/$count", 1)
+			.expectRequest(sHash + "EMPLOYEES?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels"
 				+ "(HierarchyNodes=$root/EMPLOYEES,HierarchyQualifier='OrgChart',NodeProperty='ID'"
 				//TODO: ExpandLevels not needed, see JIRA: CPOUI5ODATAV4-2550
 				+ ",Levels=1,ExpandLevels=" + JSON.stringify([{NodeID : "0", Levels : 1}]) + ")"
@@ -36647,6 +36658,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 		], [
 			[undefined, 1, "0", "", "Alpha"]
 		]);
+	});
 	});
 });
 
