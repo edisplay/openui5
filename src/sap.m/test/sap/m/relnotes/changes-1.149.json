@@ -3,6 +3,56 @@
     "date": "May 2026",
     "notes": [
       {
+        "id": "4752343edcf5d00a6bc0227581bdbf7ddf73812b",
+        "type": "FIX",
+        "text": " sap.m.TabStrip, sap.m.TabContainer: close button icon is aligned"
+      },
+      {
+        "id": "e6d1d30d8feacbc83847a14ce052bae74087420f",
+        "type": "FEATURE",
+        "text": " sap.m.Panel: Focus for Scrollable Content Area"
+      },
+      {
+        "id": "0db30159d57ccf4b8f7d3c90a62a134118de2053",
+        "type": "FIX",
+        "text": " sap.m.ObjectStatus: inverted status in Table is shown correctly"
+      },
+      {
+        "id": "b255ce3e6b7db04dd647676a4cdf2b5340600af0",
+        "type": "FEATURE",
+        "text": " sap.m.Tokenizer: ESC now deselects all tokens"
+      },
+      {
+        "id": "331ec75ae885dd8f196e46c56d71a9cdff7d58da",
+        "type": "FIX",
+        "text": " sap.m.ObjectStatus: fires press in Virtual Cursor Mode"
+      },
+      {
+        "id": "43578c73e83aa5b39fa7efb30e7efb46b819cf13",
+        "type": "FIX",
+        "text": " ui.Table: Column Freeze behavior and state"
+      },
+      {
+        "id": "a0bf41189221bc98bd94df94be1abd31edd2942c",
+        "type": "FIX",
+        "text": " p13n.SelectionPanel: Filter count not correct"
+      },
+      {
+        "id": "2a26599672db36f86d5295070431716600978f57",
+        "type": "FIX",
+        "text": " sap.m.ViewSettingsDialog: update selections after reset event"
+      },
+      {
+        "id": "dba045a65b4f97cb60b4b35e258095573928c313",
+        "type": "FIX",
+        "text": " sap.m.Dialog: Revert new flex box calculation"
+      },
+      {
+        "id": "1db6a2def13f3351656653d4cd68b7f549eae9eb",
+        "type": "FIX",
+        "text": " We've now fixed the title text clipping inside editable forms by increasing CSS specificity of the GenericTile's line-height rule to avoid an override by form theme styles"
+      },
+      {
         "id": "533efe630183d6ebd1bf6e603e5fe2bfcc3da1be",
         "type": "FIX",
         "text": " sap.m.Dialog: Fix layout when no vertical scrolling"
@@ -16,6 +66,11 @@
         "id": "8cf58aa5208074ea8e91194c59297acefaf0aef4",
         "type": "FIX",
         "text": " IllustrationExplorer: Fix unstable OPA tests for size and set selects"
+      },
+      {
+        "id": "804b13a9bdedb8cb4781803e604b9eeee626465f",
+        "type": "FIX",
+        "text": " We've now fixed an issue of incorrect heading level added on the UploadSetwithTable FilePreviewDialog"
       }
     ]
   }

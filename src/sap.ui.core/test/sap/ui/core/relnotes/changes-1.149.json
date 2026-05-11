@@ -1,0 +1,12 @@
+{
+  "1.149.0": {
+    "date": "May 2026",
+    "notes": [
+      {
+        "id": "9a6af66bb5f40911062ad3f537f97c99bc031ab9",
+        "type": "FIX",
+        "text": " OPA: Guard Promise.withResolvers wrapping for older browsers"
+      }
+    ]
+  }
+}

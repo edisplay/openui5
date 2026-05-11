@@ -3,9 +3,39 @@
     "date": "May 2026",
     "notes": [
       {
+        "id": "b82987d872c3557a13525771f73f11899a1625ae",
+        "type": "FIX",
+        "text": "p13n.AdaptFiltersPanel: Fix _getIdSuffixFromContext"
+      },
+      {
+        "id": "5bb0e648f326e056ae5fa708bf7b3db11eb7eb17",
+        "type": "FIX",
+        "text": " ValueHelp: only 50 Tokens are shown"
+      },
+      {
+        "id": "3120055e7e80a512c136dd8bff24c43587b1555c",
+        "type": "FIX",
+        "text": " MultiValueField: alignment in display mode"
+      },
+      {
+        "id": "095d2b26701cb16cbfbb7f49bf99ead52f27bf18",
+        "type": "FIX",
+        "text": " p13n.AdaptFiltersPanel: A11y name of toggle button incorrect"
+      },
+      {
+        "id": "80960140f6b728df476d8fe75588e7094a43db08",
+        "type": "FIX",
+        "text": "Add arialabelledBy to SegmentedBtn in Adapt Filters"
+      },
+      {
         "id": "562ed85896613759cb096efa3f0951b36f20719c",
         "type": "FIX",
         "text": " p13n.BasePanel: Import enums correctly"
+      },
+      {
+        "id": "b60bb5d93ad4b92056783a10395bc6f588d377bc",
+        "type": "FIX",
+        "text": " MultiValueField: sync Conditions with Items if update fails"
       }
     ]
   }

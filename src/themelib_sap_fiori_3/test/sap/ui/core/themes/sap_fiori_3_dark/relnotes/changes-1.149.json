@@ -6,11 +6,6 @@
         "id": "e6d1d30d8feacbc83847a14ce052bae74087420f",
         "type": "FEATURE",
         "text": " sap.m.Panel: Focus for Scrollable Content Area"
-      },
-      {
-        "id": "73df6887d8c59c4fb02c670be9b2260e04b604bc",
-        "type": "FIX",
-        "text": " sap.uxap.ObjectPageSection: Focus outline no longer overlaps header buttons"
       }
     ]
   }
