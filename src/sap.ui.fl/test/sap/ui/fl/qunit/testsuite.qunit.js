@@ -478,6 +478,12 @@ sap.ui.define([
 					only: ["sap/ui/fl/util/DescriptorChangeCheck"]
 				}
 			},
+			"util/FocusPolicy": {
+				group: "Util - FocusPolicy",
+				coverage: {
+					only: ["sap/ui/fl/util/FocusPolicy"]
+				}
+			},
 			/**
 			 * @deprecated Since 1.84
 			 */

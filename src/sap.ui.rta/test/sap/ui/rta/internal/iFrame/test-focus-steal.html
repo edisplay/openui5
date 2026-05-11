@@ -1,0 +1,45 @@
+<!-- You can embed this page with the following URL: http://localhost:8080/test-resources/sap/ui/rta/internal/iFrame/test-focus-steal.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Focus Stealing Test Page</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            background: #f0f8ff;
+        }
+        input {
+            font-size: 16px;
+            padding: 8px;
+            margin: 10px 0;
+            width: 300px;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            background: #ffe0e0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Focus Stealing Test Page</h2>
+    <p>This page programmatically sets focus on the input below after 1 second.</p>
+    <input id="stealFocus" type="text" placeholder="I will steal focus!" />
+    <div class="status" id="status">Waiting to steal focus...</div>
+
+    <script>
+        setTimeout(function() {
+            document.getElementById("stealFocus").focus();
+            document.getElementById("status").textContent = "Focus stolen!";
+            document.getElementById("status").style.background = "#ffb0b0";
+        }, 1000);
+
+        setInterval(function() {
+            document.getElementById("stealFocus").focus();
+            document.getElementById("status").textContent = "Focus stolen again at " + new Date().toLocaleTimeString();
+        }, 3000);
+    </script>
+</body>
+</html>
