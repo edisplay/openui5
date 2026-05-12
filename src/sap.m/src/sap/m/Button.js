@@ -65,7 +65,8 @@ sap.ui.define([
 
 	// constraints for the minimum and maximum Badge value
 	var BADGE_MIN_VALUE = 1,
-		BADGE_MAX_VALUE = 9999;
+		BADGE_MAX_VALUE = 9999,
+		LONG_PRESS_DURATION = 500; // milliseconds for long press detection
 
 	/**
 	 * Constructor for a new <code>Button</code>.
@@ -269,6 +270,8 @@ sap.ui.define([
 	Button.prototype.init = function() {
 		this._onmouseenter = this._onmouseenter.bind(this);
 		this._buttonPressed = false;
+		this._iTouchStartTimestamp = 0;
+		this._bPreventPress = false;
 
 		ShortcutHintsMixin.addConfig(this, {
 				event: "press",
@@ -445,6 +448,8 @@ sap.ui.define([
 		}
 
 		this._bFocused = null;
+		this._iTouchStartTimestamp = 0;
+		this._bPreventPress = false;
 
 		this.$().off("mouseenter", this._onmouseenter);
 	};
@@ -524,6 +529,12 @@ sap.ui.define([
 			delete this._bRenderActive;
 		}
 
+		// reset the press preventing flag
+		this._bPreventPress = false;
+
+		// capture timestamp for long-press detection
+		this._iTouchStartTimestamp = Date.now();
+
 		// change the source only when the first finger is on the control, the
 		// following fingers doesn't affect
 		if (oEvent.targetTouches.length === 1) {
@@ -554,9 +565,15 @@ sap.ui.define([
 	 */
 	Button.prototype.ontouchend = function(oEvent) {
 		var sEndingTagId, bShouldSimulateTap,
-			bIsRightClick = oEvent.which === 3 || (oEvent.ctrlKey && oEvent.which === 1);
+			bIsRightClick = oEvent.which === 3 || (oEvent.ctrlKey && oEvent.which === 1),
+			iTouchDuration = Date.now() - this._iTouchStartTimestamp;
 
 		this._buttonPressed = oEvent.originalEvent && oEvent.originalEvent.buttons & 1;
+
+		// check if this was a long press (> 500ms)
+		if (oEvent.originalEvent && oEvent.originalEvent.type === "touchend" && iTouchDuration >= LONG_PRESS_DURATION) {
+			this._bPreventPress = true;
+		}
 
 		// set inactive button state
 		this._inactiveButton();
@@ -591,8 +608,16 @@ sap.ui.define([
 	 * @private
 	 */
 	Button.prototype.ontouchcancel = function() {
+		var iTouchDuration = Date.now() - this._iTouchStartTimestamp;
+
 		this._buttonPressed = false;
 		this._sTouchStartTargetId = '';
+
+		// check if this was a long press (> 500ms)
+		if (iTouchDuration >= LONG_PRESS_DURATION) {
+			this._bPreventPress = true;
+		}
+
 		// set inactive button state
 		this._inactiveButton();
 	};
@@ -618,11 +643,15 @@ sap.ui.define([
 					this.focus();
 			}
 
-			/**
-			 * @deprecated As of version 1.20 the <code>tap</code> event has been replaced by the <code>press</code> event
-			 */
-			this.fireTap({/* no parameters */}); // (This event is deprecated, use the "press" event instead)
-			this.firePress({/* no parameters */ });
+			// prevent press event if long press is detected
+			if (!this._bPreventPress) {
+				/**
+				 * @deprecated As of version 1.20 the <code>tap</code> event has been replaced by the <code>press</code> event
+				 */
+				this.fireTap({/* no parameters */}); // (This event is deprecated, use the "press" event instead)
+				this.firePress({/* no parameters */ });
+			}
+			this._bPreventPress = false;
 		}
 
 		this.bFromTouchEnd = bFromTouchEnd;
@@ -740,6 +769,8 @@ sap.ui.define([
 		this._buttonPressed = false;
 		this._bFocused = false;
 		this._sTouchStartTargetId = '';
+		this._iTouchStartTimestamp = 0;
+		this._bPreventPress = false;
 		// set inactive button state
 		this._inactiveButton();
 		this._toggleLiveChangeAnnouncement("off");
