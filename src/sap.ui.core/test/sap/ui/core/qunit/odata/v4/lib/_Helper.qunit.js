@@ -5996,6 +5996,11 @@ sap.ui.define([
 		const oHelperMock = this.mock(_Helper);
 		// inital call
 		oHelperMock.expects("copyETags").withExactArgs(oSource, oTarget).callThrough();
+		// missing key predicates are considered equal and do not stop ETag copying
+		oHelperMock.expects("getPrivateAnnotation")
+			.withExactArgs(sinon.match.same(oSource), "predicate").returns();
+		oHelperMock.expects("getPrivateAnnotation")
+			.withExactArgs(sinon.match.same(oTarget), "predicate").returns();
 		oHelperMock.expects("copyETags")
 			.withExactArgs(sinon.match.same(oSource.A), sinon.match.same(oTarget.A));
 
@@ -6011,6 +6016,22 @@ sap.ui.define([
 			C : {},
 			D : null
 		});
+	});
+
+	//*********************************************************************************************
+	QUnit.test("copyETags: do not copy if key predicate has changed", function (assert) {
+		const oSource = {"@odata.etag" : "ETag1"};
+		const oTarget = {"@odata.etag" : "ETag0"};
+		const oHelperMock = this.mock(_Helper);
+		oHelperMock.expects("getPrivateAnnotation")
+			.withExactArgs(sinon.match.same(oSource), "predicate").returns("('foo')");
+		oHelperMock.expects("getPrivateAnnotation")
+			.withExactArgs(sinon.match.same(oTarget), "predicate").returns("('bar')");
+
+		// code under test
+		_Helper.copyETags(oSource, oTarget);
+
+		assert.deepEqual(oTarget, {"@odata.etag" : "ETag0"});
 	});
 
 	//*********************************************************************************************
