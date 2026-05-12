@@ -2193,6 +2193,28 @@ sap.ui.define([
 		},
 
 		/**
+		 * Tells whether the given property path is affected by the given side-effects path.
+		 *
+		 * @param {string} sPropertyPath
+		 *   A property path
+		 * @param {string} sSideEffectsPath
+		 *   The "14.4.1.5 Expression edm:NavigationPropertyPath" or
+		 *   "14.4.1.6 Expression edm:PropertyPath" string describing which properties may have
+		 *   changed due to an update or side effects of a previous update, see
+		 *   {@link sap.ui.model.odata.v4.Context#requestSideEffects}
+		 * @returns {boolean}
+		 *   Whether the given property path is affected by the given side-effects path
+		 *
+		 * @public
+		 */
+		isAffectedBy : function (sPropertyPath, sSideEffectsPath) {
+			// To avoid metadata access, we do not distinguish between properties and
+			// navigation properties, so there is no need to look closely at "/*".
+			return _Helper.hasPathPrefix(sPropertyPath,
+				sSideEffectsPath.endsWith("/*") ? sSideEffectsPath.slice(0, -2) : sSideEffectsPath);
+		},
+
+		/**
 		 * Tells whether the given map of binding parameters is defining data aggregation, but not a
 		 * recursive hierarchy.
 		 *

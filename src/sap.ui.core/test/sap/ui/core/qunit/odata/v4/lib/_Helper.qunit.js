@@ -5368,6 +5368,18 @@ sap.ui.define([
 	});
 
 	//*********************************************************************************************
+	QUnit.test("isAffectedBy", function (assert) {
+		this.mock(_Helper).expects("hasPathPrefix").twice().withExactArgs("path", "sideEffectsPath")
+			.returns("~bResult~");
+
+		// code under test
+		assert.strictEqual(_Helper.isAffectedBy("path", "sideEffectsPath"), "~bResult~");
+
+		// code under test
+		assert.strictEqual(_Helper.isAffectedBy("path", "sideEffectsPath/*"), "~bResult~");
+	});
+
+	//*********************************************************************************************
 	QUnit.test("isDataAggregation", function (assert) {
 		// code under test
 		assert.strictEqual(_Helper.isDataAggregation(), undefined);
