@@ -5,7 +5,9 @@ sap.ui.define(["sap/base/util/ObjectPath"], function(ObjectPath) {
 	"use strict";
 
 	// indicator if the reference can't be resolved
-	var oNotFound = Object.create(null);
+	const oNotFound = Object.create(null);
+
+	let oJQuery;
 
 	/**
 	 * Checks whether the given value or its context is a restricted
@@ -17,8 +19,8 @@ sap.ui.define(["sap/base/util/ObjectPath"], function(ObjectPath) {
 	 * @returns {boolean} Whether the value or its context is restricted
 	 */
 	function _isRestricted(vValue, oContext) {
-		return _isBlocklisted(vValue) || _isBlocklisted(oContext)
-			|| _isWindow(oContext);
+		return _isWindow(oContext)
+			|| _isBlocklisted(vValue) || _isBlocklisted(oContext);
 	}
 
 	/**
@@ -29,12 +31,23 @@ sap.ui.define(["sap/base/util/ObjectPath"], function(ObjectPath) {
 	 * @returns {boolean} Whether the value is a restricted function
 	 */
 	function _isBlocklisted(vValue) {
-		// eslint-disable-next-line no-eval
-		return vValue === eval || vValue === setTimeout || vValue === setInterval
+		/**
+		 * @deprecated
+		 */
+		oJQuery ??= globalThis.jQuery;
+
+		oJQuery ??= sap.ui.require("sap/ui/thirdparty/jquery");
+		/**
+		 * @ui5-transform-hint replace-local false
+		 */
+		const bJQueryExtensionBlocklisted = oJQuery && oJQuery.sap && (vValue === oJQuery.sap.globalEval);
+
+		return bJQueryExtensionBlocklisted
+			// eslint-disable-next-line no-eval
+			|| vValue === eval || vValue === setTimeout || vValue === setInterval
 			|| (globalThis.document && (vValue === globalThis.document.write || vValue === globalThis.document.writeln))
-			|| vValue === location.assign || vValue === location.replace
-			|| (globalThis.jQuery && (vValue === globalThis.jQuery.globalEval
-				|| (globalThis.jQuery.sap && vValue === globalThis.jQuery.sap.globalEval)));
+			|| (globalThis.location && (vValue === globalThis.location.assign || vValue === globalThis.location.replace))
+			|| (oJQuery && (vValue === oJQuery.globalEval));
 	}
 
 	/**
@@ -42,6 +55,7 @@ sap.ui.define(["sap/base/util/ObjectPath"], function(ObjectPath) {
 	 *
 	 * @param {any} vValue The value to check
 	 * @returns {boolean} Whether the value is a Window object
+	 * @ui5-transform-hint replace-call false
 	 */
 	function _isWindow(vValue) {
 		return vValue != null && vValue.window === vValue;
