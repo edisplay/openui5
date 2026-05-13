@@ -433,5 +433,111 @@ sap.ui.define([
 			Then.iTeardownMyAppFrame();
 		});
 
+		opaTestOrSkip("ComboBox Validation: Invalid filter name shows error state", function (Given, When, Then) {
+			//insert application
+			Given.iStartMyAppInAFrame({
+				source: 'test-resources/sap/ui/mdc/qunit/p13n/OpaTests/appUnderTestTable/TableOpaApp.html',
+				autoWait: true
+			});
+
+			When.onTheMDCFilterBar.iPressOnTheAdaptFiltersButton();
+			Then.thePersonalizationDialogOpens(false);
+
+			// Type invalid filter name in the ComboBox
+			When.iEnterTextInComboBox({
+				id: /addFilterComboBox/,
+				value: "NonExistentFilter"
+			});
+
+			// Verify error state is shown
+			Then.iShouldSeeComboBoxWithValueState({
+				id: /addFilterComboBox/,
+				valueState: ValueState.Error
+			});
+
+			Then.iTeardownMyAppFrame();
+		});
+
+		opaTestOrSkip("ComboBox Validation: Error is cleared when valid filter is selected", function (Given, When, Then) {
+			//insert application
+			Given.iStartMyAppInAFrame({
+				source: 'test-resources/sap/ui/mdc/qunit/p13n/OpaTests/appUnderTestTable/TableOpaApp.html',
+				autoWait: true
+			});
+
+			When.onTheMDCFilterBar.iPressOnTheAdaptFiltersButton();
+			Then.thePersonalizationDialogOpens(false);
+
+			// Type invalid filter name
+			When.iEnterTextInComboBox({
+				id: /addFilterComboBox/,
+				value: "Invalid"
+			});
+
+			// Verify error state
+			Then.iShouldSeeComboBoxWithValueState({
+				id: /addFilterComboBox/,
+				valueState: ValueState.Error
+			});
+
+			// Select a valid filter from the list
+			When.iEnterTextInComboBox({
+				id: /addFilterComboBox/,
+				value: "Country"
+			});
+
+			// Verify error state is cleared
+			Then.iShouldSeeComboBoxWithValueState({
+				id: /addFilterComboBox/,
+				valueState: ValueState.None
+			});
+
+			Then.iTeardownMyAppFrame();
+		});
+
+		opaTestOrSkip("ComboBox Validation: Error and value are cleared on dialog close", function (Given, When, Then) {
+			//insert application
+			Given.iStartMyAppInAFrame({
+				source: 'test-resources/sap/ui/mdc/qunit/p13n/OpaTests/appUnderTestTable/TableOpaApp.html',
+				autoWait: true
+			});
+
+			When.onTheMDCFilterBar.iPressOnTheAdaptFiltersButton();
+			Then.thePersonalizationDialogOpens(false);
+
+			// Type invalid filter name
+			When.iEnterTextInComboBox({
+				id: /addFilterComboBox/,
+				value: "InvalidFilter"
+			});
+
+			// Verify error state
+			Then.iShouldSeeComboBoxWithValueState({
+				id: /addFilterComboBox/,
+				valueState: ValueState.Error
+			});
+
+			// Close dialog with OK
+			When.onTheMDCFilterBar.iCloseTheAdaptFiltersDialogWithOk();
+			Then.thePersonalizationDialogShouldBeClosed();
+
+			// Reopen dialog
+			When.onTheMDCFilterBar.iPressOnTheAdaptFiltersButton();
+			Then.thePersonalizationDialogOpens(false);
+
+			// Verify ComboBox is cleared (no value and no error state)
+			Then.iShouldSeeComboBoxWithValue({
+				id: /addFilterComboBox/,
+				value: ""
+			});
+
+			Then.iShouldSeeComboBoxWithValueState({
+				id: /addFilterComboBox/,
+				valueState: ValueState.None
+			});
+
+			Then.iTeardownMyAppFrame();
+		});
+
 	};
 });
