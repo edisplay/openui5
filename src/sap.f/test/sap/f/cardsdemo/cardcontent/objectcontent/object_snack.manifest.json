@@ -202,11 +202,13 @@
 			"actionsStrip": [
 				{
 					"text": "Join",
-					"buttonType": "Accept"
+					"buttonType": "Accept",
+					"actions": [{}]
 				},
 				{
 					"text": "Decline",
-					"buttonType": "Reject"
+					"buttonType": "Reject",
+					"actions": [{}]
 				}
 			]
 		}
