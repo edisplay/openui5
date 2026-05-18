@@ -19,7 +19,8 @@ sap.ui.define([
 	"./LightBoxRenderer",
 	"sap/m/BusyIndicator",
 	"sap/ui/thirdparty/jquery",
-	"sap/ui/dom/units/Rem"
+	"sap/ui/dom/units/Rem",
+	"sap/ui/dom/jquery/Focusable"
 ], function (
 	library,
 	Control,
@@ -740,6 +741,35 @@ sap.ui.define([
 			this.close();
 			//event should not trigger any further actions
 			oEvent.stopPropagation();
+		}
+	};
+
+	/**
+	 * Event handler for the focus event.
+	 * Ensures focus stays trapped within the LightBox (modal behavior).
+	 * If it occurs on the invisible element at the beginning of the LightBox, the focus is set on the last focusable element of the LightBox, and vice versa.
+	 * @param {jQuery.Event} oEvent The event object
+	 * @private
+	 */
+	LightBox.prototype.onfocusin = function (oEvent) {
+		const oSourceDomRef = oEvent.target;
+
+		if (oSourceDomRef.id === this.getId() + "-firstfe") {
+			const oLastFocusableDomRef = this.$().lastFocusableDomRef();
+
+			if (oLastFocusableDomRef) {
+				oLastFocusableDomRef.focus();
+			}
+
+			return;
+		}
+
+		if (oSourceDomRef.id === this.getId() + "-lastfe") {
+			const oFirstFocusableDomRef = this.$().firstFocusableDomRef();
+
+			if (oFirstFocusableDomRef) {
+				oFirstFocusableDomRef.focus();
+			}
 		}
 	};
 
