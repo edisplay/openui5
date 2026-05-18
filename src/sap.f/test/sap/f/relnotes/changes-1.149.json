@@ -3,9 +3,19 @@
     "date": "May 2026",
     "notes": [
       {
+        "id": "d99b5fe8ea3917d31951953ea95508a95f008731",
+        "type": "FIX",
+        "text": " sap.ui.integration ObjectCardVisualTests: enabled actionless buttons"
+      },
+      {
         "id": "0a52b05b37057a6edf662b05e5f8878a2909f568",
         "type": "FIX",
         "text": " sap.f.DynamicPageHeader: Fix pin button tooltip in pinned state"
+      },
+      {
+        "id": "a3f10ad2a17ce20733f35d8787b1ca7525cd5963",
+        "type": "FIX",
+        "text": " sap.f.DynamicPage: Inline CSS limited"
       }
     ]
   }

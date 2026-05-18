@@ -3,6 +3,11 @@
     "date": "May 2026",
     "notes": [
       {
+        "id": "bce75dfddf8e71535fe7d95772650583ba4b1561",
+        "type": "FEATURE",
+        "text": " sap.m.Link: text-decoration underline is set on hover links in all high contrast themes"
+      },
+      {
         "id": "e6d1d30d8feacbc83847a14ce052bae74087420f",
         "type": "FEATURE",
         "text": " sap.m.Panel: Focus for Scrollable Content Area"

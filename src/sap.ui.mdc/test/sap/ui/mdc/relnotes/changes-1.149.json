@@ -3,6 +3,26 @@
     "date": "May 2026",
     "notes": [
       {
+        "id": "c06a9ae2592194e1581a0f16a998c7f5aa93e7a9",
+        "type": "FIX",
+        "text": " p13n.AdaptFiltersPanel: Fix label wrapping at 320px"
+      },
+      {
+        "id": "65106aa071c72047fa5d49ede610623e16409b1c",
+        "type": "FIX",
+        "text": "p13n.AdaptFiltersPanel: Fix validaton of addFilter ComboBox"
+      },
+      {
+        "id": "c0bb45d0887298d3ec627a758ad5357dfbdc65fd",
+        "type": "FIX",
+        "text": " p13n.AdaptFiltersPanel: fix announcement of error or warning"
+      },
+      {
+        "id": "3f3dca2e373b6e3cd701913b38c4ba7bdf403487",
+        "type": "FIX",
+        "text": " Field, FilterField: boolean value announed twice"
+      },
+      {
         "id": "b82987d872c3557a13525771f73f11899a1625ae",
         "type": "FIX",
         "text": "p13n.AdaptFiltersPanel: Fix _getIdSuffixFromContext"

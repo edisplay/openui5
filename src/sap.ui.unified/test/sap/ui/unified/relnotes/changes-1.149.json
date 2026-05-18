@@ -1,0 +1,17 @@
+{
+  "1.149.0": {
+    "date": "May 2026",
+    "notes": [
+      {
+        "id": "84621675e2c7dff335e4e4f8953e7b910215314d",
+        "type": "FIX",
+        "text": " sap.ui.unified.Calendar: fix keyboard interaction visual test"
+      },
+      {
+        "id": "0925942d94608b99444f77d71c4ef611340f3087",
+        "type": "FIX",
+        "text": " sap.ui.unified.FileUploader: fix min/max widths of the control"
+      }
+    ]
+  }
+}

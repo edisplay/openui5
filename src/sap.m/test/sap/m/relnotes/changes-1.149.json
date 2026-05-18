@@ -3,6 +3,51 @@
     "date": "May 2026",
     "notes": [
       {
+        "id": "53d0b4ed6ec889c0999913110a11d2f81b015889",
+        "type": "FEATURE",
+        "text": " sap.m.MaskInput: accessibility is enhanced"
+      },
+      {
+        "id": "aaeb00dc178718f8d7bc076b5c343672a9a8bdea",
+        "type": "FIX",
+        "text": " sap.m.QuickView: Removed staled ids from QuickView"
+      },
+      {
+        "id": "e67e62fdfe1383dc04b9b5411d825206919d0db4",
+        "type": "FIX",
+        "text": " sap.m.ComboBox: fix unstable tests for Firefox"
+      },
+      {
+        "id": "d672e5172a58c321b10b3982c8e891325118d0a6",
+        "type": "FIX",
+        "text": " sap.m.Panel: Visual tests adjusted"
+      },
+      {
+        "id": "2290493e7b91d7a60dbd257592b75eee807aa2e2",
+        "type": "FIX",
+        "text": " sap.m.SelectSegmentedButtonItem: fix circular dependency"
+      },
+      {
+        "id": "9a9f6e25619deff7ad7b2aa606a53a3da83c8ee3",
+        "type": "FIX",
+        "text": " sap.m.Input: Reset value help request flag on user input"
+      },
+      {
+        "id": "128218ee919a7811647325e01f81c07f31ee1aac",
+        "type": "FIX",
+        "text": " sap.m.DynamicDateRange: content is not cut with text spacing"
+      },
+      {
+        "id": "22949fea79387848ad8e7a07164bab734617acdb",
+        "type": "FIX",
+        "text": " sap.m.MenuButton: text for the keyboard hint is correct now"
+      },
+      {
+        "id": "c22242770c0654ef2e99b5e96f7e64dfd9da7e60",
+        "type": "FIX",
+        "text": " sap.m.Menu: fix visual test"
+      },
+      {
         "id": "4752343edcf5d00a6bc0227581bdbf7ddf73812b",
         "type": "FIX",
         "text": " sap.m.TabStrip, sap.m.TabContainer: close button icon is aligned"
@@ -23,6 +68,11 @@
         "text": " sap.m.Tokenizer: ESC now deselects all tokens"
       },
       {
+        "id": "3e7431405b7b3dd8523df685ee0008512f16797f",
+        "type": "FIX",
+        "text": " sap.m.OverflowToolbar: Compact mode styles not applied to overflow popover"
+      },
+      {
         "id": "331ec75ae885dd8f196e46c56d71a9cdff7d58da",
         "type": "FIX",
         "text": " sap.m.ObjectStatus: fires press in Virtual Cursor Mode"
@@ -41,6 +91,11 @@
         "id": "2a26599672db36f86d5295070431716600978f57",
         "type": "FIX",
         "text": " sap.m.ViewSettingsDialog: update selections after reset event"
+      },
+      {
+        "id": "99423bd935295d8b5f2378f8ca849eaf8209bd64",
+        "type": "FEATURE",
+        "text": " sap.m.Button: long tap does not fire 'press' event anymore"
       },
       {
         "id": "dba045a65b4f97cb60b4b35e258095573928c313",
