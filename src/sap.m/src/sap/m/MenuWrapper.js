@@ -455,6 +455,9 @@ sap.ui.define([
 	 * @private
 	 */
 	MenuWrapper.prototype._handleSubmenusAppearance = function(oItem, bWithKeyboard, bDelayed) {
+		if (this.oOpenedSubmenuParent && !this.getItems().includes(this.oOpenedSubmenuParent)) {
+			this.oOpenedSubmenuParent = null;
+		}
 		if (this.oOpenedSubmenuParent && this.oOpenedSubmenuParent._hasSubmenu() && !this.oOpenedSubmenuParent._getPopover().isOpen()) {
 			this.oOpenedSubmenuParent.removeStyleClass("sapMMenuItemSubMenuOpen");
 			this.oOpenedSubmenuParent = null;

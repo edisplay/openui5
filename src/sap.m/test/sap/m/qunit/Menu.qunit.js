@@ -1077,6 +1077,25 @@ sap.ui.define([
 
 	});
 
+	QUnit.test("MenuWrapper's _handleSubmenusAppearance clears stale oOpenedSubmenuParent reference", async function (assert) {
+		const oMenuWrapper = this.oMenu._getMenuWrapper();
+
+		this.oMenu.openBy(document.body);
+		await nextUIUpdate(this.clock);
+
+		const oStaleItem = new MenuItem({ text: "stale", items: [new MenuItem({ text: "sub" })] });
+		oMenuWrapper.oOpenedSubmenuParent = oStaleItem;
+
+		const oCurrentItem = this.oMenu.getItems()[0];
+
+		oMenuWrapper._handleSubmenusAppearance(oCurrentItem, false, false);
+
+		assert.strictEqual(oMenuWrapper.oOpenedSubmenuParent, null,
+			"Stale oOpenedSubmenuParent is cleared when item is no longer among current items");
+
+		oStaleItem.destroy();
+	});
+
 	QUnit.test("MenuWrapper respects sapUiSizeCompact class", async function (assert) {
 		var _bSetCompact = false;
 
