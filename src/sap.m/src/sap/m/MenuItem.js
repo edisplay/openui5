@@ -177,12 +177,6 @@ sap.ui.define([
 			associations: {
 
 				/**
-				 * Association to controls / IDs which describe this control (see WAI-ARIA attribute aria-describedby).
-				 * @since 1.148
-				 */
-				ariaDescribedBy: {type: "sap.ui.core.Control", multiple: true, singularName: "ariaDescribedBy"},
-
-				/**
 				 * MenuItemGroup associated with this item.
 				 * @since 1.127.0
 				 */
@@ -314,8 +308,6 @@ sap.ui.define([
 				bIsSelected = this.getSelected() && this._getItemSelectionMode() !== ItemSelectionMode.None,
 				sShortcutText = !bHasSubmenu ? this.getShortcutText() : null;
 
-			const aDescribedBy = this.getAriaDescribedBy();
-
 			return {
 				role: this._getRole(),
 				disabled: !this.getEnabled(),
@@ -325,7 +317,6 @@ sap.ui.define([
 				checked: bIsSelected || null,
 				keyshortcuts: sShortcutText || null,
 				labelledby: { value: `${this.getId()}-txt`, append: true },
-				describedby: aDescribedBy.length ? { value: aDescribedBy.join(" "), append: true } : null,
 				haspopup: bHasSubmenu ? coreLibrary.aria.HasPopup.Menu.toLowerCase() : null,
 				owns: bHasSubmenu ? oSubmenu.getId() : null,
 				expanded: this.getProperty("_expanded")
