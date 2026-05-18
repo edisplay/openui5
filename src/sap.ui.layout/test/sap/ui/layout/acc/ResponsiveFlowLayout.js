@@ -27,14 +27,14 @@ sap.ui.define([
 				decorative: false,
 				width: "100%",
 				tooltip: "HT-1112"
-			}).addStyleClass("sapUiTinyMarginBegin"),
+			}).addStyleClass("sapUiSmallMargin"),
 			new Image({
 				src: "../../../../sap/ui/documentation/sdk/images/HT-1112.jpg",
 				alt: "item HT-1112",
 				decorative: false,
 				width: "100%",
 				tooltip: "HT-1112"
-			})
+			}).addStyleClass("sapUiSmallMargin")
 		]
 	}).addStyleClass("sapUiContentPadding");
 
@@ -51,7 +51,7 @@ sap.ui.define([
 				decorative: false,
 				width: "100%",
 				tooltip: "HT-1112"
-			})
+			}).addStyleClass("sapUiSmallMargin")
 		]
 	}).addStyleClass("sapUiContentPadding");
 
@@ -68,21 +68,21 @@ sap.ui.define([
 				decorative: false,
 				width: "100%",
 				tooltip: "HT-1112"
-			}).addStyleClass("sapUiTinyMarginBegin"),
+			}).addStyleClass("sapUiSmallMargin"),
 			new Image({
 				src: "../../../../sap/ui/documentation/sdk/images/HT-1112.jpg",
 				alt: "item HT-1112",
 				decorative: false,
 				width: "100%",
 				tooltip: "HT-1112"
-			}),
+			}).addStyleClass("sapUiSmallMargin"),
 			new Image({
 				src: "../../../../sap/ui/documentation/sdk/images/HT-1112.jpg",
 				alt: "item HT-1112",
 				decorative: false,
 				width: "100%",
 				tooltip: "HT-1112"
-			})
+			}).addStyleClass("sapUiSmallMargin")
 		]
 	}).addStyleClass("sapUiContentPadding");
 
@@ -93,7 +93,7 @@ sap.ui.define([
 			oResponsiveFlowInnerMid,
 			oResponsiveFlowInnerLast
 		]
-	});
+	}).addStyleClass("sapUiContentPadding");
 
 	var oPage = new Page({
 		title: "ResponsiveFlowLayout Accessibility Test Page",
