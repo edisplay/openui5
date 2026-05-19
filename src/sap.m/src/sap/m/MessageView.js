@@ -1088,7 +1088,9 @@ sap.ui.define([
 	MessageView.prototype._setIcon = function (oMessageItem, oListItem) {
 		this._previousIconTypeClass = CSS_CLASS + "DescIcon" + oMessageItem.getType();
 		this._oMessageIcon = new Icon({
-			src: oListItem.getIcon()
+			src: oListItem.getIcon(),
+			decorative: false,
+			alt: this._oResourceBundle.getText("LIST_ITEM_STATE_" + oMessageItem.getType().toUpperCase())
 		})
 			.addStyleClass(CSS_CLASS + "DescIcon")
 			.addStyleClass(this._previousIconTypeClass);
@@ -1419,7 +1421,8 @@ sap.ui.define([
 		const oContentTitle = this._detailsPage.getContent()[0];
 
 		if (oContentTitle && !oContentTitle.isA("sap.m.Link")) {
-			const sAnnouncement = oContentTitle.getText() + " Additional information available via reading keys";
+			const sTypeText = this._oResourceBundle.getText("LIST_ITEM_STATE_" + oMessageItem.getType().toUpperCase());
+			const sAnnouncement = sTypeText + " " + oContentTitle.getText() + " Additional information available via reading keys";
 			this._oInvisibleMessage.announce(sAnnouncement, "Assertive");
 		}
 
@@ -1486,7 +1489,7 @@ sap.ui.define([
 	 * @private
 	 */
 	MessageView.prototype._isListPage = function () {
-		return this._navContainer.getCurrentPage() == this._listPage;
+		return this._navContainer && this._navContainer.getCurrentPage() == this._listPage;
 	};
 
 	return MessageView;
