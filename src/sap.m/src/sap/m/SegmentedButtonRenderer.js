@@ -32,7 +32,8 @@ sap.ui.define(["sap/ui/core/library", "sap/ui/core/Lib", "sap/ui/core/InvisibleR
 			aVisibleButtons = aButtons.filter(function(oButton) { return oButton.getVisible(); }),
 			sSelectedButton = oControl.getSelectedButton(),
 			sContentMode = oControl.getContentMode(),
-			sTooltip = oControl.getTooltip_AsString();
+			sTooltip = oControl.getTooltip_AsString(),
+			sSelectionDescriptionId = InvisibleText.getStaticId("sap.m", "SEGMENTEDBUTTON_SELECTION");
 
 		let iVisibleButtonPos = 0,
 			oButton,
@@ -70,7 +71,6 @@ sap.ui.define(["sap/ui/core/library", "sap/ui/core/Lib", "sap/ui/core/InvisibleR
 			role : "listbox",
 			multiselectable: false,
 			roledescription: oResourceBundle.getText("SEGMENTEDBUTTON_NAME"),
-			describedby: { value: InvisibleText.getStaticId("sap.m", "SEGMENTEDBUTTON_SELECTION"), append: true },
 			orientation: "horizontal"
 		});
 
@@ -145,14 +145,20 @@ sap.ui.define(["sap/ui/core/library", "sap/ui/core/Lib", "sap/ui/core/InvisibleR
 				}
 
 				// Inner buttons' ARIA
-				oRM.accessibilityState(oButton, {
+				var mButtonAccessibilityState = {
 					role : "option",
 					roledescription: oResourceBundle.getText("SEGMENTEDBUTTON_BUTTONS_NAME"),
 					label: sButtonText ? "" : sButtonTooltip,
 					posinset: iVisibleButtonPos,
 					setsize: aVisibleButtons.length,
 					selected: sSelectedButton === oButton.getId()
-				});
+				};
+
+				if (oButton.getAriaDescribedBy().indexOf(sSelectionDescriptionId) === -1) {
+					mButtonAccessibilityState.describedby = { value: sSelectionDescriptionId, append: true };
+				}
+
+				oRM.accessibilityState(oButton, mButtonAccessibilityState);
 
 				oRM.openEnd();
 
