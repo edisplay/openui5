@@ -8604,6 +8604,29 @@ sap.ui.define([
 		oComboBox.destroy();
 	});
 
+	QUnit.test("aria-expanded remains true after re-render while picker is open.", async function (assert) {
+		this.clock = sinon.useFakeTimers();
+
+		var oComboBox = new ComboBox({
+			items: [new Item({ key: "GER", text: "Germany" })]
+		});
+		oComboBox.placeAt("content");
+		await nextUIUpdate(this.clock);
+		oComboBox.focus();
+
+		oComboBox.open();
+		this.clock.tick(1000);
+		assert.strictEqual(oComboBox.getFocusDomRef().getAttribute("aria-expanded"), "true", "aria-expanded is true after open");
+
+		oComboBox.invalidate();
+		await nextUIUpdate(this.clock);
+
+		assert.ok(oComboBox.isOpen(), "Picker is still open after re-render");
+		assert.strictEqual(oComboBox.getFocusDomRef().getAttribute("aria-expanded"), "true", "aria-expanded stays true across re-render while picker is open");
+
+		oComboBox.destroy();
+	});
+
 	QUnit.test("onAfterOpen test case 2", async function (assert) {
 
 		// system under test

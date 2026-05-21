@@ -948,6 +948,10 @@ sap.ui.define([
 
 			this.closeValueStateMessage();
 
+			if (this.bOpenedByKeyboardOrButton) {
+				this._announceExpanded();
+			}
+
 			// if there is a selected item, scroll and show the list
 			fnSelectedItemOnViewPort.call(this, true);
 

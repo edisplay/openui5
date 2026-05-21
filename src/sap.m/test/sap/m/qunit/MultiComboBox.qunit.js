@@ -6139,6 +6139,58 @@ sap.ui.define([
 		oMultiComboBox.destroy();
 	});
 
+	QUnit.test("aria-expanded remains true after re-render while picker is open (BGSOFUIRILA-4462)", async function(assert) {
+		this.clock = sinon.useFakeTimers();
+
+		var oMultiComboBox = new MultiComboBox({
+			items: [
+				new Item({ key: "DZ", text: "Algeria" }),
+				new Item({ key: "AR", text: "Argentina" })
+			]
+		});
+		oMultiComboBox.placeAt("MultiComboBoxContent");
+		await nextUIUpdate(this.clock);
+
+		oMultiComboBox.open();
+		this.clock.tick(1000);
+		await nextUIUpdate(this.clock);
+
+		assert.strictEqual(oMultiComboBox.getFocusDomRef().getAttribute("aria-expanded"), "true", "aria-expanded is true after open");
+
+		oMultiComboBox.invalidate();
+		await nextUIUpdate(this.clock);
+
+		assert.ok(oMultiComboBox.isOpen(), "Picker is still open after re-render");
+		assert.strictEqual(oMultiComboBox.getFocusDomRef().getAttribute("aria-expanded"), "true", "aria-expanded stays true across re-render while picker is open");
+
+		oMultiComboBox.destroy();
+	});
+
+	QUnit.test("aria-expanded is false after the picker closes (BGSOFUIRILA-4462)", async function(assert) {
+		this.clock = sinon.useFakeTimers();
+
+		var oMultiComboBox = new MultiComboBox({
+			items: [
+				new Item({ key: "DZ", text: "Algeria" }),
+				new Item({ key: "AR", text: "Argentina" })
+			]
+		});
+		oMultiComboBox.placeAt("MultiComboBoxContent");
+		await nextUIUpdate(this.clock);
+
+		oMultiComboBox.open();
+		this.clock.tick(1000);
+		await nextUIUpdate(this.clock);
+		assert.strictEqual(oMultiComboBox.getFocusDomRef().getAttribute("aria-expanded"), "true", "aria-expanded is true after open");
+
+		oMultiComboBox.close();
+		this.clock.tick(1000);
+		await nextUIUpdate(this.clock);
+		assert.strictEqual(oMultiComboBox.getFocusDomRef().getAttribute("aria-expanded"), "false", "aria-expanded is false after close");
+
+		oMultiComboBox.destroy();
+	});
+
 
 	QUnit.module("Keyboard handling", {
 		beforeEach: async function(){
