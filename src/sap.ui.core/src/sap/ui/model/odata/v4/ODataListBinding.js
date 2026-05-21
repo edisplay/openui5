@@ -5419,7 +5419,11 @@ sap.ui.define([
 	 *   The dynamic sorters to be used; they replace the dynamic sorters given in
 	 *   {@link sap.ui.model.odata.v4.ODataModel#bindList}. A nullish or missing value is treated as
 	 *   an empty array and thus removes all dynamic sorters. Static sorters, as defined in the
-	 *   '$orderby' binding parameter, are always applied after the dynamic sorters.
+	 *   '$orderby' binding parameter, are always applied after the dynamic sorters. Since 1.149.0,
+	 *   if any sorter has {@link sap.ui.model.Sorter#getGroupPaths group paths} and the
+	 *   {@link sap.ui.model.odata.v4.ODataModel model}'s <code>autoExpandSelect</code> parameter is
+	 *   set, those paths contribute to <code>$select</code> and <code>$expand</code>; not supported
+	 *   for {@link #setAggregation data aggregation}.
 	 * @returns {this}
 	 *   <code>this</code> to facilitate method chaining
 	 * @throws {Error} If
