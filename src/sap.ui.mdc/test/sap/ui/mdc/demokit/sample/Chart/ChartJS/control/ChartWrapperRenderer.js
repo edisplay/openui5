@@ -6,7 +6,7 @@ sap.ui.define([],
 	() => {
 		"use strict";
 		/**
-		 * ChatWrapper renderer.
+		 * ChartWrapper renderer.
 		 * @namespace
 		 */
 		const ChartWrapperRenderer = {
