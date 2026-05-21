@@ -15,6 +15,7 @@
 			"libs": {
 				"sap.ui.unified": {},
 				"sap.ui.core": {},
+				"sap.ui.layout": {},
 				"sap.m": {}
 			}
 		},
@@ -23,6 +24,7 @@
 				"files": [
 					"Page.view.xml",
 					"Page.controller.js",
+					"CreateAppointmentDialog.fragment.xml",
 					"manifest.json"
 				]
 			}
