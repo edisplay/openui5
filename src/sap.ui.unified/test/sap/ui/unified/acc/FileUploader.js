@@ -80,23 +80,6 @@ sap.ui.define([
 		buttonText: "Choose"
 	});
 
-	var oLabel7 = new Label({text: "FileUploader with ValueState", labelFor: "FU7", wrapping: true});
-	var oFU7 = new FileUploader("FU7", {
-		name: "FU7",
-		uploadUrl: "../../../../../upload/",
-		sendXHR: true,
-		value: "",
-		additionalData: "abc=123&test=456",
-		valueState: ValueState.Error,
-		uploadOnChange: true,
-		uploadComplete: function(oEvent) {
-			const iStatus = oEvent.getParameter("status");
-			if (iStatus === 200 || iStatus === 404) {
-				oEvent.getSource().setValueState(ValueState.None);
-			}
-		}
-	});
-
 	var oLabel8 = new Label({text: "FileUploader with Placeholder", labelFor: "FU8", wrapping: true});
 	var oFU8 = new FileUploader("FU8", {
 		name: "FU8",
@@ -126,7 +109,6 @@ sap.ui.define([
 			oLabel4, oFU4,
 			oLabel5, oFU5,
 			oLabel6, oFU6,
-			oLabel7, oFU7,
 			oLabel8, oFU8,
 			oLabel9, oFU9
 		]
