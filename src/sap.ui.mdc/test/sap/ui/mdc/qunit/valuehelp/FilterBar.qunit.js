@@ -7,7 +7,8 @@ sap.ui.define([
 	"sap/ui/mdc/valuehelp/CollectiveSearchSelect",
 	"sap/ui/core/Element",
 	"sap/ui/core/Lib",
-	"sap/ui/model/json/JSONModel"
+	"sap/ui/model/json/JSONModel",
+	"sap/m/library"
 ], (
 	FilterBar,
 	FilterBarBase,
@@ -15,11 +16,13 @@ sap.ui.define([
 	CollectiveSearchSelect,
 	Element,
 	Library,
-	JSONModel
+	JSONModel,
+	mLibrary
 ) => {
 	"use strict";
 
 	const mdcMessageBundle = Library.getResourceBundleFor("sap.ui.mdc");
+	const { ButtonType } = mLibrary;
 	let oFilterBar;
 
 	QUnit.module("FilterBar", {
@@ -62,6 +65,7 @@ sap.ui.define([
 		assert.notOk(oFilterBar._oBtnFilters.getVisible(), "showFilters button is not visible");
 
 		assert.ok(oButton);
+		assert.equal(oButton.getType(), ButtonType.Ghost, "Search/Go button is rendered with Ghost styling so that the dialog's OK button remains the only emphasized action");
 
 		oFilterBar.setBasicSearchField(new FilterField("BS1", {
 			conditions: "{$filters>/conditions/$search}",

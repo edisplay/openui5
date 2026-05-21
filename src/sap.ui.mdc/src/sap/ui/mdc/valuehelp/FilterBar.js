@@ -136,7 +136,9 @@ sap.ui.define(
 			});
 
 			this._oFilterBarLayout.addControl(
-				this._getSearchButton().bindProperty("visible", {
+				this._getSearchButton()
+				.setType(ButtonType.Ghost)
+				.bindProperty("visible", {
 					parts: [{
 						path: '/showGoButton',
 						model: FilterBarBase.INNER_MODEL_NAME
