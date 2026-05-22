@@ -13,6 +13,7 @@ sap.ui.define([
 	"sap/ui/mdc/enums/ConditionValidated",
 	"sap/ui/mdc/enums/OperatorName",
 	"sap/ui/mdc/condition/Condition",
+	"sap/ui/mdc/condition/ConditionConverter",
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
 	"sap/ui/model/FilterProcessor",
@@ -20,8 +21,9 @@ sap.ui.define([
 	"sap/ui/mdc/condition/FilterOperatorUtil",
 	"sap/ui/Device",
 	"sap/ui/mdc/enums/FieldDisplay",
-	'sap/ui/mdc/enums/RequestShowContainerReason',
-	"sap/ui/mdc/util/loadModules"
+	"sap/ui/mdc/enums/RequestShowContainerReason",
+	"sap/ui/mdc/util/loadModules",
+	"sap/base/util/merge"
 ], (
 	BaseDelegate,
 	FilterType,
@@ -29,6 +31,7 @@ sap.ui.define([
 	ConditionValidated,
 	OperatorName,
 	Condition,
+	ConditionConverter,
 	Filter,
 	FilterOperator,
 	FilterProcessor,
@@ -37,7 +40,8 @@ sap.ui.define([
 	Device,
 	FieldDisplay,
 	RequestShowContainerReason,
-	loadModules
+	loadModules,
+	merge
 ) => {
 	"use strict";
 
@@ -139,7 +143,8 @@ sap.ui.define([
 	};
 
 	/**
-	 * Returns filters that are used when updating the binding of the <code>ValueHelp</code>.<br/>By default, this method returns a set of {@link sap.ui.model.Filter Filters} originating from an available {@link sap.ui.mdc.FilterBar FilterBar} or the delegate's own {@link module:sap/ui/mdc/ValueHelpDelegate.getFilterConditions getFilterConditions} implementation.
+	 * Returns filters that are used when updating the binding of the <code>ValueHelp</code>.<br/>
+	 * By default, this method returns a set of {@link sap.ui.model.Filter Filters} originating from an available {@link sap.ui.mdc.FilterBar FilterBar} or the delegate's own {@link module:sap/ui/mdc/ValueHelpDelegate.getFilterConditions getFilterConditions} implementation.
 	 *
 	 * @param {sap.ui.mdc.ValueHelp} oValueHelp The <code>ValueHelp</code> control instance
 	 * @param {sap.ui.mdc.valuehelp.base.FilterableListContent} oContent <code>ValueHelp</code> content requesting conditions configuration
@@ -150,7 +155,9 @@ sap.ui.define([
 	ValueHelpDelegate.getFilters = function (oValueHelp, oContent) {
 
 		const oFilterBar = oContent.getActiveFilterBar();
-		const oConditions = oFilterBar ? oFilterBar.getConditions() : oContent._oInitialFilterConditions || {};
+		const oConditions = oFilterBar ? oFilterBar.getConditions() : oContent._oInitialFilterConditions || {}; // filters are in external format
+		const oConditionTypes = oConditions && this.getTypesForConditions(oValueHelp, oContent, oConditions);
+		const aProperties = oFilterBar?.getPropertyHelper?.()?.getProperties(true);
 		/**
 		 *  @deprecated since 1.120.2
 		 */
@@ -163,8 +170,25 @@ sap.ui.define([
 				oConditions[sFilterFields] = [oCondition];
 			}
 		}
-		const oConditionTypes = oConditions && this.getTypesForConditions(oValueHelp, oContent, oConditions);
-		const oFilter = oConditions && FilterConverter.createFilters(oConditions, oConditionTypes, undefined, oContent.getCaseSensitive());
+
+		// as we cannot know if PropertyInfos in FilterBar are maintained for all Filters (not the case if default Delegate is used for FilterBar or default FilterBar is used)
+		// it is not safe to use FilterUtil.getFilterInfo.
+		// => convert conditions to internal values using data types from table if PropertyInfo is not available
+		const oTypeMap = this.getTypeMap();
+		const mInternalFilterConditions = {};
+		for (const sFieldPath in oConditions) {
+			const oType = aProperties?.find((oProperty) => oProperty.key === sFieldPath)?.typeConfig?.typeInstance || oConditionTypes[sFieldPath]?.type;
+			mInternalFilterConditions[sFieldPath] = [];
+			if (oType) {
+				for (let i = 0; i < oConditions[sFieldPath].length; i++) {
+					const oConditionInternal = merge({}, oConditions[sFieldPath][i]);
+					mInternalFilterConditions[sFieldPath].push(ConditionConverter.toType(oConditionInternal, oType, oTypeMap));
+				}
+			} else {
+				mInternalFilterConditions[sFieldPath] = oConditions[sFieldPath];
+			}
+		}
+		const oFilter = Object.keys(mInternalFilterConditions).length > 0 && FilterConverter.createFilters(mInternalFilterConditions, oConditionTypes, undefined, oContent.getCaseSensitive());
 		return oFilter ? [oFilter] : [];
 	};
 
@@ -263,7 +287,7 @@ sap.ui.define([
 	 * @param {sap.ui.mdc.ValueHelp} oValueHelp The <code>ValueHelp</code> control instance
 	 * @param {sap.ui.mdc.valuehelp.base.FilterableListContent} oContent <code>ValueHelp</code> content requesting conditions configuration
 	 * @param {sap.ui.core.Control} oControl Instance of the calling control
-	 * @returns {Promise<sap.ui.mdc.util.FilterConditionMap>|sap.ui.mdc.util.FilterConditionMap} Returns a map-like object containing conditions suitable for <code>Filter</code> creation
+	 * @returns {Promise<sap.ui.mdc.util.FilterConditionMap>|sap.ui.mdc.util.FilterConditionMap} Returns a map-like object containing conditions suitable for <code>Filter</code> creation. The values of the conditions need to be in external format.
 	 * @private
 	 * @ui5-restricted sap.fe
 	 * @since 1.101.0
