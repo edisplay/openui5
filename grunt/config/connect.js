@@ -5,7 +5,6 @@ var url = require('url');
 module.exports = function(grunt, config) {
 
 	// determine the testsuite name and lookup the sap.ui.core library
-	// to be a bit more dynamic for the livereload middleware
 	var testsuiteName = config.testsuite && config.testsuite.name || testsuiteName;
 	var sapUiCoreBasePath = 'src/sap.ui.core';
 	config.allLibraries.forEach(function(oLib, i) {
@@ -41,8 +40,6 @@ module.exports = function(grunt, config) {
 
 			options: {
 
-				livereload: grunt.option('watch') || false,
-
 				middleware: function(connect, options, middlewares) {
 					// hacky solution to replace the "version" / "buildtime" placeholders to enable version comparison
 					// the files won't be cached
@@ -66,8 +63,7 @@ module.exports = function(grunt, config) {
 					}
 
 					// make sure to put the middleware after "cors"
-					// if "watch" is enabled, there will be another livereload middleware in between
-					middlewares.splice(grunt.option('watch') ? 3 : 2, 0,
+					middlewares.splice(2, 0,
 						createReplacementMiddleware("sap/ui/Global.js"),
 						createReplacementMiddleware("sap/ui/core/Core.js"),
 						createReplacementMiddleware("sap/ui/core/Configuration.js"),

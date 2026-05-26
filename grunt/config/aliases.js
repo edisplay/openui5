@@ -12,11 +12,7 @@ module.exports = function(grunt, config) {
 				mode = 'src';
 			}
 			var taskName = 'openui5_connect:' + mode;
-			if (grunt.option('watch') && mode === 'src') {
-				grunt.task.run([ taskName, 'watch']);
-			} else {
-				grunt.task.run(taskName + ':keepalive');
-			}
+			grunt.task.run(taskName + ':keepalive');
 
 		},
 
