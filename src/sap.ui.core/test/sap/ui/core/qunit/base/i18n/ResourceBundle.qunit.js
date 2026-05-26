@@ -1557,7 +1557,7 @@ sap.ui.define([
 			enhanceWith: oClonedTerminologies.enhanceWith,
 			fallbackLocale: oClonedTerminologies.fallbackLocale
 		};
-		ResourceBundle.create(mParams).then((oResourceBundle) => {
+		return ResourceBundle.create(mParams).then((oResourceBundle) => {
 			assert.equal(this.oPropertiesCreateStub.callCount, 9, "all stubs were called");
 			assert.ok(!this.oPropertiesCreateStub.exceptions.some(Boolean), "calls to Properties.create were successful");
 
@@ -1634,7 +1634,7 @@ sap.ui.define([
 			enhanceWith: oClonedTerminologies.enhanceWith,
 			fallbackLocale: oClonedTerminologies.fallbackLocale
 		};
-		ResourceBundle.create(mParams).then((oResourceBundle) => {
+		return ResourceBundle.create(mParams).then((oResourceBundle) => {
 			assert.equal(this.oPropertiesCreateStub.callCount, 3, "stubs were called");
 			assert.ok(!this.oPropertiesCreateStub.exceptions.some(Boolean), "calls to Properties.create were successful");
 
@@ -1670,7 +1670,7 @@ sap.ui.define([
 			fallbackLocale: oClonedTerminologies.fallbackLocale
 		};
 		mParams.activeTerminologies.reverse();
-		ResourceBundle.create(mParams).then((oResourceBundle) => {
+		return ResourceBundle.create(mParams).then((oResourceBundle) => {
 			assert.equal(this.oPropertiesCreateStub.callCount, 9, "all stubs were called");
 			assert.ok(!this.oPropertiesCreateStub.exceptions.some(Boolean), "calls to Properties.create were successful");
 
