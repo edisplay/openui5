@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>sap.tnt.SideNavigation - Tag Feature</title>
+		<script src="shared-config.js"></script>
+		<script
+				src="../../../resources/sap-ui-core.js"
+				id="sap-ui-bootstrap"
+				data-sap-ui-libs="sap.tnt, sap.m">
+		</script>
+		<script>
+			var sideNavigationWithTags = new sap.tnt.SideNavigation("sideNavWithTags", {
+				expanded: true,
+				item: new sap.tnt.NavigationList({
+					items: [
+						new sap.tnt.NavigationListItem({
+							text: 'Overview',
+							icon: 'sap-icon://home',
+							tag: new sap.m.ObjectStatus({
+								text: "Beta",
+								state: "Indication15",
+								inverted: true
+							})
+						}),
+						new sap.tnt.NavigationListItem({
+							text: 'Favorites',
+							icon: 'sap-icon://unfavorite',
+							expanded: true,
+							selectable: false,
+							tag: new sap.m.ObjectStatus({
+								text: "Beta",
+								state: "Indication15",
+								inverted: true
+							}),
+							items: [
+								new sap.tnt.NavigationListItem({
+									text: 'My Accounts',
+									tag: new sap.m.ObjectStatus({
+										text: "Active",
+										state: "Indication18",
+										inverted: true
+									})
+								}),
+								new sap.tnt.NavigationListItem({
+									text: 'My Orders',
+									tag: new sap.m.ObjectStatus({
+										text: "Pending",
+										state: "Indication17",
+										inverted: true
+									})
+								})
+							]
+						}),
+						new sap.tnt.NavigationListGroup({
+							text: 'Product Group',
+							expanded: true,
+							items: [
+								new sap.tnt.NavigationListItem({
+									text: 'Products',
+									icon: 'sap-icon://product',
+									tag: new sap.m.ObjectStatus({
+										text: "New",
+										state: "Indication16",
+										inverted: true
+									})
+								}),
+								new sap.tnt.NavigationListItem({
+									text: 'Inventory',
+									icon: 'sap-icon://inventory',
+									tag: new sap.m.ObjectStatus({
+										text: "Updated",
+										state: "Indication19",
+										inverted: true
+									})
+								}),
+								new sap.tnt.NavigationListItem({
+									text: 'Orders',
+									icon: 'sap-icon://sales-order'
+								})
+							]
+						}),
+						new sap.tnt.NavigationListItem({
+							text: 'Features',
+							icon: 'sap-icon://activity-items',
+							expanded: true,
+							tag: new sap.m.ObjectStatus({
+								text: "New",
+								state: "Indication16",
+								inverted: true
+							}),
+							items: [
+								new sap.tnt.NavigationListItem({
+									text: 'Feature A',
+									tag: new sap.m.ObjectStatus({
+										text: "Beta",
+										state: "Indication15",
+										inverted: true
+									})
+								}),
+								new sap.tnt.NavigationListItem({
+									text: 'Feature B',
+									tag: new sap.m.ObjectStatus({
+										text: "Deprecated",
+										state: "Indication18",
+										inverted: true
+									})
+								}),
+								new sap.tnt.NavigationListItem({
+									text: 'Feature C'
+								})
+							]
+						}),
+						new sap.tnt.NavigationListItem({
+							text: 'Documentation',
+							icon: 'sap-icon://sys-help',
+							tag: new sap.m.ObjectStatus({
+								text: "Updated",
+								state: "Indication16",
+								inverted: true
+							})
+						}),
+						new sap.tnt.NavigationListItem({
+							text: 'Settings',
+							icon: 'sap-icon://action-settings'
+						}),
+						new sap.tnt.NavigationListItem({
+							text: 'Single Item',
+							icon: 'sap-icon://hint',
+							tag: new sap.m.ObjectStatus({
+								text: "Info",
+								state: "Indication15",
+								inverted: true
+							})
+						}),
+						new sap.tnt.NavigationListItem({
+							text: 'Analytics',
+							icon: 'sap-icon://bar-chart',
+							tag: new sap.m.ObjectStatus({
+								text: "Nightly",
+								state: "Indication17",
+								inverted: true
+							})
+						}),
+						new sap.tnt.NavigationListItem({
+							text: 'Preview',
+							icon: 'sap-icon://show',
+							tag: new sap.m.ObjectStatus({
+								text: "Experimental",
+								state: "Indication19",
+								inverted: true
+							})
+						}),
+						new sap.tnt.NavigationListItem({
+							text: 'Reports',
+							icon: 'sap-icon://document',
+							tag: new sap.m.ObjectStatus({
+								text: "Updated",
+								state: "Indication20",
+								inverted: true
+							})
+						}),
+						new sap.tnt.NavigationListItem({
+							text: 'Administration',
+							icon: 'sap-icon://settings',
+							tag: new sap.m.ObjectStatus({
+								text: "Long tag Long tag",
+								state: "Indication17",
+								inverted: true
+							})
+						})
+					]
+				}),
+				fixedItem: new sap.tnt.NavigationList({
+					items: [
+						new sap.tnt.NavigationListItem({
+							text: 'Support',
+							icon: 'sap-icon://phone',
+							tag: new sap.m.ObjectStatus({
+								text: "24/7",
+								state: "Indication16",
+								inverted: true
+							})
+						}),
+						new sap.tnt.NavigationListItem({
+							text: 'Logout',
+							icon: 'sap-icon://log'
+						})
+					]
+				})
+			}).placeAt("sideNav-content");
+
+			new sap.m.Button({
+				text: 'Toggle Expand/Collapse',
+				press: function () {
+					sideNavigationWithTags.setExpanded(!sideNavigationWithTags.getExpanded());
+				}
+			}).placeAt('header-1');
+
+			new sap.m.ToggleButton({
+				text: "Compact Mode",
+				pressed: !sap.ui.Device.system.phone && jQuery("html").hasClass("sapUiSizeCompact"),
+				press: function () {
+					jQuery("body").toggleClass("sapUiSizeCompact", this.getPressed());
+					jQuery("body").toggleClass("sapUiSizeCozy", !this.getPressed());
+				}
+			}).placeAt('header-1');
+
+		</script>
+		<style>
+			html, body {
+				height: 95%;
+				margin: 0;
+				padding: 0;
+			}
+			#header-1 {
+				padding: 20px;
+			}
+			#sideNav-content {
+				height: calc(100% - 80px);
+			}
+		</style>
+	</head>
+	<body id="body" class="sapUiBody">
+		<div id="header-1"></div>
+		<div id="sideNav-content"></div>
+	</body>
+</html>
