@@ -1144,6 +1144,11 @@ sap.ui.define([
 				return this;
 			}
 
+			if (this._oLastSelectedAppointment) {
+				this._oLastSelectedAppointment.focus();
+				return this;
+			}
+
 			// Search amongst the visible blockers
 			for (i = 0; i < aVisibleBlockers.length; ++i) {
 				if (aVisibleBlockers[i].getId() === oFocusInfo.id) {
@@ -1225,8 +1230,10 @@ sap.ui.define([
 				oAppointment.setProperty("selected", !oAppointment.getSelected());
 				aChangedApps.push(oAppointment);
 				this._sSelectedAppointment = oAppointment.getSelected() && oAppointmentDomRef ? oAppointment : undefined;
+				this._oLastSelectedAppointment = oAppointmentDomRef ? oAppointment : undefined;
 			} else {
 				this._sSelectedAppointment = undefined;
+				this._oLastSelectedAppointment = undefined;
 			}
 
 			return aChangedApps;
