@@ -15078,78 +15078,101 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	// The first PATCH uses the initial ETag. The second PATCH waits for the first to complete
 	// and uses the ETag from the refresh's response.
 	// SNOW: DINC0832432
+	// An additional change on a property within a collection also uses the correct ETag from the
+	// refresh.
+	// JIRA: CPOUI5ODATAV4-3538
 	QUnit.test("SNOW: DINC0832432", async function (assert) {
 		const oModel = this.createSalesOrdersModel({autoExpandSelect : true});
 		const sView = `
-<Table id="table" items="{/SalesOrderList}">
+<Table id="table" items="{path : '/SalesOrderList', parameters : {$expand : 'SO_2_SOITEM'}}">
 	<Input id="note" value="{Note}"/>
 	<Input id="companyName" value="{SO_2_BP/CompanyName}"/>
 </Table>`;
 
-		this.expectRequest("SalesOrderList?$select=Note,SalesOrderID"
-				+ "&$expand=SO_2_BP($select=BusinessPartnerID,CompanyName)&$skip=0&$top=100", {
+		this.expectRequest("SalesOrderList?"
+				+ "$expand=SO_2_BP($select=BusinessPartnerID,CompanyName),SO_2_SOITEM"
+				+ "&$select=Note,SalesOrderID&$skip=0&$top=100", {
 				value : [{
 					"@odata.etag" : "ETag0",
-					Note : "Initial Note",
+					Note : "SO Note",
 					SalesOrderID : "42",
 					SO_2_BP : {
 						"@odata.etag" : "BPETag0",
 						BusinessPartnerID : "0100000000",
-						CompanyName : "ACME#0"
-					}
+						CompanyName : "ACME"
+					},
+					SO_2_SOITEM : [{
+						"@odata.etag" : "SOItemETag0",
+						ItemPosition : "0",
+						Note : "SOItem Note",
+						SalesOrderID : "42"
+					}]
 				}]
 			})
-			.expectChange("note", ["Initial Note"])
-			.expectChange("companyName", ["ACME#0"]);
+			.expectChange("note", ["SO Note"])
+			.expectChange("companyName", ["ACME"]);
 
 		await this.createView(assert, sView, oModel);
 
+		const aCells = this.oView.byId("table").getItems()[0].getCells();
+		const [oLineItem] = await oModel.bindList("SO_2_SOITEM", aCells[0].getBindingContext())
+			.requestContexts(0, 1);
+
 		let fnRespond;
-		this.expectChange("note", ["Changed Note"])
+		this.expectChange("note", ["Changed SO Note"])
 			.expectRequest("#2 PATCH SalesOrderList('42')", {
 				headers : {"If-Match" : "ETag0"},
-				payload : {Note : "Changed Note"}
+				payload : {Note : "Changed SO Note"}
 			}, new Promise(function (resolve) {
-				fnRespond = resolve.bind(null, {
-					"@odata.etag" : "ETag1",
-					Note : "Changed Note#1"
-				});
+				fnRespond = resolve.bind(null, oDONT_CARE);
 			}))
-			.expectRequest("#2 SalesOrderList('42')?$select=Messages,Note,SalesOrderID"
-				+ "&$expand=SO_2_BP($select=BusinessPartnerID,CompanyName)", {
-				"@odata.etag" : "ETag1",
-				Note : "Changed Note#1",
+			.expectRequest("#2 SalesOrderList('42')?"
+				+ "$expand=SO_2_BP($select=BusinessPartnerID,CompanyName),SO_2_SOITEM"
+				+ "&$select=Messages,Note,SalesOrderID", {
+				Messages : null,
+				Note : "Changed SO Note",
 				SalesOrderID : "42",
 				SO_2_BP : {
 					"@odata.etag" : "BPETag1",
 					BusinessPartnerID : "0100000000",
-					CompanyName : "ACME#1"
-				}
+					CompanyName : "ACME"
+				},
+				SO_2_SOITEM : [{
+					"@odata.etag" : "n/a",
+					ItemPosition : "1",
+					Note : "n/a",
+					SalesOrderID : "42"
+				}, {
+					"@odata.etag" : "SOItemETag1",
+					ItemPosition : "0",
+					Note : "SOItem Note",
+					SalesOrderID : "42"
+				}]
 			});
 
-		const aCells = this.oView.byId("table").getItems()[0].getCells();
-		aCells[0].getBinding("value").setValue("Changed Note");
+		aCells[0].getBinding("value").setValue("Changed SO Note");
 		// code under test
 		const oRefreshPromise = aCells[0].getBindingContext().requestSideEffects([""]);
 
 		await this.waitForChanges(assert);
 
-		this.expectChange("companyName", ["ACME"]);
+		this.expectChange("companyName", ["SAP SE"]);
 
-		aCells[1].getBinding("value").setValue("ACME");
+		aCells[1].getBinding("value").setValue("SAP SE");
+		oLineItem.setProperty("Note", "Changed SOItem Note");
 
 		await this.waitForChanges(assert);
 
-		this.expectChange("companyName", ["ACME#1"])
-			.expectChange("note", ["Changed Note#1"])
-			.expectRequest("PATCH BusinessPartnerList('0100000000')", {
+		this.expectChange("companyName", ["ACME"]) //TODO: User input lost; refresh overwrites
+			.expectRequest("#3 PATCH BusinessPartnerList('0100000000')", {
 				headers : {"If-Match" : "BPETag1"},
-				payload : {CompanyName : "ACME"}
-			}, {
-				"@odata.etag" : "BPETag2",
-				CompanyName : "ACME#2"
-			})
-			.expectChange("companyName", ["ACME#2"]);
+				payload : {CompanyName : "SAP SE"}
+			}, oDONT_CARE)
+			.expectRequest(
+				"#3 PATCH SalesOrderList('42')/SO_2_SOITEM(SalesOrderID='42',ItemPosition='0')", {
+				headers : {"If-Match" : "SOItemETag1"},
+				payload : {Note : "Changed SOItem Note"}
+			}, oDONT_CARE);
 
 		fnRespond();
 
