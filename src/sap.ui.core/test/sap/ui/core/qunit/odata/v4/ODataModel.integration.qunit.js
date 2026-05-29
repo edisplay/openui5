@@ -144,7 +144,7 @@ sap.ui.define([
 			}
 			for (const sPredicate in oCache.aElements.$byPredicate) {
 				const oElement = oCache.aElements.$byPredicate[sPredicate];
-				strictEqual(oCache.aElements.includes(oElement), true,
+				strictEqual(oCache.aElements.includes(oElement) || isKeepAlive(sPredicate), true,
 					`$byPredicate[${sPredicate}] in aElements`, oElement);
 			}
 		}
@@ -34189,7 +34189,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	// hierarchy, expanded to level 2, but is initially suspended or unresolved.
 	// ODataModel#getKeepAliveContext is used to show more properties in a form. The list merges
 	// this entity later when requesting nodes. The property MANAGER_ID is only used in the list,
-	// AGE and ROOM_ID only in the form, and Name is used in both.
+	// AGE only in the form, and Name is used in both; ROOM_ID can be requested via API.
 	// JIRA: CPOUI5ODATAV4-2030
 	//
 	// Note: This currently does not work with a t:Table!
@@ -34202,11 +34202,18 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	// Context#setProperty does not change the header context's outdated state in scenarios without
 	// data aggregation.
 	// JIRA: CPOUI5ODATAV4-3392
+	//
+	// A PATCH is pending for 4 (Mu) in the temporary binding when resolving the ODLB and that node
+	// is later revealed by expanding. Still, the user input is not lost!
+	// JIRA: CPOUI5ODATAV4-2092
 [false, true].forEach(function (bSuspended) {
-	var sTitle = "Recursive Hierarchy: getKeepAliveContext, suspended = " + bSuspended;
+	[false, true].forEach(function (bPending) {
+		var sTitle = "Recursive Hierarchy: getKeepAliveContext, suspended = " + bSuspended
+				+ ", pending PATCH for Mu = " + bPending;
 
 	QUnit.test(sTitle, function (assert) {
-		var oContext,
+		var oLambda,
+			oLambdaPromise,
 			oListBinding,
 			oMessage = {
 				message : "You're looking younger than ever!",
@@ -34215,9 +34222,12 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 				transition : false
 			},
 			oModel = this.createTeaBusiModel({autoExpandSelect : true}),
+			oMu,
+			oMuPromise,
+			oNu,
 			oTable,
 			sView = '\
-<Table id="list" growing="true" growingThreshold="3" items="{\
+<Table id="list" growing="true" growingThreshold="4" items="{\
 		parameters : {\
 			$$getKeepAliveContext : true,\
 			$$ownRequest : true,\
@@ -34240,7 +34250,8 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 		// 1 Beta
 		//   2 Kappa
 		//   3 Lambda (1st getKeepAliveContext)
-		//   4 Mu (2nd getKeepAliveContext)
+		//     4 Mu (2nd getKeepAliveContext)
+		//  (5 Nu) (3rd getKeepAliveContext, outside the collection!)
 
 		this.expectChange("age")
 			.expectChange("name");
@@ -34277,27 +34288,58 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 				}]);
 
 			// code under test
-			oContext = oModel.getKeepAliveContext("/EMPLOYEES('3')", /*bRequestMessages*/true,
+			oLambda = oModel.getKeepAliveContext("/EMPLOYEES('3')", /*bRequestMessages*/true,
 				{$$groupId : "$auto.heroes", $$patchWithoutSideEffects : true});
 
-			that.oView.byId("form").setBindingContext(oContext);
+			that.oView.byId("form").setBindingContext(oLambda);
 
 			return Promise.all([
-				oContext.requestProperty("ROOM_ID"), // addt'l GET to be merged
+				oLambda.requestProperty("ROOM_ID"), // addt'l GET to be merged
 				that.waitForChanges(assert, "show form")
 			]);
 		}).then(function (aResults) {
 			assert.strictEqual(aResults[0], "3.0", "ROOM_ID");
 
+			that.expectChange("name", "Lambda (pending)");
+
+			// code under test
+			oLambdaPromise = oLambda.setProperty("Name", "Lambda (pending)", "doNotSubmit");
+
+			return that.waitForChanges(assert, "Lambda w/ pending PATCH");
+		}).then(function () {
+			that.expectRequest("EMPLOYEES('4')?$select=ID,ROOM_ID", {
+					"@odata.etag" : "etag4",
+					ID : "4",
+					ROOM_ID : "4.0"
+				});
+
+			oMu = oModel.getKeepAliveContext("/EMPLOYEES('4')", /*bRequestMessages*/false,
+				{$$patchWithoutSideEffects : true});
+
+			// code under test
+			oMuPromise = oMu.setProperty("Name", "Mu (pending)", "update");
+
+			return Promise.all([
+				oMu.requestProperty("ROOM_ID"), // addt'l GET to be merged
+				that.waitForChanges(assert, "Mu w/ pending PATCH")
+			]);
+		}).then(function () {
+			assert.deepEqual(oMu.getObject(), {
+				"@odata.etag" : "etag4",
+				ID : "4",
+				Name : "Mu (pending)",
+				ROOM_ID : "4.0"
+			});
+
 			that.expectRequest("EMPLOYEES?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels("
 					+ "HierarchyNodes=$root/EMPLOYEES,HierarchyQualifier='OrgChart'"
 					+ ",NodeProperty='ID',Levels=2)"
 					+ "&$select=DescendantCount,DistanceFromRoot,DrillState,ID,MANAGER_ID,Name"
-					+ "&$count=true&$skip=0&$top=3", {
-					"@odata.count" : "4",
+					+ "&$count=true&$skip=0&$top=4", {
+					"@odata.count" : "3",
 					value : [{
 						"@odata.etag" : "etag1",
-						DescendantCount : "3",
+						DescendantCount : "2", // Note: this is LimitedDescendantCountProperty!
 						DistanceFromRoot : "0",
 						DrillState : "expanded",
 						ID : "1",
@@ -34313,9 +34355,9 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 						Name : "Kappa"
 					}, {
 						"@odata.etag" : "etag3",
-						DescendantCount : "0",
+						DescendantCount : "0", // Note: this is LimitedDescendantCountProperty!
 						DistanceFromRoot : "1",
-						DrillState : "leaf",
+						DrillState : "collapsed",
 						ID : "3",
 						MANAGER_ID : "1",
 						Name : "Lambda"
@@ -34338,49 +34380,91 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			checkTable("after request nodes", assert, oTable, [
 				"/EMPLOYEES('1')",
 				"/EMPLOYEES('2')",
-				"/EMPLOYEES('3')"
+				oLambda,
+				oMu
 			], [
 				[true, 1, "1", "", "Beta"],
 				[undefined, 2, "2", "1", "Kappa"],
-				[undefined, 2, "3", "1", "Lambda"]
-			], 4);
-			assert.strictEqual(oListBinding.getAllCurrentContexts()[2], oContext, "reused");
-			assert.strictEqual(oContext.isKeepAlive(), true, "still kept alive");
-			assert.deepEqual(oContext.getObject(), {
-					"@odata.etag" : "etag3",
-					// "@$ui5.node.isExpanded" : undefined,
-					"@$ui5.node.level" : 2,
-					AGE : 57,
-					ID : "3",
-					MANAGER_ID : "1",
-					Name : "Lambda",
-					ROOM_ID : "3.0",
-					__CT__FAKE__Message : {
-						__FAKE__Messages : [oMessage]
-					}
-				}, "merged");
+				[false, 2, "3", "1", "Lambda (pending)"]
+			], 3);
+			assert.strictEqual(oLambda.isKeepAlive(), true, "still kept alive");
+			assert.deepEqual(oLambda.getObject(), {
+				"@odata.etag" : "etag3",
+				"@$ui5.node.isExpanded" : false,
+				"@$ui5.node.level" : 2,
+				AGE : 57,
+				ID : "3",
+				MANAGER_ID : "1",
+				Name : "Lambda (pending)",
+				ROOM_ID : "3.0",
+				__CT__FAKE__Message : {
+					__FAKE__Messages : [oMessage]
+				}
+			}, "merged");
+			assert.deepEqual(oMu.getObject(), {
+				"@odata.etag" : "etag4",
+				ID : "4",
+				Name : "Mu (pending)",
+				ROOM_ID : "4.0"
+			});
+			assert.ok(oModel.hasPendingChanges());
+			assert.ok(oModel.hasPendingChanges("doNotSubmit"));
+			assert.ok(oListBinding.hasPendingChanges());
+			assert.notOk(oListBinding.hasPendingChanges(/*bIgnoreKeptAlive*/true));
+			assert.ok(oLambda.hasPendingChanges());
+			assert.ok(oMu.hasPendingChanges());
 
-			//TODO: what a stupid request :-(
-			that.expectRequest("EMPLOYEES('4')?$select=ID", {
-					ID : "4"
+			that.expectChange("name", "Lambda")
+				.expectCanceledError("Failed to update path /EMPLOYEES('3')/Name",
+					"Request canceled: PATCH EMPLOYEES('3'); group: doNotSubmit");
+
+			// Note: ODM#resetChanges bears little risk of failing; v4.Context#resetChanges looks
+			// like the most complicated one and behind the scenes it also delegates to its binding
+			return Promise.all([
+				// code under test
+				oLambda.resetChanges(),
+				checkCanceled(assert, oLambdaPromise),
+				that.waitForChanges(assert, "resetChanges for Lambda")
+			]);
+		}).then(function () {
+			assert.ok(oModel.hasPendingChanges());
+			assert.notOk(oModel.hasPendingChanges("doNotSubmit"));
+			assert.ok(oModel.hasPendingChanges("update"));
+			assert.ok(oListBinding.hasPendingChanges());
+			assert.notOk(oListBinding.hasPendingChanges(/*bIgnoreKeptAlive*/true));
+			assert.notOk(oLambda.hasPendingChanges());
+			assert.ok(oMu.hasPendingChanges());
+
+			that.expectRequest("EMPLOYEES('5')?$select=ID", {
+					"@odata.etag" : "etag5", // Note: this is what this GET is good for! :-)
+					ID : "5"
 				});
 
-			// code under test
-			oModel.getKeepAliveContext("/EMPLOYEES('4')");
+			// code under test (check _AC#addKeptElement)
+			oNu = oModel.getKeepAliveContext("/EMPLOYEES('5')");
 
 			return that.waitForChanges(assert, "ODLB#getKeepAliveContext");
 		}).then(function () {
+			oNu.setKeepAlive(false); // not needed anymore
+
 			oListBinding.getCurrentContexts()[0].collapse();
 
 			return that.waitForChanges(assert, "collapse");
 		}).then(function () {
+			assert.strictEqual(oNu.getBinding(), undefined, "destroyed");
 			checkTable("after collapse", assert, oTable, [
 				"/EMPLOYEES('1')",
-				"/EMPLOYEES('4')",
-				"/EMPLOYEES('3')"
+				oMu,
+				oLambda
 			], [
 				[false, 1, "1", "", "Beta"]
 			], 1);
+			assert.deepEqual(oMu.getObject(), {
+				"@odata.etag" : "etag4",
+				ID : "4",
+				Name : "Mu (pending)",
+				ROOM_ID : "4.0"
+			});
 
 			that.expectChange("name", "Lambda (Λλ)")
 				.expectRequest("PATCH EMPLOYEES('3')", {
@@ -34391,15 +34475,42 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 					payload : {
 						Name : "Lambda (Λλ)"
 					}
-				}, oNO_CONTENT);
+				}, oNO_CONTENT, {ETag : "etag3.0"});
 
 			// code under test
-			oContext.setProperty("Name", "Lambda (Λλ)");
+			oLambda.setProperty("Name", "Lambda (Λλ)");
 
 			return that.waitForChanges(assert, "PATCH");
 		}).then(function () {
 			// outdated state is used only with data aggregation (JIRA: CPOUI5ODATAV4-3392)
 			assert.strictEqual(oListBinding.getHeaderContext().isOutdated(), undefined);
+
+			if (bPending) {
+				return;
+			}
+
+			that.expectCanceledError("Failed to update path /EMPLOYEES('4')/Name",
+					"Request canceled: PATCH EMPLOYEES('4'); group: update");
+
+			return Promise.all([
+				// code under test
+				oListBinding.resetChanges(),
+				checkCanceled(assert, oMuPromise),
+				that.waitForChanges(assert, "resetChanges for Mu")
+			]);
+		}).then(function () {
+			if (bPending) {
+				return;
+			}
+
+			assert.notOk(oModel.hasPendingChanges());
+			assert.notOk(oListBinding.hasPendingChanges());
+			assert.notOk(oMu.hasPendingChanges());
+			assert.deepEqual(oMu.getObject(), {
+				"@odata.etag" : "etag4",
+				ID : "4",
+				ROOM_ID : "4.0"
+			});
 
 			that.expectRequest("EMPLOYEES?$select=ID,Name"
 					+ "&$filter=ID eq '1' or ID eq '3' or ID eq '4'&$top=3", {
@@ -34426,7 +34537,8 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 				that.waitForChanges(assert, "side effect while collapsed")
 			]);
 		}).then(function () {
-			that.expectRequest("EMPLOYEES?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels("
+			that.expectRequestIf(!bPending,
+					"EMPLOYEES?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels("
 					+ "HierarchyNodes=$root/EMPLOYEES,HierarchyQualifier='OrgChart'"
 					+ ",NodeProperty='ID',Levels=2)"
 					+ "&$select=DescendantCount,DistanceFromRoot,DrillState,ID,MANAGER_ID,Name"
@@ -34451,29 +34563,133 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			checkTable("after expand", assert, oTable, [
 				"/EMPLOYEES('1')",
 				"/EMPLOYEES('2')",
-				"/EMPLOYEES('3')",
-				"/EMPLOYEES('4')"
+				oLambda,
+				oMu
 			], [
-				[true, 1, "1", "", "Beta #1"],
-				[undefined, 2, "2", "1", "Kappa #1"],
-				[undefined, 2, "3", "1", "Lambda #1"]
+				[true, 1, "1", "", bPending ? "Beta" : "Beta #1"],
+				[undefined, 2, "2", "1", bPending ? "Kappa" : "Kappa #1"],
+				[false, 2, "3", "1", bPending ? "Lambda (Λλ)" : "Lambda #1"]
+			], 3);
+			assert.strictEqual(oLambda.isKeepAlive(), true, "still kept alive");
+			assert.deepEqual(oLambda.getObject(), {
+				"@odata.etag" : bPending ? "etag3.0" : "etag3.1",
+				"@$ui5.node.isExpanded" : false,
+				"@$ui5.node.level" : 2,
+				AGE : 57,
+				ID : "3",
+				MANAGER_ID : "1",
+				Name : bPending ? "Lambda (Λλ)" : "Lambda #1",
+				ROOM_ID : "3.0",
+				__CT__FAKE__Message : {
+					__FAKE__Messages : [oMessage]
+				}
+			});
+
+			that.expectChange("age", null)
+				.expectChange("name", null);
+
+			oLambda.setKeepAlive(false); // not needed anymore
+			that.oView.byId("form").setBindingContext(null);
+
+			return that.waitForChanges(assert, "hide form");
+		}).then(function () {
+			that.expectRequest("EMPLOYEES?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels("
+					+ "HierarchyNodes=$root/EMPLOYEES,HierarchyQualifier='OrgChart'"
+					+ ",NodeProperty='ID',Levels=2,ExpandLevels=[{\"NodeID\":\"3\",\"Levels\":1}])"
+					+ "&$select=DescendantCount,DistanceFromRoot,DrillState,ID,MANAGER_ID,Name"
+					+ "&$count=true&$skip=0&$top=4", {
+					"@odata.count" : "4",
+					value : [{
+						"@odata.etag" : bPending ? "etag1" : "etag1.1",
+						DescendantCount : "3",
+						DistanceFromRoot : "0",
+						DrillState : "expanded",
+						ID : "1",
+						MANAGER_ID : null,
+						Name : bPending ? "Beta" : "Beta #1"
+					}, {
+						"@odata.etag" : bPending ? "etag2" : "etag2.1",
+						DescendantCount : "0",
+						DistanceFromRoot : "1",
+						DrillState : "leaf",
+						ID : "2",
+						MANAGER_ID : "1",
+						Name : bPending ? "Kappa" : "Kappa #1"
+					}, {
+						"@odata.etag" : bPending ? "etag3.0" : "etag3.1",
+						DescendantCount : "1",
+						DistanceFromRoot : "1",
+						DrillState : "expanded",
+						ID : "3",
+						MANAGER_ID : "1",
+						Name : bPending ? "Lambda (Λλ)" : "Lambda #1"
+					}, {
+						"@odata.etag" : bPending ? "etag4" : "etag4.1",
+						DescendantCount : "0",
+						DistanceFromRoot : "2",
+						DrillState : "leaf",
+						ID : "4",
+						MANAGER_ID : "3",
+						Name : "ignored due to keep alive w/ unchanged ETag"
+					}]
+
+				});
+
+			return Promise.all([
+				// code under test (JIRA: CPOUI5ODATAV4-3311)
+				oLambda.expand(),
+				that.waitForChanges(assert, "expand Lambda to reveal Mu")
 			]);
-			assert.strictEqual(oListBinding.getAllCurrentContexts()[2], oContext, "reused");
-			assert.strictEqual(oContext.isKeepAlive(), true, "still kept alive");
-			assert.deepEqual(oContext.getObject(), {
-					"@odata.etag" : "etag3.1",
-					// "@$ui5.node.isExpanded" : undefined,
-					"@$ui5.node.level" : 2,
-					AGE : 57,
-					ID : "3",
-					MANAGER_ID : "1",
-					Name : "Lambda #1",
-					ROOM_ID : "3.0",
-					__CT__FAKE__Message : {
-						__FAKE__Messages : [oMessage]
+		}).then(function () {
+			checkTable("after expand Lambda to reveal Mu", assert, oTable, [
+				"/EMPLOYEES('1')",
+				"/EMPLOYEES('2')",
+				oLambda,
+				oMu
+			], [
+				[true, 1, "1", "", bPending ? "Beta" : "Beta #1"],
+				[undefined, 2, "2", "1", bPending ? "Kappa" : "Kappa #1"],
+				[true, 2, "3", "1", bPending ? "Lambda (Λλ)" : "Lambda #1"],
+				[undefined, 3, "4", "3", bPending ? "Mu (pending)" : "Mu #1"]
+			]);
+			assert.deepEqual(oLambda.getObject(), {
+				"@odata.etag" : bPending ? "etag3.0" : "etag3.1",
+				"@$ui5.node.isExpanded" : true,
+				"@$ui5.node.level" : 2,
+				ID : "3",
+				MANAGER_ID : "1",
+				Name : bPending ? "Lambda (Λλ)" : "Lambda #1"
+			});
+			assert.deepEqual(oMu.getObject(), {
+				"@odata.etag" : bPending ? "etag4" : "etag4.1",
+				"@$ui5.node.level" : 3,
+				ID : "4",
+				MANAGER_ID : "3",
+				Name : bPending ? "Mu (pending)" : "Mu #1",
+				ROOM_ID : "4.0"
+			}, "merged");
+
+			if (!bPending) {
+				return;
+			}
+
+			that.expectRequest("PATCH EMPLOYEES('4')", {
+					headers : {
+						"If-Match" : "etag4",
+						Prefer : "return=minimal"
+					},
+					payload : {
+						Name : "Mu (pending)"
 					}
-				}, "merged again");
+				}, oNO_CONTENT, {ETag : "n/a"});
+
+			return Promise.all([
+				oMuPromise,
+				oModel.submitBatch("update"),
+				that.waitForChanges(assert, "submit Mu's pending PATCH")
+			]);
 		});
+	});
 	});
 });
 
@@ -48761,9 +48977,9 @@ make root = ${bMakeRoot}`;
 		// code under test
 		assert.strictEqual(oDelta.getSibling(-1), oBeta, "CPOUI5ODATAV4-2558");
 
-		//TODO: what a stupid request :-(
 		this.expectRequest(sFriend.slice(1) + "(ArtistID='6',IsActiveEntity=false)"
 				+ "?custom=foo&$select=ArtistID,IsActiveEntity", {
+					"@odata.etag" : "etag6.0", // Note: this is what this GET is good for! :-)
 					ArtistID : "6",
 					IsActiveEntity : false
 				});
