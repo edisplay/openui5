@@ -411,7 +411,10 @@ sap.ui.define([
 	QUnit.test("create: #" + i + " w/ oFirstLevel: " + bFirstLevel, function (assert) {
 		var oCache,
 			oDoResetExpectation,
-			oFirstLevel = bFirstLevel ? {mChangeRequests : "~mChangeRequests~"} : undefined,
+			oFirstLevel = bFirstLevel ? {
+					mChangeRequests : "~mChangeRequests~",
+					mEditUrl2PatchPromise : "~mEditUrl2PatchPromise~"
+				} : undefined,
 			bHasGrandTotal = i === 0,
 			// Note: $expand/$select and $filter only allowed for recursive hierarchy
 			mQueryOptions = oAggregation.hierarchyQualifier ? {
@@ -475,8 +478,10 @@ sap.ui.define([
 		assert.strictEqual(oCache.bKeptFirstLevel, bFirstLevel);
 		if (bFirstLevel) {
 			assert.strictEqual(oCache.mChangeRequests, "~mChangeRequests~");
+			assert.strictEqual(oCache.mEditUrl2PatchPromise, "~mEditUrl2PatchPromise~");
 		} else {
 			assert.deepEqual(oCache.mChangeRequests, {});
+			assert.deepEqual(oCache.mEditUrl2PatchPromise, {});
 		}
 
 		this.mock(oCache).expects("getTypes").withExactArgs().returns("~types~");
