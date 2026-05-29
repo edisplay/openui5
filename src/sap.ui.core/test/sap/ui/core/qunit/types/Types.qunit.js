@@ -982,7 +982,7 @@ sap.ui.define([
 	QUnit.test("getPlaceholderText", function (assert) {
 		var oType = new DateTimeType();
 
-		this.mock(oType.oOutputFormat).expects("getPlaceholderText").withExactArgs().returns("~placeholder");
+		this.mock(oType.oOutputFormat).expects("getPlaceholderText").withExactArgs(undefined, undefined).returns("~placeholder");
 
 		// code under test
 		assert.strictEqual(oType.getPlaceholderText(), "~placeholder");
@@ -1067,7 +1067,7 @@ sap.ui.define([
 	QUnit.test("getPlaceholderText", function (assert) {
 		var oType = new DateTimeIntervalType();
 
-		this.mock(oType.oOutputFormat).expects("getPlaceholderText").withExactArgs().returns("~placeholder");
+		this.mock(oType.oOutputFormat).expects("getPlaceholderText").withExactArgs(undefined, undefined).returns("~placeholder");
 
 		// code under test
 		assert.strictEqual(oType.getPlaceholderText(), "~placeholder");
@@ -1882,7 +1882,7 @@ sap.ui.define([
 	QUnit.test("getPlaceholderText", function (assert) {
 		var oType = new TimeType();
 
-		this.mock(oType.oOutputFormat).expects("getPlaceholderText").withExactArgs().returns("~placeholder");
+		this.mock(oType.oOutputFormat).expects("getPlaceholderText").withExactArgs(undefined, undefined).returns("~placeholder");
 
 		// code under test
 		assert.strictEqual(oType.getPlaceholderText(), "~placeholder");
@@ -1959,7 +1959,7 @@ sap.ui.define([
 	QUnit.test("getPlaceholderText", function (assert) {
 		var oType = new TimeIntervalType();
 
-		this.mock(oType.oOutputFormat).expects("getPlaceholderText").withExactArgs().returns("~placeholder");
+		this.mock(oType.oOutputFormat).expects("getPlaceholderText").withExactArgs(undefined, undefined).returns("~placeholder");
 
 		// code under test
 		assert.strictEqual(oType.getPlaceholderText(), "~placeholder");
