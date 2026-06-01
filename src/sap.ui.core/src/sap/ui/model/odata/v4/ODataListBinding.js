@@ -4901,8 +4901,9 @@ sap.ui.define([
 	 * @param {string} [sGroupId]
 	 *   The group ID to be used for refresh; used only in case <code>bDrop === false</code>
 	 * @param {boolean} [bRestartAutoExpandSelect]
-	 *   Whether to restart auto-$expand/$select; requires <code>sChangeReason</code>. Ignored for
-	 *   an unresolved binding.
+	 *   Whether to restart auto-$expand/$select; requires <code>sChangeReason</code>. For an
+	 *   unresolved binding, the state is prepared but the change event is deferred until the
+	 *   binding becomes resolved.
 	 *
 	 * @private
 	 */
@@ -4957,14 +4958,17 @@ sap.ui.define([
 		// Note: the binding's length can be greater than this.iMaxLength due to iCreatedContexts!
 		this.iMaxLength = Infinity;
 		this.bLengthFinal = false;
-		if (!this.isResolved()) {
-			return;
-		}
 		if (bRestartAutoExpandSelect) {
 			this.mAggregatedQueryOptions = {};
 			this.bAggregatedQueryOptionsInitial = true;
 			this.mCanUseCachePromiseByChildPath = {};
 			this.sChangeReason = "AddVirtualContext";
+		}
+		if (!this.isResolved()) {
+			return; // skip events
+		}
+
+		if (bRestartAutoExpandSelect) {
 			this.sChangeReasonAfterRemoveVirtualContext = sChangeReason;
 			this._fireChange({
 				detailedReason : "AddVirtualContext",

@@ -1327,10 +1327,13 @@ sap.ui.define([
 	});
 
 	//*********************************************************************************************
-	QUnit.test("reset with change reason, unresolved binding", function (assert) {
+[false, true].forEach(function (bRestartAutoExpandSelect) {
+	const sTitle = "reset with change reason, unresolved binding"
+		+ ", bRestartAutoExpandSelect=" + bRestartAutoExpandSelect;
+
+	QUnit.test(sTitle, function (assert) {
 		var oBinding = this.bindList("EMPLOYEES");
 
-		this.oModel.bAutoExpandSelect = true;
 		oBinding.mAggregatedQueryOptions = "~mAggregatedQueryOptions~";
 		oBinding.bAggregatedQueryOptionsInitial = "~bAggregatedQueryOptionsInitial~";
 		oBinding.mCanUseCachePromiseByChildPath = "~mCanUseCachePromiseByChildPath~";
@@ -1342,17 +1345,25 @@ sap.ui.define([
 		this.mock(oBinding).expects("_fireRefresh").never();
 
 		// code under test
-		oBinding.reset("n/a", undefined, undefined, /*bRestartAutoExpandSelect*/true);
+		oBinding.reset("n/a", undefined, undefined, bRestartAutoExpandSelect);
 
-		assert.strictEqual(oBinding.mAggregatedQueryOptions, "~mAggregatedQueryOptions~");
-		assert.strictEqual(oBinding.bAggregatedQueryOptionsInitial,
-			"~bAggregatedQueryOptionsInitial~");
-		assert.strictEqual(oBinding.mCanUseCachePromiseByChildPath,
-			"~mCanUseCachePromiseByChildPath~");
-		assert.strictEqual(oBinding.sChangeReason, "~sChangeReason~");
+		if (bRestartAutoExpandSelect) {
+			assert.deepEqual(oBinding.mAggregatedQueryOptions, {});
+			assert.strictEqual(oBinding.bAggregatedQueryOptionsInitial, true);
+			assert.deepEqual(oBinding.mCanUseCachePromiseByChildPath, {});
+			assert.strictEqual(oBinding.sChangeReason, "AddVirtualContext");
+		} else {
+			assert.strictEqual(oBinding.mAggregatedQueryOptions, "~mAggregatedQueryOptions~");
+			assert.strictEqual(oBinding.bAggregatedQueryOptionsInitial,
+				"~bAggregatedQueryOptionsInitial~");
+			assert.strictEqual(oBinding.mCanUseCachePromiseByChildPath,
+				"~mCanUseCachePromiseByChildPath~");
+			assert.strictEqual(oBinding.sChangeReason, "~sChangeReason~");
+		}
 		assert.strictEqual(oBinding.sChangeReasonAfterRemoveVirtualContext,
 			"~sChangeReasonAfterRemoveVirtualContext~");
 	});
+});
 
 	//*********************************************************************************************
 	QUnit.test("reset not initial binding with change reason 'Change'", function (assert) {

@@ -3950,8 +3950,14 @@ sap.ui.define([
 	// A Sorter with groupPaths which is set while the binding is unresolved does not influence the
 	// sent events.
 	// JIRA: CPOUI5ODATAV4-3490
+	//
+	// When the binding is temporarily unresolved and ODLB#sort is called with a Sorter having
+	// different groupPaths, re-resolving the binding via setContext updates $select according to
+	// the given groupPaths.
+	// JIRA: CPOUI5ODATAV4-3528
 	QUnit.test("BCP: 2080228141 - autoExpandSelect & late ODLB#setContext", function (assert) {
-		var oModel = this.createSalesOrdersModel({autoExpandSelect : true}),
+		var oBinding,
+			oModel = this.createSalesOrdersModel({autoExpandSelect : true}),
 			sView = '\
 <t:Table id="table" rows="{}" threshold="0" visibleRowCount="3">\
 	<Text id="note" text="{Note}"/>\
@@ -3965,7 +3971,7 @@ sap.ui.define([
 			// avoid that the metadata request disturbs the timing
 			return oModel.getMetaModel().requestObject("/");
 		}).then(function () {
-			var oBinding = that.oView.byId("table").getBinding("rows");
+			oBinding = that.oView.byId("table").getBinding("rows");
 
 			oBinding.filter(new Filter("SalesOrderID", FilterOperator.NE, "00"));
 			oBinding.sort(new Sorter({groupPaths : ["Note"], path : "SalesOrderID"}));
@@ -3992,6 +3998,35 @@ sap.ui.define([
 
 			// code under test
 			oBinding.setContext(oModel.createBindingContext("/SalesOrderList"));
+
+			return that.waitForChanges(assert);
+		}).then(function () {
+			const oContext = oBinding.getContext();
+			oBinding.setContext(null);
+
+			that.expectEvents(assert, "sap.ui.model.odata.v4.ODataListBinding: /SalesOrderList|", [
+					[, "change", {detailedReason : "AddVirtualContext", reason : "context"}],
+					[, "dataRequested"],
+					[, "change", {detailedReason : "RemoveVirtualContext", reason : "change"}],
+					[, "refresh", {reason : "refresh"}],
+					[, "change", {reason : "change"}],
+					[, "dataReceived", {data : {}}]
+				])
+				.expectRequest("SalesOrderList?$count=true&custom=foo"
+					+ "&$select=LifecycleStatus,Note,SalesOrderID"
+					+ "&$orderby=SalesOrderID&$filter=SalesOrderID ne '00'&$skip=0&$top=3", {
+					"@odata.count" : "3",
+					value : [
+						{LifecycleStatus : "N", Note : "Note 1", SalesOrderID : "01"},
+						{LifecycleStatus : "N", Note : "Note 2", SalesOrderID : "02"},
+						{LifecycleStatus : "N", Note : "Note 3", SalesOrderID : "03"}
+					]
+				})
+				.expectChange("note", ["Note 1", "Note 2", "Note 3"]);
+
+			// code under test (JIRA: CPOUI5ODATAV4-3528)
+			oBinding.sort(new Sorter({groupPaths : ["LifecycleStatus"], path : "SalesOrderID"}));
+			oBinding.setContext(oContext);
 
 			return that.waitForChanges(assert);
 		});
