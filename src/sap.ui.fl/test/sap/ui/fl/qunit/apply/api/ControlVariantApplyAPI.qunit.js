@@ -430,8 +430,8 @@ sap.ui.define([
 				this.oVMControl.setModel(this.oVariantModel, ControlVariantApplyAPI.getVariantModelName());
 
 				const oData = this.oVariantModel.getData();
-				oData[this.sVMReference].defaultVariant = "variant1";
-				oData[this.sVMReference].currentVariant = "variant1";
+				oData.defaultVariant = "variant1";
+				oData.currentVariant = "variant1";
 				this.oVariant1 = {
 					author: "Me",
 					key: "variant1",
@@ -450,8 +450,8 @@ sap.ui.define([
 					visible: true,
 					executeOnSelect: false
 				};
-				oData[this.sVMReference].variants.push(this.oVariant1);
-				oData[this.sVMReference].variants.push(this.oVariant2);
+				oData.variants.push(this.oVariant1);
+				oData.variants.push(this.oVariant2);
 				sandbox.stub(VariantManagementState, "getCurrentVariantReference").returns("variant1");
 				sandbox.stub(VariantManagementState, "getControlChangesForVariant").returns([]);
 				sandbox.stub(FlexObjectManager, "deleteFlexObjects");

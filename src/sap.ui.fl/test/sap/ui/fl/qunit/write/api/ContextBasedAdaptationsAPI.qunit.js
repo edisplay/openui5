@@ -10,8 +10,6 @@ sap.ui.define([
 	"sap/ui/fl/initial/_internal/ManifestUtils",
 	"sap/ui/fl/initial/api/Version",
 	"sap/ui/fl/initial/_internal/Settings",
-	"sap/ui/fl/variants/VariantModel",
-	"sap/ui/fl/variants/VariantManagement",
 	"sap/ui/fl/write/_internal/flexState/FlexObjectManager",
 	"sap/ui/fl/write/_internal/Storage",
 	"sap/ui/fl/write/_internal/Versions",
@@ -34,8 +32,6 @@ sap.ui.define([
 	ManifestUtils,
 	Version,
 	Settings,
-	VariantModel,
-	VariantManagement,
 	FlexObjectManager,
 	Storage,
 	Versions,
@@ -1891,18 +1887,7 @@ sap.ui.define([
 			this.oAppComponent = RtaQunitUtils.createAndStubAppComponent(sandbox, "com.sap.app");
 			sandbox.stub(ManifestUtils, "getFlexReference").returns("com.sap.app");
 			sandbox.stub(ManifestUtils, "getFlexReferenceForControl").returns("com.sap.app");
-			this.oVMControl = new VariantManagement("variantManagementId");
-			this.oModel = new VariantModel({}, {
-				appComponent: this.oAppComponent,
-				vmReference: "variantManagementId",
-				vmControl: this.oVMControl
-			});
-			// The VariantModel initializes an empty FlexState if not already initialized
-			// Since the tests want to have a clean FlexState, we clear it here
 			FlexState.clearState();
-			this.oAppComponent.getModel = function(sName) {
-				return (sName === "$FlexVariants") ? this.oModel : undefined;
-			}.bind(this);
 
 			this.mPropertyBag = {
 				layer: Layer.CUSTOMER,
@@ -1926,10 +1911,9 @@ sap.ui.define([
 			return ContextBasedAdaptationsAPI.initialize(this.mPropertyBag);
 		},
 		afterEach() {
-			FlexState.clearState();
 			ContextBasedAdaptationsAPI.clearInstances(this.mPropertyBag);
-			this.oVMControl.destroy();
 			this.oAppComponent.destroy();
+			FlexState.clearState();
 			sandbox.restore();
 		}
 	}, function() {
