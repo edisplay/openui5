@@ -1,0 +1,62 @@
+{
+  "1.150.0": {
+    "date": "June 2026",
+    "notes": [
+      {
+        "id": "0171af01ee8fd672d78baa4d2e476c97e2af7dcb",
+        "type": "FIX",
+        "text": " We've now fixed a VDS file preview error in uplaodsetwithtable plugin"
+      },
+      {
+        "id": "e0b8732f3d5c099c286b12fd1e5b80634ded5f5c",
+        "type": "FIX",
+        "text": " We've now fixed the up and down arrow key navigation in SearchField inside the toolbar"
+      },
+      {
+        "id": "cf35a6bf78d2a9c06873e9c67921d9edb8c670e8",
+        "type": "FIX",
+        "text": " sap.m.TimePicker: add aria-description property"
+      },
+      {
+        "id": "c3d0be6ca4f88577f222039b59866b4f6f61c681",
+        "type": "FIX",
+        "text": " sap.m.SinglePlanningCalendar: Now marker is not visible when today is outside of the visible date"
+      },
+      {
+        "id": "b979cfee88c8d0e7122886bd6b48390592ef7754",
+        "type": "FIX",
+        "text": " sap.m.NavContainer: Improve sample"
+      },
+      {
+        "id": "95bdc1648d3c6f0146dadd971f8a812f2f358445",
+        "type": "FIX",
+        "text": " sap.m.Link: fix focus on mobile"
+      },
+      {
+        "id": "99d90fb3efa8b5300bca07da564645be09ee084b",
+        "type": "FIX",
+        "text": " We've now fixed the text spillover issue for the no-data placeholder in UploadSet"
+      },
+      {
+        "id": "6aab512e3b2a28235a0c155d0dd9998cdef0a5e4",
+        "type": "FIX",
+        "text": " We've now fixed the scroll arrow buttons not working when a single item is larger than the HeaderContainer"
+      },
+      {
+        "id": "a4c9970993ad0e662e9197696419668c46daa1b1",
+        "type": "FIX",
+        "text": " sap.m.Avatar: Improve Sample"
+      },
+      {
+        "id": "414e05daf7dc6c082e6621023be8989af3b1271c",
+        "type": "FEATURE",
+        "text": " sap.m.Avatar: IFormContent interface is now implemented"
+      },
+      {
+        "id": "c22eb9265328244620f6d9903c4ac1ea55b63ccd",
+        "type": "FIX",
+        "text": " sap.m.Dialog: Initial focus in Firefox is now fixed"
+      }
+    ]
+  }
+}
