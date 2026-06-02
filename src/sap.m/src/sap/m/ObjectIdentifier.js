@@ -490,10 +490,14 @@ function(
 	 */
 	ObjectIdentifier.prototype.enhanceAccessibilityState = function (oElement, mAriaProps) {
 		const sId = this.getId();
-		const sControlId = `${sId}-link`;
-		if (oElement.getId() === sControlId) {
-			const sCurrentAriaLabelledBy = mAriaProps["labelledby"] || "";
-			mAriaProps["labelledby"] = `${sCurrentAriaLabelledBy.replace(sControlId, "")} ${InvisibleText.getStaticId("sap.m", "OI_ARIA_ROLE")} ${sControlId} ${sId}-text`;
+		const sLinkId = `${sId}-link`;
+		const sTextId = `${sId}-text`;
+		if (oElement.getId() === sLinkId) {
+			const aLabelledBy = (mAriaProps["labelledby"] || "")
+				.split(" ")
+				.filter((sEntry) => sEntry && sEntry !== sLinkId);
+			aLabelledBy.push(InvisibleText.getStaticId("sap.m", "OI_ARIA_ROLE"), sLinkId, sTextId);
+			mAriaProps["labelledby"] = aLabelledBy.join(" ");
 		}
 	};
 	ObjectIdentifier.prototype.addAssociation = function(sAssociationName, sId, bSuppressInvalidate) {
