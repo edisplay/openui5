@@ -485,10 +485,13 @@ function(
 		ObjectIdentifier.prototype._handlePress.apply(this, arguments);
 	};
 
+	/**
+	 * @override
+	 */
 	ObjectIdentifier.prototype.enhanceAccessibilityState = function (oElement, mAriaProps) {
-		if (oElement === this.getAggregation("_titleControl")) {
-			const sId = this.getId();
-			const sControlId = `${sId}-link`;
+		const sId = this.getId();
+		const sControlId = `${sId}-link`;
+		if (oElement.getId() === sControlId) {
 			const sCurrentAriaLabelledBy = mAriaProps["labelledby"] || "";
 			mAriaProps["labelledby"] = `${sCurrentAriaLabelledBy.replace(sControlId, "")} ${InvisibleText.getStaticId("sap.m", "OI_ARIA_ROLE")} ${sControlId} ${sId}-text`;
 		}
