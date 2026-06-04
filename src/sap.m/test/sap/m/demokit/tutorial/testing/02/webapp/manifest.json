@@ -67,6 +67,9 @@
 			"": {
 				"dataSource": "mainService",
 				"settings": {
+					"defaultCountMode": "None",
+					"useBatch": false,
+					"tokenHandling": false,
 					"metadataUrlParams": {
 						"sap-documentation": "heading"
 					}
