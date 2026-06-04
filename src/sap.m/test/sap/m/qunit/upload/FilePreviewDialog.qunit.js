@@ -1,3 +1,72 @@
+/*global QUnit */
+
+sap.ui.define("sap.m.qunit.upload.FilePreviewDialog", [
+	"sap/m/upload/FilePreviewDialog",
+	"sap/m/upload/UploadItem",
+	"sap/m/IllustratedMessage"
+], function (FilePreviewDialog, UploadItem, IllustratedMessage) {
+	"use strict";
+
+	// Minimal RTE stub — mimics the API _createRichTextEditor expects
+	class MockRTE {
+		attachReady() { return this; }
+		setBusy() { return this; }
+		setValue(v) { this._value = v; return this; }
+		getValue() { return this._value; }
+		isA() { return false; }
+		destroy() {}
+	}
+
+	const sBackendErrorJson = JSON.stringify({
+		"error": {
+			"code": "/IWBEP/CM_V4S_RUN/000",
+			"message": "Unspecified provider error occurred. See Error Context and Call Stack."
+		}
+	});
+
+	QUnit.module("FilePreviewDialog - txt error handling", {
+		beforeEach: function () {
+			this.oFPD = new FilePreviewDialog();
+			this.oFPD._oRichTextEditor = MockRTE;
+
+			this._OrigXHR = window.XMLHttpRequest;
+			window.XMLHttpRequest = function () {
+				this.status = 500;
+				this.responseText = sBackendErrorJson;
+				this.open = function () {};
+				this.send = function () {};
+			};
+
+			this.oItem = new UploadItem({
+				fileName: "NewAttachment.txt",
+				mediaType: "text/plain",
+				url: "/sap/opu/odata/sap/UI_PRELIMBILLINGDOCUMENT_F6990/Attachments('123')"
+			});
+		},
+		afterEach: function () {
+			window.XMLHttpRequest = this._OrigXHR;
+			this.oFPD.destroy();
+			this.oItem.destroy();
+		}
+	});
+
+	QUnit.test("_createRichTextEditor returns null when XHR returns HTTP 500", async function (assert) {
+		const oResult = await this.oFPD._createRichTextEditor(this.oItem);
+
+		assert.strictEqual(oResult, null,
+			"_createRichTextEditor must return null on HTTP error so the dialog shows 'Preview not available' instead of raw JSON");
+	});
+
+	QUnit.test("getPageContent returns IllustratedMessage when txt XHR fails", async function (assert) {
+		const oPage = await this.oFPD.getPageContent(this.oItem);
+
+		assert.ok(oPage.isA("sap.m.IllustratedMessage"),
+			"getPageContent must return IllustratedMessage when the txt fetch fails, not an RTE with a raw error");
+
+		oPage.destroy();
+	});
+});
+
 // /*global QUnit*/
 // sap.ui.define([
 // 	"sap/m/upload/UploadSetwithTable",
