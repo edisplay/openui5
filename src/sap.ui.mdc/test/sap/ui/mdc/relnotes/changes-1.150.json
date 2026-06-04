@@ -1,0 +1,22 @@
+{
+  "1.150.0": {
+    "date": "June 2026",
+    "notes": [
+      {
+        "id": "3c7a0ca63d110df2880d71705cb046e24687d8fa",
+        "type": "FIX",
+        "text": " ValueHelp: Tokenizer shows empty Token"
+      },
+      {
+        "id": "fc21f25dd419f0dfad634d1db13b7ae77819cc38",
+        "type": "FIX",
+        "text": " mdc.ActionToolbarAction: forward getFocusDomRef/getEnabled"
+      },
+      {
+        "id": "faf82ab958e6009736a787db40e367606fbe1a34",
+        "type": "FIX",
+        "text": "p13n.ChartItemPanel: fix acc issues"
+      }
+    ]
+  }
+}

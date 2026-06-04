@@ -1,0 +1,12 @@
+{
+  "1.150.0": {
+    "date": "June 2026",
+    "notes": [
+      {
+        "id": "cc42599ee5d027cd9e315fc989fd263f2f87fb9d",
+        "type": "FIX",
+        "text": " Integration Cards: Manifest Resolver now resolves popin properties"
+      }
+    ]
+  }
+}

@@ -3,6 +3,21 @@
     "date": "June 2026",
     "notes": [
       {
+        "id": "f5f3a94f10cabcbc04abdc121c5b40d3e48c7641",
+        "type": "FEATURE",
+        "text": "sap.m.InputBase: Value state is now announced without technical details"
+      },
+      {
+        "id": "31b8bf32e39390e75dbf09e19231f3d6f2d0b1c9",
+        "type": "FIX",
+        "text": " sap.m.SinglePlanningCalendar: focus is retrieved correctly after close popover"
+      },
+      {
+        "id": "3b2af893403d2b67db95a635cc1df8ce812aad64",
+        "type": "FEATURE",
+        "text": " sap.m.Dialog: Fullscreen toggle support is now added"
+      },
+      {
         "id": "0171af01ee8fd672d78baa4d2e476c97e2af7dcb",
         "type": "FIX",
         "text": " We've now fixed a VDS file preview error in uplaodsetwithtable plugin"
@@ -48,9 +63,19 @@
         "text": " sap.m.Avatar: Improve Sample"
       },
       {
+        "id": "9271beb83261ff92bcf11dca8bd256e260bfafbe",
+        "type": "FEATURE",
+        "text": " sap.m.Panel: Revert focus for Scrollable Content Area"
+      },
+      {
         "id": "414e05daf7dc6c082e6621023be8989af3b1271c",
         "type": "FEATURE",
         "text": " sap.m.Avatar: IFormContent interface is now implemented"
+      },
+      {
+        "id": "00097d2398ad7b2efd3209a4e29f43d03c161a90",
+        "type": "FIX",
+        "text": " sap.m.Avatar: Show fallback icon after clearing initials"
       },
       {
         "id": "c22eb9265328244620f6d9903c4ac1ea55b63ccd",

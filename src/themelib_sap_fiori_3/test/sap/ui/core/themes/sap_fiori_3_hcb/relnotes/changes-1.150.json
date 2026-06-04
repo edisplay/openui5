@@ -6,6 +6,11 @@
         "id": "95bdc1648d3c6f0146dadd971f8a812f2f358445",
         "type": "FIX",
         "text": " sap.m.Link: fix focus on mobile"
+      },
+      {
+        "id": "9271beb83261ff92bcf11dca8bd256e260bfafbe",
+        "type": "FEATURE",
+        "text": " sap.m.Panel: Revert focus for Scrollable Content Area"
       }
     ]
   }

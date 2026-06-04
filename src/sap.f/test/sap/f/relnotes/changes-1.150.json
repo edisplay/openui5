@@ -1,0 +1,12 @@
+{
+  "1.150.0": {
+    "date": "June 2026",
+    "notes": [
+      {
+        "id": "c742daab020f73e7379f9b18393f02ee1b8cd45c",
+        "type": "FIX",
+        "text": " sap.m.GridListItem: Missing shadow on selected state added"
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "1.150.0": {
+    "date": "June 2026",
+    "notes": [
+      {
+        "id": "d673ddaff863c7dfc58fd9d5b86072ec2f542da7",
+        "type": "FIX",
+        "text": " sap.ui.unified.calendar.MonthsRow: fix interval selection"
+      }
+    ]
+  }
+}
