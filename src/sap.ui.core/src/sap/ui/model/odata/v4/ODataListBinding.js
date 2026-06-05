@@ -3271,6 +3271,29 @@ sap.ui.define([
 	};
 
 	/**
+	 * Returns a sorted list of all current sorters' group paths. Without autoExpandSelect the group
+	 * paths are ignored.
+	 *
+	 * @returns {string[]}
+	 *   The current group paths
+	 *
+	 * @private
+	 */
+	ODataListBinding.prototype.getGroupPaths = function () {
+		if (!this.oModel.bAutoExpandSelect) {
+			return [];
+		}
+		const aGroupPaths = [];
+		this.aSorters.forEach((oSorter) => {
+			const aPaths = oSorter.getGroupPaths();
+			if (aPaths) {
+				aGroupPaths.push(...aPaths);
+			}
+		});
+		return aGroupPaths.sort();
+	};
+
+	/**
 	 * Returns the header context which allows binding to <code>$count</code>,
 	 * <code>@$ui5.context.isOutdated</code>, or <code>@$ui5.context.isSelected</code>.
 	 *
@@ -3503,20 +3526,12 @@ sap.ui.define([
 	 */
 	ODataListBinding.prototype.getQueryOptionsFromParameters = function () {
 		let mQueryOptions = this.mQueryOptions;
-		if (this.oModel.bAutoExpandSelect) {
-			const aGroupPaths = [];
-			this.aSorters.forEach((oSorter) => {
-				const aPaths = oSorter.getGroupPaths();
-				if (aPaths) {
-					aGroupPaths.push(...aPaths);
-				}
-			});
-			if (aGroupPaths.length) {
-				mQueryOptions = {...mQueryOptions};
-				// avoid that this.mQueryOptions.$select is modified
-				mQueryOptions.$select &&= mQueryOptions.$select.slice();
-				_Helper.addToSelect(mQueryOptions, aGroupPaths);
-			}
+		const aGroupPaths = this.getGroupPaths();
+		if (aGroupPaths.length) {
+			mQueryOptions = {...mQueryOptions};
+			// avoid that this.mQueryOptions.$select is modified
+			mQueryOptions.$select &&= mQueryOptions.$select.slice();
+			_Helper.addToSelect(mQueryOptions, aGroupPaths);
 		}
 
 		return mQueryOptions;
@@ -4945,7 +4960,7 @@ sap.ui.define([
 		if (!this.isResolved()) {
 			return;
 		}
-		if (bRestartAutoExpandSelect && this.oModel.bAutoExpandSelect) {
+		if (bRestartAutoExpandSelect) {
 			this.mAggregatedQueryOptions = {};
 			this.bAggregatedQueryOptionsInitial = true;
 			this.mCanUseCachePromiseByChildPath = {};
@@ -5479,15 +5494,15 @@ sap.ui.define([
 			throw new Error("Cannot sort due to pending changes");
 		}
 
+		const aOldGroupPaths = this.getGroupPaths();
 		this.aSorters = aSorters;
 		this.oQueryOptionsPromise = undefined;
 		this.setResetViaSideEffects(true);
 
-		const bRestartAutoExpandSelect = aSorters.some(
-			(oSorter) => oSorter.getGroupPaths()?.length);
+		const bRestartAutoExpandSelect = aOldGroupPaths.join() !== this.getGroupPaths().join();
 		if (this.isRootBindingSuspended()) {
 			this.setResumeChangeReason(ChangeReason.Sort);
-			if (bRestartAutoExpandSelect && this.oModel.bAutoExpandSelect) {
+			if (bRestartAutoExpandSelect) {
 				this.sChangeReason = "AddVirtualContext";
 			}
 			return this;
