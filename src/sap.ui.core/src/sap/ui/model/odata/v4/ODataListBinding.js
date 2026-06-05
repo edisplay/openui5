@@ -1036,7 +1036,8 @@ sap.ui.define([
 			sGroupId = "$inactive." + sGroupId;
 		} else if (!oAggregation?.hierarchyQualifier) {
 			this.iActiveContexts += 1;
-			this.setOutdated(true);
+			this.setOutdated(/*bForce*/false, /*aPaths*/null, /*bNoRequest*/false,
+				/*bForceHeader*/true);
 		}
 
 		if (this.bFirstCreateAtEnd === undefined) {
@@ -1914,9 +1915,10 @@ sap.ui.define([
 				if (!that.bLengthFinal && that.aContexts.length === that.iCreatedContexts
 						&& that.oHeaderContext.isOutdated() !== undefined) {
 					if (that.iActiveContexts > 0) {
-						// some persisted entries are still in the creation area, so the grand total
-						// may still be outdated
-						that.setOutdated(true);
+						// some persisted entries are still in the creation area, so the header
+						// context has to be marked as outdated and maybe also the grand total
+						that.setOutdated(/*bForce*/false, /*aPaths*/null, /*bNoRequest*/false,
+							/*bForceHeader*/true);
 					} else {
 						// entries and grand total are in sync again
 						that.oHeaderContext.setOutdated(false);
@@ -5355,13 +5357,15 @@ sap.ui.define([
 	 * @param {boolean} [bNoRequest]
 	 *   Whether the properties given in <code>aPaths</code> are updated without sending a PATCH
 	 *   request to the server; if <code>true</code>, <code>aPaths</code> is mandatory
+	 * @param {boolean} [bForceHeader]
+	 *   Whether to force setting the outdated flag at the header context
 	 * @throws {Error}
 	 *   If <code>bNoRequest</code> is set and the header context gets outdated or the property with
 	 *   the given path contributes to the grand total
 	 *
 	 * @private
 	 */
-	ODataListBinding.prototype.setOutdated = function (bForce, aPaths, bNoRequest) {
+	ODataListBinding.prototype.setOutdated = function (bForce, aPaths, bNoRequest, bForceHeader) {
 		if (_Helper.isDataAggregation(this.mParameters)) {
 			const oAggregation = this.mParameters.$$aggregation;
 			const bGrandTotalOutdated = bForce
@@ -5369,7 +5373,8 @@ sap.ui.define([
 				|| oAggregation.search
 				|| Object.keys(this.mParameters).some((sKey) => sKey[0] !== "$")
 				|| this.isFilteredBy(aPaths);
-			const bHeaderContextOutdated = bGrandTotalOutdated || this.isSortedBy(aPaths);
+			const bHeaderContextOutdated = bForceHeader || bGrandTotalOutdated
+				|| this.isSortedBy(aPaths);
 			if (bNoRequest
 					&& (bHeaderContextOutdated
 					|| _AggregationHelper.isUsedForGrandTotal(aPaths, oAggregation.aggregate))) {

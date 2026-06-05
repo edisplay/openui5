@@ -1738,7 +1738,7 @@ sap.ui.define([
 		const bSetOutdated = !(bLengthFinal || bMoreContexts || bOutdated === undefined);
 		this.mock(oBinding).expects("setOutdated")
 			.exactly(bSetOutdated && iActiveContexts ? 1 : 0)
-			.withExactArgs(true);
+			.withExactArgs(false, null, false, true);
 		this.mock(oBinding.oHeaderContext).expects("setOutdated")
 			.exactly(bSetOutdated && !iActiveContexts ? 1 : 0)
 			.withExactArgs(false);
@@ -5646,7 +5646,7 @@ sap.ui.define([
 					.returns(oFixture.sGroupId === "deferred");
 				oBindingMock.expects("getUpdateGroupId").withExactArgs().returns(oFixture.sGroupId);
 				oBindingMock.expects("setOutdated").exactly(oFixture.bInactive ? 0 : 1)
-					.withExactArgs(true);
+					.withExactArgs(false, null, false, true);
 				oBindingMock.expects("lockGroup")
 					.withExactArgs(oFixture.bInactive
 							? "$inactive." + oFixture.sGroupId
@@ -6554,7 +6554,7 @@ sap.ui.define([
 		this.mock(oBinding).expects("checkDeepCreate").never();
 		this.mock(oBinding).expects("isRelative").never();
 		this.mock(oBinding).expects("setOutdated").exactly(bRecursiveHierarchy ? 0 : 1)
-			.withExactArgs(true);
+			.withExactArgs(false, null, false, true);
 		this.mock(_Helper).expects("publicClone")
 			.withExactArgs(sinon.match.same(oInitialData), true).returns("~oEntityData~");
 		this.mock(oBinding).expects("lockGroup")
@@ -10836,6 +10836,12 @@ sap.ui.define([
 				grandTotal : false,
 				headerContext : true
 			}, {
+				title : "no sorting but bForceHeader",
+				isFilteredByResult : false,
+				bForceHeader : true,
+				grandTotal : false,
+				headerContext : true
+			}, {
 				title : "no filter/search/custom query option/sorter matches, but GT relevant",
 				setup : function (oBinding) {
 					oBinding.mParameters.$apply = "~apply~";
@@ -10891,7 +10897,8 @@ sap.ui.define([
 				&& (bForce || oFixture.headerContext || oFixture.isUsedForGrandTotal)) {
 			assert.throws(() => {
 				// code under test
-				oBinding.setOutdated(bForce, bWithPath ? "~aPaths~" : undefined, true);
+				oBinding.setOutdated(bForce, bWithPath ? "~aPaths~" : undefined, true,
+					oFixture.bForceHeader);
 			}, new Error("Missing PATCH request when @$ui5.context.isOutdated would be set"));
 		} else {
 			if (bWithAggregationCache) {
@@ -10908,7 +10915,8 @@ sap.ui.define([
 
 			// code under test
 			assert.strictEqual(
-				oBinding.setOutdated(bForce, bWithPath ? "~aPaths~" : undefined, bNoRequest),
+				oBinding.setOutdated(bForce, bWithPath ? "~aPaths~" : undefined, bNoRequest,
+					oFixture.bForceHeader),
 				undefined);
 		}
 	});
