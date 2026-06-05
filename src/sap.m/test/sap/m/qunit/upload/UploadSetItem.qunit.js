@@ -592,6 +592,40 @@ sap.ui.define([
 		});
 	});
 
+	QUnit.test("Edit mode label is not created before edit mode is entered", function (assert) {
+		var oItem = this.oUploadSet.getItems()[0];
+
+		assert.notOk(oItem._oFileNameEditLabel, "File name edit label should not be created before edit mode is entered.");
+	});
+
+	QUnit.test("Edit mode label is created with correct text and labelFor when entering edit mode", async function (assert) {
+		var oItem = this.oUploadSet.getItems()[0];
+		oItem._setInEditMode(true);
+		await nextUIUpdate();
+
+		var oLabel = oItem._getFileNameEditLabel();
+		assert.ok(oLabel, "File name edit label should be created when item enters edit mode.");
+		assert.strictEqual(oLabel.getText(), "File Name:", "Label text should match the i18n value for UPLOAD_SET_FILE_NAME_LABEL.");
+		assert.strictEqual(oLabel.getLabelFor(), oItem.getId() + "-fileNameEdit", "Label 'labelFor' should reference the file name Input control.");
+		assert.ok(oLabel.hasStyleClass("sapMUCEditLabel"), "Label should have the 'sapMUCEditLabel' CSS class.");
+	});
+
+	QUnit.test("Edit mode label is rendered in the DOM only while item is in edit mode", async function (assert) {
+		var oItem = this.oUploadSet.getItems()[0];
+
+		assert.notOk(document.getElementById(oItem.getId() + "-fileNameEditLabel"), "Label DOM node should not exist before edit mode.");
+
+		oItem._setInEditMode(true);
+		await nextUIUpdate();
+
+		assert.ok(document.getElementById(oItem.getId() + "-fileNameEditLabel"), "Label DOM node should exist while item is in edit mode.");
+
+		oItem._setInEditMode(false);
+		await nextUIUpdate();
+
+		assert.notOk(document.getElementById(oItem.getId() + "-fileNameEditLabel"), "Label DOM node should not exist after leaving edit mode.");
+	});
+
 	QUnit.module("UploadSetItems now accespts markersAsStatus aggregation", {
 		beforeEach: async function() {
 			this.oUploadSet = new UploadSet("upload-set",{
