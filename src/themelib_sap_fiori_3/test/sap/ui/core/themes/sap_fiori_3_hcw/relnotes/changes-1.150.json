@@ -3,6 +3,11 @@
     "date": "June 2026",
     "notes": [
       {
+        "id": "e59480af971122c075f022da79cc92a4c1ac3de0",
+        "type": "FIX",
+        "text": " sap.m.Select: move close button from header to footer on phone"
+      },
+      {
         "id": "95bdc1648d3c6f0146dadd971f8a812f2f358445",
         "type": "FIX",
         "text": " sap.m.Link: fix focus on mobile"

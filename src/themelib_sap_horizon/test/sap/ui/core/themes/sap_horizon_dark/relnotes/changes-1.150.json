@@ -3,6 +3,16 @@
     "date": "June 2026",
     "notes": [
       {
+        "id": "fa2e1be47f566308705f2eca40a50235ee2a7b45",
+        "type": "FIX",
+        "text": " sap.m.IconTabBar: fix expand icon color overriding styles"
+      },
+      {
+        "id": "e59480af971122c075f022da79cc92a4c1ac3de0",
+        "type": "FIX",
+        "text": " sap.m.Select: move close button from header to footer on phone"
+      },
+      {
         "id": "c742daab020f73e7379f9b18393f02ee1b8cd45c",
         "type": "FIX",
         "text": " sap.m.GridListItem: Missing shadow on selected state added"
