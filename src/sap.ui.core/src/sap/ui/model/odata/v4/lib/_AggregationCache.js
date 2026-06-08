@@ -540,9 +540,7 @@ sap.ui.define([
 		const fnOldSubmitCallback = fnSubmitCallback;
 		fnSubmitCallback = () => {
 			const fnReporter = this.oRequestor.getModelInterface().getReporter();
-			if (this.oCountPromise) {
-				this.readCount(oGroupLock)?.catch(fnReporter);
-			}
+			this.readCount(oGroupLock)?.catch(fnReporter);
 			this.readGrandTotal(oGroupLock)?.catch(fnReporter);
 			fnOldSubmitCallback();
 		};
