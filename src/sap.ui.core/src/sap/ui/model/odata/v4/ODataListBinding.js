@@ -3272,11 +3272,11 @@ sap.ui.define([
 	};
 
 	/**
-	 * Returns a sorted list of all current sorters' group paths. Without autoExpandSelect the group
-	 * paths are ignored.
+	 * Returns a sorted list of all current sorters' group paths, without duplicates. Without
+	 * autoExpandSelect the group paths are ignored.
 	 *
 	 * @returns {string[]}
-	 *   The current group paths
+	 *   The current group paths, sorted and without duplicates
 	 *
 	 * @private
 	 */
@@ -3284,14 +3284,14 @@ sap.ui.define([
 		if (!this.oModel.bAutoExpandSelect) {
 			return [];
 		}
-		const aGroupPaths = [];
+		const oGroupPaths = new Set();
 		this.aSorters.forEach((oSorter) => {
 			const aPaths = oSorter.getGroupPaths();
 			if (aPaths) {
-				aGroupPaths.push(...aPaths);
+				aPaths.forEach((sPath) => oGroupPaths.add(sPath));
 			}
 		});
-		return aGroupPaths.sort();
+		return [...oGroupPaths].sort();
 	};
 
 	/**

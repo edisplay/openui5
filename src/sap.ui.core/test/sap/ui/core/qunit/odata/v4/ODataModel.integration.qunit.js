@@ -3974,7 +3974,7 @@ sap.ui.define([
 			oBinding = that.oView.byId("table").getBinding("rows");
 
 			oBinding.filter(new Filter("SalesOrderID", FilterOperator.NE, "00"));
-			oBinding.sort(new Sorter({groupPaths : ["Note"], path : "SalesOrderID"}));
+			oBinding.sort(new Sorter({groupPaths : ["DeliveryStatus"], path : "SalesOrderID"}));
 			oBinding.changeParameters({$count : true, custom : "foo"});
 
 			that.expectEvents(assert, "sap.ui.model.odata.v4.ODataListBinding: /SalesOrderList|", [
@@ -3985,13 +3985,14 @@ sap.ui.define([
 					[, "change", {reason : "change"}],
 					[, "dataReceived", {data : {}}]
 				])
-				.expectRequest("SalesOrderList?$count=true&custom=foo&$select=Note,SalesOrderID"
+				.expectRequest("SalesOrderList?$count=true&custom=foo"
+					+ "&$select=DeliveryStatus,Note,SalesOrderID"
 					+ "&$orderby=SalesOrderID&$filter=SalesOrderID ne '00'&$skip=0&$top=3", {
 					"@odata.count" : "3",
 					value : [
-						{SalesOrderID : "01", Note : "Note 1"},
-						{SalesOrderID : "02", Note : "Note 2"},
-						{SalesOrderID : "03", Note : "Note 3"}
+						{DeliveryStatus : "I", Note : "Note 1", SalesOrderID : "01"},
+						{DeliveryStatus : "I", Note : "Note 2", SalesOrderID : "02"},
+						{DeliveryStatus : "I", Note : "Note 3", SalesOrderID : "03"}
 					]
 				})
 				.expectChange("note", ["Note 1", "Note 2", "Note 3"]);
