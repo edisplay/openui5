@@ -8,10 +8,12 @@
  */
 sap.ui.define(["sap/ui/thirdparty/jquery",
 		"sap/ui/support/supportRules/Main",
-		"sap/ui/support/supportRules/RuleSetLoader"],
+		"sap/ui/support/supportRules/RuleSetLoader",
+		"sap/base/Log"],
 	function (jQuery,
 			  Main,
-			  RuleSetLoader) {
+			  RuleSetLoader,
+			  Log) {
 		"use strict";
 
 		jQuery.sap = jQuery.sap || {};
@@ -109,13 +111,16 @@ sap.ui.define(["sap/ui/thirdparty/jquery",
 			 * Adds new temporary rule when in silent mode
 			 *
 			 * @deprecated Since version 1.60.0. Please use sap/ui/support/RuleAnalyzer instead.
+			 * As of version 1.150, temporary rules themselves are also deprecated.
+			 * Please use library rulesets instead. See {@link topic:b5a51358b3574aea9143fa50ae4e0e2a Creating a Ruleset for a Library}.
 			 * @public
 			 * @since 1.60
 			 * @param {Object} oRule Settings for the new rule. For detailed information about its properties see {@link topic:eaeea19a991d46f29e6d8d8827317d0e Rule Property Values}
 			 * @returns {string} Rule creation status. Possible values are "success" or description of why adding failed.
 			 */
 			addRule: function (oRule) {
-				return Main.addRule(oRule);
+				Log.warning("[Support Assistant] Temporary rules are deprecated and non-functional anymore. Please use library rulesets instead. See https://ui5.sap.com/#/topic/b5a51358b3574aea9143fa50ae4e0e2a");
+				return "Temporary rules are deprecated and non-functional anymore. Please use library rulesets instead.";
 			}
 		};
 
