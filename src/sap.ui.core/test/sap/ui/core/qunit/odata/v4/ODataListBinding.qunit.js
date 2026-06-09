@@ -3868,13 +3868,14 @@ sap.ui.define([
 				oHelperMock.expects("deepEqual")
 					.withExactArgs(sinon.match.same(aSorters), sinon.match.same(oBinding.aSorters))
 					.returns(false);
-				const oGetGroupPathsMock = this.mock(oBinding).expects("getGroupPaths").twice();
+				const oGetGroupPathsExpectation = this.mock(oBinding).expects("getGroupPaths")
+					.twice().withExactArgs();
 				const aOldSorters = oBinding.aSorters;
-				oGetGroupPathsMock.onCall(0).callsFake(function () {
+				oGetGroupPathsExpectation.onCall(0).callsFake(function () {
 					assert.strictEqual(this.aSorters, aOldSorters);
 					return ["a", "b"];
 				});
-				oGetGroupPathsMock.onCall(1).callsFake(function () {
+				oGetGroupPathsExpectation.onCall(1).callsFake(function () {
 					assert.strictEqual(this.aSorters, aSorters);
 					return bChangedGroupPaths ? ["a", "c"] : ["a", "b"];
 				});
@@ -8196,7 +8197,7 @@ sap.ui.define([
 	QUnit.test("getGroupPaths: no autoExpandSelect", function (assert) {
 		this.oModel.bAutoExpandSelect = false;
 		const oBinding = this.bindList("/EMPLOYEES");
-		oBinding.aSorters = ["~oSorter~"];
+		oBinding.aSorters = [{getGroupPaths : mustBeMocked}]; // must not be called
 
 		// code under test
 		assert.deepEqual(oBinding.getGroupPaths(), []);
@@ -8214,6 +8215,8 @@ sap.ui.define([
 				new Sorter({path : "n/a", groupPaths : ["c"]}),
 				new Sorter({path : "n/a"}),
 				new Sorter({path : "n/a", groupPaths : ["b", "a"]}),
+				// same path must not be added twice
+				new Sorter({path : "n/a", groupPaths : ["a", "a", "b"]}),
 				new Sorter({path : "n/a", groupPaths : []})
 			];
 		} else {
