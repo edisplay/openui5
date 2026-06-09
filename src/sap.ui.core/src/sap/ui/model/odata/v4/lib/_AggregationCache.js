@@ -2287,9 +2287,13 @@ sap.ui.define([
 		mQueryOptions = _AggregationHelper.buildApply(this.oAggregation, mQueryOptions, -1);
 		const sResourcePath = this.sResourcePath
 			+ this.oRequestor.buildQueryString(this.sMetaPath, mQueryOptions, false, false, true);
+		const sGroupId = oGroupLock.getGroupId();
+		const oGroupLock4Request = sGroupId.startsWith("$inactive.")
+			? this.oRequestor.lockGroup(sGroupId.slice(10), oGroupLock.getOwner())
+			: oGroupLock.getUnlockedCopy();
 
-		return this.oRequestor.request("GET", sResourcePath, oGroupLock.getUnlockedCopy(),
-				undefined, undefined, undefined, undefined, undefined, undefined, undefined,
+		return this.oRequestor.request("GET", sResourcePath, oGroupLock4Request, undefined,
+				undefined, undefined, undefined, undefined, undefined, undefined,
 				{/*mMergeableQueryOptions*/})
 			.then((oResult) => {
 				_Helper.updateExisting(this.mChangeListeners, "()", oGrandTotal, oResult.value[0]);

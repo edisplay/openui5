@@ -4546,8 +4546,9 @@ sap.ui.define([
 	//*********************************************************************************************
 [false, true].forEach((bWithGrandTotalCopy) => {
 	[false, true].forEach((bOutdatedInBetween) => {
-		const sTitle = "readGrandTotal: success, 2 grand totals:" + bWithGrandTotalCopy
-			+ ", outdated in between: " + bOutdatedInBetween;
+		[false, true].forEach((bInactive) => {
+	const sTitle = "readGrandTotal: success, 2 grand totals:" + bWithGrandTotalCopy
+		+ ", outdated in between: " + bOutdatedInBetween + ", inactive: " + bInactive;
 
 	QUnit.test(sTitle, function (assert) {
 		const oCache = _AggregationCache.create(this.oRequestor, "Foo", "", {
@@ -4580,12 +4581,21 @@ sap.ui.define([
 			.withExactArgs("/Foo", "~mQueryOptions~", false, false, true)
 			.returns("~sQueryString~");
 		const oGroupLock = {
+			getGroupId : mustBeMocked,
+			getOwner : mustBeMocked,
 			getUnlockedCopy : mustBeMocked
 		};
-		this.mock(oGroupLock).expects("getUnlockedCopy").withExactArgs()
-			.returns("~oUnlockedGroupLock~");
+		this.mock(oGroupLock).expects("getGroupId").withExactArgs()
+			.returns(bInactive ? "$inactive.$auto" : "~sGroupId~");
+		this.mock(oGroupLock).expects("getOwner").exactly(bInactive ? 1 : 0).withExactArgs()
+			.returns("~owner~");
+		this.mock(this.oRequestor).expects("lockGroup").exactly(bInactive ? 1 : 0)
+			.withExactArgs("$auto", "~owner~")
+			.returns("~oGroupLock4Request~");
+		this.mock(oGroupLock).expects("getUnlockedCopy").exactly(bInactive ? 0 : 1).withExactArgs()
+			.returns("~oGroupLock4Request~");
 		this.mock(this.oRequestor).expects("request")
-			.withExactArgs("GET", "Foo~sQueryString~", "~oUnlockedGroupLock~", undefined, undefined,
+			.withExactArgs("GET", "Foo~sQueryString~", "~oGroupLock4Request~", undefined, undefined,
 				undefined, undefined, undefined, undefined, undefined, {/*mMergeableQueryOptions*/})
 			.callsFake(() => {
 				if (bOutdatedInBetween) {
@@ -4615,6 +4625,7 @@ sap.ui.define([
 			assert.strictEqual(oResult, undefined);
 		});
 	});
+		});
 	});
 });
 
@@ -4639,13 +4650,15 @@ sap.ui.define([
 			.withExactArgs("/Foo", "~mQueryOptions~", false, false, true)
 			.returns("~sQueryString~");
 		const oGroupLock = {
+			getGroupId : mustBeMocked,
 			getUnlockedCopy : mustBeMocked
 		};
+		this.mock(oGroupLock).expects("getGroupId").withExactArgs().returns("~sGroupId~");
 		this.mock(oGroupLock).expects("getUnlockedCopy").withExactArgs()
-			.returns("~oUnlockedGroupLock~");
+			.returns("~oGroupLock4Request~");
 		const oError = new Error("Intentionally failed");
 		this.mock(this.oRequestor).expects("request")
-			.withExactArgs("GET", "Foo~sQueryString~", "~oUnlockedGroupLock~", undefined, undefined,
+			.withExactArgs("GET", "Foo~sQueryString~", "~oGroupLock4Request~", undefined, undefined,
 				undefined, undefined, undefined, undefined, undefined, {/*mMergeableQueryOptions*/})
 			.rejects(oError);
 		this.mock(_Helper).expects("updateExisting").never();

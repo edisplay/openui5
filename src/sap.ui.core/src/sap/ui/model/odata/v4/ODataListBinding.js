@@ -2597,7 +2597,8 @@ sap.ui.define([
 	ODataListBinding.prototype.fireCreateActivate = function (oContext) {
 		if (this.fireEvent("createActivate", {context : oContext}, true)) {
 			this.iActiveContexts += 1;
-			this.setOutdated(true);
+			this.setOutdated(/*bForce*/false, /*aPaths*/null, /*bNoRequest*/false,
+				/*bForceHeader*/true);
 			return true;
 		}
 

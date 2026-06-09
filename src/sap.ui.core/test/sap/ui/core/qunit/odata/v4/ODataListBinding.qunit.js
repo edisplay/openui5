@@ -12298,7 +12298,7 @@ sap.ui.define([
 		oBindingMock.expects("fireEvent")
 			.withExactArgs("createActivate", {context : "~oContext~"}, true)
 			.returns(true);
-		oBindingMock.expects("setOutdated").withExactArgs(true);
+		oBindingMock.expects("setOutdated").withExactArgs(false, null, false, true);
 
 		// code under test
 		assert.strictEqual(oBinding.fireCreateActivate("~oContext~"), true);
