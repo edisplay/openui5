@@ -6422,7 +6422,6 @@ sap.ui.define([
 			const oRequestorMock = that.mock(oCache.oRequestor);
 			oRequestorMock.expects("getModelInterface").withExactArgs().returns(oModelInterface);
 			let oReadCountExpectation = oCacheMock.expects("readCount")
-				.exactly(oCountPromise ? 1 : 0)
 				.withExactArgs("~oGroupLock~")
 				.returns(undefined); // no count needs to be read
 			let oReadGrandTotalExpectation = oCacheMock.expects("readGrandTotal")
@@ -6433,9 +6432,7 @@ sap.ui.define([
 			fnNewSubmitCallback();
 
 			assert.ok(fnSubmitCallback.calledOnceWithExactly());
-			if (oCountPromise) {
-				sinon.assert.callOrder(oReadCountExpectation, fnSubmitCallback);
-			}
+			sinon.assert.callOrder(oReadCountExpectation, fnSubmitCallback);
 			sinon.assert.callOrder(oReadGrandTotalExpectation, fnSubmitCallback);
 			fnSubmitCallback.resetHistory();
 
@@ -6445,7 +6442,6 @@ sap.ui.define([
 				.withExactArgs(sinon.match.same(oReadCountError));
 			const oReadCountPromise = oCountPromise && Promise.reject(oReadCountError);
 			oReadCountExpectation = oCacheMock.expects("readCount")
-				.exactly(oCountPromise ? 1 : 0)
 				.withExactArgs("~oGroupLock~")
 				.returns(oReadCountPromise);
 			const oReadGrandTotalError = new Error("~readGrandTotalError~");
@@ -6529,7 +6525,6 @@ sap.ui.define([
 		let fnCancelCallback;
 		const fnSubmitCallback = sinon.spy();
 		let fnNewSubmitCallback;
-		this.mock(oCache).expects("readCount").never();
 		this.mock(oCache.oFirstLevel).expects("create")
 			.withExactArgs("~oGroupLock~", "~oPostPathPromise~", "~sPath~",
 				"~sTransientPredicate~", {bar : "~bar~", foo : "~foo~"}, false,
@@ -6641,6 +6636,9 @@ sap.ui.define([
 			that.mock(oModelInterface).expects("getReporter").withExactArgs()
 				.returns("~fnReporter~");
 
+			const oReadCountExpectation = that.mock(oCache).expects("readCount")
+				.withExactArgs("~oGroupLock~")
+				.returns(undefined); // no count needs to be read
 			const oReadGrandTotalExpectation = that.mock(oCache).expects("readGrandTotal")
 				.withExactArgs("~oGroupLock~")
 				.returns(undefined); // no grand total needs to be read
@@ -6649,6 +6647,7 @@ sap.ui.define([
 			fnNewSubmitCallback();
 
 			assert.ok(fnSubmitCallback.calledOnceWithExactly());
+			sinon.assert.callOrder(oReadCountExpectation, fnSubmitCallback);
 			sinon.assert.callOrder(oReadGrandTotalExpectation, fnSubmitCallback);
 			fnSubmitCallback.resetHistory();
 		});
