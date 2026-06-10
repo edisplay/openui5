@@ -22,6 +22,7 @@ sap.ui.define([
 	"sap/ui/thirdparty/jquery",
 	'sap/ui/core/date/UI5Date',
 	'sap/ui/unified/calendar/CalendarUtils',
+	'./DateTimeFieldZoomMixin',
 	// jQuery Plugin "cursorPos"
 	"sap/ui/dom/jquery/cursorPos"
 ], function(
@@ -42,7 +43,8 @@ sap.ui.define([
 	Log,
 	jQuery,
 	UI5Date,
-	CalendarUtils
+	CalendarUtils,
+	DateTimeFieldZoomMixin
 ) {
 	"use strict";
 
@@ -139,6 +141,8 @@ sap.ui.define([
 
 		renderer: DateTimeFieldRenderer
 	});
+
+	Object.assign(DateTimeField.prototype, DateTimeFieldZoomMixin);
 
 	DateTimeField.prototype.onBeforeRendering = function() {
 
