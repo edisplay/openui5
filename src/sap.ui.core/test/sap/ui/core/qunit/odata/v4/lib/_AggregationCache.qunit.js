@@ -2030,7 +2030,11 @@ sap.ui.define([
 	iExpectedStart : 0,
 	iExpectedLength : 23
 }].forEach(function (oFixture, i) {
-	QUnit.test("readFirst: #" + i, function (assert) {
+	[false, true].forEach(function (bGrandTotalPromiseOutdated) {
+		const sTitle = "readFirst: #" + i + ", grand total Promise is marked as outdated: "
+			+ bGrandTotalPromiseOutdated;
+
+	QUnit.test(sTitle, function (assert) {
 		var oAggregation = { // filled before by buildApply
 				aggregate : {
 					SalesNumber : {grandTotal : oFixture.bHasGrandTotal}
@@ -2066,6 +2070,9 @@ sap.ui.define([
 		if (oFixture.bHasGrandTotal) {
 			oCache.oGrandTotalPromise = SyncPromise.resolve(oGrandTotal);
 			_Helper.setPrivateAnnotation(oGrandTotal, "copy", oGrandTotalCopy);
+			if (bGrandTotalPromiseOutdated) {
+				oCache.oGrandTotalPromise.$outdated = true;
+			}
 		}
 		oCache.oFirstLevel.bSentRequest = oFixture.bSentRequest;
 		for (let j = 0; j < Math.min(iExpectedLength, 42); j += 1) {
@@ -2119,6 +2126,9 @@ sap.ui.define([
 						.callsFake(addElements); // so that oCache.aElements is actually filled
 			}
 		}
+		oCacheMock.expects("setGrandTotalOutdated")
+			.exactly(oFixture.bHasGrandTotal && bGrandTotalPromiseOutdated ? 1 : 0)
+			.withExactArgs(true);
 		const oAddElementsExpectation = oCacheMock.expects("addElements")
 			.exactly(bSkipResponse ? 0 : 1)
 			.withExactArgs(sinon.match.same(oReadResult.value), iExpectedStart + iOffset,
@@ -2173,6 +2183,7 @@ sap.ui.define([
 				sinon.assert.callOrder(oAddElementsExpectation, oHandleOutOfPlaceNodesExpectation);
 			});
 	});
+	});
 });
 
 	//*********************************************************************************************
@@ -2201,6 +2212,7 @@ sap.ui.define([
 			.returns(SyncPromise.resolve(Promise.resolve(oReadResult)));
 		this.mock(oCache).expects("requestOutOfPlaceNodes").withExactArgs("~oGroupLock~")
 			.returns([]);
+		this.mock(oCache).expects("setGrandTotalOutdated").never();
 		this.mock(oCache).expects("addElements")
 			.withExactArgs(sinon.match.same(oReadResult.value), 0,
 				sinon.match.same(oCache.oFirstLevel), 0);
@@ -4691,18 +4703,20 @@ sap.ui.define([
 	});
 
 	//*********************************************************************************************
-	QUnit.test("setGrandTotalOutdated: no grand total Promise", function () {
+	QUnit.test("setGrandTotalOutdated: no grand total", function (assert) {
 		const oCache = _AggregationCache.create(this.oRequestor, "Foo", "", {},
 			{hierarchyQualifier : "X"});
+		assert.strictEqual(oCache.oGrandTotalPromise, undefined, "no grand total Promise");
 		this.mock(_Helper).expects("updateAll").never();
 
 		// code under test
 		oCache.setGrandTotalOutdated(true);
+
+		assert.strictEqual(oCache.oGrandTotalPromise, undefined, "still no grand total Promise");
 	});
 
 	//*********************************************************************************************
-[false, true].forEach((bWithCopy) => {
-	QUnit.test("setGrandTotalOutdated: wait for grand total, with copy=" + bWithCopy, function () {
+	QUnit.test("setGrandTotalOutdated: grand total pending", function (assert) {
 		const oCache = _AggregationCache.create(this.oRequestor, "Foo", "", {}, {
 			aggregate : {
 				bar : {
@@ -4710,26 +4724,16 @@ sap.ui.define([
 				}
 			}
 		});
-		oCache.oGrandTotalPromise = Promise.resolve("~oGrandTotal~");
-		const oHelperMock = this.mock(_Helper);
-		oHelperMock.expects("updateAll")
-			.withExactArgs(sinon.match.same(oCache.mChangeListeners), "()", "~oGrandTotal~",
-				{"@$ui5.context.isOutdated" : "~bOutdated~"});
-		oHelperMock.expects("getPrivateAnnotation").withExactArgs("~oGrandTotal~", "copy")
-			.returns(bWithCopy ? "~oGrandTotalCopy~" : undefined);
-		oHelperMock.expects("getPrivateAnnotation").exactly(bWithCopy ? 1 : 0)
-			.withExactArgs("~oGrandTotalCopy~", "predicate")
-			.returns("~sPredicateGrandTotalCopy~");
-		oHelperMock.expects("updateAll").exactly(bWithCopy ? 1 : 0)
-			.withExactArgs(sinon.match.same(oCache.mChangeListeners), "~sPredicateGrandTotalCopy~",
-				"~oGrandTotalCopy~", {"@$ui5.context.isOutdated" : "~bOutdated~"});
+		assert.ok(oCache.oGrandTotalPromise.getResult() instanceof Promise, "grand total pending");
+		assert.notOk("$outdated" in oCache.oGrandTotalPromise);
+
+		this.mock(_Helper).expects("updateAll").never();
 
 		// code under test
 		oCache.setGrandTotalOutdated("~bOutdated~");
 
-		return oCache.oGrandTotalPromise;
+		assert.strictEqual(oCache.oGrandTotalPromise.$outdated, true);
 	});
-});
 
 	//*********************************************************************************************
 [false, true].forEach((bWithCopy) => {
