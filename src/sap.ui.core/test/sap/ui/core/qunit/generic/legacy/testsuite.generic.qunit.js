@@ -41,10 +41,21 @@ sap.ui.define(function() {
 				autostart: false
 			},
 			DuplicateIdCheck: {
-				title: "QUnit Page for duplicate ID issues detection in UI5 controls"
+				title: "QUnit Page for duplicate ID issues detection in UI5 controls",
+				ui5: {
+					// preload sap.m upfront to avoid individual requests for sap/m/Text -> sap/m/library
+					// as those prevent a later preload of sap.m
+					libs: "sap.m"
+				}
 			},
 			SettersContextReturn: {
-				title: "All setters should return correct context (Reason: https://github.com/UI5/openui5/blob/master/docs/guidelines.md#creating-classes)"
+				title: "All setters should return correct context (Reason: https://github.com/UI5/openui5/blob/master/docs/guidelines.md#creating-classes)",
+				ui5: {
+					// preload sap.m upfront to avoid individual requests for sap/m/Text -> sap/m/library
+					// as those prevent a later preload of sap.m
+					// also preload sap.chart as sap.ui.comp otherwise loads it lazily when attachInitialize is called by the test
+					libs: "sap.m, sap.chart"
+				}
 			}
 		}
 	};
