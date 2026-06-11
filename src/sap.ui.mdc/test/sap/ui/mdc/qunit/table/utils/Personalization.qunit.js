@@ -86,8 +86,8 @@ sap.ui.define([
 	QUnit.test("createClearGroupsChange", async function(assert) {
 		this.oTable.setGroupConditions({
 			groupLevels: [
-				{name: "colA"},
-				{name: "colB"}
+				{key: "colA"},
+				{key: "colB"}
 			]
 		});
 
@@ -113,6 +113,10 @@ sap.ui.define([
 			control: this.oTable,
 			key: "ColumnFreeze",
 			state: [{
+				key: "GridTable",
+				/**
+				 * @deprecated As of version 1.124.0
+				 */
 				name: "GridTable",
 				fixedColumnCount: 2
 			}],
@@ -194,7 +198,7 @@ sap.ui.define([
 				control: oTable,
 				key: "Column",
 				state: [
-					{name: "colB"}
+					{key: "colB"}
 				]
 			});
 			return TableQUnitUtils.closeP13nPopup(oTable);
@@ -227,7 +231,7 @@ sap.ui.define([
 				control: oTable,
 				key: "Column",
 				state: [
-					{name: "colB"}
+					{key: "colB"}
 				]
 			});
 			return TableQUnitUtils.closeColumnMenu(oTable);

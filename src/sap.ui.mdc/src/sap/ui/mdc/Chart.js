@@ -1714,6 +1714,9 @@ sap.ui.define([
 				const sPropertyKey = oItem.getPropertyKey();
 				aProperties.push({
 					key: sPropertyKey,
+					/**
+					 * @deprecated As of version 1.124.0
+					 */
 					name: sPropertyKey,
 					role: oItem.getRole()
 				});

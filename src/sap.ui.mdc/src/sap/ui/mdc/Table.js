@@ -2040,6 +2040,9 @@ sap.ui.define([
 			if (sPropertyKey) {
 				aProperties.push({
 					key: sPropertyKey,
+					/**
+					 * @deprecated As of version 1.124.0
+					 */
 					name: sPropertyKey
 				});
 			}

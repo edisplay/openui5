@@ -89,6 +89,43 @@ sap.ui.define([
                 return {
                     changeType: "removeSort",
                     content: {
+                        key: "modifiedBy"
+                    }
+                };
+            }
+        },
+        previousActions: [{
+            name: "settings",
+            controlId: "myChart",
+            parameter: function() {
+                return {
+                    changeType: "addSort",
+                    content: {
+                        index: 0,
+                        key: "modifiedBy",
+                        descending: false
+                    }
+                };
+            }
+        }],
+        changesAfterCondensing: 0,
+        afterAction: fnConfirmInitialSortingState,
+		afterUndo: fnConfirmSortingGotAdded(),
+		afterRedo: fnConfirmInitialSortingState
+    });
+
+	/**
+	 * @deprecated As of version 1.124.0
+	 */
+    elementActionTest("addSort removeSort condensed (using 'name' in content)", {
+        xmlView: buildXML(""),
+        action: {
+            name: "settings",
+            controlId: "myChart",
+            parameter: function() {
+                return {
+                    changeType: "removeSort",
+                    content: {
                         name: "modifiedBy"
                     }
                 };

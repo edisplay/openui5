@@ -215,6 +215,7 @@ sap.ui.define([
 				const mItem = {};
 
 				mItem.name = oProperty.key;
+				mItem.key = oProperty.key;
 
 				/**
 				 * @deprecated As of version 1.121
@@ -320,8 +321,8 @@ sap.ui.define([
 
 		arrayToMap: function(aArray) {
 			return aArray.reduce((mMap, oProp, iIndex) => {
-				mMap[oProp.name] = oProp;
-				mMap[oProp.name].position = iIndex;
+				mMap[oProp.key ? oProp.key : oProp.name] = oProp;
+				mMap[oProp.key ? oProp.key : oProp.name].position = iIndex;
 				return mMap;
 			}, {});
 		},

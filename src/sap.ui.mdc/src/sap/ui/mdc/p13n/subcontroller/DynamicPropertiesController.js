@@ -156,6 +156,10 @@ sap.ui.define([
 					changeSpecificData: {
 						changeType: "setPropertyAttribute",
 						content: {
+							key: sPropertyKey,
+							/**
+							 * @deprecated As of version 1.124.0
+							 */
 							name: sPropertyKey,
 							attribute: sAttribute,
 							value: oPropertyChanges[sAttribute]
@@ -264,8 +268,14 @@ sap.ui.define([
 			const sAttribute = oChange.changeSpecificData.content.attribute;
 			const vValue = oChange.changeSpecificData.content.value;
 
+			const sPropertyKey = oChange.changeSpecificData.content.key || oChange.changeSpecificData.content.name; // Support deprecated "name" property
+
 			oState = xConfigAPI.createAggregationConfig(oControl, {
-				name: oChange.changeSpecificData.content.name,
+				key: sPropertyKey,
+				/**
+				 * @deprecated As of version 1.124.0
+				 */
+				name: sPropertyKey,
 				controlMeta: {
 					aggregation: "propertyInfo"
 				},
