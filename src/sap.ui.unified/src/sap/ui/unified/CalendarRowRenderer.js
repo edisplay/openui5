@@ -287,8 +287,7 @@ sap.ui.define([
 				if (!oPeriod.isRecurring()) {
 					return oPeriod.hasNonWorkingAtDate(oStartDateInterval);
 				}
-				const hasOccurrenceOnDate = RecurrenceUtils.hasOccurrenceOnDate.bind(oPeriod);
-				return hasOccurrenceOnDate(oStartDateInterval);
+				return RecurrenceUtils.hasOccurrenceOnDateCached.call(oPeriod, oStartDateInterval);
 			});
 
 		const aFilteredItemsForCurrentHours = aFilteredNonWorkingRange.filter((oPeriod) => {
