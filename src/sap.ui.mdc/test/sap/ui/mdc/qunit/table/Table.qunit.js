@@ -3380,11 +3380,11 @@ sap.ui.define([
 			descending: true
 		}];
 		const aSortConditionsResult = [{
-			name: "test",
+			key: "test",
 			/**
 			 * @deprecated As of version 1.124.0
 			 */
-			key: "test",
+			name: "test",
 			descending: true
 		}];
 		const oFilterConditions = {
