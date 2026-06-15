@@ -260,6 +260,7 @@ sap.ui.define([
 
 			oRm.openStart("div");
 			oRm.attr("role", "list");
+			oRm.attr("tabindex", "-1");
 			oRm.attr("aria-labelledby", InvisibleText.getStaticId("sap.m", "SPC_BLOCKERS"));
 			oRm.class("sapMSinglePCBlockers");
 			oRm.class("sapUiCalendarRowVisFilled"); // TODO: when refactor the CSS of appointments maybe we won't need this class
@@ -591,6 +592,7 @@ sap.ui.define([
 
 				oRm.openStart("div");
 				oRm.attr("role", "list");
+				oRm.attr("tabindex", "-1");
 				oRm.class("sapMSinglePCAppointments");
 				oRm.class("sapUiCalendarRowVisFilled"); // TODO: when refactor the CSS of appointments maybe we won't need this class
 
