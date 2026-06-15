@@ -1077,7 +1077,7 @@ sap.ui.define([
 			return;
 		}
 
-		if (oEvent.target.id == this.getId("tblHeader") || this.getDomRef("tblHeadModeCol")?.contains(oEvent.target)) {
+		if (oEvent.target.id == this.getId("tblHeader") || oEvent.target.id == this.getId("tblHeadModeCol")) {
 			// prevent from scrolling
 			oEvent.preventDefault();
 			oEvent.setMarked();
