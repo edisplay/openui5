@@ -21,7 +21,6 @@ sap.ui.define([
 	"sap/ui/fl/apply/api/FlexRuntimeInfoAPI",
 	"sap/ui/fl/initial/_internal/Settings",
 	"sap/ui/fl/variants/VariantManagement",
-	"sap/ui/fl/variants/VariantModel",
 	"sap/ui/fl/write/_internal/flexState/changes/UIChangeManager",
 	"sap/ui/fl/write/_internal/flexState/FlexObjectManager",
 	"sap/ui/fl/write/api/ChangesWriteAPI",
@@ -51,7 +50,6 @@ sap.ui.define([
 	FlexRuntimeInfoAPI,
 	Settings,
 	VariantManagement,
-	VariantModel,
 	UIChangeManager,
 	FlexObjectManager,
 	ChangesWriteAPI,
@@ -106,18 +104,7 @@ sap.ui.define([
 				isPublicFlVariantEnabled: false
 			}));
 
-			return oViewPromise.then(function() {
-				this.oVMControl = new VariantManagement("variantManagement");
-				this.oVariantModel = new VariantModel({
-					variantManagement: {
-						variants: []
-					}
-				}, {
-					appComponent: this.oComp,
-					vmReference: "variantManagement",
-					vmControl: this.oVMControl
-				});
-			}.bind(this))
+			return oViewPromise
 			.then(function() {
 				this.oCompContainer.placeAt("qunit-fixture");
 
@@ -194,7 +181,6 @@ sap.ui.define([
 			});
 		},
 		afterEach() {
-			this.oVMControl.destroy();
 			sandbox.restore();
 			ControlPersonalizationWriteAPI.detachAllChangeCreationListeners();
 		},
@@ -643,18 +629,7 @@ sap.ui.define([
 				isPublicFlVariantEnabled: false
 			}));
 
-			oViewPromise.then(function() {
-				this.oVMControl2 = new VariantManagement("variantManagement");
-				this.oVariantModel = new VariantModel({
-					variantManagement: {
-						variants: []
-					}
-				}, {
-					appComponent: this.oComp,
-					vmReference: "variantManagement",
-					vmControl: this.oVMControl2
-				});
-			}.bind(this))
+			oViewPromise
 			.then(function() {
 				this.oCompContainer = new ComponentContainer({
 					component: this.oComp
@@ -710,7 +685,6 @@ sap.ui.define([
 			}.bind(this));
 		},
 		afterEach() {
-			this.oVMControl2.destroy();
 			sandbox.restore();
 		},
 		after() {
