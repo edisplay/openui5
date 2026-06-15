@@ -5083,7 +5083,7 @@ sap.ui.define([
 		var oCache = _AggregationCache.create(this.oRequestor, "~", "", {},
 				bDataAggregation ? {groupLevels : ["foo"]} : {hierarchyQualifier : "X"}),
 			oFirstLevel = oCache.oFirstLevel,
-			mKeptElementPredicates = {foo : true, bar : true},
+			mKeptElementPredicates = {foo : true, bar : true, created : true, "($uid=1-23)" : true},
 			oNewAggregation = bDataAggregation
 				? {aggregate : "~aggregate~"}
 				: {aggregate : "~aggregate~", hierarchyQualifier : "Y"},
@@ -5101,7 +5101,18 @@ sap.ui.define([
 			sQueryOptions = JSON.stringify(mQueryOptions),
 			bReuse = bDataAggregation && bHasCreated || bKeptFirstLevel;
 
+		function matchKeptElementPredicates(mKeptElementPredicates0) {
+			return mKeptElementPredicates0 !== mKeptElementPredicates
+				&& _Helper.deepEqual(mKeptElementPredicates0, mKeptElementPredicates);
+		}
 		oCache.aElements.$byPredicate = {
+			"($uid=1-23)" : {
+				"@$ui5._" : {a : 1, b : 0, transientPredicate : "($uid=1-23)"},
+				"@$ui5.node.isExpanded" : false,
+				"@$ui5.node.isTotal" : "n/a",
+				"@$ui5.node.level" : 0,
+				name : "transient"
+			},
 			bar : {
 				"@$ui5._" : {a : 0, b : 1, predicate : "bar"},
 				"@$ui5.node.isExpanded" : false,
@@ -5116,11 +5127,18 @@ sap.ui.define([
 				"@$ui5.node.level" : 2,
 				name : "baz"
 			},
-			foo : {
-				"@$ui5._" : {a : -2, b : 3, predicate : "foo"},
+			created : {
+				"@$ui5._" : {a : -2, b : 3, predicate : "created"},
 				"@$ui5.node.isExpanded" : undefined,
 				"@$ui5.node.isTotal" : "n/a",
 				"@$ui5.node.level" : 3,
+				name : "created"
+			},
+			foo : {
+				"@$ui5._" : {a : -3, b : 4, predicate : "foo"},
+				"@$ui5.node.isExpanded" : undefined,
+				"@$ui5.node.isTotal" : "n/a",
+				"@$ui5.node.level" : 4,
 				name : "foo"
 			}
 		};
@@ -5133,12 +5151,18 @@ sap.ui.define([
 		oFirstLevelMock.expects("getCreated").exactly(bDataAggregation ? 1 : 0).withExactArgs()
 			.returns(bHasCreated ? "~$created~" : 0);
 		const oResetExpectation = oFirstLevelMock.expects("reset").on(oCache)
-			.withExactArgs(sinon.match.same(mKeptElementPredicates), sGroupId,
+			.withExactArgs(sinon.match(matchKeptElementPredicates), sGroupId,
 				sinon.match.same(mQueryOptions))
 			.callsFake(function () {
 				assert.strictEqual(oCache.aElements.$created,
 					bDataAggregation && bHasCreated ? "~$created~" : 0);
 				oCache.oBackup = sGroupId ? {} : null;
+				oCache.aElements[0] = {
+					"@$ui5._" : {predicate : "created"}
+				};
+				oCache.aElements[1] = {
+					"@$ui5._" : {transientPredicate : "($uid=1-23)"}
+				};
 			});
 		const oTreeStateResetExpectation = this.mock(oCache.oTreeState).expects("reset")
 			.exactly(sGroupId ? 0 : 1).withExactArgs();
@@ -5148,7 +5172,7 @@ sap.ui.define([
 			.returns(bHasGrandTotal);
 		const oResetFirstExpectation = oFirstLevelMock.expects("reset").on(oCache.oFirstLevel)
 			.exactly(bReuse ? 1 : 0)
-			.withExactArgs(sinon.match.same(mKeptElementPredicates), sGroupId, {
+			.withExactArgs(sinon.match(matchKeptElementPredicates), sGroupId, {
 				$$filterBeforeAggregate : "filterBeforeAggregate",
 				$apply : "A.P.P.L.E.",
 				$count : true, // overridden
@@ -5172,6 +5196,13 @@ sap.ui.define([
 			// Note: no order for oGetExpandLevelsExpectation vs. oResetFirstExpectation
 		}
 		assert.deepEqual(oCache.aElements.$byPredicate, {
+			"($uid=1-23)" : {
+				"@$ui5._" : {a : 1, b : 0, transientPredicate : "($uid=1-23)"},
+				"@$ui5.node.isExpanded" : false,
+				"@$ui5.node.isTotal" : "n/a",
+				"@$ui5.node.level" : 0,
+				name : "transient"
+			},
 			bar : {
 				"@$ui5._" : {predicate : "bar"},
 				"@$ui5.node.isTotal" : "n/a",
@@ -5183,6 +5214,13 @@ sap.ui.define([
 				"@$ui5.node.isTotal" : "n/a",
 				"@$ui5.node.level" : 2,
 				name : "baz"
+			},
+			created : {
+				"@$ui5._" : {a : -2, b : 3, predicate : "created"},
+				"@$ui5.node.isExpanded" : undefined,
+				"@$ui5.node.isTotal" : "n/a",
+				"@$ui5.node.level" : 3,
+				name : "created"
 			},
 			foo : {
 				"@$ui5._" : {predicate : "foo"},
@@ -5374,10 +5412,30 @@ sap.ui.define([
 });
 
 	//*********************************************************************************************
-	QUnit.test("getCreatedElements", function (assert) {
-		// code under test
-		assert.deepEqual(_AggregationCache.prototype.getCreatedElements(), []);
+[false, true].forEach((bDataAggregation) => {
+	const sTitle = "getCreatedElements: data aggregation = " + bDataAggregation;
+
+	QUnit.test(sTitle, function (assert) {
+		const oAggregation = bDataAggregation
+			? { // filled before by buildApply
+				aggregate : {},
+				group : {},
+				groupLevels : ["a"]
+			}
+			: {
+				hierarchyQualifier : "X",
+				$NodeProperty : "SomeNodeID"
+			};
+		const oCache = _AggregationCache.create(this.oRequestor, "~", "", {}, oAggregation);
+		this.mock(oCache.oFirstLevel).expects("getCreatedElements")
+			.exactly(bDataAggregation ? 1 : 0).withExactArgs("some/path").returns("~result~");
+
+		assert.deepEqual(
+			// code under test
+			oCache.getCreatedElements("some/path"),
+			bDataAggregation ? "~result~" : []);
 	});
+});
 
 	//*********************************************************************************************
 	QUnit.test("getElements: non-empty path is forbidden", function (assert) {
