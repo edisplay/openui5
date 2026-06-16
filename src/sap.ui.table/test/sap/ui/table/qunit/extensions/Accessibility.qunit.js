@@ -1943,35 +1943,15 @@ sap.ui.define([
 	});
 
 	QUnit.test("HiddenText cellacc", async function(assert) {
-		let oCol1 = oTable.getColumns()[0];
 		let $Cell = getCell(1, 1, true, null, oTable);
 
 		assert.ok((oTable.$("cellacc").text()).indexOf($Cell.text()) > -1,
 			"Table: HiddenText cellacc is properly set");
 
-		oTable.setFixedColumnCount(0);
-		oTable.setEnableGrouping(true);
-		oTable.setGroupBy(oCol1);
-		await nextUIUpdate();
-
-		$Cell = getCell(1, 1, true, null, oTable);
-		assert.ok((oTable.$("cellacc").text()).indexOf($Cell.text()) > -1,
-			"Table: HiddenText cellacc is properly set after the first column is grouped");
-
-		oCol1 = oTreeTable.getColumns()[0];
 		$Cell = getCell(1, 1, true, null, oTreeTable);
 
 		assert.ok((oTreeTable.$("cellacc").text()).indexOf($Cell.text()) > -1,
 			"TreeTable: HiddenText cellacc is properly set");
-
-		oTreeTable.setFixedColumnCount(0);
-		oTreeTable.setEnableGrouping(true);
-		oTreeTable.setGroupBy(oCol1);
-		await nextUIUpdate();
-
-		$Cell = getCell(1, 1, true, null, oTreeTable);
-		assert.ok((oTreeTable.$("cellacc").text()).indexOf($Cell.text()) > -1,
-			"TreeTable: HiddenText cellacc is properly set after the first column is grouped");
 
 		$Cell = getCell(1, 0, true, null, oTreeTable);
 		const sExpandButtonText = TableUtils.getResourceText("TBL_EXPAND_BUTTON");
@@ -1990,6 +1970,31 @@ sap.ui.define([
 		assert.equal(oTreeTable.$("cellacc").text(), TableUtils.getResourceText("TBL_LEAF") + " " +
 			TableUtils.getResourceText("TBL_CELL_INCLUDES", ["TYPE_ASUB2 DESCRIPTION_ASUB2 Read Only"]),
 			"TreeTable: HiddenText cellacc for leaf node is correct");
+	});
+
+	/**
+	 * @deprecated As of version 1.110
+	 */
+	QUnit.test("HiddenText cellacc with grouping", async function(assert) {
+		let oCol1 = oTable.getColumns()[0];
+		oTable.setFixedColumnCount(0);
+		oTable.setEnableGrouping(true);
+		oTable.setGroupBy(oCol1);
+		await nextUIUpdate();
+
+		let $Cell = getCell(1, 1, true, null, oTable);
+		assert.ok((oTable.$("cellacc").text()).indexOf($Cell.text()) > -1,
+			"Table: HiddenText cellacc is properly set after the first column is grouped");
+
+		oCol1 = oTreeTable.getColumns()[0];
+		oTreeTable.setFixedColumnCount(0);
+		oTreeTable.setEnableGrouping(true);
+		oTreeTable.setGroupBy(oCol1);
+		await nextUIUpdate();
+
+		$Cell = getCell(1, 1, true, null, oTreeTable);
+		assert.ok((oTreeTable.$("cellacc").text()).indexOf($Cell.text()) > -1,
+			"TreeTable: HiddenText cellacc is properly set after the first column is grouped");
 	});
 
 	QUnit.test("Highlight texts", async function(assert) {

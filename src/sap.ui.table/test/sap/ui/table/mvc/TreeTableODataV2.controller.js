@@ -534,14 +534,13 @@ sap.ui.define([
 		 */
 		onSave: function() {
 			MessageToast.show("Submitting changes...");
-			const oBinding = oTable.getBinding();
 
 			oTable.setBusyIndicatorDelay(1);
 			oTable.setEnableBusyIndicator(true);
 			oTable.setBusy(true);
 
 			// send collected change data to the back-end
-			oBinding.submitChanges({
+			this.oODataModel.submitChanges({
 				success: function(oData) {
 					// remove busy state of table
 					oTable.setBusy(false);
