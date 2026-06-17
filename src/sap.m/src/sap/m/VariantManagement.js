@@ -2551,6 +2551,18 @@ sap.ui.define([
 		// roles
 		const oRolesCell = this._createRolesCell(oItem, oContext);
 
+		const oSharingBinding = fnCreateBinding("sharing");
+		const oSharingText = new Text(sIdPrefix + "-type-" + nPos, {
+			text: {
+				path: oSharingBinding.parts?.[0]?.path ?? "sharing",
+				model: oSharingBinding.parts?.[0]?.model ?? sModelName,
+				formatter: function(sValue) {
+					return this._oRb.getText(sValue === "Private" ? "VARIANT_MANAGEMENT_PRIVATE" : "VARIANT_MANAGEMENT_PUBLIC");
+				}.bind(this)
+			},
+			textAlign: "Center"
+		});
+
 		const oDefaultRadioButton = new RadioButton(sIdPrefix + "-def-" + nPos, {
 			groupName: this.getId(),
 			select: fSelectRB,
@@ -2574,16 +2586,7 @@ sap.ui.define([
 			cells: [
 				oFavoriteIcon,
 				oNameControl,
-				new Text(sIdPrefix + "-type-" + nPos, {
-					text: {
-						path: "sharing",
-						model: sModelName,
-						formatter: function(sValue) {
-							return this._oRb.getText(sValue === "Private" ? "VARIANT_MANAGEMENT_PRIVATE" : "VARIANT_MANAGEMENT_PUBLIC");
-						}.bind(this)
-					},
-					textAlign: "Center"
-				}),
+				oSharingText,
 				oDefaultRadioButton,
 				oExecuteOnSelectCtrl,
 				oRolesCell,
