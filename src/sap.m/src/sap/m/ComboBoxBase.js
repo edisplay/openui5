@@ -114,7 +114,23 @@ sap.ui.define([
 					 * Specifies whether the clear icon should be shown/hidden on user interaction.
 					 * @private
 					 */
-					effectiveShowClearIcon: { type: "boolean", defaultValue: false, visibility: "hidden" }
+					effectiveShowClearIcon: { type: "boolean", defaultValue: false, visibility: "hidden" },
+
+					/**
+					 * Defines the maximum height of the picker popup.
+					 * When the available items exceed this height, vertical scrolling is enabled.
+					 * This property only applies to the picker popup on desktop and tablet devices.
+					 *
+					 * <b>Note:</b> On phones, the suggestions are displayed in a fullscreen dialog,
+					 * so this property has no effect.
+					 *
+					 * @since 1.150
+					 */
+					maxPickerHeight: {
+						type: "sap.ui.core.CSSSize",
+						group: "Dimension",
+						defaultValue: null
+					}
 				},
 				aggregations: {
 
