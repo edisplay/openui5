@@ -167,6 +167,9 @@ sap.ui.define(['../util/EnvHelper', "sap/base/util/merge"], function(EnvHelper, 
 					qunitBridge: true
 				}
 			},
+			/**
+			 * @deprecated since 1.106
+			 */
 			"ODataV4ValueHelpDelegate": {
 				module: "./ODataV4ValueHelpDelegate.qunit",
 				ui5: {
