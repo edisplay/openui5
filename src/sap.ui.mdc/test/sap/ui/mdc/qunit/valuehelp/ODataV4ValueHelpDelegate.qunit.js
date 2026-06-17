@@ -32,8 +32,7 @@ sap.ui.define([
 	};
 
 	const oModel = new ODataV4Model({
-		serviceUrl: "/fake/",
-		synchronizationMode: "None"
+		serviceUrl: "/fake/"
 	});
 
 	let oListBinding;
