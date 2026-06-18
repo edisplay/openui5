@@ -34378,6 +34378,11 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	// data aggregation.
 	// JIRA: CPOUI5ODATAV4-3392
 	//
+	// If the entity 4 (Mu) is shown via 'deep link' on an object page and the temporary binding is
+	// later replaced when resolving the ODLB, the entity can still be edited, even if it is not
+	// displayed in the list, and the UI is updated accordingly.
+	// JIRA: CPOUI5ODATAV4-3554
+	//
 	// A PATCH is pending for 4 (Mu) in the temporary binding when resolving the ODLB and that node
 	// is later revealed by expanding. Still, the user input is not lost! The pending PATCH is
 	// optionally merged with another one in the end; that PATCH fails and is either canceled or
@@ -34408,6 +34413,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			oMu,
 			oMu1stPromise,
 			oMu2ndPromise,
+			oMu3rdPromise,
 			oNu,
 			oTable,
 			sView = '\
@@ -34428,6 +34434,9 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 <FlexBox id="form">\
 	<Text id="age" text="{AGE}"/>\
 	<Text id="name" text="{Name}"/>\
+</FlexBox>\
+<FlexBox id="formMu">\
+	<Text id="nameMu" text="{Name}"/>\
 </FlexBox>',
 			that = this;
 
@@ -34438,7 +34447,8 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 		//  (5 Nu) (3rd getKeepAliveContext, outside the collection!)
 
 		this.expectChange("age")
-			.expectChange("name");
+			.expectChange("name")
+			.expectChange("nameMu");
 
 		return this.createView(assert, sView, oModel).then(function () {
 			oTable = that.oView.byId("list");
@@ -34515,6 +34525,12 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 				ROOM_ID : "4.0"
 			});
 
+			that.expectChange("nameMu", "Mu (pending)");
+
+			that.oView.byId("formMu").setBindingContext(oMu);
+
+			return that.waitForChanges(assert, "show Mu in formMu");
+		}).then(function () {
 			that.expectRequest("EMPLOYEES?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels("
 					+ "HierarchyNodes=$root/EMPLOYEES,HierarchyQualifier='OrgChart'"
 					+ ",NodeProperty='ID',Levels=2)"
@@ -34598,6 +34614,20 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			assert.ok(oLambda.hasPendingChanges());
 			assert.ok(oMu.hasPendingChanges());
 
+			that.expectChange("nameMu", "Mu (pending*)");
+
+			// code under test (JIRA: CPOUI5ODATAV4-3554)
+			oMu2ndPromise = oMu.setProperty("Name", "Mu (pending*)", "update", bMergeAndRetry);
+
+			return that.waitForChanges(assert, "Update Mu after list caches have been merged");
+		}).then(function () {
+			that.expectChange("nameMu", null);
+
+			// code under test (JIRA: CPOUI5ODATAV4-3554)
+			that.oView.byId("formMu").setBindingContext(null);
+
+			return that.waitForChanges(assert, "formMu no longer needed");
+		}).then(function () {
 			that.expectChange("name", "Lambda")
 				.expectCanceledError("Failed to update path /EMPLOYEES('3')/Name",
 					"Request canceled: PATCH EMPLOYEES('3'); group: doNotSubmit");
@@ -34646,7 +34676,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			assert.deepEqual(oMu.getObject(), {
 				"@odata.etag" : "etag4",
 				ID : "4",
-				Name : "Mu (pending)",
+				Name : "Mu (pending*)",
 				ROOM_ID : "4.0"
 			});
 
@@ -34674,12 +34704,15 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			}
 
 			that.expectCanceledError("Failed to update path /EMPLOYEES('4')/Name",
+					"Request canceled: PATCH EMPLOYEES('4'); group: update")
+				.expectCanceledError("Failed to update path /EMPLOYEES('4')/Name",
 					"Request canceled: PATCH EMPLOYEES('4'); group: update");
 
 			return Promise.all([
 				// code under test
 				oListBinding.resetChanges(),
 				checkCanceled(assert, oMu1stPromise),
+				checkCanceled(assert, oMu2ndPromise),
 				that.waitForChanges(assert, "resetChanges for Mu")
 			]);
 		}).then(function () {
@@ -34834,7 +34867,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 				[true, 1, "1", "", bPending ? "Beta" : "Beta #1"],
 				[undefined, 2, "2", "1", bPending ? "Kappa" : "Kappa #1"],
 				[true, 2, "3", "1", bPending ? "Lambda (Λλ)" : "Lambda #1"],
-				[undefined, 3, "4", "3", bPending ? "Mu (pending)" : "Mu #1"]
+				[undefined, 3, "4", "3", bPending ? "Mu (pending*)" : "Mu #1"]
 			]);
 			assert.deepEqual(oLambda.getObject(), {
 				"@odata.etag" : bPending ? "etag3.0" : "etag3.1",
@@ -34849,7 +34882,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 				"@$ui5.node.level" : 3,
 				ID : "4",
 				MANAGER_ID : "3",
-				Name : bPending ? "Mu (pending)" : "Mu #1",
+				Name : bPending ? "Mu (pending*)" : "Mu #1",
 				ROOM_ID : "4.0"
 			}, "merged");
 
@@ -34867,11 +34900,11 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 						},
 						payload : {
 							AGE : 42,
-							Name : "Mu (pending)"
+							Name : "Mu (pending*)"
 						}
 					}, createErrorInsideBatch())
 					.expectMessages([oINTENTIONALLY_FAILED]);
-				that.oLogMock.expects("error")
+				that.oLogMock.expects("error").twice()
 					.withExactArgs("Failed to update path /EMPLOYEES('4')/Name",
 						sinon.match("Request intentionally failed"), sContext);
 				that.oLogMock.expects("error")
@@ -34879,7 +34912,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 						sinon.match("Request intentionally failed"), sContext);
 
 				// code under test
-				oMu2ndPromise = oMu.setProperty("AGE", 42, "update", true);
+				oMu3rdPromise = oMu.setProperty("AGE", 42, "update", true);
 
 				await Promise.all([
 					oModel.submitBatch("update"),
@@ -34887,9 +34920,11 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 				]);
 
 				if (bMergeAndRetry === 1) {
-					// Note: oMu2ndPromise MUST not already be fulfilled by now!
+					// Note: oMu3rdPromise MUST not already be fulfilled by now!
 
 					that.expectCanceledError("Failed to update path /EMPLOYEES('4')/Name",
+							"Request canceled: PATCH EMPLOYEES('4'); group: update")
+						.expectCanceledError("Failed to update path /EMPLOYEES('4')/Name",
 							"Request canceled: PATCH EMPLOYEES('4'); group: update")
 						.expectCanceledError("Failed to update path /EMPLOYEES('4')/AGE",
 							"Request canceled: PATCH EMPLOYEES('4'); group: update");
@@ -34899,6 +34934,7 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 						oMu.resetChanges(),
 						checkCanceled(assert, oMu1stPromise),
 						checkCanceled(assert, oMu2ndPromise),
+						checkCanceled(assert, oMu3rdPromise),
 						that.waitForChanges(assert, "resetChanges for Mu")
 					]);
 				}
@@ -34911,13 +34947,14 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 					},
 					payload : {
 						...(bMergeAndRetry && {AGE : 42}),
-						Name : "Mu (pending)"
+						Name : "Mu (pending*)"
 					}
 				}, oNO_CONTENT, {ETag : "n/a"});
 
 			return Promise.all([
 				oMu1stPromise,
 				oMu2ndPromise,
+				oMu3rdPromise,
 				oModel.submitBatch("update"),
 				that.waitForChanges(assert, "submit Mu's pending PATCH")
 			]);
