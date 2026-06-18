@@ -70132,6 +70132,7 @@ make root = ${bMakeRoot}`;
 		var oModel = this.createSalesOrdersModel({autoExpandSelect : true}),
 			oFirstBindingContext,
 			oListBinding,
+			oTransientContext,
 			sView = '\
 <FlexBox id="flexbox" binding="{/SalesOrderList(\'42\')}">\
 	<t:Table id="table" rows="{path : \'SO_2_SOITEM\', \
@@ -70154,14 +70155,16 @@ make root = ${bMakeRoot}`;
 
 			that.expectChange("note", ["First", "Note 10"]);
 
-			oListBinding.create({Note : "First"}, true, false, false);
+			oTransientContext = oListBinding.create({Note : "First"}, true, false, false);
 
-			assert.strictEqual(oListBinding.aContexts[0].isTransient(), true);
-			assert.strictEqual(oListBinding.aContexts.length, 2);
+			const aContexts = oListBinding.getCurrentContexts();
+			assert.strictEqual(aContexts.length, 2);
+			assert.strictEqual(aContexts[0], oTransientContext);
+			assert.strictEqual(oTransientContext.isTransient(), true);
 
 			assert.throws(function () {
 				// code under test (JIRA: CPOUI5ODATAV4-3361)
-				oListBinding.aContexts[0].setKeepAlive(false);
+				oTransientContext.setKeepAlive(false);
 			}, new Error("Missing $$ownRequest at " + oListBinding));
 
 			return that.waitForChanges(assert);
@@ -70179,8 +70182,9 @@ make root = ${bMakeRoot}`;
 
 			return that.waitForChanges(assert);
 		}).then(function () {
-			assert.strictEqual(oListBinding.aContexts[0].isTransient(), undefined);
-			assert.strictEqual(oListBinding.aContexts.length, 1);
+			const aContexts = oListBinding.getCurrentContexts();
+			assert.strictEqual(aContexts.length, 1);
+			assert.strictEqual(aContexts[0].isTransient(), undefined);
 
 			that.expectChange("note", ["First", "Note 10"]);
 
@@ -70189,10 +70193,194 @@ make root = ${bMakeRoot}`;
 
 			return that.waitForChanges(assert);
 		}).then(function () {
-			assert.strictEqual(oListBinding.aContexts[0].isTransient(), true);
-			assert.strictEqual(oListBinding.aContexts.length, 2);
+			const aContexts = oListBinding.getCurrentContexts();
+			assert.strictEqual(aContexts.length, 2);
+			assert.strictEqual(aContexts[0], oTransientContext);
+			assert.strictEqual(oTransientContext.isTransient(), true);
 		});
 	});
+
+	//*********************************************************************************************
+	// Scenario: Data Aggregation using a relative ODLB w/ own cache; switch binding context via
+	// setContext with transient row present (which is effectively kept alive via selection). Switch
+	// back and expect that transient row has survived and further APIs work as expected.
+	// JIRA: CPOUI5ODATAV4-3555
+["delete", "resetChanges", "setProperty"].forEach((sMethod) => {
+	const sTitle = "Data Aggregation: setContext w/ transient; finally do " + sMethod;
+
+	QUnit.test(sTitle, async function (assert) {
+		const oModel = this.createSalesOrdersModel({autoExpandSelect : true});
+		const sView = `
+<FlexBox id="flexbox" binding="{/SalesOrderList('42')}">
+	<t:Table id="table" rows="{path : 'SO_2_SOITEM',
+			parameters : {
+				$$aggregation : {
+					aggregate : {
+						TaxAmount : {grandTotal : true, unit : 'CurrencyCode'}
+					},
+					grandTotalAtBottomOnly : true,
+					group : {
+						ItemPosition: {},
+						SalesOrderID : {}
+					}
+				},
+				$$ownRequest : true,
+				$$updateGroupId : 'update', $count: true}
+			}">
+		<Text id="tax" text="{TaxAmount}"/>
+	</t:Table>
+</FlexBox>`;
+
+		const sUrl = "SalesOrderList('42')/SO_2_SOITEM?"
+			+ "$apply=concat(aggregate(TaxAmount,CurrencyCode)"
+			+ ",groupby((ItemPosition,SalesOrderID),aggregate(TaxAmount,CurrencyCode))"
+			+ "/concat(aggregate($count as UI5__count),top(110)))";
+		this.expectRequest(sUrl, {
+				value : [
+					{TaxAmount : "250", CurrencyCode : "USD"},
+					{UI5__count : "1", "UI5__count@odata.type" : "#Decimal"},
+					{ItemPosition : "10", SalesOrderID : "42",
+						TaxAmount : "250", CurrencyCode : "USD"}
+				]
+			})
+			.expectChange("tax", ["250", "250"]);
+
+		await this.createView(assert, sView, oModel);
+
+		const oListBinding = this.oView.byId("table").getBinding("rows");
+		const oFirstBindingContext = this.oView.byId("table").getBindingContext();
+		assert.strictEqual(oListBinding.isFirstCreateAtEnd(), undefined);
+
+		this.expectChange("tax", [, "80", "250"]);
+
+		const oTransientContext = oListBinding.create({TaxAmount : "80"}, true, true);
+
+		await this.waitForChanges(assert, "create transient");
+
+		this.expectRequest(sUrl, {
+				value : [
+					{TaxAmount : "249", CurrencyCode : "USD"},
+					{UI5__count : "1", "UI5__count@odata.type" : "#Decimal"},
+					{ItemPosition : "10", SalesOrderID : "42",
+						TaxAmount : "249", CurrencyCode : "USD"}
+				]
+			})
+			.expectChange("tax", ["249",, "249"]);
+
+		oTransientContext.setSelected(true); // "effectively kept alive"
+
+		await Promise.all([
+			// code under test
+			oListBinding.getHeaderContext().requestSideEffects([""], "$auto"),
+			this.waitForChanges(assert, "side-effects refresh")
+		]);
+
+		assert.strictEqual(oListBinding.getCurrentContexts()[1], oTransientContext);
+		assert.strictEqual(oListBinding.isFirstCreateAtEnd(), true);
+
+		this.expectRequest(sUrl.replace("('42')", "('43')"), {
+				value : [
+					{TaxAmount : "123", CurrencyCode : "EUR"},
+					{UI5__count : "1", "UI5__count@odata.type" : "#Decimal"},
+					{ItemPosition : "10", SalesOrderID : "43",
+						TaxAmount : "123", CurrencyCode : "EUR"}
+				]
+			})
+			.expectChange("tax", ["123", "123"]);
+
+		// code under test
+		this.oView.byId("table").setBindingContext(
+			oModel.createBindingContext("/SalesOrderList('43')"));
+
+		await this.waitForChanges(assert, "switch over");
+
+		assert.strictEqual(oListBinding.isFirstCreateAtEnd(), undefined);
+		assert.notOk(oListBinding.getAllCurrentContexts().includes(oTransientContext));
+
+		this.expectChange("tax", ["249", "80", "249"]);
+
+		// code under test
+		this.oView.byId("table").setBindingContext(oFirstBindingContext);
+
+		await this.waitForChanges(assert, "switch back");
+
+		assert.strictEqual(oListBinding.getCurrentContexts()[1], oTransientContext);
+		assert.strictEqual(oTransientContext.isTransient(), true);
+		assert.strictEqual(oListBinding.isFirstCreateAtEnd(), true);
+
+		let oPromise;
+		switch (sMethod) {
+			case "delete":
+				this.expectChange("tax", [, "249"]);
+
+				oPromise = Promise.all([
+					checkCanceled(assert, oTransientContext.created()),
+					// code under test
+					oTransientContext.delete("update", /*bDoNotRequestCount*/true)
+				]);
+				break;
+
+			case "resetChanges":
+				this.expectChange("tax", [, "249"]);
+
+				oPromise = Promise.all([
+					checkCanceled(assert, oTransientContext.created()),
+					// code under test
+					// Note: oTransientContext.resetChanges() NOT allowed!
+					oListBinding.resetChanges()
+				]);
+				break;
+
+			case "setProperty":
+				this.expectChange("tax", [, "81"])
+					.expectRequest("#4 POST SalesOrderList('42')/SO_2_SOITEM", {
+						payload : {
+							CurrencyCode : null,
+							TaxAmount : "81"
+						}
+					}, {
+						CurrencyCode : "USD",
+						ItemPosition : "20",
+						SalesOrderID : "42",
+						TaxAmount : "8.1"
+					})
+					.expectRequest("#4 SalesOrderList('42')/SO_2_SOITEM"
+						+ "?$apply=aggregate(TaxAmount,CurrencyCode)", {
+							value : [{
+								TaxAmount : "257.1",
+								CurrencyCode : "USD"
+							}]
+						})
+					.expectChange("tax", [, "8.1", "257.1"]);
+
+				oPromise = Promise.all([
+					// code under test
+					oTransientContext.setProperty("TaxAmount", "81", "update"),
+					oTransientContext.created(),
+					oModel.submitBatch("update")
+				]).then(() => {
+					assert.deepEqual(oTransientContext.getObject(), {
+						"@$ui5.context.isSelected" : true,
+						"@$ui5.context.isTransient" : false,
+						"@$ui5.node.isTotal" : false,
+						"@$ui5.node.level" : 1,
+						CurrencyCode : "USD",
+						ItemPosition : "20",
+						SalesOrderID : "42",
+						TaxAmount : "8.1"
+					});
+				});
+				break;
+
+			// no default
+		}
+
+		await Promise.all([
+			oPromise,
+			this.waitForChanges(assert, sMethod)
+		]);
+	});
+});
 
 	//*********************************************************************************************
 	// Scenario: Create a row and delete it again. Then request more data and check the count.
