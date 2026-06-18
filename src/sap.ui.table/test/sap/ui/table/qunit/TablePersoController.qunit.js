@@ -1,17 +1,21 @@
-/*global QUnit */
+/*global QUnit, sinon */
 
 sap.ui.define([
 	"sap/ui/core/Element",
 	"sap/ui/table/qunit/TableQUnitUtils",
 	"sap/ui/table/TablePersoController",
+	"sap/ui/table/library",
 	"sap/ui/qunit/QUnitUtils",
 	"sap/ui/table/Table",
 	"sap/ui/table/Column",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/thirdparty/jquery",
-	"sap/ui/qunit/utils/nextUIUpdate"
-], function(Element, TableQUnitUtils, TablePersoController, qutils, Table, Column, JSONModel, jQuery, nextUIUpdate) {
+	"sap/ui/qunit/utils/nextUIUpdate",
+	"sap/base/Log"
+], function(Element, TableQUnitUtils, TablePersoController, tableLibrary, qutils, Table, Column, JSONModel, jQuery, nextUIUpdate, Log) {
 	"use strict";
+
+	const ResetAllMode = tableLibrary.ResetAllMode;
 
 	let oController = null;
 	let oTable = null;
@@ -638,5 +642,523 @@ sap.ui.define([
 		assert.equal(oTable.indexOfColumn(oNumberColumn), 0, "Number column should be on index 0.");
 		assert.equal(oTable.indexOfColumn(oNameColumn), 1, "Name column should be on index 1.");
 		assert.equal(oTable.indexOfColumn(oColorColumn), 2, "Color column should be on index 2.");
+	});
+
+	function jqResolved(vValue) {
+		return jQuery.Deferred().resolve(vValue).promise();
+	}
+
+	function jqRejected(vReason) {
+		return jQuery.Deferred().reject(vReason).promise();
+	}
+
+	function createResolvingService() {
+		return {
+			getPersData() {
+				return jqResolved(this.oBundle);
+			},
+			setPersData(oBundle) {
+				this.oBundle = oBundle;
+				return jqResolved();
+			},
+			delPersData() {
+				delete this.oBundle;
+				return jqResolved();
+			}
+		};
+	}
+
+	function createRejectingService() {
+		return {
+			getPersData() {
+				return jqRejected();
+			},
+			setPersData() {
+				return jqRejected();
+			},
+			delPersData() {
+				return jqRejected();
+			}
+		};
+	}
+
+	QUnit.module("ResetAllMode", {
+		afterEach: function() {
+			destroyController();
+		}
+	});
+
+	QUnit.test("setResetAllMode can only be set once - subsequent calls are ignored and log warning", async function(assert) {
+		await createController();
+		const oLogWarningSpy = this.spy(Log, "warning");
+
+		assert.equal(oController.getResetAllMode(), ResetAllMode.Default, "Default value is 'Default'.");
+
+		oController.setResetAllMode(ResetAllMode.ServiceDefault);
+		assert.equal(oController.getResetAllMode(), ResetAllMode.ServiceDefault, "First call sets the value.");
+		assert.equal(oLogWarningSpy.callCount, 0, "No warning logged on first call.");
+
+		oController.setResetAllMode(ResetAllMode.ServiceReset);
+		assert.equal(oController.getResetAllMode(), ResetAllMode.ServiceDefault, "Second call is ignored.");
+		assert.equal(oLogWarningSpy.callCount, 1, "Warning logged on second call.");
+		assert.ok(oLogWarningSpy.calledWith("resetAllMode of the TablePersoController can only be set once."),
+			"Warning has the expected message.");
+	});
+
+	QUnit.test("setTable: with non-Default ResetAllMode does not capture initial perso data", async function(assert) {
+		await createController();
+
+		// Detach table, switch ResetAllMode, re-attach.
+		oController.setTable(null);
+		oController.setResetAllMode(ResetAllMode.ServiceDefault);
+
+		oController.setTable(oTable);
+		assert.strictEqual(oController._oInitialPersoData, null,
+			"Initial perso data is NOT captured when ResetAllMode is not 'Default'.");
+	});
+
+	QUnit.test("refresh: ResetAllMode 'ServiceDefault' updates initial perso data after refresh", async function(assert) {
+		// Build the controller manually so we can configure ResetAllMode in the constructor
+		// (resetAllMode can only be set once — must be in the constructor).
+		await createController();
+		oController.destroy();
+
+		oController = new TablePersoController({
+			table: oTable,
+			persoService: createResolvingService(),
+			resetAllMode: ResetAllMode.ServiceDefault
+		});
+
+		// In ServiceDefault mode, setTable does NOT capture initial data;
+		// it is only captured after a successful refresh.
+		await oController.refresh();
+		assert.ok(oController._oInitialPersoData, "Initial perso data is captured after refresh in 'ServiceDefault' mode.");
+		assert.ok(Array.isArray(oController._oInitialPersoData.aColumns), "Initial perso data has aColumns array.");
+	});
+
+	QUnit.module("Service availability and error handling", {
+		afterEach: function() {
+			destroyController();
+		}
+	});
+
+	// Awaits a jQuery promise expected to reject and asserts that rejection happened.
+	async function assertRejects(assert, oPromise, sMessage) {
+		try {
+			await oPromise;
+			assert.ok(false, sMessage + " (expected rejection, but promise resolved)");
+		} catch (e) {
+			assert.ok(true, sMessage);
+		}
+	}
+
+	QUnit.test("refresh: without persoService rejects promise and logs error", async function(assert) {
+		await createController();
+		const oLogErrorSpy = this.spy(Log, "error");
+
+		const oPromise = oController.refresh();
+		assert.ok(oPromise, "refresh returned a promise.");
+
+		await assertRejects(assert, oPromise, "Promise was rejected because no service is set.");
+		assert.ok(oLogErrorSpy.calledWith("The Personalization Service is not available!"),
+			"Error logged about missing service.");
+	});
+
+	QUnit.test("refresh: getPersData rejection logs error", async function(assert) {
+		await createController({
+			persoService: createRejectingService()
+		});
+
+		const oLogErrorSpy = this.spy(Log, "error");
+		await assertRejects(assert, oController.refresh(), "refresh promise rejected.");
+		assert.ok(oLogErrorSpy.calledWith("Problem reading persisted personalization data."),
+			"Error logged about reading problem.");
+	});
+
+	QUnit.test("savePersonalizations: without persoService rejects promise and logs error", async function(assert) {
+		await createController();
+		const oLogErrorSpy = this.spy(Log, "error");
+
+		const oPromise = oController.savePersonalizations();
+		assert.ok(oPromise, "savePersonalizations returned a promise.");
+
+		await assertRejects(assert, oPromise, "Promise was rejected because no service is set.");
+		assert.ok(oLogErrorSpy.calledWith("The Personalization Service is not available!"),
+			"Error logged about missing service.");
+	});
+
+	QUnit.test("savePersonalizations: setPersData rejection logs error", async function(assert) {
+		await createController({
+			persoService: createRejectingService()
+		});
+
+		const oLogErrorSpy = this.spy(Log, "error");
+		await assertRejects(assert, oController.savePersonalizations(), "savePersonalizations promise rejected.");
+		assert.ok(oLogErrorSpy.calledWith("Problem persisting personalization data."),
+			"Error logged about persisting problem.");
+	});
+
+	QUnit.test("refresh: falls back to initial perso data when service returns no aColumns", async function(assert) {
+		const oService = {
+			getPersData() {
+				// resolve without aColumns - should fall back to initial perso data
+				return jqResolved({someOtherProp: 1});
+			},
+			setPersData() {
+				return jqResolved();
+			},
+			delPersData() {
+				return jqResolved();
+			}
+		};
+		await createController({
+			persoService: oService
+		});
+
+		const oNameColumn = Element.getElementById("Name");
+		oNameColumn.setVisible(false);
+
+		await oController.refresh();
+		// initial data has Name visible=true, after refresh fallback should restore that
+		assert.equal(oNameColumn.getVisible(), true, "Name column visibility restored to initial state.");
+	});
+
+	QUnit.module("setPersoService", {
+		afterEach: function() {
+			destroyController();
+		}
+	});
+
+	QUnit.test("setPersoService: setting same service does NOT trigger refresh", async function(assert) {
+		const oService = createResolvingService();
+		let getPersDataCalls = 0;
+		const oOriginalGet = oService.getPersData;
+		oService.getPersData = function() {
+			getPersDataCalls++;
+			return oOriginalGet.apply(this, arguments);
+		};
+
+		await createController({persoService: oService});
+		assert.equal(getPersDataCalls, 1, "getPersData called once on initial controller creation.");
+
+		oController.setPersoService(oService);
+		assert.equal(getPersDataCalls, 1, "getPersData NOT called again when same service is set.");
+	});
+
+	QUnit.test("setPersoService: with autoSave=false and existing service does NOT refresh", async function(assert) {
+		const oService1 = createResolvingService();
+		const oService2 = createResolvingService();
+		let getPersDataCalls2 = 0;
+		const oOriginalGet = oService2.getPersData;
+		oService2.getPersData = function() {
+			getPersDataCalls2++;
+			return oOriginalGet.apply(this, arguments);
+		};
+
+		await createController({autoSave: false, persoService: oService1});
+
+		oController.setPersoService(oService2);
+		assert.equal(getPersDataCalls2, 0,
+			"getPersData of new service NOT called - autoSave is false and a previous service existed.");
+	});
+
+	QUnit.test("setPersoService: setting null service does not throw", async function(assert) {
+		await createController({persoService: createResolvingService()});
+
+		oController.setPersoService(null);
+		assert.notOk(oController.getPersoService(), "Service is no longer set.");
+	});
+
+	QUnit.module("setCustomDataKey", {
+		afterEach: function() {
+			destroyController();
+		}
+	});
+
+	QUnit.test("setCustomDataKey: same value does NOT trigger save", async function(assert) {
+		const oService = createResolvingService();
+		await createController({persoService: oService});
+		const oSetSpy = this.spy(oService, "setPersData");
+
+		oController.setCustomDataKey(oController.getCustomDataKey());
+		assert.equal(oSetSpy.callCount, 0, "setPersData NOT called when value did not change.");
+	});
+
+	QUnit.test("setCustomDataKey: different value with autoSave triggers save", async function(assert) {
+		const oService = createResolvingService();
+		await createController({persoService: oService});
+		const oSetSpy = this.spy(oService, "setPersData");
+
+		oController.setCustomDataKey("newPersoKey");
+		assert.equal(oSetSpy.callCount, 1, "setPersData called once after key change with autoSave=true.");
+	});
+
+	QUnit.test("setCustomDataKey: different value with autoSave=false does NOT trigger save", async function(assert) {
+		const oService = createResolvingService();
+		await createController({autoSave: false, persoService: oService});
+		const oSetSpy = this.spy(oService, "setPersData");
+
+		oController.setCustomDataKey("newPersoKey");
+		assert.equal(oSetSpy.callCount, 0, "setPersData NOT called when autoSave is false.");
+	});
+
+	QUnit.test("setCustomDataKey: refreshes initial perso data when ResetAllMode is 'Default' and table is set", async function(assert) {
+		await createController();
+		const oInitialBefore = oController._oInitialPersoData;
+
+		oController.setCustomDataKey("anotherKey");
+		assert.notStrictEqual(oController._oInitialPersoData, oInitialBefore,
+			"Initial perso data is recomputed after customDataKey change.");
+	});
+
+	QUnit.module("_adjustTable", {
+		afterEach: function() {
+			destroyController();
+		}
+	});
+
+	QUnit.test("_adjustTable: returns early when table is null", async function(assert) {
+		await createController();
+		oController.setTable(null);
+		// Should not throw
+		oController._adjustTable({aColumns: []});
+		assert.ok(true, "No error thrown when table is null.");
+	});
+
+	QUnit.test("_adjustTable: returns early when data is null/undefined", async function(assert) {
+		await createController();
+		oController._adjustTable(null);
+		oController._adjustTable(undefined);
+		oController._adjustTable({});
+		assert.ok(true, "No error thrown when data is invalid.");
+	});
+
+	QUnit.test("_adjustTable: ignores unknown column ids in service data", async function(assert) {
+		await createController();
+		const oNameColumn = Element.getElementById("Name");
+		const sExistingPersoKey = oController._getColumnPersoKey(oNameColumn);
+		oNameColumn.setVisible(true);
+
+		oController._adjustTable({
+			aColumns: [
+				{id: "totally-unknown-id", order: 0, visible: false},
+				{id: sExistingPersoKey, order: 0, visible: false}
+			]
+		});
+
+		assert.equal(oNameColumn.getVisible(), false, "Existing column was updated.");
+	});
+
+	QUnit.test("_adjustTable: invokes table._onPersoApplied if defined", async function(assert) {
+		await createController();
+		const oOnPersoAppliedSpy = this.spy(oTable, "_onPersoApplied");
+
+		oController._adjustTable({aColumns: []});
+
+		assert.ok(oOnPersoAppliedSpy.calledOnce, "_onPersoApplied was called on the table.");
+	});
+
+	QUnit.test("_adjustTable: catches errors when applying invalid property values", async function(assert) {
+		await createController();
+		const oNameColumn = Element.getElementById("Name");
+		const sPersoKey = oController._getColumnPersoKey(oNameColumn);
+		const oLogErrorSpy = this.spy(Log, "error");
+
+		// Stub setProperty on this column to throw to trigger the catch branch.
+		// Name column is currently visible=true, we pass visible=false to ensure setProperty is invoked.
+		const oSetPropertyStub = this.stub(oNameColumn, "setProperty").throws(new Error("invalid value"));
+
+		oController._adjustTable({
+			aColumns: [
+				{id: sPersoKey, order: 0, visible: false}
+			]
+		});
+
+		assert.ok(oSetPropertyStub.called, "setProperty was attempted.");
+		assert.ok(oLogErrorSpy.calledWithMatch(/failed to apply the value/),
+			"Error was logged for the failed property assignment.");
+	});
+
+	QUnit.test("_adjustTable: skips setProperty when current value equals new value", async function(assert) {
+		await createController();
+		const oNameColumn = Element.getElementById("Name");
+		const sPersoKey = oController._getColumnPersoKey(oNameColumn);
+		oNameColumn.setVisible(true);
+		const oSetPropertySpy = this.spy(oNameColumn, "setProperty");
+
+		oController._adjustTable({
+			aColumns: [
+				{id: sPersoKey, order: 0, visible: true}
+			]
+		});
+
+		// setProperty should NOT have been called for "visible" since value already matches
+		const bSetVisibleCalled = oSetPropertySpy.getCalls().some(function(call) {
+			return call.args[0] === "visible";
+		});
+		assert.notOk(bSetVisibleCalled, "setProperty('visible', ...) skipped because value unchanged.");
+	});
+
+	QUnit.module("_tableEventHandler / autosave coalescing", {
+		afterEach: function() {
+			destroyController();
+		}
+	});
+
+	QUnit.test("_tableEventHandler: does NOT save when autoSave is false", async function(assert) {
+		const oService = createResolvingService();
+		await createController({autoSave: false, persoService: oService});
+		const oSetSpy = this.spy(oService, "setPersData");
+
+		oController._tableEventHandler({});
+		assert.strictEqual(oController._iTriggerSaveTimeout, undefined,
+			"No timeout scheduled when autoSave is false.");
+		assert.equal(oSetSpy.callCount, 0, "setPersData not called.");
+	});
+
+	QUnit.test("_tableEventHandler: coalesces multiple events into one save call", async function(assert) {
+		const oService = createResolvingService();
+		await createController({persoService: oService});
+		const oSetSpy = this.spy(oService, "setPersData");
+
+		// fire 3 events in a row
+		oController._tableEventHandler({});
+		oController._tableEventHandler({});
+		oController._tableEventHandler({});
+
+		assert.ok(oController._iTriggerSaveTimeout, "Timeout scheduled after first event.");
+
+		await new Promise((resolve) => { setTimeout(resolve, 10); });
+
+		assert.equal(oSetSpy.callCount, 1, "setPersData called only once despite multiple events.");
+		assert.strictEqual(oController._iTriggerSaveTimeout, null, "Timeout reset after save fires.");
+	});
+
+	QUnit.module("_getPersoKey", {
+		afterEach: function() {
+			destroyController();
+		}
+	});
+
+	QUnit.test("_getPersoKey: warns when control has a generated id and no custom data", async function(assert) {
+		await createController();
+		const oLogWarningSpy = this.spy(Log, "warning");
+
+		// Create a column with a generated (auto) id - no explicit id
+		const oAutoColumn = new Column({
+			label: new TableQUnitUtils.TestControl({text: "Auto"}),
+			template: new TableQUnitUtils.TestControl({text: "x"})
+		});
+		oTable.addColumn(oAutoColumn);
+
+		const sKey = oController._getPersoKey(oAutoColumn);
+		assert.equal(sKey, oAutoColumn.getId(), "Falls back to control id.");
+		assert.ok(oLogWarningSpy.calledWithMatch(/Generated IDs should not be used/),
+			"Warning logged about using generated ids.");
+	});
+
+	QUnit.test("_getPersoKey: uses custom data value when provided (no warning)", async function(assert) {
+		await createController();
+		const oLogWarningSpy = this.spy(Log, "warning");
+		const oNameColumn = Element.getElementById("Name");
+
+		oNameColumn.data("persoKey", "MyExplicitKey");
+		const sKey = oController._getPersoKey(oNameColumn);
+		assert.equal(sKey, "MyExplicitKey", "Custom data value is used.");
+		assert.notOk(oLogWarningSpy.called, "No warning when custom data is provided.");
+	});
+
+	QUnit.module("exit", {
+		afterEach: function() {
+			destroyController();
+		}
+	});
+
+	QUnit.test("exit: destroys dialog if it was created", async function(assert) {
+		await createController();
+		// Stub a dialog onto the controller
+		const oDialogDestroySpy = this.spy();
+		oController._oDialog = {
+			destroy: oDialogDestroySpy
+		};
+
+		oController.destroy();
+		oController = null; // prevent double-destroy in afterEach
+
+		assert.ok(oDialogDestroySpy.calledOnce, "Dialog destroy was called.");
+	});
+
+	QUnit.test("exit: detaches event handlers from table", async function(assert) {
+		await createController();
+		const oManageSpy = this.spy(oController, "_manageTableEventHandlers");
+
+		oController.destroy();
+		oController = null;
+
+		assert.ok(oManageSpy.calledWith(sinon.match.any, false), "_manageTableEventHandlers called with bAttach=false.");
+	});
+
+	QUnit.module("setAutoSave / setTable misc", {
+		afterEach: function() {
+			destroyController();
+		}
+	});
+
+	QUnit.test("setAutoSave: turning off (true -> false) does NOT save", async function(assert) {
+		const oService = createResolvingService();
+		await createController({persoService: oService});
+		const oSetSpy = this.spy(oService, "setPersData");
+
+		oController.setAutoSave(false);
+		assert.equal(oSetSpy.callCount, 0, "setPersData NOT called when toggling autoSave off.");
+	});
+
+	QUnit.test("setAutoSave: setting same value (true -> true) does NOT trigger duplicate save", async function(assert) {
+		const oService = createResolvingService();
+		await createController({persoService: oService});
+		const oSetSpy = this.spy(oService, "setPersData");
+
+		oController.setAutoSave(true);
+		assert.equal(oSetSpy.callCount, 0, "setPersData NOT called when value unchanged.");
+	});
+
+	QUnit.test("setTable: setting same table is a no-op for refresh", async function(assert) {
+		const oService = createResolvingService();
+		let getPersDataCalls = 0;
+		const oOriginalGet = oService.getPersData;
+		oService.getPersData = function() {
+			getPersDataCalls++;
+			return oOriginalGet.apply(this, arguments);
+		};
+		await createController({persoService: oService});
+		assert.equal(getPersDataCalls, 1, "getPersData called once on initial creation.");
+
+		// Set the same table again
+		oController.setTable(oTable);
+		assert.equal(getPersDataCalls, 1, "Setting the same table does not trigger another refresh.");
+	});
+
+	QUnit.test("setTable: setting null clears initial perso data", async function(assert) {
+		await createController();
+		assert.ok(oController._oInitialPersoData, "Initial perso data captured after creation.");
+
+		oController.setTable(null);
+		assert.strictEqual(oController._oInitialPersoData, null, "Initial perso data cleared when table set to null.");
+	});
+
+	QUnit.module("Default property values", {
+		afterEach: function() {
+			destroyController();
+		}
+	});
+
+	QUnit.test("Default property values are correctly initialized", async function(assert) {
+		await createController();
+
+		assert.strictEqual(oController.getAutoSave(), true, "autoSave default is true.");
+		assert.strictEqual(oController.getCustomDataKey(), "persoKey", "customDataKey default is 'persoKey'.");
+		assert.strictEqual(oController.getShowResetAll(), true, "showResetAll default is true.");
+		assert.strictEqual(oController.getResetAllMode(), ResetAllMode.Default, "resetAllMode default is 'Default'.");
+		assert.notOk(oController.getPersoService(), "persoService is not set by default.");
 	});
 });
