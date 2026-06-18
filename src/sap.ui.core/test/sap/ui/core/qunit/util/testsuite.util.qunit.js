@@ -119,6 +119,11 @@ sap.ui.define(["sap/ui/Device"], function (Device) {
 			 * @deprecated since 1.73
 			 */
 			ExportTypeCSV: {},
+			File: {
+				coverage: {
+					only: "[sap/ui/core/util/File]"
+				}
+			},
 			PasteHelper: {},
 			ResponsivePaddingsEnablement: {},
 			reflection: {
