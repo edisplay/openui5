@@ -238,8 +238,7 @@ sap.ui.define([
 				}, aConditions);
 
 				if (bRepresentsConditions) {
-					const oValues = this.getItemFromContext(oContext);
-					const oContextCondition = oValues && this.createCondition(oValues.key, oValues.description, oValues.payload);
+					const oContextCondition = oDelegate.createConditionForContext(this.getValueHelpInstance(), this, oContext);
 
 					return aConditions.filter((oCondition) => {
 						return FilterOperatorUtil.compareConditions(oCondition, oContextCondition);
