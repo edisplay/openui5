@@ -33,7 +33,7 @@ function (
 ) {
 	"use strict";
 
-	var oFactory = DynamicPageUtil.oFactory,
+	const oFactory = DynamicPageUtil.oFactory,
 		oUtil = DynamicPageUtil.oUtil;
 
 	async function timeout(iDuration) {
@@ -54,15 +54,17 @@ function (
 		}
 	});
 	QUnit.test("DynamicPage Title - Expanded/Snapped Content initial visibility", function (assert) {
-		var $titleSnap = this.oDynamicPage.getTitle().$("snapped-wrapper"),
+		// Arrange
+		const $titleSnap = this.oDynamicPage.getTitle().$("snapped-wrapper"),
 				$titleExpand = this.oDynamicPage.getTitle().$("expand-wrapper");
 
+		// Assert
 		assert.equal($titleSnap.hasClass("sapUiHidden"), true, "Snapped Content is not visible initially");
 		assert.equal($titleExpand.hasClass("sapUiHidden"), false, "Expanded Content is visible initially");
 	});
 
-	QUnit.test("DynamicPage Title - Content", function (assert) {
-		var oTitle = this.oDynamicPage.getTitle();
+	QUnit.test("DynamicPage Title - Content", async function (assert) {
+		const oTitle = this.oDynamicPage.getTitle();
 
 		// Assert: DynamicPageTitle content aggregation is not empty
 		assert.equal(oTitle.$().hasClass("sapFDynamicPageTitleWithoutContent"), false,
@@ -70,16 +72,16 @@ function (
 
 		// Act: remove the content
 		oTitle.removeAllContent();
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		// Assert: DynamicPageTitle content aggregation is empty
 		assert.equal(oTitle.$("main").hasClass("sapFDynamicPageTitleMainNoContent"), true,
 				"The css class has been added as the content aggregation is empty");
 	});
 
-	QUnit.test("DynamicPageTitle with visible/invisible content", function (assert) {
+	QUnit.test("DynamicPageTitle with visible/invisible content", async function (assert) {
 		// Arrange
-		var oTitle = oFactory.getDynamicPageTitle();
+		const oTitle = oFactory.getDynamicPageTitle();
 		oTitle.addContent(oFactory.getInvisibleContent());
 
 		oUtil.renderObject(oTitle);
@@ -90,7 +92,7 @@ function (
 			"The css class has not been added as there is no visible control in 'content' aggregation");
 
 		oTitle.getContent()[0].getContent()[0].setVisible(true);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		// Assert
 		assert.equal(oTitle.$("content").hasClass("sapFDynamicPageTitleMainContentHasContent"), true,
@@ -100,9 +102,9 @@ function (
 		oTitle.destroy();
 	});
 
-	QUnit.test("DynamicPageTitle with visible/invisible actions", function (assert) {
+	QUnit.test("DynamicPageTitle with visible/invisible actions", async function (assert) {
 		// Arrange
-		var oTitle = oFactory.getDynamicPageTitle();
+		const oTitle = oFactory.getDynamicPageTitle();
 		oTitle.addAction(oFactory.getInvisibleAction());
 
 		oUtil.renderObject(oTitle);
@@ -114,7 +116,7 @@ function (
 
 		// Act
 		oTitle.getActions()[0].setVisible(true);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		// Assert
 		assert.equal(oTitle.$("mainActions").hasClass("sapFDynamicPageTitleMainActionsHasContent"), true,
@@ -126,7 +128,7 @@ function (
 
 	QUnit.test("DynamicPageTitle - AriaLabelledBy attribute is set correctly on both navigation and action toolbars", function (assert) {
 		// Arrange
-		var oTitle = oFactory.getDynamicPageTitleWithStandardAndNavigationActions(),
+		const oTitle = oFactory.getDynamicPageTitleWithStandardAndNavigationActions(),
 			oActionsToolbar = oTitle._getActionsToolbar(),
 			oNavigationToolbar = oTitle._getNavigationActionsToolbar();
 
@@ -134,7 +136,7 @@ function (
 		Core.applyChanges();
 
 		// Assert
-		var $InvisibleTextDomRef = $('#' + oActionsToolbar.getId() + "-InvisibleText");
+		let $InvisibleTextDomRef = $('#' + oActionsToolbar.getId() + "-InvisibleText");
 		assert.strictEqual($InvisibleTextDomRef.length, 1, "InvisibleText DOM element exists - actionsToolbar");
 
 		assert.ok(oActionsToolbar.getDomRef().hasAttribute("aria-labelledby"), "AriaLabelledBy attribute is set on the actionsToolbar DOM element");
@@ -153,7 +155,7 @@ function (
 
 	  QUnit.test("DynamicPageTitle - AriaLabelledBy is not undefined, when no heading is presented, as default heading text is available", function (assert) {
 		// Arrange
-		var oTitle = oFactory.getDynamicPageTitle();
+		const oTitle = oFactory.getDynamicPageTitle();
 
 		//Act
 		oTitle.destroyAggregation("heading");
@@ -179,8 +181,8 @@ function (
 		}
 	});
 
-	QUnit.test("DynamicPage - Rendering - Title with Breadcrumbs", function (assert) {
-		var oTitle = this.oDynamicPage.getTitle(),
+	QUnit.test("DynamicPage - Rendering - Title with Breadcrumbs", async function (assert) {
+		const oTitle = this.oDynamicPage.getTitle(),
 				oBreadcrumbs = oTitle.getAggregation("breadcrumbs"),
 				$oTitleTopDOM = oTitle.$("top");
 
@@ -192,22 +194,22 @@ function (
 
 		// Act: remove breadCrumbs aggregation
 		oTitle.setBreadcrumbs(null);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		// Assert: DynamicPageTitle content aggregation is empty
 		assert.equal(oTitle.$("top").length > 0, false, "Title top DOM element is not rendered");
 	});
 
-	QUnit.test("DynamicPage - Rendering - Title with Invisible Breadcrumbs", function (assert) {
+	QUnit.test("DynamicPage - Rendering - Title with Invisible Breadcrumbs", async function (assert) {
 		//Arrange
-		var oTitle = this.oDynamicPage.getTitle(),
+		const oTitle = this.oDynamicPage.getTitle(),
 			oBreadcrumbs = oTitle.getAggregation("breadcrumbs");
 
 		// Act
 		oBreadcrumbs.setVisible(false);
 		this.oDynamicPage.setVisible(false);
 		this.oDynamicPage.setVisible(true);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		//
 		assert.ok(oTitle.$("top").hasClass("sapUiHidden"));
@@ -226,8 +228,8 @@ function (
 		}
 	});
 
-	QUnit.test("DOM elements and classes", function (assert) {
-		var oTitle = this.oDynamicPageTitle,
+	QUnit.test("DynamicPageTitle with navigationActions renders correct DOM elements and CSS classes", function (assert) {
+		const oTitle = this.oDynamicPageTitle,
 				$oTitleTopDOM = oTitle.$("top"),
 				$oTitleTopNavigationAreaDOM = oTitle.$("topNavigationArea"),
 				$oTitleMainNavigationAreaDOM = oTitle.$("mainNavigationArea");
@@ -249,7 +251,7 @@ function (
 	});
 
 	QUnit.test("Separator visibility on resize", function (assert) {
-		var oTitle = this.oDynamicPageTitle,
+		const oTitle = this.oDynamicPageTitle,
 				oTitlePressSpy = this.spy(DynamicPageTitle.prototype, "_toggleNavigationActionsPlacement"),
 				iTitleLargeWidth = 1400,
 				iTitleSmallWidth = 900,
@@ -296,7 +298,7 @@ function (
 	});
 
 	QUnit.test("Separator visibility upon actions and navigation actions change", function (assert) {
-		var oTitle = this.oDynamicPageTitle,
+		const oTitle = this.oDynamicPageTitle,
 				oAction1 = oFactory.getAction(),
 				oAction2 = oFactory.getAction(),
 				oAction3 = oFactory.getAction(),
@@ -383,7 +385,7 @@ function (
 	});
 
 	QUnit.test("Top area visibility upon breadcrumbs change", function (assert) {
-		var oTitle = this.oDynamicPageTitle,
+		const oTitle = this.oDynamicPageTitle,
 				oBreadcrumbs = oTitle.getBreadcrumbs(),
 				$TitleTopArea = oTitle.$("top"),
 				$TitleMainArea = oTitle.$("main"),
@@ -420,7 +422,7 @@ function (
 	});
 
 	QUnit.test("Top area visibility upon navigation actions aggregation change", function (assert) {
-		var oTitle = this.oDynamicPageTitle,
+		const oTitle = this.oDynamicPageTitle,
 				$TitleTopArea = oTitle.$("top"),
 				iTitleSmallWidth = 900;
 
@@ -436,11 +438,11 @@ function (
 	});
 
 	QUnit.test("sapFDynamicPageTitleTopBreadCrumbsOnly upon navigation actions visibility change", function (assert) {
-		var oTitle = this.oDynamicPageTitle,
+		const oTitle = this.oDynamicPageTitle,
 			$TitleTopArea = oTitle.$("top");
 
 		// Act (1) - hide all navigation actions
-		oTitle.getNavigationActions().forEach(function(oAction) {
+		oTitle.getNavigationActions().forEach((oAction) => {
 			oAction.setVisible(false);
 		});
 
@@ -470,7 +472,7 @@ function (
 	});
 
 	QUnit.test("Top area visibility upon navigation actions visibility change", function (assert) {
-		var oTitle = this.oDynamicPageStandardAndNavigationActions.getTitle(),
+		const oTitle = this.oDynamicPageStandardAndNavigationActions.getTitle(),
 				$TitleTopArea = oTitle.$("top"),
 				iTitleSmallWidth = 900;
 
@@ -482,7 +484,7 @@ function (
 				"Top area should be visible when there is at least one visible navigation action");
 
 		// Act (1) - hide all navigation actions
-		oTitle.getNavigationActions().forEach(function(oAction) {
+		oTitle.getNavigationActions().forEach((oAction) => {
 			oAction.setVisible(false);
 		});
 
@@ -499,7 +501,7 @@ function (
 	});
 
 	QUnit.test("Move actions to top/main area preserves focus", async function (assert) {
-		var oTitle = this.oDynamicPageStandardAndNavigationActions.getTitle(),
+		const oTitle = this.oDynamicPageStandardAndNavigationActions.getTitle(),
 			iTitleSmallWidth = 900,
 			iTitleBigWidth = 1500,
 			oActionToFocus = oTitle.getNavigationActions()[0].getDomRef(),
@@ -513,6 +515,7 @@ function (
 		// Wait for DOM update and focus restoration (especially needed in Safari)
 		// Using both nextUIUpdate and setTimeout to ensure Safari has time to restore focus
 		await nextUIUpdate();
+		// Category B: delay 0 needed for Safari to restore focus after DOM node moves between toolbars
 		await timeout();
 
 		assert.strictEqual(oMoveToMainSpy.callCount, 1, "move actions to main is called");
@@ -523,6 +526,7 @@ function (
 
 		// Wait for DOM update and focus restoration (especially needed in Safari)
 		await nextUIUpdate();
+		// Category B: delay 0 needed for Safari to restore focus after DOM node moves between toolbars
 		await timeout();
 
 		assert.strictEqual(oMoveToTopSpy.callCount, 1, "move actions to top is called");
@@ -534,17 +538,15 @@ function (
 
 	QUnit.test("Focus class is set", function (assert) {
 		// Arrange
-		var oDynamicPage = oFactory.getDynamicPage(),
-			oDynamicPageTitle = oDynamicPage.getTitle(),
-			$title,
-			$focusSpan;
+		const oDynamicPage = oFactory.getDynamicPage(),
+			oDynamicPageTitle = oDynamicPage.getTitle();
 
 		// Act
 		oUtil.renderObject(oDynamicPage);
 		Core.applyChanges();
 
-		$title  = oDynamicPageTitle.$();
-		$focusSpan = oDynamicPageTitle._getFocusSpan();
+		const $title  = oDynamicPageTitle.$();
+		const $focusSpan = oDynamicPageTitle._getFocusSpan();
 		$focusSpan.trigger("focus");
 
 		// Assert
@@ -560,20 +562,17 @@ function (
 		oDynamicPage.destroy();
 	});
 
-	QUnit.test("Focus class is set when the parent is invalidated", function (assert) {
+	QUnit.test("Focus class is set when the parent is invalidated", async function (assert) {
 		// Arrange
-		var oDynamicPage = oFactory.getDynamicPage(),
-			oDynamicPageTitle = oDynamicPage.getTitle(),
-			oStub,
-			$title,
-			$focusSpan;
+		const oDynamicPage = oFactory.getDynamicPage(),
+			oDynamicPageTitle = oDynamicPage.getTitle();
 
 		// Act
 		oUtil.renderObject(oDynamicPage);
-		Core.applyChanges();
+		await nextUIUpdate();
 
-		$title  = oDynamicPageTitle.$();
-		$focusSpan = oDynamicPageTitle._getFocusSpan();
+		const $title  = oDynamicPageTitle.$();
+		const $focusSpan = oDynamicPageTitle._getFocusSpan();
 		$focusSpan.trigger("focus");
 		// Calling explicitly the focusin handler - in case Browser focus is stolen
 		oDynamicPageTitle._addFocusClass();
@@ -582,14 +581,14 @@ function (
 		assert.strictEqual($title.hasClass("sapFDynamicPageTitleFocus"), true, "focus class is added");
 
 		// Act
-		oStub = this.stub(oDynamicPageTitle, "_getFocusSpan").callsFake(function() {
+		const oStub = this.stub(oDynamicPageTitle, "_getFocusSpan").callsFake(function() {
 			return {
 				is: function() { return true; },
 				show: function () {}
 			};
 		});
 		oDynamicPage.invalidate();
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		// Assert
 		assert.strictEqual($title.hasClass("sapFDynamicPageTitleFocus"), true, "focus class is set after invalidation of the parent");
@@ -601,7 +600,7 @@ function (
 
 	QUnit.module("DynamicPageTitle - focus of snapped/expanded content", {
 		before: function() {
-			var oStyleTag = document.createElement("style");
+			const oStyleTag = document.createElement("style");
 			oStyleTag.innerText = ".active { visibility: visible; }";
 			document.head.appendChild(oStyleTag);
 			this.styleTag = oStyleTag;
@@ -615,7 +614,7 @@ function (
 
 	QUnit.test("Prevents focus on hidden snappedContent", function (assert) {
 		// Arrange
-		var oDynamicPage = oFactory.getDynamicPage(),
+		const oDynamicPage = oFactory.getDynamicPage(),
 			oDynamicPageTitle = oDynamicPage.getTitle(),
 			oBtn = new Button({
 				text: "snapped content"
@@ -626,7 +625,7 @@ function (
 		oUtil.renderObject(oDynamicPage);
 		Core.applyChanges();
 
-		var oActiveElement = document.activeElement,
+		const oActiveElement = document.activeElement,
 			oBtnElement = oBtn.getDomRef();
 
 		// Act
@@ -642,7 +641,7 @@ function (
 
 	QUnit.test("Prevents focus on hidden expandedContent", function (assert) {
 		// Arrange
-		var oDynamicPage = oFactory.getDynamicPage(),
+		const oDynamicPage = oFactory.getDynamicPage(),
 			oDynamicPageTitle = oDynamicPage.getTitle(),
 			oBtn = new Button({
 				text: "expanded content"
@@ -654,7 +653,7 @@ function (
 		oUtil.renderObject(oDynamicPage);
 		Core.applyChanges();
 
-		var oActiveElement = document.activeElement,
+		const oActiveElement = document.activeElement,
 			oBtnElement = oBtn.getDomRef();
 
 		// Act
@@ -670,9 +669,9 @@ function (
 
 	QUnit.module("DynamicPage - Focus on actions buttons");
 
-	QUnit.test("Focus is moved to overflow button of 'actions' toolbar, when Dialog is closed", async function (assert) {
+	QUnit.test("Focus is moved to overflow button of 'actions' toolbar, when Dialog is closed", function (assert) {
 		// Arrange
-		var oButton = new Button({text: "Button" }),
+		const oButton = new Button({text: "Button" }),
 			oDynamicPageTitle = new DynamicPageTitle({
 				heading: new Title({text: "Looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong title"}),
 				actions: [oButton]
@@ -682,7 +681,7 @@ function (
 			});
 
 		oUtil.renderObject(oDynamicPage);
-		await nextUIUpdate();
+		Core.applyChanges();
 
 		// Act - simulation of the Dialog close and focus fail to move to the previously focused button
 		oDynamicPageTitle.onfocusfail({ srcControl: oButton });
@@ -697,9 +696,9 @@ function (
 
 	QUnit.module("DynamicPage - Rendering - Title heading, snappedHeading and expandedHeading");
 
-	QUnit.test("Focus span rendered correctly with and without header", function (assert) {
+	QUnit.test("Focus span rendered correctly with and without header", async function (assert) {
 		// Arrange
-		var oDynamicPage = oFactory.getDynamicPage(),
+		const oDynamicPage = oFactory.getDynamicPage(),
 			oDynamicPageTitle = oDynamicPage.getTitle();
 
 		// Act
@@ -711,7 +710,7 @@ function (
 
 		// Act
 		oDynamicPage.destroyHeader();
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		// Assert
 		assert.strictEqual(oDynamicPageTitle._getFocusSpan().is(":hidden"), true, "focusSpan is hidden");
@@ -721,24 +720,29 @@ function (
 	});
 
 	QUnit.test("No heading at all", function (assert) {
-		var oDynamicPageTitle = new DynamicPageTitle({}),
+		// Arrange
+		const oDynamicPageTitle = new DynamicPageTitle({}),
 				oDynamicPage = new DynamicPage({
 					title: oDynamicPageTitle,
 					header: oFactory.getDynamicPageHeader(),
 					content: oFactory.getContent(100),
 					footer: oFactory.getFooter()
 				});
+		// Act
 		oUtil.renderObject(oDynamicPage);
 
-		var $heading = oDynamicPageTitle.$("left-inner").find(".sapFDynamicPageTitleMainHeadingInner");
+		// Assert
+		const $heading = oDynamicPageTitle.$("left-inner").find(".sapFDynamicPageTitleMainHeadingInner");
 		assert.ok($heading.length === 1, "Heading area is rendered");
 		assert.ok($heading.children().length === 0, "Heading area is empty");
 
+		// Clean up
 		oDynamicPage.destroy();
 	});
 
 	QUnit.test("Only heading given", function (assert) {
-		var oTitle = oFactory.getTitle(),
+		// Arrange
+		const oTitle = oFactory.getTitle(),
 				oDynamicPageTitle = new DynamicPageTitle({
 					heading: oTitle
 				}),
@@ -748,18 +752,22 @@ function (
 					content: oFactory.getContent(100),
 					footer: oFactory.getFooter()
 				});
+		// Act
 		oUtil.renderObject(oDynamicPage);
 
-		var $heading = oDynamicPageTitle.$("left-inner").find(".sapFDynamicPageTitleMainHeadingInner");
+		// Assert
+		const $heading = oDynamicPageTitle.$("left-inner").find(".sapFDynamicPageTitleMainHeadingInner");
 		assert.ok($heading.length === 1, "Heading area is rendered");
 		assert.ok($heading.children().length === 1, "Heading area has one child rendered");
 		assert.ok($heading.children()[0] === oTitle.getDomRef(), "This child is the title");
 
+		// Clean up
 		oDynamicPage.destroy();
 	});
 
 	QUnit.test("heading in combination with snappedHeading/expandedHeading given", function (assert) {
-		var oTitle = oFactory.getTitle(),
+		// Arrange
+		const oTitle = oFactory.getTitle(),
 				oDynamicPageTitle = new DynamicPageTitle({
 					heading: oTitle,
 					expandedHeading: oFactory.getTitle(),
@@ -773,19 +781,23 @@ function (
 				}),
 				sAriaLabelledBy = oDynamicPageTitle.getHeading().getId();
 
+		// Act
 		oUtil.renderObject(oDynamicPage);
 
-		var $heading = oDynamicPageTitle.$("left-inner").find(".sapFDynamicPageTitleMainHeadingInner");
+		// Assert
+		const $heading = oDynamicPageTitle.$("left-inner").find(".sapFDynamicPageTitleMainHeadingInner");
 		assert.ok($heading.length === 1, "Heading area is rendered");
 		assert.ok($heading.children().length === 1, "Heading area has one child rendered");
 		assert.ok($heading.children()[0] === oTitle.getDomRef(), "This child is the title");
 		oUtil.testExpandedCollapsedARIA(assert, oDynamicPage, "true", sAriaLabelledBy, "Heading aria-labelledby references should be set");
 
+		// Clean up
 		oDynamicPage.destroy();
 	});
 
 	QUnit.test("Only snappedHeading given", function (assert) {
-		var oDynamicPageTitle = new DynamicPageTitle({
+		// Arrange
+		const oDynamicPageTitle = new DynamicPageTitle({
 					snappedHeading: oFactory.getTitle()
 				}),
 				oDynamicPage = new DynamicPage({
@@ -794,16 +806,20 @@ function (
 					content: oFactory.getContent(100),
 					footer: oFactory.getFooter()
 				});
+		// Act
 		oUtil.renderObject(oDynamicPage);
 
+		// Assert
 		assert.ok(oDynamicPageTitle.$("snapped-heading-wrapper").length === 1, "Snapped heading wrapper is rendered");
 		assert.ok(oDynamicPageTitle.$("snapped-heading-wrapper").hasClass("sapUiHidden"), "Snapped heading wrapper is hidden");
 
+		// Clean up
 		oDynamicPage.destroy();
 	});
 
 	QUnit.test("Only expandedHeading given", function (assert) {
-		var oDynamicPageTitle = new DynamicPageTitle({
+		// Arrange
+		const oDynamicPageTitle = new DynamicPageTitle({
 					expandedHeading: oFactory.getTitle()
 				}),
 				oDynamicPage = new DynamicPage({
@@ -812,16 +828,20 @@ function (
 					content: oFactory.getContent(100),
 					footer: oFactory.getFooter()
 				});
+		// Act
 		oUtil.renderObject(oDynamicPage);
 
+		// Assert
 		assert.ok(oDynamicPageTitle.$("expand-heading-wrapper").length === 1, "Expanded heading wrapper is rendered");
 		assert.ok(!oDynamicPageTitle.$("expand-heading-wrapper").hasClass("sapUiHidden"), "Expanded heading wrapper is visible");
 
+		// Clean up
 		oDynamicPage.destroy();
 	});
 
 	QUnit.test("Both snappedHeading and expandedHeading given", function (assert) {
-		var oDynamicPageTitle = new DynamicPageTitle({
+		// Arrange
+		const oDynamicPageTitle = new DynamicPageTitle({
 					snappedHeading: oFactory.getTitle(),
 					expandedHeading: oFactory.getTitle()
 				}),
@@ -834,8 +854,10 @@ function (
 				sAriaLabelledByExpanded = oDynamicPageTitle.getExpandedHeading().getId(),
 				sAriaLabelledBySnapped = oDynamicPageTitle.getSnappedHeading().getId();
 
+		// Act
 		oUtil.renderObject(oDynamicPage);
 
+		// Assert
 		assert.ok(oDynamicPageTitle.$("snapped-heading-wrapper").length === 1, "Snapped heading wrapper is rendered");
 		assert.ok(oDynamicPageTitle.$("snapped-heading-wrapper").hasClass("sapUiHidden"), "Snapped heading wrapper is hidden");
 
@@ -844,10 +866,13 @@ function (
 
 		oUtil.testExpandedCollapsedARIA(assert, oDynamicPage, "true", sAriaLabelledByExpanded, "Expanded aria-labelledby references should be set");
 
+		// Act
 		oDynamicPage.setHeaderExpanded(false);
 
+		// Assert
 		oUtil.testExpandedCollapsedARIA(assert, oDynamicPage, "false", sAriaLabelledBySnapped, "Snapped aria-labelledby references should be set");
 
+		// Clean up
 		oDynamicPage.destroy();
 	});
 
@@ -872,9 +897,9 @@ function (
 	});
 
 	QUnit.test("Add/Remove dynamically Snapped content", function (assert) {
-		var oLabel = oFactory.getLabel("New Label"),
-				iExpectedSnappedContentNumber = 0,
-				iActualSnappedContentNumber = this.oDynamicPageTitle.getExpandedContent().length;
+		const oLabel = oFactory.getLabel("New Label");
+		let iExpectedSnappedContentNumber = 0,
+			iActualSnappedContentNumber = this.oDynamicPageTitle.getExpandedContent().length;
 
 		assert.equal(iActualSnappedContentNumber, iExpectedSnappedContentNumber, "No Snapped Content");
 
@@ -897,8 +922,8 @@ function (
 	});
 
 	QUnit.test("Add/Remove dynamically Expanded content", function (assert) {
-		var oLabel = oFactory.getLabel("New Label"),
-				iExpectedExpandedContentNumber = 0,
+		const oLabel = oFactory.getLabel("New Label");
+		let iExpectedExpandedContentNumber = 0,
 				iActualExpandedContentNumber = this.oDynamicPageTitle.getExpandedContent().length;
 
 		assert.equal(iActualExpandedContentNumber, iExpectedExpandedContentNumber, "No Expanded Content");
@@ -920,11 +945,11 @@ function (
 	});
 
 	QUnit.test("Add/Remove dynamically actions", function (assert) {
-		var oAction = oFactory.getAction(),
+		const oAction = oFactory.getAction(),
 				oAction1 = oFactory.getAction(),
 				oAction2 = oFactory.getAction(),
-				oAction3 = oFactory.getAction(),
-				iExpectedActionsNumber = 0,
+				oAction3 = oFactory.getAction();
+		let iExpectedActionsNumber = 0,
 				iActualActionsNumber = this.oDynamicPageTitle.getActions().length,
 				vResult = null;
 
@@ -1018,14 +1043,14 @@ function (
 	});
 
 	QUnit.test("Add/Remove dynamically navigationActions", function (assert) {
-		var oAction = oFactory.getAction(),
+		const oAction = oFactory.getAction(),
 				oAction1 = oFactory.getAction(),
 				oAction2 = oFactory.getAction(),
-				oAction3 = oFactory.getAction(),
-				iExpectedActionsNumber = 0,
-				iExpectedIndex = 0,
+				oAction3 = oFactory.getAction();
+		let iExpectedActionsNumber = 0,
 				iActualActionsNumber = this.oDynamicPageTitle.getNavigationActions().length,
 				vResult = null;
+		const iExpectedIndex = 0;
 
 		// Assert default state
 		assert.equal(iActualActionsNumber, iExpectedActionsNumber, "There are no navActions.");
@@ -1119,8 +1144,8 @@ function (
 	/**
 	 * @deprecated Since version 1.54
 	 */
-	QUnit.test("test primaryArea", function (assert) {
-		var DynamicPageTitleArea = fioriLibrary.DynamicPageTitleArea,
+	QUnit.test("DynamicPageTitle primaryArea defaults to the Begin area", function (assert) {
+		const DynamicPageTitleArea = fioriLibrary.DynamicPageTitleArea,
 			oDynamicPageTitle = this.oDynamicPageTitle,
 			sBeginArea = DynamicPageTitleArea.Begin;
 
@@ -1128,8 +1153,8 @@ function (
 		assert.equal(oDynamicPageTitle.getPrimaryArea(), sBeginArea, "is the default one");
 	});
 
-	QUnit.test("test areaShrinkRatio", function (assert) {
-		var oDynamicPageTitle = this.oDynamicPageTitle;
+	QUnit.test("DynamicPageTitle areaShrinkRatio defaults to 1:1.6:1.6 and can be changed", function (assert) {
+		const oDynamicPageTitle = this.oDynamicPageTitle;
 
 		// Assert default: Heading:Content:Actions - "1:1.6:1.6"
 		assert.equal(oDynamicPageTitle.getAreaShrinkRatio(), "1:1.6:1.6", "is the default one");
@@ -1142,7 +1167,7 @@ function (
 	});
 
 	QUnit.test("test areaShrinkRatio applied from renderer", function (assert) {
-		var oDynamicPageTitle = this.oDynamicPageTitle;
+		const oDynamicPageTitle = this.oDynamicPageTitle;
 
 		// Act
 		oDynamicPageTitle.setAreaShrinkRatio("0:0:0");
@@ -1156,21 +1181,20 @@ function (
 	});
 
 	QUnit.test("Adding a control, other than OverflowToolbar to the content does not set flex-basis", function (assert) {
-		var oLabel = oFactory.getLabel("test");
+		const oLabel = oFactory.getLabel("test");
 
 		// Act
 		this.oDynamicPageTitle.addContent(oLabel);
-		Core.applyChanges();
 		this.clock.tick(1000);
 
 		// Assert
-		var sFlexBasis = this.oDynamicPageTitle.$("content").css("flex-basis");
+		const sFlexBasis = this.oDynamicPageTitle.$("content").css("flex-basis");
 		assert.equal(sFlexBasis, "auto", "No flex-basis set");
 	});
 
 	QUnit.test("Adding an OverflowToolbar to the content with NeverOverflow priority sets min-width", function (assert) {
 		// Arrange
-		var oLabel = oFactory.getLabel(""),
+		const oLabel = oFactory.getLabel(""),
 			oButton = oFactory.getAction().setLayoutData(new OverflowToolbarLayoutData({
 				priority: "NeverOverflow"
 			})),
@@ -1179,16 +1203,15 @@ function (
 		// Act
 		this.oDynamicPageTitle.addAction(oLabel);
 		this.oDynamicPageTitle.addAction(oButton);
-		Core.applyChanges();
 		this.clock.tick(1000);
 
 		// Assert
-		var sMinWidth = this.oDynamicPageTitle.$("mainActions").css("min-width");
+		const sMinWidth = this.oDynamicPageTitle.$("mainActions").css("min-width");
 		assert.notEqual(sMinWidth, sOrigMinWidth, "Adding an OverflowToolbar's content with NeverOverflow sets min-width");
 	});
 
 	QUnit.test("DynamicPage Title - backgroundDesign", function(assert) {
-		var $oDomRef = this.oDynamicPageTitle.$();
+		const $oDomRef = this.oDynamicPageTitle.$();
 
 		// assert
 		assert.equal(this.oDynamicPageTitle.getBackgroundDesign(), null, "Default value of backgroundDesign property = null");
@@ -1221,7 +1244,7 @@ function (
 	});
 
 	QUnit.test("ariaDescribedBy association", function (assert) {
-		var oTitle = this.oDynamicPage.getTitle(),
+		const oTitle = this.oDynamicPage.getTitle(),
 			$focusSpan = oTitle._getFocusSpan(),
 			oText = new Text();
 
@@ -1239,30 +1262,30 @@ function (
 	});
 
 	QUnit.test("title clone includes actions", function (assert) {
-		var oLink = new Link(),
-				oTitleClone,
-				iExpectedActionsCount = 1;
+		// Arrange
+		const oLink = new Link();
+		const iExpectedActionsCount = 1;
 		this.oDynamicPageTitle.addAction(oLink);
 		assert.strictEqual(this.oDynamicPageTitle.getActions().length, iExpectedActionsCount, "title has expected actions count"); // assert state before act
 
 		// Act
-		oTitleClone = this.oDynamicPageTitle.clone();
+		const oTitleClone = this.oDynamicPageTitle.clone();
 
-		// Check
+		// Assert
 		assert.strictEqual(oTitleClone.getActions().length, iExpectedActionsCount, "title clone also has the same actions count");
 	});
 
 	QUnit.test("title clone includes navigation actions", function (assert) {
-		var oLink = new Link(),
-				oTitleClone,
-				iExpectedNavActionsCount = 1;
+		// Arrange
+		const oLink = new Link();
+		const iExpectedNavActionsCount = 1;
 		this.oDynamicPageTitle.addNavigationAction(oLink);
 		assert.strictEqual(this.oDynamicPageTitle.getNavigationActions().length, iExpectedNavActionsCount, "title has expected nav actions count"); // assert state before act
 
 		// Act
-		oTitleClone = this.oDynamicPageTitle.clone();
+		const oTitleClone = this.oDynamicPageTitle.clone();
 
-		// Check
+		// Assert
 		assert.strictEqual(oTitleClone.getNavigationActions().length, iExpectedNavActionsCount, "title clone also has the same nav actions count");
 	});
 
@@ -1280,7 +1303,7 @@ function (
 	});
 
 	QUnit.test("Adding an OverflowToolbar to the content with GenericTag in it", function (assert) {
-		var oToolbar = oFactory.getOverflowToolbar(),
+		const oToolbar = oFactory.getOverflowToolbar(),
 			oGenericTag = oFactory.getGenericTag("Test 1"),
 			fnDone = assert.async();
 
@@ -1289,14 +1312,14 @@ function (
 		// Act
 		oToolbar.addContent(oGenericTag);
 		this.oDynamicPageTitle.addContent(oToolbar);
-		Core.applyChanges();
 
+		// Category B: non-zero delay needed for toolbar resize/animation handling
 		setTimeout(function () {
 
 			// Act
 			oGenericTag.setText("Looooooooooooooooooooooooooonger text");
-			Core.applyChanges();
 
+			// Category B: non-zero delay needed for toolbar resize/animation handling
 			setTimeout(function () {
 				// Assert
 				assert.notOk(oToolbar._getOverflowButton().$().is(":visible"), "Overflow button is not visible when width is enough");
@@ -1306,7 +1329,7 @@ function (
 	});
 
 	QUnit.test("GenericTag in the OFT content gets out of the Popover", function (assert) {
-		var oToolbar = oFactory.getOverflowToolbar(),
+		const oToolbar = oFactory.getOverflowToolbar(),
 			$qunitDOMLocation =  $("#qunit-fixture"),
 			sInitialWidth = $qunitDOMLocation.width(),
 			oInvalidateSpy = sinon.spy(oToolbar, "invalidate");
@@ -1335,7 +1358,7 @@ function (
 
 	QUnit.test("Changing visibility of GenericTag", function (assert) {
 		// Arrange
-		var oToolbar = oFactory.getEmptyOverflowToolbar(),
+		const oToolbar = oFactory.getEmptyOverflowToolbar(),
 			oGenericTag = oFactory.getGenericTag("Test 1"),
 			oDynamicPageTitle = this.oDynamicPageTitle,
 			fnDone = assert.async(),
@@ -1348,10 +1371,12 @@ function (
 		this.oDynamicPageTitle.addContent(oToolbar);
 		Core.applyChanges();
 
+		// Category B: non-zero delay needed for toolbar resize/animation handling
 		setTimeout(function () {
 			// Act
 			oGenericTag.setVisible(false);
 
+			// Category B: non-zero delay needed for toolbar resize/animation handling
 			setTimeout(function () {
 				oSpy.resetHistory();
 
@@ -1359,6 +1384,7 @@ function (
 				oGenericTag.setVisible(true);
 				Core.applyChanges();
 
+				// Category B: non-zero delay needed for toolbar resize/animation handling
 				setTimeout(function () {
 					// Assert
 					assert.strictEqual(oSpy.firstCall.args[0], null,
@@ -1372,10 +1398,9 @@ function (
 
 	QUnit.test("Changing GenericTag property which might influence width", function (assert) {
 		// Arrange
-		var oToolbar = oFactory.getEmptyOverflowToolbar(),
+		const oToolbar = oFactory.getEmptyOverflowToolbar(),
 			oGenericTag = oFactory.getGenericTag("Test 1"),
-			oDynamicPageTitle = this.oDynamicPageTitle,
-			oSpy;
+			oDynamicPageTitle = this.oDynamicPageTitle;
 
 		// Act
 		oToolbar.addContent(oGenericTag);
@@ -1383,7 +1408,7 @@ function (
 		Core.applyChanges();
 
 		// Act
-		oSpy = this.spy(oDynamicPageTitle, "_setContentAreaFlexBasis");
+		const oSpy = this.spy(oDynamicPageTitle, "_setContentAreaFlexBasis");
 		oGenericTag.setText("New looooooooooooooonger text");
 		Core.applyChanges();
 
@@ -1394,10 +1419,9 @@ function (
 
 	QUnit.test("Changing GenericTag value aggregation", function (assert) {
 		// Arrange
-		var oToolbar = oFactory.getEmptyOverflowToolbar(),
+		const oToolbar = oFactory.getEmptyOverflowToolbar(),
 			oGenericTag = oFactory.getGenericTag("Test 1"),
-			oDynamicPageTitle = this.oDynamicPageTitle,
-			oSpy;
+			oDynamicPageTitle = this.oDynamicPageTitle;
 
 		// Act
 		oToolbar.addContent(oGenericTag);
@@ -1405,7 +1429,7 @@ function (
 		Core.applyChanges();
 
 		// Act
-		oSpy = this.spy(oDynamicPageTitle, "_setContentAreaFlexBasis");
+		const oSpy = this.spy(oDynamicPageTitle, "_setContentAreaFlexBasis");
 		oGenericTag.setValue(new ObjectNumber({ number: "22222222222222222222222" }));
 		Core.applyChanges();
 
@@ -1416,11 +1440,10 @@ function (
 
 	QUnit.test("Hiding DynamicPageTitle will not trigger caching controls info", function (assert) {
 		// Arrange
-		var oToolbar = oFactory.getEmptyOverflowToolbar(),
+		const oToolbar = oFactory.getEmptyOverflowToolbar(),
 			oGenericTag = oFactory.getGenericTag("Test 1"),
 			oDynamicPageTitle = this.oDynamicPageTitle,
-			fnDone = assert.async(),
-			oSpy;
+			fnDone = assert.async();
 
 		assert.expect(1);
 
@@ -1431,16 +1454,17 @@ function (
 		Core.applyChanges();
 
 		// Act
-		oSpy = this.spy(oToolbar, "_cacheControlsInfo");
+		const oSpy = this.spy(oToolbar, "_cacheControlsInfo");
 
 		// Simulating going to another page and resize handler triggered
 		oDynamicPageTitle.$().css("display", "none");
 
+		// Category B: non-zero delay waiting for resize handler to be triggered (once in every 200ms)
 		setTimeout(function () {
 				// Assert
 				assert.strictEqual(oSpy.callCount, 0, "_cacheControlsInfo is not called");
 				fnDone();
-			}, 250); // waiting for resize handler to be triggered (once in every 200ms)
+			}, 250);
 	});
 
 	/* --------------------------- DynamicPage Title Aggregations ---------------------------------- */
@@ -1458,19 +1482,17 @@ function (
 		}
 	});
 
-	QUnit.test("SnappedTitleOnMobile on Phone", function (assert) {
+	QUnit.test("SnappedTitleOnMobile on Phone", async function (assert) {
 		// Arrange
 		oUtil.toMobileMode();
 		oUtil.renderObject(this.oDynamicPage);
 
-		var $TopArea = this.oDynamicPageTitle.$topArea,
+		const $TopArea = this.oDynamicPageTitle.$topArea,
 			$MainArea = this.oDynamicPageTitle.$mainArea,
-			bIsExpandButtonVisible = this.oDynamicPageTitle._getShowExpandButton(),
 			$STOMWrapper = this.oDynamicPageTitle.$snappedTitleOnMobileWrapper,
 			oSnappedWrapper = this.oDynamicPageTitle.$snappedWrapper.context,
-			oSnappedHeadingWrapper,
-			oTitle,
 			$titleWrapper = this.oDynamicPage.$("header");
+		let bIsExpandButtonVisible = this.oDynamicPageTitle._getShowExpandButton();
 
 		// Assert
 		assert.notOk($titleWrapper.hasClass("sapFDynamicPageTitleSnapped"), "DynamicPageTitleWrapper hasn't the sapFDynamicPageTitleSnapped CSS class.");
@@ -1507,17 +1529,17 @@ function (
 		Device.orientation.portrait = true;
 
 		//Arrange
-		oTitle = this.oDynamicPageTitle.getHeading();
+		const oTitle = this.oDynamicPageTitle.getHeading();
 		this.oDynamicPageTitle.setHeading(null);
 		this.oDynamicPageTitle.setAggregation("snappedHeading", new Title({text: "Test"}));
 
 		this.oDynamicPage.setHeaderExpanded(false);
 
 		this.oDynamicPage.invalidate();
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		this.oDynamicPage.setHeaderExpanded(true);
-		oSnappedHeadingWrapper = this.oDynamicPageTitle.$snappedHeadingWrapper;
+		const oSnappedHeadingWrapper = this.oDynamicPageTitle.$snappedHeadingWrapper;
 
 		assert.ok(oSnappedHeadingWrapper.hasClass("sapUiHidden"), "Snapped content is hidden on mobile when SnappedTitleOnMobile " +
 		"is set");
@@ -1535,12 +1557,12 @@ function (
 		this.oDynamicPageTitle.setAggregation("snappedTitleOnMobile", null);
 		oUtil.renderObject(this.oDynamicPage);
 
-		var $TopArea = this.oDynamicPageTitle.$topArea,
+		const $TopArea = this.oDynamicPageTitle.$topArea,
 			$MainArea = this.oDynamicPageTitle.$mainArea,
-			bIsExpandButtonVisible = this.oDynamicPageTitle._getShowExpandButton(),
 			oSTOMWrapper = this.oDynamicPageTitle.$snappedTitleOnMobileWrapper.context,
 			$SnappedWrapper = this.oDynamicPageTitle.$snappedWrapper,
 			$titleWrapper = this.oDynamicPage.$("header");
+		let bIsExpandButtonVisible = this.oDynamicPageTitle._getShowExpandButton();
 
 		// Assert
 		assert.ok($titleWrapper.hasClass("sapFDynamicPageTitleSnapped"), "DynamicPageTitleWrapper has the sapFDynamicPageTitleSnapped CSS class.");
@@ -1583,12 +1605,12 @@ function (
 		oUtil.toTabletMode();
 		oUtil.renderObject(this.oDynamicPage);
 
-		var $TopArea = this.oDynamicPageTitle.$topArea,
+		const $TopArea = this.oDynamicPageTitle.$topArea,
 			$MainArea = this.oDynamicPageTitle.$mainArea,
-			bIsExpandButtonVisible = this.oDynamicPageTitle._getShowExpandButton(),
 			oSTOMWrapper = this.oDynamicPageTitle.$snappedTitleOnMobileWrapper.context,
 			$SnappedWrapper = this.oDynamicPageTitle.$snappedWrapper,
 			$titleWrapper = this.oDynamicPage.$("header");
+		let bIsExpandButtonVisible = this.oDynamicPageTitle._getShowExpandButton();
 
 		// Assert
 		assert.ok($titleWrapper.hasClass("sapFDynamicPageTitleSnapped"), "DynamicPageTitleWrapper has the sapFDynamicPageTitleSnapped CSS class.");
@@ -1630,12 +1652,12 @@ function (
 		// Arrange
 		oUtil.renderObject(this.oDynamicPage);
 
-		var $TopArea = this.oDynamicPageTitle.$topArea,
+		const $TopArea = this.oDynamicPageTitle.$topArea,
 			$MainArea = this.oDynamicPageTitle.$mainArea,
-			bIsExpandButtonVisible = this.oDynamicPageTitle._getShowExpandButton(),
 			oSTOMWrapper = this.oDynamicPageTitle.$snappedTitleOnMobileWrapper.context,
 			$SnappedWrapper = this.oDynamicPageTitle.$snappedWrapper,
 			$titleWrapper = this.oDynamicPage.$("header");
+		let bIsExpandButtonVisible = this.oDynamicPageTitle._getShowExpandButton();
 
 		// Assert
 		assert.ok($titleWrapper.hasClass("sapFDynamicPageTitleSnapped"), "DynamicPageTitleWrapper has the sapFDynamicPageTitleSnapped CSS class.");
@@ -1664,7 +1686,7 @@ function (
 		this.oDynamicPage.setHeaderExpanded(true);
 		oUtil.renderObject(this.oDynamicPage);
 
-		var oExpandButton = this.oDynamicPageTitle._getExpandButton();
+		const oExpandButton = this.oDynamicPageTitle._getExpandButton();
 
 		// Act
 		this.oDynamicPage.setHeaderExpanded(false);
@@ -1686,7 +1708,7 @@ function (
 	});
 
 	QUnit.test("MouseOut/MouseOver events should be prevented when target is child", function (assert) {
-		var oTitle = this.oDynamicPageTitle,
+		const oTitle = this.oDynamicPageTitle,
 			oTitleMouseOverSpy = this.spy(this.oDynamicPage, "_onTitleMouseOver"),
 			oTitleMouseOutSpy = this.spy(this.oDynamicPage, "_onTitleMouseOut"),
 			oEventOnMouseOut = {};

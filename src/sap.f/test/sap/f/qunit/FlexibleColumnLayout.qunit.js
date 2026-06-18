@@ -38,9 +38,9 @@ function(
 	"use strict";
 
 	// shortcut for sap.f.LayoutType
-	var LT = library.LayoutType;
+	const LT = library.LayoutType;
 
-	var sQUnitFixture = "qunit-fixture",
+	const sQUnitFixture = "qunit-fixture",
 		DESKTOP_SIZE = "1300px",
 		TABLET_SIZE = "1200px",
 		PHONE_SIZE = "900px",
@@ -57,7 +57,23 @@ function(
 			TwoColumnsMidExpanded: 2
 		};
 
-	var fnCreatePage = function (sId, oContent) {
+	/**
+	 * Returns a Promise that resolves after all FCL columns finish resizing.
+	 */
+	function waitForColumnsResize(oFCL) {
+		return oFCL._oAnimationEndListener.waitForAllColumnsResizeEnd();
+	}
+
+	/**
+	 * Returns a Promise that resolves after the next FCL columns resize event.
+	 */
+	function waitForColumnsResizeOnce(oFCL) {
+		return new Promise((resolve) => {
+			oFCL._attachAfterAllColumnsResizedOnce(resolve);
+		});
+	}
+
+	const fnCreatePage = function (sId, oContent) {
 		return new Page(sId, {
 			title: "Page: " + sId,
 			content: oContent || [
@@ -66,19 +82,19 @@ function(
 		});
 	};
 
-	var fnGetResourceBundleText = function (sResourceBundleKey){
+	const fnGetResourceBundleText = function (sResourceBundleKey){
 		return FlexibleColumnLayout._getResourceBundle().getText(sResourceBundleKey);
 	};
 
-	var fnCreateFCL = function (oMetadata) {
+	const fnCreateFCL = async function (oMetadata) {
 		oMetadata = oMetadata || {};
-		var oFCL = new FlexibleColumnLayout(oMetadata);
+		const oFCL = new FlexibleColumnLayout(oMetadata);
 		oFCL.placeAt(sQUnitFixture);
-		Core.applyChanges();
+		await nextUIUpdate();
 		return oFCL;
 	};
 
-	var oFactory = {
+	const oFactory = {
 		createPage: fnCreatePage,
 		createFCL: fnCreateFCL
 	};
@@ -91,8 +107,8 @@ function(
 	 * @param {int} iMidVisible - whether we expect the mid column to be visible or not
 	 * @param {int} iEndVisible - whether we expect the end column to be visible or not
 	 */
-	var assertColumnsVisibility = function(assert, oFCL, iBeginVisible, iMidVisible, iEndVisible) {
-		var bBeginOK =
+	const assertColumnsVisibility = function(assert, oFCL, iBeginVisible, iMidVisible, iEndVisible) {
+		const bBeginOK =
 		(!oFCL.$("beginColumn").hasClass("sapFFCLColumnHidden")) ===
 		!!iBeginVisible,
 	  bMidOK =
@@ -113,8 +129,8 @@ function(
 	 * @param {int} iBeginColumnSeparatorVisible - whether we expect the begin-separator to be visible
 	 * @param {int} iMidColumnSeparatorVisible - whether we expect the end-separator to be visible
 	 */
-	var assertSeparatorVisibility = function(assert, oFCL, iBeginColumnSeparatorVisible, iMidColumnSeparatorVisible) {
-		var bBeginSeparatorOK = oFCL.$("separator-begin").is(":visible") === !!iBeginColumnSeparatorVisible,
+	const assertSeparatorVisibility = function(assert, oFCL, iBeginColumnSeparatorVisible, iMidColumnSeparatorVisible) {
+		const bBeginSeparatorOK = oFCL.$("separator-begin").is(":visible") === !!iBeginColumnSeparatorVisible,
 			bMidSeparatorOK = oFCL.$("separator-end").is(":visible") === !!iMidColumnSeparatorVisible;
 
 		assert.ok(bBeginSeparatorOK, "The begin separator is " + (iBeginColumnSeparatorVisible ? "" : " not ") +  " visible");
@@ -123,7 +139,7 @@ function(
 
 	function dragSeparator(sSeparatorName, iPx, oFCL) {
 
-		var oSeparator = oFCL._oColumnSeparators[sSeparatorName][0],
+		const oSeparator = oFCL._oColumnSeparators[sSeparatorName][0],
 			iStartX = oSeparator.getBoundingClientRect().x,
 			iEndX = iStartX + iPx;
 
@@ -140,10 +156,10 @@ function(
 			$("#" + sQUnitFixture).width(DESKTOP_SIZE); // > 1280px
 			ControlBehavior.setAnimationMode("none");
 
-			this.getBeginColumnBackArrow = function () { return this.oFCL.getAggregation("_beginColumnBackArrow"); };
-			this.getMidColumnBackArrow = function () { return this.oFCL.getAggregation("_midColumnBackArrow"); };
-			this.getMidColumnForwardArrow = function () { return this.oFCL.getAggregation("_midColumnForwardArrow"); };
-			this.getEndColumnForwardArrow = function () { return this.oFCL.getAggregation("_endColumnForwardArrow"); };
+			this.getBeginColumnBackArrow = () => this.oFCL.getAggregation("_beginColumnBackArrow");
+			this.getMidColumnBackArrow = () => this.oFCL.getAggregation("_midColumnBackArrow");
+			this.getMidColumnForwardArrow = () => this.oFCL.getAggregation("_midColumnForwardArrow");
+			this.getEndColumnForwardArrow = () => this.oFCL.getAggregation("_endColumnForwardArrow");
 		},
 		afterEach: function () {
 			$("html").attr("data-sap-ui-animation", this.sOldAnimationSetting);
@@ -153,8 +169,11 @@ function(
 		}
 	});
 
-	QUnit.test("Instantiation", function (assert) {
-		this.oFCL = oFactory.createFCL();
+	QUnit.test("Instantiation", async function (assert) {
+		// Arrange
+		this.oFCL = await oFactory.createFCL();
+
+		// Assert
 		assert.ok(this.oFCL, "Instantiated successfully");
 		assert.ok(this.oFCL.$().length, "In the DOM");
 
@@ -166,7 +185,7 @@ function(
 		// Act: change backgroundDesign to Solid
 		this.oFCL.setBackgroundDesign("Solid");
 
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		// Assert backgroundDesign
 		assert.ok(this.oFCL.$().hasClass("sapFFCLBackgroundDesignSolid"), "Solid background is set in the  DOM");
@@ -175,115 +194,130 @@ function(
 		// Act: change backgroundDesign to Translucent
 		this.oFCL.setBackgroundDesign("Translucent");
 
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		// Assert backgroundDesign
 		assert.ok(this.oFCL.$().hasClass("sapFFCLBackgroundDesignTranslucent"), "Translucent background is set in the  DOM");
 		assert.ok(!this.oFCL.$().hasClass("sapFFCLBackgroundDesignSolid"), "Solid background is Not set in the  DOM");
 	});
 
-	QUnit.test("Layout: OneColumn", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: OneColumn", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.OneColumn
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 1, 0, 0);
 	});
 
-	QUnit.test("Layout: TwoColumnsBeginExpanded", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: TwoColumnsBeginExpanded", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.TwoColumnsBeginExpanded
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 1, 1, 0);
 		assert.ok(this.oFCL.$("beginColumn").width() > this.oFCL.$("midColumn").width());
 	});
 
-	QUnit.test("Layout: TwoColumnsMidExpanded", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: TwoColumnsMidExpanded", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.TwoColumnsMidExpanded
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 1, 1, 0);
 		assert.ok(this.oFCL.$("beginColumn").width() < this.oFCL.$("midColumn").width());
 	});
 
-	QUnit.test("Layout: MidColumnFullScreen", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: MidColumnFullScreen", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.MidColumnFullScreen
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 0, 1, 0);
 	});
 
-	QUnit.test("Layout: ThreeColumnsMidExpanded", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: ThreeColumnsMidExpanded", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 1, 1, 1);
 		assert.ok(this.oFCL.$("beginColumn").width() < this.oFCL.$("midColumn").width());
 		assert.ok(this.oFCL.$("endColumn").width() < this.oFCL.$("midColumn").width());
 	});
 
-	QUnit.test("Layout: ThreeColumnsEndExpanded", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: ThreeColumnsEndExpanded", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsEndExpanded
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 1, 1, 1);
 		assert.ok(this.oFCL.$("beginColumn").width() < this.oFCL.$("endColumn").width());
 		assert.ok(this.oFCL.$("midColumn").width() < this.oFCL.$("endColumn").width());
 	});
 
-	QUnit.test("Layout: ThreeColumnsMidExpandedEndHidden", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: ThreeColumnsMidExpandedEndHidden", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpandedEndHidden
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 1, 1, 0);
 		assert.ok(this.oFCL.$("beginColumn").width() < this.oFCL.$("midColumn").width());
 	});
 
-	QUnit.test("Layout: ThreeColumnsBeginExpandedEndHidden", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: ThreeColumnsBeginExpandedEndHidden", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsBeginExpandedEndHidden
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 1, 1, 0);
 		assert.ok(this.oFCL.$("midColumn").width() < this.oFCL.$("beginColumn").width());
 	});
 
-	QUnit.test("Layout: EndColumnFullScreen", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: EndColumnFullScreen", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.EndColumnFullScreen
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 0, 0, 1);
 	});
 
-	QUnit.test("Separators - 1 column", function (assert) {
-		this.oFCL = oFactory.createFCL();
+	QUnit.test("Column separators are hidden with 1 column", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL();
+		// Assert
 		assertSeparatorVisibility(assert, this.oFCL, 0, 0);
 	});
 
-	QUnit.test("Separators - 2 columns", function (assert) {
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Column separators are visible in 2-column layout", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.TwoColumnsBeginExpanded,
 			beginColumnPages: [new Page()]
 		});
 		this.oFCL._onNavContainerRendered({srcControl: this.oFCL.getAggregation("_beginColumnNav")});
 
+		// Assert
 		assertSeparatorVisibility(assert, this.oFCL, 1, 0);
 	});
 
-	QUnit.test("Separators - 2 columns operations", function (assert) {
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Dragging the column separator changes layout in 2-column mode", async function (assert) {
+		// Arrange
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.TwoColumnsBeginExpanded,
 			beginColumnPages: [new Page()]
 		});
 		this.oFCL._onNavContainerRendered({srcControl: this.oFCL.getAggregation("_beginColumnNav")});
 
+		// Act/Assert
 		dragSeparator("begin", -700, this.oFCL);
 		assertSeparatorVisibility(assert, this.oFCL, 1, 0);
 		assert.equal(this.oFCL.getLayout(), LT.TwoColumnsMidExpanded);
@@ -293,20 +327,22 @@ function(
 		assert.equal(this.oFCL.getLayout(), LT.TwoColumnsBeginExpanded);
 	});
 
-	QUnit.test("Separators - 3 columns (mid column Expanded, not-fixed 3-column layout)", function (assert) {
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Column separators are visible in 3-column layout with mid column expanded (not-fixed 3-column layout)", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded,
 			beginColumnPages: [new Page()]
 		});
 		this.oFCL._onNavContainerRendered({srcControl: this.oFCL.getAggregation("_beginColumnNav")});
 
+		// Assert
 		assertSeparatorVisibility(assert, this.oFCL, 1, 1);
 	});
 
-	QUnit.test("Separators - 3 columns operation (not-fixed 3-column layout)", function (assert) {
+	QUnit.test("Dragging the column separator changes layout and separators in 3-column mode (not-fixed 3-column layout)", async function (assert) {
 		this.clock = sinon.useFakeTimers();
 
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded,
 			beginColumnPages: [new Page()]
 		});
@@ -341,92 +377,101 @@ function(
 		this.clock.restore();
 	});
 
-	QUnit.test("Resizing the control triggers a layout change - phone", function (assert) {
-		var fnDone = assert.async(),
+	QUnit.test("Resizing the control to phone size triggers a layout change", async function (assert) {
+		const fnDone = assert.async(),
 			$qunitFixture = $("#" + sQUnitFixture),
 			iInitialWidth = $qunitFixture.width();
 
 		assert.expect(3);
 
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded
 		});
 
 		$qunitFixture.width(PHONE_SIZE);
 
-		setTimeout(function () {
+		// Category B: wait for ResponsiveHandler resize/animation cycle
+		setTimeout(() => {
 			assertColumnsVisibility(assert, this.oFCL, 0, 0, 1);
 			$qunitFixture.width(iInitialWidth);
 			fnDone();
-		}.bind(this), ANIMATION_WAIT_TIME);
+		}, ANIMATION_WAIT_TIME);
 	});
 
-	QUnit.test("Resizing the control triggers a layout change - tablet", function (assert) {
-		var fnDone = assert.async(),
+	QUnit.test("Resizing the control to tablet size triggers a layout change", async function (assert) {
+		const fnDone = assert.async(),
 			$qunitFixture = $("#" + sQUnitFixture),
 			iInitialWidth = $qunitFixture.width();
 
 		assert.expect(3);
 
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded
 		});
 
 		$qunitFixture.width(TABLET_SIZE);
 
-		setTimeout(function () {
+		// Category B: wait for ResponsiveHandler resize/animation cycle
+		setTimeout(() => {
 			assertColumnsVisibility(assert, this.oFCL, 0, 1, 1);
 			$qunitFixture.width(iInitialWidth);
 			fnDone();
-		}.bind(this), ANIMATION_WAIT_TIME);
+		}, ANIMATION_WAIT_TIME);
 	});
 
-	QUnit.test("Resizing the control triggers a layout change - desktop", function (assert) {
-		var fnDone = assert.async(),
+	QUnit.test("Resizing the control to desktop size triggers a layout change", async function (assert) {
+		const fnDone = assert.async(),
 			$qunitFixture = $("#" + sQUnitFixture),
 			iInitialWidth = $qunitFixture.width();
 
 		assert.expect(3);
 
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded
 		});
 
 		$("#" + sQUnitFixture).width(DESKTOP_SIZE);
 
-		setTimeout(function () {
+		// Category B: wait for ResponsiveHandler resize/animation cycle
+		setTimeout(() => {
 			assertColumnsVisibility(assert, this.oFCL, 1, 1, 1);
 			$qunitFixture.width(iInitialWidth);
 			fnDone();
-		}.bind(this), ANIMATION_WAIT_TIME);
+		}, ANIMATION_WAIT_TIME);
 	});
 
-	QUnit.test("stateChange event is fired on the first load", function (assert) {
-
+	QUnit.test("stateChange event is fired on the first load", async function (assert) {
+		// Arrange
 		this.oFCL = new FlexibleColumnLayout();
-		var oEventSpy = this.spy(this.oFCL, "fireStateChange");
+		const oEventSpy = this.spy(this.oFCL, "fireStateChange");
 
+		// Act
 		this.oFCL.placeAt(sQUnitFixture);
-		Core.applyChanges();
+		await nextUIUpdate();
 
+		// Assert
 		assert.ok(oEventSpy.called, "Layout change event fired");
 	});
 
-	QUnit.test("stateChange event is not fired when setLayout is called", function (assert) {
-		this.oFCL = oFactory.createFCL();
-		var oEventSpy = this.spy(this.oFCL, "fireStateChange");
+	QUnit.test("stateChange event is not fired when setLayout is called", async function (assert) {
+		// Arrange
+		this.oFCL = await oFactory.createFCL();
+		const oEventSpy = this.spy(this.oFCL, "fireStateChange");
 
+		// Act
 		this.oFCL.setLayout(LT.TwoColumnsBeginExpanded);
+
+		// Assert
 		assert.ok(!oEventSpy.called, "Layout change event not fired");
 	});
 
-	QUnit.test("stateChange event is fired on resize events that trigger a breakpoint change", function (assert) {
+	QUnit.test("stateChange event is fired on resize events that trigger a breakpoint change", async function (assert) {
 		this.clock = sinon.useFakeTimers();
 
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded
 		});
-		var oEventSpy = this.spy(this.oFCL, "fireStateChange");
+		const oEventSpy = this.spy(this.oFCL, "fireStateChange");
 
 		// Should be fired when a resize causes a layout change
 		$("#" + sQUnitFixture).width(TABLET_SIZE);
@@ -436,13 +481,13 @@ function(
 		this.clock.restore();
 	});
 
-	QUnit.test("stateChange event is not fired on resize events that do not trigger a breakpoint change", function (assert) {
+	QUnit.test("stateChange event is not fired on resize events that do not trigger a breakpoint change", async function (assert) {
 		this.clock = sinon.useFakeTimers();
 
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded
 		});
-		var oEventSpy = this.spy(this.oFCL, "fireStateChange");
+		const oEventSpy = this.spy(this.oFCL, "fireStateChange");
 
 		// Should be fired when a resize causes a layout change
 		$("#" + sQUnitFixture).width(TABLET_SIZE + 1); // Still on desktop
@@ -452,19 +497,19 @@ function(
 		this.clock.restore();
 	});
 
-	QUnit.test("stateChange event is not fired while the control has 0 width", function (assert) {
+	QUnit.test("stateChange event is not fired while the control has 0 width", async function (assert) {
 		this.clock = sinon.useFakeTimers();
 
-		var $fixture = $("#" + sQUnitFixture),
+		const $fixture = $("#" + sQUnitFixture),
 			iOldWidth = $fixture.width();
 
 		$fixture.width(0);
 
 		this.oFCL = new FlexibleColumnLayout();
-		var oEventSpy = this.spy(this.oFCL, "fireStateChange");
+		const oEventSpy = this.spy(this.oFCL, "fireStateChange");
 
 		this.oFCL.placeAt(sQUnitFixture);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		assert.ok(!oEventSpy.called, "Layout change event from onAfterRendering not fired");
 
@@ -480,28 +525,30 @@ function(
 		this.clock.restore();
 	});
 
-	QUnit.test("stateChange event is fired upon drag to a new layout", function (assert) {
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("stateChange event is fired upon drag to a new layout", async function (assert) {
+		// Arrange
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded
 		});
-		var oEventSpy = this.spy(this.oFCL, "fireStateChange");
+		const oEventSpy = this.spy(this.oFCL, "fireStateChange");
 
+		// Act
 		dragSeparator("begin", 100, this.oFCL);
+
+		// Assert
 		assert.ok(oEventSpy.called, "Layout change event fired");
 	});
 
-	QUnit.test("_onColumnSeparatorMoveEnd handles possible errors, that can preventthe dragging from ending", function (assert) {
+	QUnit.test("_onColumnSeparatorMoveEnd handles possible errors, that can preventthe dragging from ending", async function (assert) {
 
 		//Arrange
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded
 		});
-		var oStub,
-			oSpy;
-			oStub = this.stub(this.oFCL, "_fireStateChange").callsFake(function() {
+		const oStub = this.stub(this.oFCL, "_fireStateChange").callsFake(function() {
 				throw new Error("test Error");
 			});
-			oSpy = this.spy(this.oFCL, "_exitInteractiveResizeMode");
+			const oSpy = this.spy(this.oFCL, "_exitInteractiveResizeMode");
 
 		//Act
         try {
@@ -515,14 +562,14 @@ function(
 		oStub.restore();
 	});
 
-	QUnit.test("_liveStateChange event is fired upon drag to a new layout", function (assert) {
-		var sInitLayout = LT.ThreeColumnsMidExpanded;
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("_liveStateChange event is fired upon drag to a new layout", async function (assert) {
+		const sInitLayout = LT.ThreeColumnsMidExpanded;
+		this.oFCL = await oFactory.createFCL({
 			layout: sInitLayout
 		});
-		var oEventSpy = this.spy(this.oFCL, "fireEvent");
+		const oEventSpy = this.spy(this.oFCL, "fireEvent");
 
-		var oSeparator = this.oFCL._oColumnSeparators["begin"][0],
+		const oSeparator = this.oFCL._oColumnSeparators["begin"][0],
 			iStartX = oSeparator.getBoundingClientRect().x,
 			// end position corresponds to a new layout
 			iEndX = iStartX + 100;
@@ -541,14 +588,14 @@ function(
 		assert.ok(oEventSpy.calledWithMatch("stateChange"), "Layout change event fired");
 	});
 
-	QUnit.test("_liveStateChange event is not fired upon drag within the same layout", function (assert) {
-		var sInitLayout = LT.ThreeColumnsMidExpanded;
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("_liveStateChange event is not fired upon drag within the same layout", async function (assert) {
+		const sInitLayout = LT.ThreeColumnsMidExpanded;
+		this.oFCL = await oFactory.createFCL({
 			layout: sInitLayout
 		});
-		var oEventSpy = this.spy(this.oFCL, "fireEvent");
+		const oEventSpy = this.spy(this.oFCL, "fireEvent");
 
-		var oSeparator = this.oFCL._oColumnSeparators["begin"][0],
+		const oSeparator = this.oFCL._oColumnSeparators["begin"][0],
 			iStartX = oSeparator.getBoundingClientRect().x,
 			// end position corresponds to the same layout
 			iEndX = iStartX + 2;
@@ -567,40 +614,33 @@ function(
 		assert.notOk(oEventSpy.calledWithMatch("stateChange"), "Layout change event is not fired");
 	});
 
-	QUnit.test("columnsDistributionChange event is fired upon dragging to change the width of a column", function (assert) {
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("columnsDistributionChange event is fired upon dragging to change the width of a column", async function (assert) {
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.TwoColumnsBeginExpanded,
 			beginColumnPages: [new Page()]
 		});
-		var oEventSpy = this.spy(this.oFCL, "fireColumnsDistributionChange"),
-			fnDone = assert.async(),
-			oColumnPercentWidths,
-			sNewWidthsDistribution,
-			iBeginColumnWidth,
-			iMidColumnWidth,
-			fnRoundColumnWidths = function (sColumnWidths) {
-				return sColumnWidths.split("/").map((sWidth) => parseFloat(sWidth).toFixed(0)).join("/");
-			};
+		const oEventSpy = this.spy(this.oFCL, "fireColumnsDistributionChange");
+		const fnRoundColumnWidths = (sColumnWidths) => {
+			return sColumnWidths.split("/").map((sWidth) => parseFloat(sWidth).toFixed(0)).join("/");
+		};
 
 		dragSeparator("begin", -150, this.oFCL);
-		this.oFCL._attachAfterAllColumnsResizedOnce(function() {
-			iBeginColumnWidth = this.oFCL.$("beginColumn").width();
-			iMidColumnWidth = this.oFCL.$("midColumn").width();
+		await waitForColumnsResizeOnce(this.oFCL);
 
-			oColumnPercentWidths = this.oFCL._convertColumnPxWidthToPercent({ begin: iBeginColumnWidth, mid: iMidColumnWidth, end: 0 }, LT.TwoColumnsBeginExpanded);
-			sNewWidthsDistribution = Object.values(oColumnPercentWidths).join("/");
+		const iBeginColumnWidth = this.oFCL.$("beginColumn").width();
+		const iMidColumnWidth = this.oFCL.$("midColumn").width();
 
-			var spyCallArgs = oEventSpy.getCalls()[0].args[0];
+		const oColumnPercentWidths = this.oFCL._convertColumnPxWidthToPercent({ begin: iBeginColumnWidth, mid: iMidColumnWidth, end: 0 }, LT.TwoColumnsBeginExpanded);
+		const sNewWidthsDistribution = Object.values(oColumnPercentWidths).join("/");
 
-			// assert
-			assert.ok(oEventSpy.calledOnce, "columnsDistributionChange fired once");
-			assert.strictEqual(spyCallArgs.media, "desktop", "Media is Desktop");
-			assert.strictEqual(spyCallArgs.layout, LT.TwoColumnsBeginExpanded, "Layout is TwoColumnsBeginExpanded");
-			// round the widths to avoid floating point pression issues
-			assert.strictEqual(fnRoundColumnWidths(spyCallArgs.columnsSizes), fnRoundColumnWidths(sNewWidthsDistribution), "columnSizes is correct");
+		const spyCallArgs = oEventSpy.getCalls()[0].args[0];
 
-			fnDone();
-		}.bind(this), 500);
+		// assert
+		assert.ok(oEventSpy.calledOnce, "columnsDistributionChange fired once");
+		assert.strictEqual(spyCallArgs.media, "desktop", "Media is Desktop");
+		assert.strictEqual(spyCallArgs.layout, LT.TwoColumnsBeginExpanded, "Layout is TwoColumnsBeginExpanded");
+		// round the widths to avoid floating point pression issues
+		assert.strictEqual(fnRoundColumnWidths(spyCallArgs.columnsSizes), fnRoundColumnWidths(sNewWidthsDistribution), "columnSizes is correct");
 	});
 
 	QUnit.module("TABLET - API", {
@@ -619,101 +659,114 @@ function(
 		}
 	});
 
-	QUnit.test("Layout: OneColumn", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: OneColumn", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.OneColumn
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 1, 0, 0);
 	});
 
-	QUnit.test("Layout: TwoColumnsBeginExpanded", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: TwoColumnsBeginExpanded", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: "TwoColumnsBeginExpanded"
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 1, 1, 0);
 		assert.ok(this.oFCL.$("beginColumn").width() > this.oFCL.$("midColumn").width());
 	});
 
-	QUnit.test("Layout: TwoColumnsMidExpanded", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: TwoColumnsMidExpanded", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: "TwoColumnsMidExpanded"
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 1, 1, 0);
 		assert.ok(this.oFCL.$("beginColumn").width() < this.oFCL.$("midColumn").width());
 	});
 
-	QUnit.test("Layout: MidColumnFullScreen", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: MidColumnFullScreen", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.MidColumnFullScreen
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 0, 1, 0);
 	});
 
-	QUnit.test("Layout: ThreeColumnsMidExpanded", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: ThreeColumnsMidExpanded", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 0, 1, 1);
 		assert.ok(this.oFCL.$("endColumn").width() < this.oFCL.$("midColumn").width());
 	});
 
-	QUnit.test("Layout: ThreeColumnsEndExpanded", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: ThreeColumnsEndExpanded", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsEndExpanded
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 0, 1, 1);
 		assert.ok(this.oFCL.$("midColumn").width() < this.oFCL.$("endColumn").width());
 	});
 
-	QUnit.test("Layout: ThreeColumnsMidExpandedEndHidden", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: ThreeColumnsMidExpandedEndHidden", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpandedEndHidden
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 1, 1, 0);
 		assert.ok(this.oFCL.$("beginColumn").width() < this.oFCL.$("midColumn").width());
 	});
 
-	QUnit.test("Layout: ThreeColumnsBeginExpandedEndHidden", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: ThreeColumnsBeginExpandedEndHidden", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsBeginExpandedEndHidden
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 1, 1, 0);
 		assert.ok(this.oFCL.$("midColumn").width() < this.oFCL.$("beginColumn").width());
 	});
 
-	QUnit.test("Layout: EndColumnFullScreen", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: EndColumnFullScreen", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.EndColumnFullScreen
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 0, 0, 1);
 	});
 
-	QUnit.test("Navigation arrows - 2 columns", function (assert) {
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Column separator is visible in 2-column layout", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.TwoColumnsBeginExpanded,
 			beginColumnPages: [new Page()]
 		});
 		this.oFCL._onNavContainerRendered({srcControl: this.oFCL.getAggregation("_beginColumnNav")});
 
+		// Assert
 		assertSeparatorVisibility(assert, this.oFCL, 1, 0);
 	});
 
-	QUnit.test("Column separators - 2 columns operations", function (assert) {
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Column separators are updated correctly when dragging in 2-column layout", async function (assert) {
+		// Arrange
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.TwoColumnsBeginExpanded,
 			beginColumnPages: [new Page()]
 		});
 		this.oFCL._onNavContainerRendered({srcControl: this.oFCL.getAggregation("_beginColumnNav")});
 
+		// Act/Assert
 		dragSeparator("begin", -700, this.oFCL);
 		assertSeparatorVisibility(assert, this.oFCL, 1, 0);
 		assert.equal(this.oFCL.getLayout(), LT.TwoColumnsMidExpanded);
@@ -723,20 +776,22 @@ function(
 		assert.equal(this.oFCL.getLayout(), LT.TwoColumnsBeginExpanded);
 	});
 
-	QUnit.test("Navigation arrows - 3 columns", function (assert) {
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Column separators are visible in 3-column layout", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded,
 			beginColumnPages: [new Page()]
 		});
 		this.oFCL._onNavContainerRendered({srcControl: this.oFCL.getAggregation("_beginColumnNav")});
 
+		// Assert
 		assertSeparatorVisibility(assert, this.oFCL, 1, 1);
 	});
 
-	QUnit.test("Navigation arrows - 3 columns operation", function (assert) {
+	QUnit.test("Column separators are updated correctly when dragging in 3-column layout", async function (assert) {
 		this.clock = sinon.useFakeTimers();
 
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded,
 			beginColumnPages: [new Page()]
 		});
@@ -777,95 +832,110 @@ function(
 		}
 	});
 
-	QUnit.test("Layout: OneColumn", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: OneColumn", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.OneColumn
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 1, 0, 0);
 	});
 
-	QUnit.test("Layout: TwoColumnsBeginExpanded", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: TwoColumnsBeginExpanded", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: "TwoColumnsBeginExpanded"
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 0, 1, 0);
 	});
 
-	QUnit.test("Layout: TwoColumnsMidExpanded", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: TwoColumnsMidExpanded", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: "TwoColumnsMidExpanded"
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 0, 1, 0);
 	});
 
-	QUnit.test("Layout: MidColumnFullScreen", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: MidColumnFullScreen", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.MidColumnFullScreen
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 0, 1, 0);
 	});
 
-	QUnit.test("Layout: ThreeColumnsMidExpanded", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: ThreeColumnsMidExpanded", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 0, 0, 1);
 	});
 
-	QUnit.test("Layout: ThreeColumnsEndExpanded", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: ThreeColumnsEndExpanded", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsEndExpanded
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 0, 0, 1);
 	});
 
-	QUnit.test("Layout: ThreeColumnsMidExpandedEndHidden", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: ThreeColumnsMidExpandedEndHidden", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpandedEndHidden
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 0, 0, 1);
 	});
 
-	QUnit.test("Layout: ThreeColumnsBeginExpandedEndHidden", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: ThreeColumnsBeginExpandedEndHidden", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsBeginExpandedEndHidden
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 0, 0, 1);
 	});
 
-	QUnit.test("Layout: EndColumnFullScreen", function (assert) {
-
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Layout: EndColumnFullScreen", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.EndColumnFullScreen
 		});
+		// Assert
 		assertColumnsVisibility(assert, this.oFCL, 0, 0, 1);
 	});
 
-	QUnit.test("Navigation arrows - 1 column", function (assert) {
-		this.oFCL = oFactory.createFCL();
+	QUnit.test("Column separators are hidden with 1 column on phone", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL();
+		// Assert
 		assertSeparatorVisibility(assert, this.oFCL, 0, 0, 0, 0);
 	});
 
-	QUnit.test("Navigation arrows - 2 columns", function (assert) {
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Column separators are hidden in 2-column layout on phone", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.TwoColumnsBeginExpanded
 		});
+		// Assert
 		assertSeparatorVisibility(assert, this.oFCL, 0, 0, 0, 0);
 	});
 
-	QUnit.test("Navigation arrows - 3 columns", function (assert) {
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("Column separators are hidden in 3-column layout on phone", async function (assert) {
+		// Arrange/Act
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded
 		});
 
+		// Assert
 		assertSeparatorVisibility(assert, this.oFCL, 0, 0, 0, 0);
 	});
 
@@ -881,17 +951,14 @@ function(
 		}
 	});
 
-	QUnit.test("Begin column nav container proxying works", function (assert) {
-		this.clock = sinon.useFakeTimers();
-
-		var oPage1 = oFactory.createPage("page1"),
+	QUnit.test("Begin column nav container proxying works", async function (assert) {
+		// Arrange
+		const oPage1 = oFactory.createPage("page1"),
 			oPage2 = oFactory.createPage("page2"),
 			oSpyNavigate = this.spy(),
-			oSpyAfterNavigate = this.spy(),
-			oSpyTo,
-			oSpyBack;
+			oSpyAfterNavigate = this.spy();
 
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			beginColumnPages: [oPage1, oPage2],
 			initialBeginColumnPage: "page2",
 			defaultTransitionNameBeginColumn: "fade",
@@ -899,12 +966,14 @@ function(
 			afterBeginColumnNavigate: oSpyAfterNavigate
 		});
 
-		oSpyTo = this.spy(this.oFCL._getBeginColumn(), "to");
-		oSpyBack = this.spy(this.oFCL._getBeginColumn(), "backToPage");
+		this.clock = sinon.useFakeTimers();
+
+		const oSpyTo = this.spy(this.oFCL._getBeginColumn(), "to");
+		const oSpyBack = this.spy(this.oFCL._getBeginColumn(), "backToPage");
 
 		assert.strictEqual(this.oFCL._getBeginColumn().getInitialPage(), "page2", "The initial page was correctly set");
 
-		var sPagesIds = this.oFCL._getBeginColumn().getPages().map(function(oPage) {
+		const sPagesIds = this.oFCL._getBeginColumn().getPages().map((oPage) => {
 			return oPage.getId();
 		}).join("");
 		assert.strictEqual(sPagesIds, "page1page2", "All given pages are in the Begin column nav container");
@@ -924,17 +993,14 @@ function(
 		this.clock.restore();
 	});
 
-	QUnit.test("Mid column nav container proxying works", function (assert) {
-		this.clock = sinon.useFakeTimers();
-
-		var oPage1 = oFactory.createPage("page1"),
+	QUnit.test("Mid column nav container proxying works", async function (assert) {
+		// Arrange
+		const oPage1 = oFactory.createPage("page1"),
 			oPage2 = oFactory.createPage("page2"),
 			oSpyNavigate = this.spy(),
-			oSpyAfterNavigate = this.spy(),
-			oSpyTo,
-			oSpyBack;
+			oSpyAfterNavigate = this.spy();
 
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			midColumnPages: [oPage1, oPage2],
 			initialMidColumnPage: "page2",
 			defaultTransitionNameMidColumn: "fade",
@@ -942,12 +1008,14 @@ function(
 			afterMidColumnNavigate: oSpyAfterNavigate
 		});
 
-		oSpyTo = this.spy(this.oFCL._getMidColumn(), "to");
-		oSpyBack = this.spy(this.oFCL._getMidColumn(), "backToPage");
+		this.clock = sinon.useFakeTimers();
+
+		const oSpyTo = this.spy(this.oFCL._getMidColumn(), "to");
+		const oSpyBack = this.spy(this.oFCL._getMidColumn(), "backToPage");
 
 		assert.strictEqual(this.oFCL._getMidColumn().getInitialPage(), "page2", "The initial page was correctly set");
 
-		var sPagesIds = this.oFCL._getMidColumn().getPages().map(function(oPage) {
+		const sPagesIds = this.oFCL._getMidColumn().getPages().map((oPage) => {
 			return oPage.getId();
 		}).join("");
 		assert.strictEqual(sPagesIds, "page1page2", "All given pages are in the Mid column nav container");
@@ -967,17 +1035,14 @@ function(
 		this.clock.restore();
 	});
 
-	QUnit.test("End column nav container proxying works", function (assert) {
-		this.clock = sinon.useFakeTimers();
-
-		var oPage1 = oFactory.createPage("page1"),
+	QUnit.test("End column nav container proxying works", async function (assert) {
+		// Arrange
+		const oPage1 = oFactory.createPage("page1"),
 			oPage2 = oFactory.createPage("page2"),
 			oSpyNavigate = this.spy(),
-			oSpyAfterNavigate = this.spy(),
-			oSpyTo,
-			oSpyBack;
+			oSpyAfterNavigate = this.spy();
 
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			endColumnPages: [oPage1, oPage2],
 			initialEndColumnPage: "page2",
 			defaultTransitionNameEndColumn: "fade",
@@ -985,12 +1050,14 @@ function(
 			afterEndColumnNavigate: oSpyAfterNavigate
 		});
 
-		oSpyTo = this.spy(this.oFCL._getEndColumn(), "to");
-		oSpyBack = this.spy(this.oFCL._getEndColumn(), "backToPage");
+		this.clock = sinon.useFakeTimers();
+
+		const oSpyTo = this.spy(this.oFCL._getEndColumn(), "to");
+		const oSpyBack = this.spy(this.oFCL._getEndColumn(), "backToPage");
 
 		assert.strictEqual(this.oFCL._getEndColumn().getInitialPage(), "page2", "The initial page was correctly set");
 
-		var sPagesIds = this.oFCL._getEndColumn().getPages().map(function(oPage) {
+		const sPagesIds = this.oFCL._getEndColumn().getPages().map((oPage) => {
 			return oPage.getId();
 		}).join("");
 		assert.strictEqual(sPagesIds, "page1page2", "All given pages are in the End column nav container");
@@ -1011,8 +1078,8 @@ function(
 	});
 
 	QUnit.module("Layout changes", {
-		beforeEach: function () {
-			this.oFCL = oFactory.createFCL({
+		beforeEach: async function () {
+			this.oFCL = await oFactory.createFCL({
 				layout: LT.TwoColumnsBeginExpanded
 			});
 		},
@@ -1024,7 +1091,7 @@ function(
 
 	QUnit.test("ResizeHandler's suspend method is called for pinned columns", function (assert) {
 		// Arrange
-		var oSpySuspendHandler = this.spy(ResizeHandler, "suspend");
+		const oSpySuspendHandler = this.spy(ResizeHandler, "suspend");
 
 		this.stub(this.oFCL, "_shouldRevealColumn").returns(true); // mock pinnable column
 
@@ -1040,7 +1107,7 @@ function(
 		assert.expect(2);
 
 		// arrange
-		var fnDone = assert.async(),
+		const fnDone = assert.async(),
 			oBeginColumn = this.oFCL._$columns["begin"],
 			oBeginColumnDomRef = oBeginColumn.get(0),
 			oSuspendSpy = this.spy(ResizeHandler, "suspend"),
@@ -1061,7 +1128,7 @@ function(
 
 	QUnit.test("Suspended columns are resumed when animation mode changes from 'full' to 'none'", function (assert) {
 		// arrange
-		var fnDone = assert.async(),
+		const fnDone = assert.async(),
 			sOriginalAnimationMode = ControlBehavior.getAnimationMode(),
 			oBeginColumnDomRef = this.oFCL._$columns["begin"].get(0),
 			oMidColumnDomRef = this.oFCL._$columns["mid"].get(0),
@@ -1093,8 +1160,8 @@ function(
 		}.bind(this));
 	});
 
-	QUnit.test("_getPreviousLayout", function (assert) {
-		var sLayoutBeforeUpdate = this.oFCL.getLayout();
+	QUnit.test("_getPreviousLayout returns the previous layout after setLayout call", function (assert) {
+		const sLayoutBeforeUpdate = this.oFCL.getLayout();
 		this.oFCL.setLayout(LT.TwoColumnsMidExpanded);
 		assert.strictEqual(this.oFCL._getPreviousLayout(), sLayoutBeforeUpdate, "previous layout is correct");
 	});
@@ -1203,7 +1270,7 @@ function(
 
 	QUnit.test("Conceal effect layout changes", function(assert) {
 		//arrange
-		var $endColumn = this.oFCL._$columns["end"],
+		const $endColumn = this.oFCL._$columns["end"],
 		fnDone = assert.async();
 
 		this.stub(this.oFCL, "_getControlWidth").returns(parseInt(DESKTOP_SIZE));
@@ -1219,7 +1286,8 @@ function(
 		this.oFCL.setLayout(LT.TwoColumnsMidExpanded);
 
 		this.oFCL._oAnimationEndListener.waitForAllColumnsResizeEnd().then(function() {
-			setTimeout(function() { // wait for all app callbacks for same event to be called
+			// Category B: wait for all app callbacks for same event to be called
+			setTimeout(function() {
 				//assert
 				assertColumnsVisibility(assert, this.oFCL, 1, 1, 0); // End column is gone
 				assert.notOk($endColumn.hasClass("sapFFCLPinnedColumn"),
@@ -1233,56 +1301,48 @@ function(
 	//BCP: 1970178100
 	QUnit.test(
 		"Conceal effect layout changes - simulate navigation from detailDetail to about page with two initial columns setup",
-		function(assert) {
+		async function(assert) {
 
 		// arrange
-		var fnDone = assert.async();
-
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.TwoColumnsBeginExpanded
 		});
 
 		// act
 		this.oFCL.setLayout(LT.EndColumnFullScreen);
 
-		this.oFCL._oAnimationEndListener.waitForAllColumnsResizeEnd().then(function() {
-			// assert
-			assertColumnsVisibility(assert, this.oFCL, 0, 0, 1);
-			fnDone();
-		}.bind(this));
+		await waitForColumnsResize(this.oFCL);
+
+		// assert
+		assertColumnsVisibility(assert, this.oFCL, 0, 0, 1);
 	});
 
 	//BCP: 1980006195
-	QUnit.test("Columns with width 0 should have the sapFFCLColumnHidden class applied", function(assert){
+	QUnit.test("Columns with width 0 should have the sapFFCLColumnHidden class applied", async function(assert){
 		// arrange
-		var fnDone = assert.async();
-
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.MidColumnFullScreen
 		});
 
+		await waitForColumnsResize(this.oFCL);
 
-		this.oFCL._oAnimationEndListener.waitForAllColumnsResizeEnd().then(function() {
-			// assert
-			assertColumnsVisibility(assert, this.oFCL, 0, 1, 0);
-			assert.ok(this.oFCL._$columns["begin"].hasClass('sapFFCLColumnHidden'));
-			assert.notOk(this.oFCL._$columns["mid"].hasClass('sapFFCLColumnHidden'));
-			assert.ok(this.oFCL._$columns["end"].hasClass('sapFFCLColumnHidden'));
+		// assert
+		assertColumnsVisibility(assert, this.oFCL, 0, 1, 0);
+		assert.ok(this.oFCL._$columns["begin"].hasClass('sapFFCLColumnHidden'));
+		assert.notOk(this.oFCL._$columns["mid"].hasClass('sapFFCLColumnHidden'));
+		assert.ok(this.oFCL._$columns["end"].hasClass('sapFFCLColumnHidden'));
 
-			// act
-			this.oFCL._afterColumnResize("end", 100);
+		// act
+		this.oFCL._afterColumnResize("end", 100);
 
-			// assert
-			assert.notOk(this.oFCL._$columns["end"].hasClass('sapFFCLColumnHidden'),
-				"When width is updated, 'sapFFCLColumnHidden' class should be removed");
-
-			fnDone();
-		}.bind(this));
+		// assert
+		assert.notOk(this.oFCL._$columns["end"].hasClass('sapFFCLColumnHidden'),
+			"When width is updated, 'sapFFCLColumnHidden' class should be removed");
 	});
 
 	QUnit.test("FCL does not have animations with animationMode=minimal", function(assert){
 		// arrange
-		var oSpy = this.spy(this.oFCL._oAnimationEndListener, "waitForColumnResizeEnd"),
+		const oSpy = this.spy(this.oFCL._oAnimationEndListener, "waitForColumnResizeEnd"),
 			oConfiguration = Core.getConfiguration(),
 			sOriginalAnimationMode = oConfiguration.getAnimationMode();
 
@@ -1300,7 +1360,7 @@ function(
 	});
 
 	QUnit.test("Contextual settings are always updated during live column resize", function (assert) {
-		var sLayoutBeforeDrag = this.oFCL.getLayout(),
+		const sLayoutBeforeDrag = this.oFCL.getLayout(),
 			oSpyUpdateContextualSettings = this.spy(this.oFCL, "_updateColumnContextualSettings"),
 			oSeparator = this.oFCL._oColumnSeparators.begin[0],
 			iStartX = oSeparator.getBoundingClientRect().x,
@@ -1316,7 +1376,7 @@ function(
 	});
 
 	QUnit.test("Contextual settings are updated after column resize without layout update", function (assert) {
-		var sLayoutBeforeDrag = this.oFCL.getLayout(),
+		const sLayoutBeforeDrag = this.oFCL.getLayout(),
 			oSpyUpdateContextualSettings = this.spy(this.oFCL, "_updateColumnContextualSettings");
 
 		// Act: resize to a width that does not lead to change of <code>layoutType</code>
@@ -1328,7 +1388,7 @@ function(
 	});
 
 	QUnit.test("Contextual settings are updated after column resize with layout update", function (assert) {
-		var sLayoutBeforeDrag = this.oFCL.getLayout(),
+		const sLayoutBeforeDrag = this.oFCL.getLayout(),
 			oSpyUpdateContextualSettings = this.spy(this.oFCL, "_updateColumnContextualSettings"),
 			fnDone = assert.async();
 
@@ -1346,14 +1406,15 @@ function(
 	});
 
 	QUnit.test("User setting for Begin column width is passed through layouts", function (assert) {
-		var iPreviousFixtureWidth = $("#" + sQUnitFixture).width(),
-			fnDone = assert.async(),
-			iPercentBeginColumnUserWidth;
+		const iPreviousFixtureWidth = $("#" + sQUnitFixture).width(),
+			fnDone = assert.async();
+		let iPercentBeginColumnUserWidth;
 
 		assert.expect(1);
 
 		$("#" + sQUnitFixture).width(DESKTOP_SIZE);
 
+		// Category B: wait for ResizeHandler after width change
 		setTimeout(function () {
 			// Assert
 			dragSeparator("begin", -500, this.oFCL);
@@ -1376,12 +1437,10 @@ function(
 	});
 
 	QUnit.test("Synchronous switching TwoColumnsMidExpanded/ThreeColumnsMidExpanded",
-		function(assert) {
+		async function(assert) {
 
 		// arrange
-		var fnDone = assert.async();
-
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.OneColumn
 		});
 
@@ -1389,40 +1448,34 @@ function(
 		this.oFCL.setLayout(LT.TwoColumnsMidExpanded);
 		this.oFCL.setLayout(LT.ThreeColumnsMidExpanded);
 
-		this.oFCL._oAnimationEndListener.waitForAllColumnsResizeEnd().then(function() {
-			// assert
-			assert.strictEqual(this.oFCL._$columns["mid"][0].querySelector(".sapFFCLColumnContent").style.width, "", "mid column has auto size");
-			this.oFCL.destroy();
-			fnDone();
-		}.bind(this));
+		await waitForColumnsResize(this.oFCL);
+
+		// assert
+		assert.strictEqual(this.oFCL._$columns["mid"][0].querySelector(".sapFFCLColumnContent").style.width, "", "mid column has auto size");
+		this.oFCL.destroy();
 	});
 
-	QUnit.test("prevents resize in invalid direction", function(assert){
+	QUnit.test("prevents resize in invalid direction", async function(assert){
 		// arrange
-		var fnDone = assert.async();
-
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpandedEndHidden
 		});
 
+		await waitForColumnsResize(this.oFCL);
 
-		this.oFCL._oAnimationEndListener.waitForAllColumnsResizeEnd().then(function() {
-			// assert
-			assertColumnsVisibility(assert, this.oFCL, 1, 1, 0);
+		// assert
+		assertColumnsVisibility(assert, this.oFCL, 1, 1, 0);
 
-			// act: drag towards outside the viewport (invalid direction)
-			dragSeparator("end", 1, this.oFCL);
+		// act: drag towards outside the viewport (invalid direction)
+		dragSeparator("end", 1, this.oFCL);
 
-			// assert: no change in columns visibility
-			assertColumnsVisibility(assert, this.oFCL, 1, 1, 0);
-
-			fnDone();
-		}.bind(this));
+		// assert: no change in columns visibility
+		assertColumnsVisibility(assert, this.oFCL, 1, 1, 0);
 	});
 
 	QUnit.module("Livecycle", {
-		beforeEach: function () {
-			this.oFCL = oFactory.createFCL({
+		beforeEach: async function () {
+			this.oFCL = await oFactory.createFCL({
 				layout: LT.TwoColumnsBeginExpanded
 			});
 		},
@@ -1433,7 +1486,7 @@ function(
 	});
 
 	QUnit.test("move listeners are detached on destroy", function (assert) {
-		var oSpyMoveListener = this.spy(this.oFCL, "_boundColumnSeparatorMove"),
+		const oSpyMoveListener = this.spy(this.oFCL, "_boundColumnSeparatorMove"),
 			oSeparator = this.oFCL._oColumnSeparators.begin[0],
 			iStartX = oSeparator.getBoundingClientRect().x;
 
@@ -1452,8 +1505,8 @@ function(
 	});
 
 	QUnit.module("ScreenReader basic supprot", {
-		beforeEach: function () {
-			this.oFCL = oFactory.createFCL();
+		beforeEach: async function () {
+			this.oFCL = await oFactory.createFCL();
 		},
 		afterEach: function () {
 			this.oFCL = null;
@@ -1461,9 +1514,9 @@ function(
 	});
 
 	QUnit.test("Each column has correct region role and it's labeled correctly when there is no Landmark Info", function (assert) {
-		var fnGetLabelText = function (sColumnName) {
+		const fnGetLabelText = (sColumnName) => {
 			return this.oFCL.$(sColumnName).attr("aria-label");
-		}.bind(this);
+		};
 
 		assert.strictEqual(this.oFCL.$("beginColumn").attr("role"), "region", "Begin column has correct role");
 		assert.strictEqual(this.oFCL.$("midColumn").attr("role"), "region", "Middle column has correct role");
@@ -1474,9 +1527,9 @@ function(
 		assert.strictEqual(fnGetLabelText("endColumn"), fnGetResourceBundleText("FCL_END_COLUMN_REGION_TEXT"), "End column is labeled correctly");
 	});
 
-	QUnit.test("Each column is labeled correctly when there is Landmark Info", function (assert) {
+	QUnit.test("Each column is labeled correctly when there is Landmark Info", async function (assert) {
 		// Arrange
-		var sTestFirstColumnLabel = "This is test first column label",
+		const sTestFirstColumnLabel = "This is test first column label",
 			sTestLastColumnLabel = "This is custom last column label",
 			oLandmarkInfo = new FlexibleColumnLayoutAccessibleLandmarkInfo({
 				firstColumnLabel: sTestFirstColumnLabel,
@@ -1485,12 +1538,12 @@ function(
 
 		// Act
 		this.oFCL.setLandmarkInfo(oLandmarkInfo);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		// Helper function
-		var fnGetLabelText = function (sColumnName) {
+		const fnGetLabelText = (sColumnName) => {
 			return this.oFCL.$(sColumnName).attr("aria-label");
-		}.bind(this);
+		};
 
 		// Assert
 		assert.strictEqual(fnGetLabelText("beginColumn"), sTestFirstColumnLabel, "Begin column has its label changed by the Landmark Info");
@@ -1500,25 +1553,24 @@ function(
 
 	QUnit.test("Setting columns' Landmark Info labels does not lead to rerendering", async function (assert) {
 		// Arrange
-		var sTestNewFirstColumnLabel = "This is test first column label",
+		const sTestNewFirstColumnLabel = "This is test first column label",
 			sTestNewMiddleColumnLabel = "This is custom middle column label",
 			sTestNewLastColumnLabel = "This is custom last column label",
 			oLandmarkInfo = new FlexibleColumnLayoutAccessibleLandmarkInfo({
 				firstColumnLabel: "first column label",
 				middleColumnLabel: "middle column label",
 				lastColumnLabel: "last column label"
-			}),
-			oSpy;
+			});
 
 		// Act
 		this.oFCL.setLandmarkInfo(oLandmarkInfo);
 		await nextUIUpdate();
-		oSpy = this.spy(this.oFCL, "invalidate");
+		const oSpy = this.spy(this.oFCL, "invalidate");
 
 		// Helper function
-		var fnGetLabelText = function (sColumnName) {
+		const fnGetLabelText = (sColumnName) => {
 			return this.oFCL.$(sColumnName).attr("aria-label");
-		}.bind(this);
+		};
 
 		oLandmarkInfo.setFirstColumnLabel(sTestNewFirstColumnLabel);
 		oLandmarkInfo.setMiddleColumnLabel(sTestNewMiddleColumnLabel);
@@ -1534,7 +1586,7 @@ function(
 
 	QUnit.test("Setting columns' Landmark Info does not throw an error when FCL is not rendered yet", async function (assert) {
 		// Arrange
-		var oFCL = new FlexibleColumnLayout(),
+		const oFCL = new FlexibleColumnLayout(),
 			sTestNewFirstColumnLabel = "This is test first column label",
 			oLandmarkInfo = new FlexibleColumnLayoutAccessibleLandmarkInfo({
 				firstColumnLabel: "first column label",
@@ -1563,11 +1615,10 @@ function(
 	QUnit.module("FlexibleColumnLayoutSemanticHelper");
 
 	QUnit.test("SemanticHelper cleans destroyed FCL instance data", function (assert) {
-		var sId = "myFCL",
-			oFCL;
+		const sId = "myFCL";
 
 		// setup
-		oFCL = new FlexibleColumnLayout(sId);
+		const oFCL = new FlexibleColumnLayout(sId);
 
 		// act
 		FlexibleColumnLayoutSemanticHelper.getInstanceFor(oFCL);
@@ -1582,17 +1633,17 @@ function(
 		assert.ok(!FlexibleColumnLayoutSemanticHelper._oInstances[sId], "Semantic helper no longer has an entry for this FCL");
 	});
 
-	QUnit.test("SemanticHelper whenDOMReady", function (assert) {
+	QUnit.test("SemanticHelper whenDOMReady resolves after FCL is placed and rejects after FCL is destroyed", async function (assert) {
 		assert.expect(3);
-		var fnDone = assert.async();
+		const fnDone = assert.async();
 
-		var sId = "myFCL";
+		const sId = "myFCL";
 
 		// setup
-		var oFCL = new FlexibleColumnLayout(sId);
+		const oFCL = new FlexibleColumnLayout(sId);
 
 
-		var oFlexibleColumnLayoutSemanticHelper = FlexibleColumnLayoutSemanticHelper.getInstanceFor(oFCL);
+		const oFlexibleColumnLayoutSemanticHelper = FlexibleColumnLayoutSemanticHelper.getInstanceFor(oFCL);
 
 		oFlexibleColumnLayoutSemanticHelper.whenDOMReady()
 			.then(function () {
@@ -1613,20 +1664,20 @@ function(
 
 		// act
 		oFCL.placeAt(sQUnitFixture);
-		Core.applyChanges();
+		await nextUIUpdate();
 	});
 
-	QUnit.test("SemanticHelper whenReady", function (assert) {
+	QUnit.test("SemanticHelper whenReady resolves after FCL is placed and rejects after FCL is destroyed", async function (assert) {
 		assert.expect(3);
-		var fnDone = assert.async();
+		const fnDone = assert.async();
 
-		var sId = "myFCL";
+		const sId = "myFCL";
 
 		// setup
-		var oFCL = new FlexibleColumnLayout(sId);
+		const oFCL = new FlexibleColumnLayout(sId);
 
 
-		var oFlexibleColumnLayoutSemanticHelper = FlexibleColumnLayoutSemanticHelper.getInstanceFor(oFCL);
+		const oFlexibleColumnLayoutSemanticHelper = FlexibleColumnLayoutSemanticHelper.getInstanceFor(oFCL);
 
 		oFlexibleColumnLayoutSemanticHelper.whenReady()
 			.then(function () {
@@ -1647,21 +1698,20 @@ function(
 
 		// act
 		oFCL.placeAt(sQUnitFixture);
-		Core.applyChanges();
+		await nextUIUpdate();
 	});
 
 	QUnit.test("SemanticHelper provides correct default action buttons info", function (assert) {
-		var sId = "myFCL",
-			oFCL,
-			defaultButtonsConfig = {
+		const sId = "myFCL";
+		const defaultButtonsConfig = {
 				midColumn: {
 					closeColumn: null, exitFullScreen: null, fullScreen: null
 				},
 				endColumn: {
 					closeColumn: null, exitFullScreen: null, fullScreen: null
 				}
-			},
-			oExpectedButtonsInfo = {
+			};
+		const oExpectedButtonsInfo = {
 				[LT.OneColumn]: defaultButtonsConfig,
 				[LT.TwoColumnsBeginExpanded]: Object.assign({}, defaultButtonsConfig, {
 					midColumn: {
@@ -1706,17 +1756,17 @@ function(
 			};
 
 		// setup
-		oFCL = new FlexibleColumnLayout(sId);
+		const oFCL = new FlexibleColumnLayout(sId);
 
 		// act
-		var oHelper = FlexibleColumnLayoutSemanticHelper.getInstanceFor(oFCL, {
+		const oHelper = FlexibleColumnLayoutSemanticHelper.getInstanceFor(oFCL, {
 			defaultThreeColumnLayoutType: "ThreeColumnsMidExpanded",
 			defaultTwoColumnLayoutType: "TwoColumnsMidExpanded"
 		});
 
 		// assert
 		Object.keys(library.LayoutType).forEach(function(sLayoutType) {
-			var oButtonsInfo = oHelper._getUIStateForLayout(sLayoutType).actionButtonsInfo;
+			const oButtonsInfo = oHelper._getUIStateForLayout(sLayoutType).actionButtonsInfo;
 			assert.propEqual(oButtonsInfo, oExpectedButtonsInfo[sLayoutType]);
 		});
 
@@ -1731,10 +1781,9 @@ function(
 		}
 	});
 
-	QUnit.test("Width caching", function (assert) {
+	QUnit.test("Width caching", async function (assert) {
 		// setup
-		var iNewWidth = "600",
-			iCurrentWidth;
+		const iNewWidth = "600";
 
 		this.oFCL = new FlexibleColumnLayout();
 
@@ -1743,10 +1792,10 @@ function(
 
 		// act
 		this.oFCL.placeAt(sQUnitFixture);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		// assert
-		iCurrentWidth = this.oFCL._getControlWidth();
+		const iCurrentWidth = this.oFCL._getControlWidth();
 		assert.ok(iCurrentWidth > 0, "Width is > 0px after rendering");
 
 		// act
@@ -1768,10 +1817,8 @@ function(
 
 	QUnit.test("Measuring width when FCL is visible", function (assert) {
 		// setup
-		var oSpy;
-
 		this.oFCL = new FlexibleColumnLayout();
-		oSpy = this.spy(this.oFCL, "_measureControlWidth");
+		const oSpy = this.spy(this.oFCL, "_measureControlWidth");
 		this.stub(this.oFCL, "$").callsFake(function() {
 			return {
 				is: function() { return true; },
@@ -1792,10 +1839,10 @@ function(
 		this.oFCL.destroy();
 	});
 
-	QUnit.test("_onNavContainerRendered", function (assert) {
+	QUnit.test("_onNavContainerRendered triggers column separator visibility update when pages are present", function (assert) {
 		// setup
 		this.oFCL = new FlexibleColumnLayout();
-		var oEventSpy = this.spy(this.oFCL, "_hideShowColumnSeparators");
+		const oEventSpy = this.spy(this.oFCL, "_hideShowColumnSeparators");
 
 		// assert
 		assert.equal(this.oFCL._hasAnyColumnPagesRendered(), false, "_isAnyColumnContentRendered is false before first invocation");
@@ -1816,7 +1863,7 @@ function(
 		assert.strictEqual(oEventSpy.callCount, 1, "_hideShowColumnSeparators is called");
 	});
 
-	QUnit.test("_getColumnWidthDistributionForLayout converts percent widths to integers", function (assert) {
+	QUnit.test("_getColumnWidthDistributionForLayout converts percent widths to integers", async function (assert) {
 		// setup
 		this.oFCL = new FlexibleColumnLayout({
 			layoutData: new FlexibleColumnLayoutData({
@@ -1826,27 +1873,27 @@ function(
 			})
 		});
 
-		var oExpectedResult = [34, 66, 0];
+		const oExpectedResult = [34, 66, 0];
 
 		this.oFCL.placeAt(sQUnitFixture);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		// assert
 		assert.deepEqual(this.oFCL._getColumnWidthDistributionForLayout(LT.TwoColumnsMidExpanded, true, 2),
 			oExpectedResult, "conversion to integer is correct");
 	});
 
-	QUnit.test("FCL rendered but still not shown (hidden parent with display: none)", function (assert) {
+	QUnit.test("FCL rendered but still not shown (hidden parent with display: none)", async function (assert) {
 		// setup
-		var $qunitFixture = $("#" + sQUnitFixture);
+		const $qunitFixture = $("#" + sQUnitFixture);
 		$qunitFixture.css("display", "none");
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.OneColumn,
 			beginColumnPages: [new Page()]
 		});
 
 		this.oFCL.placeAt(sQUnitFixture);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		// assert
 		assert.strictEqual(this.oFCL._bInitialColumnsResizeDone, false, "FCL's columns are still not resized because parent is hidden");
@@ -1870,14 +1917,14 @@ function(
 
 	QUnit.module("Focus handling");
 
-	QUnit.test("AutoFocus - Should synchronize with NavContainer instances", function (assert) {
+	QUnit.test("AutoFocus - Should synchronize with NavContainer instances", async function (assert) {
 		//arrange
-		var oFCL = oFactory.createFCL({
+		const oFCL = await oFactory.createFCL({
 				autoFocus: false
 			}),
 			aNavContainers = oFCL._getNavContainers(),
-			fnCheckNavContainersAutoFocus = function (bExpectedValue) {
-				aNavContainers.forEach(function (oContainer) {
+			fnCheckNavContainersAutoFocus = (bExpectedValue) => {
+				aNavContainers.forEach((oContainer) => {
 					// assert
 					assert.strictEqual(oContainer.getAutoFocus(), bExpectedValue, "Container autoFocus property is synchronized with FLC");
 				});
@@ -1896,10 +1943,10 @@ function(
 		oFCL.destroy();
 	});
 
-	QUnit.test("Event delegates of nav containers should be removed on destroy of the FCL", function (assert) {
+	QUnit.test("Event delegates of nav containers should be removed on destroy of the FCL", async function (assert) {
 		// Arrange
-		var oFCL = oFactory.createFCL(),
-			sSpyName;
+		const oFCL = await oFactory.createFCL();
+		let sSpyName;
 
 		FlexibleColumnLayout.COLUMN_ORDER.forEach(function(sColumnName){
 			this["_" + sColumnName + "ColumnRemoveEventDelegateSpy"] = this.spy(oFCL._getColumnByStringName(sColumnName), "removeEventDelegate");
@@ -1919,8 +1966,8 @@ function(
 	});
 
 	QUnit.module("Keyboard Handling", {
-		beforeEach: function () {
-			this.oFCL = oFactory.createFCL({
+		beforeEach: async function () {
+			this.oFCL = await oFactory.createFCL({
 				layout: LT.TwoColumnsBeginExpanded
 			});
 			this.beginSeparatorDOM = this.oFCL._oColumnSeparators.begin[0];
@@ -2010,37 +2057,35 @@ function(
 		}
 	});
 
-	QUnit.test("no pointer events on content during column resize", function (assert) {
+	QUnit.test("no pointer events on content during column resize", async function (assert) {
 		this.oFCL.placeAt(sQUnitFixture);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		assert.expect(6);
-		var done = assert.async();
 
-		this.oFCL._oAnimationEndListener.waitForAllColumnsResizeEnd().then(function () {
-			var oMockEvent = {pageX: 10},
-				oMovedSeparator = this.oFCL.getDomRef().querySelector(".sapFFCLColumnSeparator"),
-				aColumnContentWrappers = this.oFCL.getDomRef().querySelectorAll(".sapFFCLColumnContent");
+		await waitForColumnsResize(this.oFCL);
 
-			// mock start separator movement
-			this.oFCL._onColumnSeparatorMoveStart(oMockEvent, oMovedSeparator, false);
-			aColumnContentWrappers.forEach(function(wrapperElement) {
-				assert.strictEqual(getComputedStyle(wrapperElement).pointerEvents, "none", "pointer events are disabled");
-			});
+		const oMockEvent = {pageX: 10},
+			oMovedSeparator = this.oFCL.getDomRef().querySelector(".sapFFCLColumnSeparator"),
+			aColumnContentWrappers = this.oFCL.getDomRef().querySelectorAll(".sapFFCLColumnContent");
 
-			// mock end separator movement
-			this.oFCL._exitInteractiveResizeMode();
-			aColumnContentWrappers.forEach(function(wrapperElement) {
-				assert.strictEqual(getComputedStyle(wrapperElement).pointerEvents, "auto", "pointer events are restored");
-			});
-			done();
-		}.bind(this));
+		// mock start separator movement
+		this.oFCL._onColumnSeparatorMoveStart(oMockEvent, oMovedSeparator, false);
+		aColumnContentWrappers.forEach(function(wrapperElement) {
+			assert.strictEqual(getComputedStyle(wrapperElement).pointerEvents, "none", "pointer events are disabled");
+		});
+
+		// mock end separator movement
+		this.oFCL._exitInteractiveResizeMode();
+		aColumnContentWrappers.forEach(function(wrapperElement) {
+			assert.strictEqual(getComputedStyle(wrapperElement).pointerEvents, "auto", "pointer events are restored");
+		});
 	});
 
-	QUnit.test("columnResize event is fired after resize", function (assert) {
+	QUnit.test("columnResize event is fired after resize", async function (assert) {
 		assert.expect(1);
 		// setup
-		var fnDone = assert.async(),
+		const fnDone = assert.async(),
 			oResizeFunctionSpy = this.spy(ResizeHandler, "resume"),
 			fnCallback = function () {
 				this.oFCL.detachColumnResize(fnCallback);
@@ -2050,7 +2095,7 @@ function(
 			}.bind(this);
 
 		this.oFCL.placeAt(sQUnitFixture);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		this.oFCL._oAnimationEndListener.waitForAllColumnsResizeEnd().then(function () {
 			this.oEventSpy.resetHistory();
@@ -2059,13 +2104,13 @@ function(
 		}.bind(this));
 	});
 
-	QUnit.test("columnResize event is fired after resize of all animated columns", function (assert) {
+	QUnit.test("columnResize event is fired after resize of all animated columns", async function (assert) {
 		assert.expect(3);
 		// setup
-		var fnDone = assert.async(),
-			oResizeFunctionSpy = this.spy(ResizeHandler, "resume"),
-			iEventsCount = 0,
-			fnCallback = function () {
+		const fnDone = assert.async(),
+			oResizeFunctionSpy = this.spy(ResizeHandler, "resume");
+		let iEventsCount = 0;
+		const fnCallback = function () {
 				iEventsCount++;
 				if (iEventsCount == 3) {
 					this.oFCL.detachColumnResize(fnCallback);
@@ -2079,7 +2124,7 @@ function(
 
 		this.oFCL.setLayout(LT.TwoColumnsMidExpanded);
 		this.oFCL.placeAt(sQUnitFixture);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		this.oFCL._oAnimationEndListener.waitForAllColumnsResizeEnd().then(function () {
 			oResizeFunctionSpy.resetHistory();
@@ -2088,15 +2133,15 @@ function(
 		}.bind(this));
 	});
 
-	QUnit.test("cancel resize animations", function (assert) {
+	QUnit.test("cancel resize animations", async function (assert) {
 		assert.expect(1);
 		// setup
-		var fnDone = assert.async(),
+		const fnDone = assert.async(),
 			oFirstLayoutAnimationEnd = this.spy();
 
 		this.oFCL.setLayout(LT.TwoColumnsMidExpanded);
 		this.oFCL.placeAt(sQUnitFixture);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		// Setup: change to a layout that requires animation
 		this.oFCL.setLayout(LT.OneColumn);
@@ -2110,85 +2155,74 @@ function(
 		});
 	});
 
-	QUnit.test("setting two layouts synchronously", function (assert) {
+	QUnit.test("setting two layouts synchronously triggers correct final layout", async function (assert) {
 		assert.expect(1);
 		// setup
-		var fnDone = assert.async();
+		const fnDone = assert.async();
 
 		this.oFCL.setLayout(LT.OneColumn);
 		this.oFCL.placeAt(sQUnitFixture);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		// Setup: change to layouts that requires animation
 		this.oFCL.setLayout(LT.TwoColumnsMidExpanded);
 		this.oFCL.setLayout(LT.ThreeColumnsMidExpanded);
 
+		// Category B: wait for FCL layout animation cycle to complete
 		setTimeout(function () {
 			assert.strictEqual(this.oFCL._verifyColumnWidthsMatchLayout(this.oFCL._oColumnWidthInfo, LT.ThreeColumnsMidExpanded), true, "Three columns layout is set");
 			fnDone();
 		}.bind(this), 1000);
 	});
 
-	QUnit.test("Switching layout from OneColumn to ThreeColumnsEndExpanded", function (assert) {
+	QUnit.test("Switching layout from OneColumn to ThreeColumnsEndExpanded", async function (assert) {
 		assert.expect(1);
-		var fnDone = assert.async(),
-		fnCallback = function () {
-			// assert
-			assert.strictEqual(this.oEventSpy.callCount, VISIBLE_COLUMNS[LT.ThreeColumnsEndExpanded], "Event is fired " + VISIBLE_COLUMNS[LT.ThreeColumnsEndExpanded] + " times for layout: " + LT.ThreeColumnsEndExpanded);
-
-			fnDone();
-		};
 
 		this.oFCL.placeAt(sQUnitFixture);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		this.oEventSpy.resetHistory();
 		this.oFCL.setLayout(LT.ThreeColumnsEndExpanded);
-		this.oFCL._oAnimationEndListener.waitForAllColumnsResizeEnd().then(fnCallback.bind(this));
+		await waitForColumnsResize(this.oFCL);
+
+		// assert
+		assert.strictEqual(this.oEventSpy.callCount, VISIBLE_COLUMNS[LT.ThreeColumnsEndExpanded], "Event is fired " + VISIBLE_COLUMNS[LT.ThreeColumnsEndExpanded] + " times for layout: " + LT.ThreeColumnsEndExpanded);
 	});
 
-	QUnit.test("Switching layout from OneColumn to TwoColumnsBeginExpanded", function (assert) {
+	QUnit.test("Switching layout from OneColumn to TwoColumnsBeginExpanded", async function (assert) {
 		assert.expect(1);
-		var fnDone = assert.async(),
-		fnCallback = function () {
-			// assert
-			assert.strictEqual(this.oEventSpy.callCount, VISIBLE_COLUMNS[LT.TwoColumnsBeginExpanded], "Event is fired " + VISIBLE_COLUMNS[LT.TwoColumnsBeginExpanded] + " times for layout: " + LT.TwoColumnsBeginExpanded);
-
-			fnDone();
-		};
 
 		this.oFCL.placeAt(sQUnitFixture);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		this.oEventSpy.resetHistory();
 		this.oFCL.setLayout(LT.TwoColumnsBeginExpanded);
-		this.oFCL._oAnimationEndListener.waitForAllColumnsResizeEnd().then(fnCallback.bind(this));
+		await waitForColumnsResize(this.oFCL);
+
+		// assert
+		assert.strictEqual(this.oEventSpy.callCount, VISIBLE_COLUMNS[LT.TwoColumnsBeginExpanded], "Event is fired " + VISIBLE_COLUMNS[LT.TwoColumnsBeginExpanded] + " times for layout: " + LT.TwoColumnsBeginExpanded);
 	});
 
-	QUnit.test("Switching layout from OneColumn to ThreeColumnsMidExpandedEndHidden", function (assert) {
+	QUnit.test("Switching layout from OneColumn to ThreeColumnsMidExpandedEndHidden", async function (assert) {
 		assert.expect(1);
-		var fnDone = assert.async(),
-		fnCallback = function () {
-			// assert
-			assert.strictEqual(this.oEventSpy.callCount, VISIBLE_COLUMNS[LT.ThreeColumnsMidExpandedEndHidden], "Event is fired " + VISIBLE_COLUMNS[LT.ThreeColumnsMidExpandedEndHidden] + " times for layout: " + LT.ThreeColumnsMidExpandedEndHidden);
-
-			fnDone();
-		};
 
 		this.oFCL.placeAt(sQUnitFixture);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		this.oEventSpy.resetHistory();
 		this.oFCL.setLayout(LT.ThreeColumnsMidExpandedEndHidden);
-		this.oFCL._oAnimationEndListener.waitForAllColumnsResizeEnd().then(fnCallback.bind(this));
+		await waitForColumnsResize(this.oFCL);
+
+		// assert
+		assert.strictEqual(this.oEventSpy.callCount, VISIBLE_COLUMNS[LT.ThreeColumnsMidExpandedEndHidden], "Event is fired " + VISIBLE_COLUMNS[LT.ThreeColumnsMidExpandedEndHidden] + " times for layout: " + LT.ThreeColumnsMidExpandedEndHidden);
 	});
 
-	QUnit.test("columnResize event is fired after resize without layoutType change", function (assert) {
+	QUnit.test("columnResize event is fired after resize without layoutType change", async function (assert) {
 		assert.expect(1);
 		// setup
-		var fnDone = assert.async(),
-			iEventsCount = 0,
-			fnCallback = function () {
+		const fnDone = assert.async();
+		let iEventsCount = 0;
+		const fnCallback = function () {
 				iEventsCount++;
 				if (iEventsCount == 2) {
 					this.oFCL.detachColumnResize(fnCallback);
@@ -2198,11 +2232,11 @@ function(
 				}
 			}.bind(this);
 
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.TwoColumnsBeginExpanded
 		});
 		this.oFCL.placeAt(sQUnitFixture);
-		Core.applyChanges();
+		await nextUIUpdate();
 		this.oFCL.attachColumnResize(fnCallback);
 
 		// Act: resize to a width that does not lead to <code>layoutType</code> chage
@@ -2216,34 +2250,30 @@ function(
 	})();
 
 	function _testDifferentLayoutsInitialColumnResizeEvent(sLayoutName) {
-		QUnit.test(sLayoutName, function (assert) {
+		QUnit.test(sLayoutName, async function (assert) {
 			assert.expect(1);
-
-			var fnDone = assert.async(),
-			fnCallback = function () {
-				// assert
-				assert.strictEqual(this.oEventSpy.callCount, VISIBLE_COLUMNS[sLayoutName], "Event is fired " + VISIBLE_COLUMNS[sLayoutName] + " times for layout: " + sLayoutName);
-				fnDone();
-			};
 
 			this.oFCL.setLayout(sLayoutName);
 			this.oFCL.placeAt(sQUnitFixture);
-			Core.applyChanges();
+			await nextUIUpdate();
 
-			this.oFCL._oAnimationEndListener.waitForAllColumnsResizeEnd().then(fnCallback.bind(this));
+			await waitForColumnsResize(this.oFCL);
+
+			// assert
+			assert.strictEqual(this.oEventSpy.callCount, VISIBLE_COLUMNS[sLayoutName], "Event is fired " + VISIBLE_COLUMNS[sLayoutName] + " times for layout: " + sLayoutName);
 		});
 	}
 
 
 	QUnit.module("_getColumnWidth", {
-		beforeEach: function () {
+		beforeEach: async function () {
 
 			// Arrange
 			this.oPage1 = oFactory.createPage("page1", this.oBtn1);
 			this.oPage2 = oFactory.createPage("page2", this.oBtn2);
 			this.oPage3 = oFactory.createPage("page3", this.oBtn3);
 
-			this.oFCL = oFactory.createFCL({
+			this.oFCL = await oFactory.createFCL({
 				beginColumnPages: this.oPage1,
 				midColumnPages: this.oPage2,
 				endColumnPages: this.oPage3
@@ -2257,7 +2287,7 @@ function(
 
 
 			this.oFCL.placeAt(sQUnitFixture);
-			Core.applyChanges();
+			await nextUIUpdate();
 		},
 		afterEach: function () {
 
@@ -2281,7 +2311,7 @@ function(
 			this.oFCL.setLayout(sLayoutName);
 
 			FlexibleColumnLayout.COLUMN_ORDER.forEach(function(sColumn) {
-				var oColumn = this.oFCL._$columns[sColumn],
+				const oColumn = this.oFCL._$columns[sColumn],
 					iExpectedColumnWidth = parseInt(oColumn.css("width")),
 					iActualColumnWidth = this.oFCL._getColumnWidth(sColumn);
 				assert.strictEqual(iActualColumnWidth, iExpectedColumnWidth, "correct with for " + sColumn);
@@ -2291,7 +2321,7 @@ function(
 
 	QUnit.test("after resize", function (assert) {
 
-		var iOldWidth = this.oFCL.$().width(),
+		const iOldWidth = this.oFCL.$().width(),
 			iNewWidth = iOldWidth - 10;
 
 		this.oFCL.setLayout(LT.OneColumn);
@@ -2303,7 +2333,7 @@ function(
 		});
 
 		FlexibleColumnLayout.COLUMN_ORDER.forEach(function(sColumn) {
-			var oColumn = this.oFCL._$columns[sColumn],
+			const oColumn = this.oFCL._$columns[sColumn],
 				iExpectedColumnWidth = oColumn.width(),
 				iActualColumnWidth = this.oFCL._getColumnWidth(sColumn);
 			assert.strictEqual(iActualColumnWidth, iExpectedColumnWidth, "correct with for " + sColumn);
@@ -2311,7 +2341,7 @@ function(
 	});
 
 	QUnit.module("Focus handling with enabled 'restoreFocusOnBackNavigation' property", {
-		beforeEach: function () {
+		beforeEach: async function () {
 
 			// Arrange
 			this.oBtn1 = new Button({text: "Button1"});
@@ -2323,7 +2353,7 @@ function(
 			this.oPage2 = oFactory.createPage("page2", [this.firstFocusableBtn, this.oBtn2]);
 			this.oPage3 = oFactory.createPage("page3", this.oBtn3);
 
-			this.oFCL = oFactory.createFCL({
+			this.oFCL = await oFactory.createFCL({
 				beginColumnPages: this.oPage1,
 				midColumnPages: this.oPage2,
 				endColumnPages: this.oPage3,
@@ -2350,9 +2380,7 @@ function(
 
 	QUnit.test("Should restore focus on back navigation", function (assert) {
 		// Arrange
-		var oSpy = this.spy(this.oFCL, "_restoreFocusToColumn"),
-			oStub,
-			oCall;
+		const oSpy = this.spy(this.oFCL, "_restoreFocusToColumn");
 
 		// Act
 		this.oBtn1.$().trigger("focus");
@@ -2361,13 +2389,13 @@ function(
 		this.oFCL.setLayout(LT.TwoColumnsBeginExpanded);
 		this.oBtn2.$().trigger("focus");
 
-		oStub = this.stub($.prototype, "trigger");
+		const oStub = this.stub($.prototype, "trigger");
 
 		// Back to first column
 		this.oFCL.setLayout(LT.OneColumn);
 
 		// Assert
-		oCall = oStub.getCalls()[0];
+		const oCall = oStub.getCalls()[0];
 		assert.ok(oSpy.calledWith("begin"), "_restoreFocusToColumn is called with 'begin' column");
 		assert.ok(oCall.calledWith("focus") && oCall.thisValue[0] === this.oBtn1.getDomRef(), "Focus is restored to begin column");
 
@@ -2377,9 +2405,7 @@ function(
 
 	QUnit.test("Should preserve existing focus in previous of current column on back navigation", function (assert) {
 		// Arrange
-		var oSpy = this.spy(this.oFCL, "_restoreFocusToColumn"),
-			oStub,
-			oCall;
+		const oSpy = this.spy(this.oFCL, "_restoreFocusToColumn");
 
 		// Act
 		this.oBtn1.$().trigger("focus");
@@ -2393,11 +2419,11 @@ function(
 		this.oBtn3.$().trigger("focus");
 
 		// Back to two columns
-		oStub = this.stub($.prototype, "trigger");
+		const oStub = this.stub($.prototype, "trigger");
 		this.oFCL.setLayout(LT.TwoColumnsBeginExpanded);
 
 		// Assert
-		oCall = oStub.getCalls()[0];
+		const oCall = oStub.getCalls()[0];
 		assert.ok(oSpy.calledWith("mid"), "_restoreFocusToColumn is called with 'mid' column");
 		assert.ok(oCall.calledWith("focus") && oCall.thisValue[0] === this.oBtn2.getDomRef(),
 			"Focus is preserved to begin column after navigating back from end to mid");
@@ -2408,9 +2434,7 @@ function(
 
 	QUnit.test("Should restore focus after exiting full screen", function (assert) {
 		// Arrange
-		var oSpy = this.spy(this.oFCL, "_restoreFocusToColumn"),
-			oStub,
-			oCall;
+		const oSpy = this.spy(this.oFCL, "_restoreFocusToColumn");
 
 		// Act
 		this.oFCL.setLayout(LT.TwoColumnsBeginExpanded);
@@ -2421,11 +2445,11 @@ function(
 		this.oBtn2.$().trigger("focus");
 
 		// Back to first column
-		oStub = this.stub($.prototype, "trigger");
+		const oStub = this.stub($.prototype, "trigger");
 		this.oFCL.setLayout(LT.OneColumn);
 
 		// Assert
-		oCall = oStub.getCalls()[0];
+		const oCall = oStub.getCalls()[0];
 		assert.ok(oSpy.calledWith("begin"), "_restoreFocusToColumn is called with 'begin' column");
 		assert.ok(oCall.calledWith("focus") && oCall.thisValue[0] === this.oBtn1.getDomRef(),
 			"Focus is restored to begin column after exiting from mid's fullscreen.");
@@ -2436,9 +2460,6 @@ function(
 
 	QUnit.test("Should restore focus when navigating back on the first focusable element if no element was stored", function (assert) {
 		// Arrange
-		var oStub,
-			oCall,
-			oExpectedFocusedElement;
 
 		// Act
 		this.oFCL.setLayout(LT.TwoColumnsMidExpanded);
@@ -2447,15 +2468,15 @@ function(
 		// _isFocusInSomeOfThePreviousColumns which if true, does not restore the focus
 		this.oBtn2.focus();
 
-		oExpectedFocusedElement = this.oFCL._getFirstFocusableElement('begin');
+		const oExpectedFocusedElement = this.oFCL._getFirstFocusableElement('begin');
 
 		// Act
 		this.oFCL._oColumnFocusInfo.begin = {}; // reset if there is a stored element
-		oStub = this.stub($.prototype, "trigger");
+		const oStub = this.stub($.prototype, "trigger");
 		this.oFCL.setLayout(LT.OneColumn);
 
 		// Assert
-		oCall = oStub.getCalls()[0];
+		const oCall = oStub.getCalls()[0];
 		assert.ok(oCall.calledWith("focus") && oCall.thisValue[0] === oExpectedFocusedElement,
 			"Focus is restored to first focusable element, even if there are no store elements");
 
@@ -2465,7 +2486,7 @@ function(
 
 	QUnit.test("Should keep focus if it is already in the current column", function (assert) {
 		// Arrange
-		var oExpectedFocusedElement = this.oBtn2.getDomRef();
+		const oExpectedFocusedElement = this.oBtn2.getDomRef();
 
 		// Act
 		this.oFCL.setLayout(LT.MidColumnFullScreen);
@@ -2489,8 +2510,8 @@ function(
 	});
 
 	(function () {
-		var oFullscreenLayouts = ["OneColumn", "MidColumnFullScreen", "EndColumnFullScreen"],
-			_oSplitScreenLayouts = Object.keys(library.LayoutType).filter(function(sLayout) {
+		const oFullscreenLayouts = ["OneColumn", "MidColumnFullScreen", "EndColumnFullScreen"],
+			_oSplitScreenLayouts = Object.keys(library.LayoutType).filter((sLayout) => {
 				return oFullscreenLayouts.indexOf(sLayout) < 0;
 		});
 		Object.keys(_oSplitScreenLayouts).forEach(function(sLayoutName) {
@@ -2499,13 +2520,13 @@ function(
 	})();
 
 	function _testDifferentLayoutsWidth(sLayoutName) {
-		QUnit.test("Layout: " + sLayoutName, function (assert) {
+		QUnit.test("Layout: " + sLayoutName, async function (assert) {
 			// setup
 
 			this.oFCL.setLayout(sLayoutName);
 
 			this.oFCL.placeAt(sQUnitFixture);
-			Core.applyChanges();
+			await nextUIUpdate();
 
 			// assert
 			_widthComparisonAssertions(this.oFCL, assert);
@@ -2515,13 +2536,9 @@ function(
 	function _widthComparisonAssertions(oFCL, assert) {
 
 		// setup
-		var $beginColumn,
-			$midColumn,
-			$endColumn;
-
-		$beginColumn = oFCL.$("beginColumn");
-		$midColumn = oFCL.$("midColumn");
-		$endColumn = oFCL.$("endColumn");
+		const $beginColumn = oFCL.$("beginColumn"),
+			$midColumn = oFCL.$("midColumn"),
+			$endColumn = oFCL.$("endColumn");
 
 		assert.equal(parseInt($beginColumn[0].style.width), $beginColumn.get(0).offsetWidth, "Begin column width correct");
 		assert.equal($midColumn[0].style.width, "", "Mid column width correct"); // mid has auto-width
@@ -2547,9 +2564,9 @@ function(
 		}
 	});
 
-	QUnit.test("begin separator in two-column layouts", function (assert) {
-		var iSeparatorValuenow;
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("begin separator in two-column layouts shows correct aria-valuenow", async function (assert) {
+		let iSeparatorValuenow;
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.TwoColumnsBeginExpanded,
 			beginColumnPages: [new Page()]
 		});
@@ -2571,9 +2588,8 @@ function(
 		assert.ok(iSeparatorValuenow < 100, "valuenow attribute shows begin column not fully expanded");
 	});
 
-	QUnit.test("begin separator min value in two-column layouts", function (assert) {
-		var iSeparatorValuenow;
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("begin separator min value in two-column layouts shows 0 aria-valuenow when begin column is shrunk to minimum", async function (assert) {
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.TwoColumnsBeginExpanded,
 			beginColumnPages: [new Page()]
 		});
@@ -2586,13 +2602,12 @@ function(
 		assert.equal(this.oFCL._$columns.begin.get(0).offsetWidth, FlexibleColumnLayout.COLUMN_MIN_WIDTH, "begin column is shrinked to the min");
 
 		// check
-		iSeparatorValuenow = parseFloat(this.oFCL._oColumnSeparators.begin.get(0).getAttribute("aria-valuenow"));
+		const iSeparatorValuenow = parseFloat(this.oFCL._oColumnSeparators.begin.get(0).getAttribute("aria-valuenow"));
 		assert.equal(iSeparatorValuenow, 0.00, "valuenow attribute shows begin column is shrinked to the min");
 	});
 
-	QUnit.test("begin separator max value in two-column layouts", function (assert) {
-		var iSeparatorValuenow;
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("begin separator max value in two-column layouts shows 100 aria-valuenow when begin column is expanded to maximum", async function (assert) {
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.TwoColumnsBeginExpanded,
 			beginColumnPages: [new Page()]
 		});
@@ -2605,13 +2620,13 @@ function(
 		assert.equal(this.oFCL._$columns.mid.get(0).offsetWidth, FlexibleColumnLayout.COLUMN_MIN_WIDTH, "mid column is shrinked to the min");
 
 		// check
-		iSeparatorValuenow = parseFloat(this.oFCL._oColumnSeparators.begin.get(0).getAttribute("aria-valuenow"));
+		const iSeparatorValuenow = parseFloat(this.oFCL._oColumnSeparators.begin.get(0).getAttribute("aria-valuenow"));
 		assert.equal(iSeparatorValuenow, 100.00, "valuenow attribute shows begin column is expanded to the max");
 	});
 
-	QUnit.test("begin separator in three-column layouts", function (assert) {
-		var iSeparatorValuenow;
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("begin separator in three-column layouts shows correct aria-valuenow", async function (assert) {
+		let iSeparatorValuenow;
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded,
 			beginColumnPages: [new Page()]
 		});
@@ -2633,9 +2648,8 @@ function(
 		assert.ok(iSeparatorValuenow < 100, "valuenow attribute shows begin column not fully expanded");
 	});
 
-	QUnit.test("begin separator min value in three-column layout", function (assert) {
-		var iSeparatorValuenow;
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("begin separator min value in three-column layout shows 0 aria-valuenow when begin column is shrunk to minimum", async function (assert) {
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded,
 			beginColumnPages: [new Page()]
 		});
@@ -2648,13 +2662,12 @@ function(
 		assert.equal(this.oFCL._$columns.begin.get(0).offsetWidth, FlexibleColumnLayout.COLUMN_MIN_WIDTH, "begin column is shrinked to the min");
 
 		// check
-		iSeparatorValuenow = parseFloat(this.oFCL._oColumnSeparators.begin.get(0).getAttribute("aria-valuenow"));
+		const iSeparatorValuenow = parseFloat(this.oFCL._oColumnSeparators.begin.get(0).getAttribute("aria-valuenow"));
 		assert.equal(iSeparatorValuenow, 0.00, "valuenow attribute shows begin column is shrinked to the min");
 	});
 
-	QUnit.test("begin separator max value in three-column layouts", function (assert) {
-		var iSeparatorValuenow;
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("begin separator max value in three-column layouts shows 100 aria-valuenow when begin column is expanded to maximum", async function (assert) {
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsBeginExpandedEndHidden,
 			beginColumnPages: [new Page()]
 		});
@@ -2665,14 +2678,14 @@ function(
 		assert.equal(this.oFCL.getLayout(), LT.ThreeColumnsBeginExpandedEndHidden, "assert setup is as expected");
 
 		// check
-		iSeparatorValuenow = parseFloat(this.oFCL._oColumnSeparators.begin.get(0).getAttribute("aria-valuenow"));
+		const iSeparatorValuenow = parseFloat(this.oFCL._oColumnSeparators.begin.get(0).getAttribute("aria-valuenow"));
 		assert.equal(this.oFCL._$columns.mid.get(0).offsetWidth, FlexibleColumnLayout.COLUMN_MIN_WIDTH, "mid column is shrinked to the min");
 		assert.equal(iSeparatorValuenow, 100.00, "valuenow attribute shows begin column is expanded to the max");
 	});
 
-	QUnit.test("end separator in three-column layouts", function (assert) {
-		var iSeparatorValuenow;
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("end separator in three-column layouts shows correct aria-valuenow", async function (assert) {
+		let iSeparatorValuenow;
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded,
 			beginColumnPages: [new Page()],
 			endColumnPages: [new Page()]
@@ -2696,9 +2709,8 @@ function(
 		assert.ok(iSeparatorValuenow < 100, "valuenow attribute shows mid column not fully expanded");
 	});
 
-	QUnit.test("end separator min value in three-column layouts", function (assert) {
-		var iSeparatorValuenow;
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("end separator min value in three-column layouts shows 0 aria-valuenow when mid column is shrunk to minimum", async function (assert) {
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsEndExpanded,
 			beginColumnPages: [new Page()],
 			endColumnPages: [new Page()]
@@ -2712,13 +2724,12 @@ function(
 		assert.equal(this.oFCL.getLayout(), LT.ThreeColumnsEndExpanded, "assert setup is as expected");
 
 		// check
-		iSeparatorValuenow = parseFloat(this.oFCL._oColumnSeparators.end.get(0).getAttribute("aria-valuenow"));
+		const iSeparatorValuenow = parseFloat(this.oFCL._oColumnSeparators.end.get(0).getAttribute("aria-valuenow"));
 		assert.strictEqual(iSeparatorValuenow,  0.00, "valuenow attribute shows mid column is shrinked to the min");
 	});
 
-	QUnit.test("end separator max value in three-column layouts", function (assert) {
-		var iSeparatorValuenow;
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("end separator max value in three-column layouts shows 100 aria-valuenow when mid column is expanded to maximum", async function (assert) {
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded,
 			beginColumnPages: [new Page()],
 			endColumnPages: [new Page()]
@@ -2732,7 +2743,7 @@ function(
 		assert.equal(this.oFCL.getLayout(), LT.ThreeColumnsMidExpanded, "assert setup is as expected");
 
 		// check
-		iSeparatorValuenow = parseFloat(this.oFCL._oColumnSeparators.end.get(0).getAttribute("aria-valuenow"));
+		const iSeparatorValuenow = parseFloat(this.oFCL._oColumnSeparators.end.get(0).getAttribute("aria-valuenow"));
 		assert.strictEqual(iSeparatorValuenow,  100.00, "valuenow attribute shows mid column is expanded to the max");
 	});
 
@@ -2753,9 +2764,9 @@ function(
 		}
 	});
 
-	QUnit.test("begin separator in three-column layouts", function (assert) {
-		var iSeparatorValuenow;
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("begin separator in three-column layouts shows correct aria-valuenow on tablet", async function (assert) {
+		let iSeparatorValuenow;
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded,
 			beginColumnPages: [new Page()],
 			midColumnPages: [new Page()]
@@ -2777,9 +2788,9 @@ function(
 		assert.ok(iSeparatorValuenow < 100, "valuenow attribute shows begin column not fully expanded");
 	});
 
-	QUnit.test("begin separator min value in three-column layouts", function (assert) {
-		var iSeparatorValuenow;
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("begin separator min value in three-column layouts shows 0 aria-valuenow on tablet when begin column is hidden", async function (assert) {
+		let iSeparatorValuenow;
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpandedEndHidden,
 			beginColumnPages: [new Page()],
 			midColumnPages: [new Page()]
@@ -2801,9 +2812,9 @@ function(
 		assert.strictEqual(iSeparatorValuenow, 0, "valuenow attribute shows begin column is shrinked to the min");
 	});
 
-	QUnit.test("begin separator max value in three-column layouts", function (assert) {
-		var iSeparatorValuenow;
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("begin separator max value in three-column layouts shows 100 aria-valuenow on tablet when begin column is fully expanded", async function (assert) {
+		let iSeparatorValuenow;
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsBeginExpandedEndHidden,
 			beginColumnPages: [new Page()],
 			midColumnPages: [new Page()]
@@ -2825,9 +2836,9 @@ function(
 		assert.strictEqual(iSeparatorValuenow, 100.00, "valuenow attribute shows begin column is expanded to the max");
 	});
 
-	QUnit.test("end separator in three-column layouts", function (assert) {
-		var iSeparatorValuenow;
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("end separator in three-column layouts shows correct aria-valuenow on tablet", async function (assert) {
+		let iSeparatorValuenow;
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpandedEndHidden,
 			beginColumnPages: [new Page()],
 			midColumnPages: [new Page()]
@@ -2849,9 +2860,9 @@ function(
 		assert.ok(iSeparatorValuenow < 100, "valuenow attribute shows mid column not fully expanded");
 	});
 
-	QUnit.test("end separator min value in three-column layouts", function (assert) {
-		var iSeparatorValuenow;
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("end separator min value in three-column layouts shows 0 aria-valuenow on tablet when mid column is shrunk to minimum", async function (assert) {
+		let iSeparatorValuenow;
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsEndExpanded,
 			beginColumnPages: [new Page()],
 			midColumnPages: [new Page()]
@@ -2875,8 +2886,8 @@ function(
 
 	QUnit.module("ScreenReader other aria attributes on separators");
 
-	QUnit.test("begin separator in two-column layouts", function (assert) {
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("begin separator in two-column layouts has correct aria-valuemin and aria-valuemax", async function (assert) {
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.TwoColumnsBeginExpanded,
 			beginColumnPages: [new Page()]
 		});
@@ -2889,8 +2900,8 @@ function(
 		this.oFCL.destroy();
 	});
 
-	QUnit.test("end separator in three-column layouts", function (assert) {
-		this.oFCL = oFactory.createFCL({
+	QUnit.test("end separator in three-column layouts has correct aria-valuemin and aria-valuemax", async function (assert) {
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded,
 			beginColumnPages: [new Page()],
 			endColumnPages: [new Page()]
@@ -2904,10 +2915,10 @@ function(
 		this.oFCL.destroy();
 	});
 
-	QUnit.test("separators have aria-label and no title to prevent double screen reader announcement", function (assert) {
-		var sExpectedLabel = fnGetResourceBundleText("FCL_SEPARATOR_MOVE");
+	QUnit.test("separators have aria-label and no title to prevent double screen reader announcement", async function (assert) {
+		const sExpectedLabel = fnGetResourceBundleText("FCL_SEPARATOR_MOVE");
 
-		this.oFCL = oFactory.createFCL({
+		this.oFCL = await oFactory.createFCL({
 			layout: LT.ThreeColumnsMidExpanded,
 			beginColumnPages: [new Page()],
 			midColumnPages: [new Page()],
@@ -2953,7 +2964,7 @@ function(
 
 	QUnit.test("Columns' are resized when property of FlexibleColumnLayoutDataForTablet is updated", function(assert) {
 		// Arrange
-		var oTabletLayoutData = this.oFCL.getLayoutData().getTabletLayoutData(),
+		const oTabletLayoutData = this.oFCL.getLayoutData().getTabletLayoutData(),
 			fnSpy = this.spy(this.oFCL, "_resizeColumns");
 
 		// Act
@@ -2966,7 +2977,7 @@ function(
 
 	QUnit.test("FCL's columns are not resized when a property of the layoutData is changed, which does not correspond to the current layout", function(assert) {
 		// Arrange
-		var oTabletLayoutData = this.oFCL.getLayoutData().getTabletLayoutData(),
+		const oTabletLayoutData = this.oFCL.getLayoutData().getTabletLayoutData(),
 			fnSpy = this.spy(this.oFCL, "_resizeColumns");
 
 		// Act
@@ -2979,14 +2990,13 @@ function(
 
 	QUnit.test("FCL's columns are not resized when a property of the layoutData for different media is changed", async function(assert) {
 		// Arrange
-		var oDesktopLayoutData = new FlexibleColumnLayoutDataForDesktop(),
-			fnSpy;
+		const oDesktopLayoutData = new FlexibleColumnLayoutDataForDesktop();
 
 		this.oFCL.getLayoutData().setDesktopLayoutData(oDesktopLayoutData);
 		await nextUIUpdate();
 
 		// Act
-		fnSpy = this.spy(this.oFCL, "_resizeColumns");
+		const fnSpy = this.spy(this.oFCL, "_resizeColumns");
 		oDesktopLayoutData.setTwoColumnsMidExpanded("40/60/0");
 
 		// Assert
@@ -2995,7 +3005,7 @@ function(
 
 	QUnit.test("FCL's columns are not resized when new value of a property of the layoutData is empty string", function(assert) {
 		// Arrange
-		var oTabletLayoutData = this.oFCL.getLayoutData().getTabletLayoutData(),
+		const oTabletLayoutData = this.oFCL.getLayoutData().getTabletLayoutData(),
 			fnSpy = this.spy(this.oFCL, "_resizeColumns");
 
 		// Act
@@ -3007,13 +3017,12 @@ function(
 
 	QUnit.test("FCL unsubscribes for changes in old/destroyed layoutData", function(assert) {
 		// Arrange
-		var oLayoutData = this.oFCL.getLayoutData(),
-			oTabletLayoutData = oLayoutData.getTabletLayoutData(),
-			fnSpy;
+		const oLayoutData = this.oFCL.getLayoutData(),
+			oTabletLayoutData = oLayoutData.getTabletLayoutData();
 
 		// Act
 		oLayoutData.setTabletLayoutData(new FlexibleColumnLayoutDataForTablet());
-		fnSpy = this.spy(this.oFCL, "_resizeColumns");
+		const fnSpy = this.spy(this.oFCL, "_resizeColumns");
 		// Update property of the old layoutData
 		oTabletLayoutData.setTwoColumnsMidExpanded("25/75/0");
 
@@ -3023,7 +3032,7 @@ function(
 
 	QUnit.test("FCL is rerendered and columns are resized when tabletLayoutData aggregation of FlexibleColumnLayout is changed", async function(assert) {
 		// Arrange
-		var oLayoutData = this.oFCL.getLayoutData(),
+		const oLayoutData = this.oFCL.getLayoutData(),
 			fnSpy = this.spy(this.oFCL, "_resizeColumns");
 
 		// ct
@@ -3036,7 +3045,7 @@ function(
 
 	QUnit.test("FCL is rerendered and columns are resized when new layoutData aggregation of FlexibleColumnLayout is set", async function(assert) {
 		// Arrange
-		var fnSpy = this.spy(this.oFCL, "_resizeColumns");
+		const fnSpy = this.spy(this.oFCL, "_resizeColumns");
 
 		// Act
 		this.oFCL.setLayoutData(new FlexibleColumnLayoutData());
@@ -3046,10 +3055,9 @@ function(
 		assert.ok(fnSpy.calledOnce, "Columns are resized when tabletLayoutData aggregation of FlexibleColumnLayout is changed");
 	});
 
-	QUnit.test("After columnsDistributionChange event is fired and layoutData property is updated, there is no second resize", function (assert) {
+	QUnit.test("After columnsDistributionChange event is fired and layoutData property is updated, there is no second resize", async function (assert) {
 		// Arrange
-		var oTabletLayoutData = this.oFCL.getLayoutData().getTabletLayoutData(),
-			fnDone = assert.async(),
+		const oTabletLayoutData = this.oFCL.getLayoutData().getTabletLayoutData(),
 			fnSpy = this.spy(this.oFCL, "_resizeColumns");
 
 		this.oFCL.attachColumnsDistributionChange(function (oEvent) {
@@ -3059,11 +3067,10 @@ function(
 		//Act - simulate dragging the separator by user interaction
 		dragSeparator("begin", -150, this.oFCL);
 
-		this.oFCL._attachAfterAllColumnsResizedOnce(function() {
-			// Assert
-			assert.ok(fnSpy.calledOnce, "_resizeColumns is called only once");
-			fnDone();
-		});
+		await waitForColumnsResizeOnce(this.oFCL);
+
+		// Assert
+		assert.ok(fnSpy.calledOnce, "_resizeColumns is called only once");
 	});
 
 });
