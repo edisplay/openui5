@@ -843,6 +843,7 @@ sap.ui.define([
 		},
 		afterEach() {
 			sandbox.restore();
+			FlexState.clearState();
 			this.oAppComponent.destroy();
 			FlexState.rebuildFilteredResponse(this.sReference);
 			FlexState.clearRuntimeSteadyObjects(this.sReference, sComponentId);
