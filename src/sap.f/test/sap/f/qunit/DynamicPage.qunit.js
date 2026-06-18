@@ -2357,6 +2357,51 @@ function(
 		assert.equal(oMoveHeaderSpy.callCount, 1, "the event is fired");
 	});
 
+	QUnit.test("DynamicPage _moveHeaderToContentArea() should preserve focus", function (assert) {
+		var oInput = new Input(),
+			oHeader = oFactory.getDynamicPageHeader([oInput]),
+			oDynamicPage = this.oDynamicPage,
+			oFocusTargetDomRef;
+
+		oDynamicPage.setHeader(oHeader);
+		Core.applyChanges();
+
+		// Move header to title area first so we can then move it to content area
+		oDynamicPage._moveHeaderToTitleArea();
+
+		// Focus an element inside the header
+		oFocusTargetDomRef = oInput.getFocusDomRef();
+		oFocusTargetDomRef.focus();
+		assert.strictEqual(document.activeElement, oFocusTargetDomRef, "Precondition: element inside header is focused");
+
+		// Act - move header to content area (the DOM detach/reattach that loses focus)
+		oDynamicPage._moveHeaderToContentArea();
+
+		// Assert - focus should be restored to the same element
+		assert.strictEqual(document.activeElement, oFocusTargetDomRef, "Focus is preserved after moving header to content area");
+	});
+
+	QUnit.test("DynamicPage _moveHeaderToTitleArea() should preserve focus", function (assert) {
+		var oInput = new Input(),
+			oHeader = oFactory.getDynamicPageHeader([oInput]),
+			oDynamicPage = this.oDynamicPage,
+			oFocusTargetDomRef;
+
+		oDynamicPage.setHeader(oHeader);
+		Core.applyChanges();
+
+		// Header starts in content area by default; focus an element inside it
+		oFocusTargetDomRef = oInput.getFocusDomRef();
+		oFocusTargetDomRef.focus();
+		assert.strictEqual(document.activeElement, oFocusTargetDomRef, "Precondition: element inside header is focused");
+
+		// Act - move header to title area (the DOM detach/reattach that loses focus)
+		oDynamicPage._moveHeaderToTitleArea();
+
+		// Assert - focus should be restored to the same element
+		assert.strictEqual(document.activeElement, oFocusTargetDomRef, "Focus is preserved after moving header to title area");
+	});
+
 	QUnit.test("DynamicPage _toggleHeaderVisibility() should show/hide the DynamicPAge`s Header", function (assert) {
 		var oDynamicPage = this.oDynamicPage,
 			oHeader = oDynamicPage.getHeader(),
