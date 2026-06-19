@@ -225,6 +225,7 @@ function(
 	 * @param {boolean} bValue New value for the <code>growing</code> property, ignored.
 	 * @returns {this} Returns <code>this</code> to allow method chaining
 	 * @deprecated As of version 1.46, the <code>growing</code> property is not supported by the <code>Tree</code> control.
+	 * @ui5-not-supported
 	 */
 	Tree.prototype.setGrowing = function(bValue) {
 		Log.error("Growing feature of " + this + " is not supported!");
@@ -237,6 +238,7 @@ function(
 	 * @param {int} iValue New value for the <code>growingThreshold</code> property, ignored.
 	 * @returns {this} Returns <code>this</code> to allow method chaining
 	 * @deprecated As of version 1.46, the <code>growingThreshold</code> property is not supported by the <code>Tree</code> control.
+	 * @ui5-not-supported
 	 */
 	Tree.prototype.setGrowingThreshold = function(iValue) {
 		Log.error("GrowingThreshold of " + this + " is not supported!");
@@ -249,6 +251,7 @@ function(
 	 * @param {string} sValue New value for the <code>growingTriggerText</code> property, ignored.
 	 * @returns {this} Returns <code>this</code> to allow method chaining
 	 * @deprecated As of version 1.46, the <code>growingTriggerText</code> property is not supported by the <code>Tree</code> control.
+	 * @ui5-not-supported
 	 */
 	Tree.prototype.setGrowingTriggerText = function(sValue) {
 		Log.error("GrowingTriggerText of " + this + " is not supported!");
@@ -261,6 +264,7 @@ function(
 	 * @param {boolean} bValue New value for the <code>growingScrollToLoad</code> property, ignored.
 	 * @returns {this} Returns <code>this</code> to allow method chaining
 	 * @deprecated As of version 1.46, the <code>growingScrollToLoad</code> property is not supported by the <code>Tree</code> control.
+	 * @ui5-not-supported
 	 */
 	Tree.prototype.setGrowingScrollToLoad = function(bValue) {
 		Log.error("GrowingScrollToLoad of " + this + " is not supported!");
@@ -273,6 +277,7 @@ function(
 	 * @param {sap.m.ListGrowingDirection} sValue New value for the <code>growingDirection</code> property, ignored.
 	 * @returns {this} Returns <code>this</code> to allow method chaining
 	 * @deprecated As of version 1.46, the <code>growingDirection</code> property is not supported by the <code>Tree</code> control.
+	 * @ui5-not-supported
 	 */
 	Tree.prototype.setGrowingDirection = function(sValue) {
 		Log.error("GrowingDirection of " + this + " is not supported!");
