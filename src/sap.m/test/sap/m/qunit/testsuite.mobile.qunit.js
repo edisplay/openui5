@@ -1733,6 +1733,13 @@ sap.ui.define([
 					resourceroot: "test-resources/sap/m/qunit/table/columnmenu"
 				}
 			},
+			"table.columnmenu.MenuBase": {
+				title: "Test Page for sap.m.table.columnmenu.MenuBase",
+				module: "test-resources/sap/m/qunit/table/columnmenu/MenuBase.qunit",
+				paths: {
+					resourceroot: "test-resources/sap/m/qunit/table/columnmenu"
+				}
+			},
 			"table.columnmenu.ItemContainer": {
 				title: "Test Page for sap.m.table.columnmenu.ItemContainer",
 				module: "test-resources/sap/m/qunit/table/columnmenu/ItemContainer.qunit",
