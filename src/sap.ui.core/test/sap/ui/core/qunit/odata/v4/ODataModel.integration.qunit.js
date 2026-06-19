@@ -25188,8 +25188,9 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 					oContext25.requestSideEffects(["LifecycleStatus"]),
 					oContext25.requestSideEffects(["Note", /*ignored:*/"NoteLanguage"]),
 					// code under test (JIRA: CPOUI5ODATAV4-3514)
-					// Note: this allows only changes to *structural* properties, not SO_2_BP itself
-					oContext25.requestSideEffects(["SO_2_BP/*"]),
+					// Note: this allows only changes to *structural* properties of Address, but not
+					// to SO_2_BP's identity
+					oContext25.requestSideEffects(["SO_2_BP/Address/*"]),
 					that.waitForChanges(assert, sScenario)
 				]);
 
