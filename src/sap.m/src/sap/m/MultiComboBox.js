@@ -1526,11 +1526,17 @@ function(
 	MultiComboBox.prototype._onBeforeOpenDropdown = function() {
 		var oPopover = this.getPicker(),
 			oDomRef = this.getDomRef(),
-			sWidth;
+			sWidth,
+			sMaxHeight = this.getMaxPickerHeight();
 
 		if (oDomRef && oPopover) {
 			sWidth = (oDomRef.offsetWidth / parseFloat(library.BaseFontSize)) + "rem";
 			oPopover.setContentMinWidth(sWidth);
+
+			// Forward maxPickerHeight to popover
+			if (sMaxHeight) {
+				oPopover.setMaxHeight(sMaxHeight);
+			}
 		}
 	};
 

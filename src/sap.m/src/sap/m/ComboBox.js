@@ -539,10 +539,16 @@ sap.ui.define([
 		 */
 		ComboBox.prototype.onBeforeRenderingDropdown = function() {
 			var oPopover = this.getPicker(),
-				sWidth = (this.$().outerWidth() / parseFloat(library.BaseFontSize)) + "rem";
+				sWidth = (this.$().outerWidth() / parseFloat(library.BaseFontSize)) + "rem",
+				sMaxHeight = this.getMaxPickerHeight();
 
 			if (oPopover) {
 				oPopover.setContentMinWidth(sWidth);
+
+				// Forward maxPickerHeight to popover
+				if (sMaxHeight) {
+					oPopover.setMaxHeight(sMaxHeight);
+				}
 			}
 		};
 
