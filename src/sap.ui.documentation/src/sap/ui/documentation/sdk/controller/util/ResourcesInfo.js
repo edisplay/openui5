@@ -49,12 +49,17 @@ sap.ui.define([],
 			},
 			{
 				"id": "linter",
-				"text": "UI5 linter",
+				"text": "UI5 Linter",
 				"href": "https://github.com/UI5/linter"
 			},
 			{
+				"id": "pluginsCodingAgents",
+				"text": "UI5 Plugins for Coding Agents",
+				"href": "https://github.com/UI5/plugins-coding-agents"
+			},
+			{
 				"id": "mcpserver",
-				"text": "UI5 MCP server",
+				"text": "UI5 MCP Server",
 				"href": "https://github.com/UI5/mcp-server"
 			},
 			{
