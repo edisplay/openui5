@@ -50786,8 +50786,9 @@ make root = ${bMakeRoot}`;
 		 * @param {number} iRow - The first visible row
 		 * @param {number} [iSkip] - $skip for the request; no request if undefined
 		 * @param {number} [iTop] - $top for the request
+		 * @param {Promise} [oPromise] - How long to delay the response
 		 */
-		const expect = (iRow, iSkip, iTop) => {
+		const expect = (iRow, iSkip, iTop, oPromise = resolveLater()) => {
 			if (iSkip !== undefined) {
 				const aElements = [];
 				for (let i = 0; i < iTop; i += 1) {
@@ -50797,9 +50798,12 @@ make root = ${bMakeRoot}`;
 				const sQuery = sBaseQuery + (bCount ? "&$count=true" : "");
 				bCount = false;
 				this.expectRequest(`EMPLOYEES?${sQuery}&$skip=${iSkip}&$top=${iTop}`,
-						resolveLater({
-							"@odata.count" : "100",
-							value : aElements
+						oPromise.then(() => {
+							assert.ok(true, `scroll to ${iRow}: responding now`);
+							return {
+								"@odata.count" : "100",
+								value : aElements
+							};
 						})
 					);
 			}
@@ -50814,13 +50818,13 @@ make root = ${bMakeRoot}`;
 		 * @param {number} iRow - The new first visible row
 		 * @param {number} [iSkip] - $skip for the request; no request if undefined
 		 * @param {number} [iTop] - $top for the request
-		 * @param {boolean} [bNoWait] - Whether to wait for request and changes
+		 * @param {Promise} [oPromise] - How long to delay the response
 		 */
-		const scroll = async (iRow, iSkip, iTop, bNoWait) => {
-			expect(iRow, iSkip, iTop);
+		const scroll = async (iRow, iSkip, iTop, oPromise) => {
+			expect(iRow, iSkip, iTop, oPromise);
 			oTable.setFirstVisibleRow(iRow);
 
-			if (!bNoWait) {
+			if (!oPromise) {
 				await this.waitForChanges(assert, `scroll to ${iRow}`);
 			}
 		};
@@ -50837,14 +50841,18 @@ make root = ${bMakeRoot}`;
 		await scroll(33, 38, 5); // 5 after (> threshold/2)
 		await scroll(34);
 		await scroll(35);
-		scroll(37, 43, 5, true); // 5 after
+		await scroll(37);
+		const {promise : oPromise, resolve : fnResolve} = Promise.withResolvers();
+		scroll(38, 43, 5, oPromise); // 5 after
 		// to avoid instable tests, wait at least 50ms (due to the throttling mechanism of the
 		// table) to ensure that the request is sent and the change events are fired;
 		// await Promise.resolve() cannot be used as it sometimes resolves in less than 50ms and
 		// sometimes it needs longer
 		await resolveLater(null, 50);
-		// this scroll happens before the response arrived, because we did not wait for the changes
-		await scroll(38);
+		assert.ok(true, "scroll to 38 - wait for table but not for the response");
+		// this scroll happens before the delayed(!) response arrives
+		await scroll(39);
+		fnResolve();
 		// backward
 		await scroll(29);
 		await scroll(28);
