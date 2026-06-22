@@ -183,8 +183,8 @@ sap.ui.define([
 	 * @param {Object<string,any>} [mParameters]
 	 *   Map of optional parameters for the binding
 	 * @param {boolean} [mParameters.ignoreMessages]
-	 *   Whether this binding ignores model messages instead of propagating them to the control. Supported since
-	 *   1.119.0. Some composite types like {@link sap.ui.model.type.Currency} automatically ignore
+	 *   Whether this binding ignores model messages instead of propagating them to the control {@since
+	 *   1.119.0}. Some composite types like {@link sap.ui.model.type.Currency} automatically ignore
 	 *   model messages for some of their parts, depending on their format options. Setting this
 	 *   parameter to <code>true</code> or <code>false</code> overrules the automatism of the type.
 	 *

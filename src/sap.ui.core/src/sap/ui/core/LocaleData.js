@@ -1305,7 +1305,7 @@ sap.ui.define([
 		 * @param {"accounting"|"sap-accounting"|"sap-standard"|"standard"} sContext
 		 *   The context of the currency pattern; "sap-" prefix is used for the trailing currency code variant
 		 * @param {"alphaNextToNumber"|"noCurrency"} [sAlternative]
-		 *   The alternate currency pattern; since 1.133.0
+		 *   The alternate currency pattern {@since 1.133.0}
 		 * @returns {string|undefined}
 		 *   The currency format pattern for the given parameters; <code>undefined</code> if no corresponding pattern is
 		 *   found
@@ -1583,7 +1583,7 @@ sap.ui.define([
 		 *
 		 * @param {Array<"day"|"hour"|"minute"|"month"|"second"|"week"|"year">} aScales The scales for which the available patterns should be returned
 		 * @param {"narrow"|"short"|"wide"} [sStyle="wide"]
-		 *   Since 1.32.10 and 1.34.4, the style of the scale patterns
+		 *   {@since 1.36} the style of the scale patterns
 		 * @returns {Array<sap.ui.core.LocaleData.RelativeTimePattern>} An array of all relative time patterns
 		 * @public
 		 * @since 1.34
@@ -1644,7 +1644,7 @@ sap.ui.define([
 		 * @param {int} iDiff the difference in the given scale unit
 		 * @param {boolean} [bFuture] whether a future or past pattern should be used
 		 * @param {"narrow"|"short"|"wide"} [sStyle="wide"]
-		 *   Since 1.32.10 and 1.34.4, the style of the pattern
+		 *   {@since 1.36} the style of the pattern
 		 * @returns {string} the relative format pattern
 		 * @public
 		 * @since 1.34
@@ -1688,7 +1688,7 @@ sap.ui.define([
 		 *
 		 * @param {int} iDiff the difference in seconds
 		 * @param {"narrow"|"short"|"wide"} [sStyle="wide"]
-		 *   Since 1.32.10 and 1.34.4, the style of the pattern
+		 *   {@since 1.36} the style of the pattern
 		 * @returns {string} the relative resource pattern in unit 'second'
 		 * @public
 		 * @since 1.31.0
@@ -1706,7 +1706,7 @@ sap.ui.define([
 		 *
 		 * @param {int} iDiff the difference in minutes
 		 * @param {"narrow"|"short"|"wide"} [sStyle="wide"]
-		 *   Since 1.32.10 and 1.34.4, the style of the pattern
+		 *   {@since 1.36} the style of the pattern
 		 * @returns {string|null} the relative resource pattern in unit 'minute'. The method returns null if 0 is given as parameter.
 		 * @public
 		 * @since 1.31.0
@@ -1727,7 +1727,7 @@ sap.ui.define([
 		 *
 		 * @param {int} iDiff the difference in hours
 		 * @param {"narrow"|"short"|"wide"} [sStyle="wide"]
-		 *   Since 1.32.10 and 1.34.4, the style of the pattern
+		 *   {@since 1.36} the style of the pattern
 		 * @returns {string|null} the relative resource pattern in unit 'hour'. The method returns null if 0 is given as parameter.
 		 * @public
 		 * @since 1.31.0
@@ -1745,7 +1745,7 @@ sap.ui.define([
 		 *
 		 * @param {int} iDiff the difference in days
 		 * @param {"narrow"|"short"|"wide"} [sStyle="wide"]
-		 *   Since 1.32.10 and 1.34.4, the style of the pattern
+		 *   {@since 1.36}, the style of the pattern
 		 * @returns {string} the relative day resource pattern
 		 * @public
 		 * @since 1.25.0
@@ -1760,7 +1760,7 @@ sap.ui.define([
 		 *
 		 * @param {int} iDiff the difference in weeks
 		 * @param {"narrow"|"short"|"wide"} [sStyle="wide"]
-		 *   Since 1.32.10 and 1.34.4, the style of the pattern
+		 *   {@since 1.36} the style of the pattern
 		 * @returns {string} the relative week resource pattern
 		 * @public
 		 * @since 1.31.0
@@ -1775,7 +1775,7 @@ sap.ui.define([
 		 *
 		 * @param {int} iDiff the difference in months
 		 * @param {"narrow"|"short"|"wide"} [sStyle="wide"]
-		 *   Since 1.32.10 and 1.34.4, the style of the pattern
+		 *   {@since 1.36}, the style of the pattern
 		 * @returns {string} the relative month resource pattern
 		 * @public
 		 * @since 1.25.0
@@ -1789,7 +1789,7 @@ sap.ui.define([
 		 *
 		 * @param {"day"|"era"|"hour"|"minute"|"month"|"quarter"|"second"|"week"|"weekday"|"year"|"zone"} sType the type
 		 * @param {"narrow"|"short"|"wide"} [sStyle="wide"]
-		 *   Since 1.32.10 and 1.34.4, the style of the pattern
+		 *   {@since 1.36} the style of the pattern
 		 * @returns {string} display name
 		 * @public
 		 * @since 1.34.0
@@ -1817,7 +1817,7 @@ sap.ui.define([
 		 *
 		 * @param {int} iDiff the difference in years
 		 * @param {"narrow"|"short"|"wide"} [sStyle="wide"]
-		 *   Since 1.32.10 and 1.34.4, the style of the pattern
+		 *   {@since 1.36} the style of the pattern
 		 * @returns {string} the relative year resource pattern
 		 * @public
 		 * @since 1.25.0

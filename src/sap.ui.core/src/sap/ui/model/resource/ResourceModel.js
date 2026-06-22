@@ -132,7 +132,7 @@ sap.ui.define([
 	 *   <code>bundle</code> is set. Will cause an error if <code>enhanceWith</code> contains
 	 *   instances of <code>ResourceBundle</code>. Supported since 1.77.0.
 	 * @param {boolean} [oData.async=false]
-	 *   <b>Deprecated as of Version 1.125</b>; always use asynchronous loading for performance reasons
+	 *   {@deprecated as of version 1.125; always use asynchronous loading for performance reasons}
 	 * @param {module:sap/base/i18n/ResourceBundle} [oData.bundle]
 	 *   A resource bundle instance; when given, this bundle is used instead of creating a bundle
 	 *   from the provided <code>bundleUrl</code>, <code>bundleName</code> and

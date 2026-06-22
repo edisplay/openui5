@@ -97,9 +97,9 @@ sap.ui.define([
 	 * @param {sap.ui.model.Context} [oContext]
 	 *   The parent context which is required as base for a relative path
 	 * @param {sap.ui.model.Sorter | sap.ui.model.Sorter[]} [vSorters]
-	 *   The dynamic sorters to be used initially; supported since 1.39.0
+	 *   The dynamic sorters to be used initially {@since 1.39.0}
 	 * @param {sap.ui.model.Filter | sap.ui.model.Filter[]} [vFilters]
-	 *   The dynamic application filters to be used initially; supported since 1.39.0
+	 *   The dynamic application filters to be used initially {@since 1.39.0}
 	 * @param {object} [mParameters]
 	 *   Map of binding parameters
 	 * @throws {Error}
@@ -931,7 +931,7 @@ sap.ui.define([
 	 * @param {boolean} [bInactive]
 	 *   Create an inactive context. Such a context will only be sent to the server after the first
 	 *   property update. From then on it behaves like any other created context.
-	 *   Supported since 1.97.0
+	 *   {@since 1.97.0}
 	 *   <br>
 	 *   Since 1.98.0, when the first property updates happens, the context is no longer
 	 *   {@link sap.ui.model.odata.v4.Context#isInactive inactive} and the
@@ -2653,7 +2653,7 @@ sap.ui.define([
 	 *
 	 * @param {boolean} [bVerbose]
 	 *   Whether to additionally return the "$"-prefixed values described below which obviously
-	 *   cannot be given back to the setter (since 1.125.0). They are retrieved from the pair of
+	 *   cannot be given back to the setter {@since 1.125.0}. They are retrieved from the pair of
 	 *   "Org.OData.Aggregation.V1.RecursiveHierarchy" and
 	 *   "com.sap.vocabularies.Hierarchy.v1.RecursiveHierarchy" annotations at this binding's
 	 *   entity type, identified via the <code>hierarchyQualifier</code> given to
@@ -2792,10 +2792,11 @@ sap.ui.define([
 	 * @param {number} [iMaximumPrefetchSize=0]
 	 *   The maximum number of contexts to read before and after the given range; with this,
 	 *   controls can prefetch data that is likely to be needed soon, e.g. when scrolling down in a
-	 *   table. Negative values will be treated as 0. Supported since 1.39.0; <code>Infinity</code>
+	 *   table. Negative values will be treated as 0. {@since 1.39.0} <code>Infinity</code>
 	 *   may be used since 1.53.0 to prefetch all data and thus disable paging.
 	 * @param {boolean} [bKeepCurrent]
-	 *   Whether this call keeps the result of {@link #getCurrentContexts} untouched; since 1.86.0.
+	 *   Whether this call keeps the result of {@link #getCurrentContexts} untouched
+	 *   {@since 1.86.0}.
 	 * @returns {sap.ui.model.odata.v4.Context[]}
 	 *   The array of already created contexts with the first entry containing the context for
 	 *   <code>iStart</code>. Since 1.130.0, the array has an additional property
@@ -5147,7 +5148,7 @@ sap.ui.define([
 	 *   values greater than this. These differences do not count as changes.
 	 * @param {boolean} [oAggregation.grandTotalAtBottomOnly]
 	 *   Tells whether the grand totals for aggregatable properties are displayed at the bottom only
-	 *   (since 1.86.0); <code>true</code> for bottom only, <code>false</code> for top and bottom,
+	 *   {@since 1.86.0}; <code>true</code> for bottom only, <code>false</code> for top and bottom,
 	 *   the default is top only
 	 * @param {object} [oAggregation.group]
 	 *   A map from groupable property names to objects containing the following details:
@@ -5173,7 +5174,7 @@ sap.ui.define([
 	 * @param {string} [oAggregation.hierarchyQualifier]
 	 *   The qualifier for the pair of "Org.OData.Aggregation.V1.RecursiveHierarchy" and
 	 *   "com.sap.vocabularies.Hierarchy.v1.RecursiveHierarchy" annotations at this binding's
-	 *   entity type (since 1.117.0). If present, a recursive hierarchy without data aggregation is
+	 *   entity type {@since 1.117.0}. If present, a recursive hierarchy without data aggregation is
 	 *   defined, and the only other supported properties are <code>createInPlace</code>,
 	 *   <code>expandTo</code>, and <code>search</code>. A recursive hierarchy cannot be combined
 	 *   with:
@@ -5186,7 +5187,7 @@ sap.ui.define([
 	 *   Like the <a href=
 	 *   "https://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html#_Toc31361044"
 	 *   >"5.1.8 System Query Option $search"</a>, but applied before data aggregation
-	 *   (since 1.93.0). Note that certain content will break the syntax of the system query option
+	 *   {@since 1.93.0}. Note that certain content will break the syntax of the system query option
 	 *   <code>$apply</code> and result in an invalid request. If the OData service supports the
 	 *   proposal <a href="https://issues.oasis-open.org/browse/ODATA-1452">ODATA-1452</a>, then
 	 *   <code>ODataUtils.formatLiteral(sSearch, "Edm.String");</code> should be used to encapsulate
@@ -5196,11 +5197,12 @@ sap.ui.define([
 	 *   set and the search parameter is changed.
 	 * @param {boolean} [oAggregation.subtotalsAtBottomOnly]
 	 *   Tells whether subtotals for aggregatable properties are displayed at the bottom only, as a
-	 *   separate row after all children, when a group level node is expanded (since 1.86.0);
+	 *   separate row after all children, when a group level node is expanded {@since 1.86.0};
 	 *   <code>true</code> for bottom only, <code>false</code> for top and bottom, the default is
 	 *   top only (that is, as part of the group level node)
 	 * @param {boolean} [oAggregation."grandTotal like 1.84"]
-	 *   Since 1.89.0, the <b>deprecated</b> property <code>"grandTotal like 1.84" : true</code> can
+	 *   {@since 1.89.0} The <b>deprecated</b> property
+	 *   <code>"grandTotal like 1.84" : true</code> can
 	 *   be used to turn on the handling of grand totals like in 1.84.0, using aggregates of
 	 *   aggregates and thus allowing to filter by aggregated properties while grand totals are
 	 *   needed. Beware that methods like "average" or "countdistinct" are not compatible with this
@@ -5597,17 +5599,17 @@ sap.ui.define([
 	 * @param {boolean} [aAggregation[].max]
 	 *   Measures only: Whether the maximum value (ignoring currencies or units of measure) for this
 	 *   measure is needed (since 1.55.0); filtering and sorting is supported in this case
-	 *   (since 1.58.0), but shared requests are not (since 1.108.0)
+	 *   (since 1.58.0), but shared requests are not {@since 1.108.0}
 	 * @param {boolean} [aAggregation[].min]
 	 *   Measures only: Whether the minimum value (ignoring currencies or units of measure) for this
 	 *   measure is needed (since 1.55.0); filtering and sorting is supported in this case
-	 *   (since 1.58.0), but shared requests are not (since 1.108.0)
+	 *   (since 1.58.0), but shared requests are not {@since 1.108.0}
 	 * @param {string} [aAggregation[].with]
 	 *   Measures only: The name of the method (for example "sum") used for aggregation of this
-	 *   measure; see "3.1.2 Keyword with" (since 1.55.0)
+	 *   measure; see "3.1.2 Keyword with" {@since 1.55.0}
 	 * @param {string} [aAggregation[].as]
 	 *   Measures only: The alias, that is the name of the dynamic property used for aggregation of
-	 *   this measure; see "3.1.1 Keyword as" (since 1.55.0)
+	 *   this measure; see "3.1.1 Keyword as" {@since 1.55.0}
 	 * @returns {{measureRangePromise: Promise<Object<{min:number,max:number}>>}|undefined}
 	 *   The return object contains a property <code>measureRangePromise</code> if and only if at
 	 *   least one measure has requested a minimum or maximum value; its value is a

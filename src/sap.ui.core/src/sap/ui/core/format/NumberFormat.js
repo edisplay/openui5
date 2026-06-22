@@ -913,7 +913,8 @@ sap.ui.define([
 	 *     strictGroupingValidation: false,
 	 *     style: "standard"
 	 *   }]
-	 *   The option object, which supports the following parameters.
+	 *   The option object which supports the parameters documented in the
+	 *   {@link sap.ui.core.format.NumberFormat.FloatFormatOptions FloatFormatOptions} typedef.
 	 *   If no options are given, default values according to the type and locale settings are used.
 	 * @param {sap.ui.core.Locale} [oLocale]
 	 *   The locale to get the formatter for; if no locale is given, a locale for the currently configured language is
@@ -970,7 +971,8 @@ sap.ui.define([
 	 *     strictGroupingValidation: false,
 	 *     style: "standard"
 	 *   }]
-	 *   The option object, which supports the following parameters.
+	 *   The option object which supports the parameters documented in the
+	 *   {@link sap.ui.core.format.NumberFormat.IntegerFormatOptions IntegerFormatOptions} typedef.
 	 *   If no options are given, default values according to the type and locale settings are used.
 	 * @param {sap.ui.core.Locale} [oLocale]
 	 *   The locale to get the formatter for; if no locale is given, a locale for the currently configured language is
@@ -1163,7 +1165,7 @@ sap.ui.define([
 	 * @param {int} [oFormatOptions.decimals] defines the number of decimal digits
 	 * @param {string} [oFormatOptions.decimalSeparator] defines the character used as decimal separator.
 	 *   Note: <code>decimalSeparator</code> must always be different from <code>groupingSeparator</code>.
-	 * @param {null|number|string} [oFormatOptions.emptyString=NaN] since 1.30.0 defines what an empty string
+	 * @param {null|number|string} [oFormatOptions.emptyString=NaN] {@since 1.30.0} defines what an empty string
 	 *   is parsed as, and what is formatted as an empty string. The allowed values are "" (empty string),
 	 *   NaN, <code>null</code>, or 0.
 	 *   The 'format' and 'parse' functions are done in a symmetric way. For example, when this
@@ -1186,7 +1188,7 @@ sap.ui.define([
 	 * @param {int} [oFormatOptions.minFractionDigits=0] defines the minimal number of decimal digits
 	 * @param {int} [oFormatOptions.minIntegerDigits=1] defines the minimal number of non-decimal digits
 	 * @param {string} [oFormatOptions.minusSign] defines the used minus symbol
-	 * @param {boolean} [oFormatOptions.parseAsString=false] since 1.28.2 defines whether to output
+	 * @param {boolean} [oFormatOptions.parseAsString=false] {@since 1.28.2} defines whether to output
 	 *   the string from the parse function in order to keep the precision for big numbers. Numbers
 	 *   in scientific notation are parsed back to standard notation. For example, "5e-3" is parsed
 	 *   to "0.005".
@@ -1216,10 +1218,10 @@ sap.ui.define([
 	 *   </ul>
 	 * @param {int} [oFormatOptions.shortDecimals] defines the number of decimal in the shortened format string. If this isn't specified, the 'decimals' options is used
 	 * @param {int} [oFormatOptions.shortLimit] only use short number formatting for values above this limit
-	 * @param {int} [oFormatOptions.shortRefNumber] since 1.40 specifies a number from which the scale factor for 'short' or 'long' style format is generated. The generated scale factor is
+	 * @param {int} [oFormatOptions.shortRefNumber] {@since 1.40} specifies a number from which the scale factor for 'short' or 'long' style format is generated. The generated scale factor is
 	 *  used for all numbers which are formatted with this format instance. This option has effect only when the option 'style' is set to 'short' or 'long'. This option is by default set
 	 *  with <code>undefined</code> which means the scale factor is selected automatically for each number being formatted.
-	 * @param {boolean} [oFormatOptions.showScale=true] since 1.40 specifies whether the scale factor is shown in the formatted number. This option takes effect only when the 'style' options is set to either 'short' or 'long'.
+	 * @param {boolean} [oFormatOptions.showScale=true] {@since 1.40} specifies whether the scale factor is shown in the formatted number. This option takes effect only when the 'style' options is set to either 'short' or 'long'.
 	 * @param {boolean} [oFormatOptions.strictGroupingValidation=false] whether the positions of grouping separators are validated. Space characters used as grouping separators are not validated.
 	 * @param {string} [oFormatOptions.style=standard] defines the style of format. Valid values are
 	 *   'short, 'long' or 'standard' (based on the CLDR decimalFormat). When set to 'short' or 'long',

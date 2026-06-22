@@ -80,7 +80,7 @@ sap.ui.define([
 	 *   If <code>true</code>, the value <code>null</code> is accepted
 	 * @param {boolean} [oConstraints.precision=0]
 	 *   The number of decimal places allowed in the seconds portion of a valid string value
-	 *   (OData V4 only); only integer values between 0 and 12 are valid (since 1.37.0)
+	 *   (OData V4 only); only integer values between 0 and 12 are valid {@since 1.37.0}
 	 *
 	 * @abstract
 	 * @alias sap.ui.model.odata.type.DateTimeBase

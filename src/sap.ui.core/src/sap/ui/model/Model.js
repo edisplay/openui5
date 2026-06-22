@@ -343,7 +343,7 @@ sap.ui.define([
 	 * @param {boolean} [oEvent.getParameters.async]
 	 *   If the request is synchronous or asynchronous (if available)
 	 * @param {string} [oEvent.getParameters.info]
-	 *   <b>Deprecated as of version 1.38.0.</b>, additional information for the request (if available)
+	 *   {@deprecated as of version 1.38.0, use <code>infoObject</code> instead} Additional information for the request (if available)
 	 * @param {object} [oEvent.getParameters.infoObject]
 	 *   Additional information for the request (if available)
 	 * @public
@@ -404,7 +404,7 @@ sap.ui.define([
 	 * @param {boolean} [oParameters.async]
 	 *   If the request is synchronous or asynchronous (if available)
 	 * @param {string} [oParameters.info]
-	 *   <b>Deprecated as of version 1.38.0.</b>, additional information for the request (if available)
+	 *   {@deprecated as of version 1.38.0, use <code>infoObject</code> instead} Additional information for the request (if available)
 	 * @param {object} [oParameters.infoObject]
 	 *   Additional information for the request (if available)
 	 *
@@ -443,7 +443,7 @@ sap.ui.define([
 	 * @param {boolean} [oEvent.getParameters.async]
 	 *   If the request is synchronous or asynchronous (if available)
 	 * @param {string} [oEvent.getParameters.info]
-	 *   <b>Deprecated as of version 1.38.0.</b>, additional information for the request (if available)
+	 *   {@d>Deprecated as of version 1.38.0, use <code>infoObject</code> instead} Additional information for the request (if available)
 	 * @param {object} [oEvent.getParameters.infoObject]
 	 *   Additional information for the request (if available)
 	 * @public
@@ -507,7 +507,7 @@ sap.ui.define([
 	 * @param {boolean} [oParameters.async]
 	 *   If the request was synchronous or asynchronous (if available)
 	 * @param {string} [oParameters.info]
-	 *   <b>Deprecated as of version 1.38.0.</b>, additional information for the request (if available)
+	 *   {@deprecated as of version 1.38.0, use <code>infoObject</code> instead} Additional information for the request (if available)
 	 * @param {object} [oParameters.infoObject]
 	 *   Additional information for the request (if available)
 	 *

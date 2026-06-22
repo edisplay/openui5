@@ -84,11 +84,11 @@ sap.ui.define([
 	 *   {@link topic:6c47b2b39db9404582994070ec3d57a2#loio62149734b5c24507868e722fe87a75db
 	 *   Optimizing Dependent Bindings}.
 	 * @param {string} [mParameters.batchGroupId]
-	 *   <b>Deprecated as of version 1.31.0</b>, use <code>groupId</code> instead. Sets the batch group id to be used
+	 *   {@deprecated as of version 1.31.0, use <code>groupId</code> instead} Sets the batch group id to be used
 	 *   for requests originating from the binding.
 	 * @param {int} [mParameters.threshold]
-	 *   Deprecated since 1.102.0, as {@link sap.ui.model.odata.OperationMode.Auto} is deprecated;
-	 *   the threshold that defines how many entries should be fetched at least by the binding if
+	 *   {@deprecated since 1.102.0, as {@link sap.ui.model.odata.OperationMode.Auto} is deprecated}
+	 *   The threshold that defines how many entries should be fetched at least by the binding if
 	 *   <code>operationMode</code> is set to <code>Auto</code>.
 	 * @throws {Error} If one of the filters uses an operator that is not supported by the underlying model
 	 *   implementation or if the {@link sap.ui.model.Filter.NONE} filter instance is contained in

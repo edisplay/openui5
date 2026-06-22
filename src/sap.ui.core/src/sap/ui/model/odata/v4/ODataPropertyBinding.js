@@ -575,7 +575,7 @@ sap.ui.define([
 	 * @param {boolean} [bAutoExpandSelect]
 	 *   The value of the parameter <code>autoExpandSelect</code> for value list models created by
 	 *   this method. If the value list model is this binding's model, this flag has no effect.
-	 *   Supported since 1.68.0
+	 *   {@since 1.68.0}
 	 * @returns {Promise<Object<object>>}
 	 *   See {@link sap.ui.model.odata.v4.ODataMetaModel#requestValueListInfo}
 	 * @throws {Error}
