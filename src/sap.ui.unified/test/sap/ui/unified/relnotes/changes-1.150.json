@@ -3,6 +3,11 @@
     "date": "June 2026",
     "notes": [
       {
+        "id": "0726db744020a77c0030a4939d35bfa00e337a19",
+        "type": "FIX",
+        "text": " sap.m.SinglePlanningCalendar/PlanningCalendar: Fix NVDA appointment announcements"
+      },
+      {
         "id": "c8e1e0337e47231a626e615f3f54407d54478fee",
         "type": "FIX",
         "text": " sap.ui.unified.MenuTextFieldItem: revert prevent menu from closing"

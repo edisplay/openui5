@@ -3,6 +3,11 @@
     "date": "June 2026",
     "notes": [
       {
+        "id": "a24edeed771d295e8394cfbc61fd7a593ab1eb62",
+        "type": "FIX",
+        "text": " DynamicPage: Preserve focus when moving header"
+      },
+      {
         "id": "d46c042144f5a7c3974baa06b6d8593215a15d27",
         "type": "FEATURE",
         "text": " sap.f.CardBase: headingLevel property is now added"

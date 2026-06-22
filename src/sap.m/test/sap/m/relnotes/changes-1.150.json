@@ -3,9 +3,54 @@
     "date": "June 2026",
     "notes": [
       {
+        "id": "9e054fdb0af214622c4cc3162a14f805aa6795e6",
+        "type": "FIX",
+        "text": " We've now enabled video preview support for WebM, OGG, and MOV formats in the FilePreviewDialog"
+      },
+      {
+        "id": "3a5ac20b9e175ca6be0311cb56a4c5ee21f5cf24",
+        "type": "FIX",
+        "text": " sap.m.Popover: Screen reader and focus handling are improved"
+      },
+      {
+        "id": "78b8ce6279aa7aefa2913e18dfe89a30014d6475",
+        "type": "FEATURE",
+        "text": "sap.m Date & Time controls: changed the default placeholder text"
+      },
+      {
+        "id": "4ff3148e19de66a2f3a8a9367a8411b14d857012",
+        "type": "FIX",
+        "text": " We've fixed an issue where activating a Popover menu item with the keyboard caused the GenericTile to initiate an unintended press event"
+      },
+      {
+        "id": "b4e499f526101cae29450709cf5149bfab9a99c9",
+        "type": "FIX",
+        "text": " sap.m.PlanningCalendarHeader: Restore toolbar keyboard navigation in select mode"
+      },
+      {
+        "id": "f9e3a32d89376e3ce5462be5661b7f614fe72c4d",
+        "type": "FIX",
+        "text": " sap.m.MultiComboBox: Change event is now fired correctly"
+      },
+      {
+        "id": "4738a03f770ecc22b44b718807b785be3079eb69",
+        "type": "FIX",
+        "text": " m.VariantManagement: correctly bind sharing column in manage dialog"
+      },
+      {
+        "id": "b1dfa73cf43397cfe5c8fd76ec489035972bd339",
+        "type": "FIX",
+        "text": " We've now fixed an issue where GenericTile rendered role=\"listitem\" on <a> elements"
+      },
+      {
         "id": "f008eb0d30f30baaa6a717e4b0e5a71bec2cf197",
         "type": "FIX",
         "text": " We've now fixed the FeedListItem icon size rendering by adding size-specific CSS classes and removing hardcoded avatar dimensions to support all icon sizes"
+      },
+      {
+        "id": "0726db744020a77c0030a4939d35bfa00e337a19",
+        "type": "FIX",
+        "text": " sap.m.SinglePlanningCalendar/PlanningCalendar: Fix NVDA appointment announcements"
       },
       {
         "id": "645849dd92a63b42f96806bf9dc13ef7c8903736",
@@ -71,6 +116,11 @@
         "id": "42e5864d4b9d4d7b5ec427520d3f78e48a01e49d",
         "type": "FIX",
         "text": " sap.m.Slider: focus outline added to the editable tooltips"
+      },
+      {
+        "id": "41cdade748e3479c1e47e25d3582919757db1c53",
+        "type": "FIX",
+        "text": " sap.m.Button: Prevent focus on right click in firefox"
       },
       {
         "id": "9e40f44b6f96e74cddd3a0e29458d64f54e5a4a6",

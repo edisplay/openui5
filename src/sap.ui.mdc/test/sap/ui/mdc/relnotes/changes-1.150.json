@@ -3,6 +3,21 @@
     "date": "June 2026",
     "notes": [
       {
+        "id": "f8b5df119879c3dda262859893eee9bcd2dbfd74",
+        "type": "FEATURE",
+        "text": " ValueHelp: allow other Operators than \"equal to\""
+      },
+      {
+        "id": "db635c7263769c71afa1ee86905fac5a871313c4",
+        "type": "FIX",
+        "text": " adjust valuehelp Delegate v4 test"
+      },
+      {
+        "id": "5f06f3629aa3a4cc66ca59fb3c7793fa88922b63",
+        "type": "FIX",
+        "text": "ValueHelpDelegate(v4): Add test for ValueHelpDelegate"
+      },
+      {
         "id": "f34999d3db4f7ab962a472ecc97203f196453e52",
         "type": "FIX",
         "text": " sap.ui.mdc: fix wrong @deprecated annotation order in Table.qunit.js"

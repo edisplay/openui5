@@ -13,6 +13,11 @@
         "text": " Theme Parameters: Add support for CSS custom properties"
       },
       {
+        "id": "9bc68ab101d1a901f9e00417ea4b7f98a2c8cb1c",
+        "type": "FEATURE",
+        "text": " core/routing/HashChanger: new public API 'parseHashForRouter'"
+      },
+      {
         "id": "99f80e5e0c22e2f0db9169d19a813f43c4a60438",
         "type": "FIX",
         "text": " test/sap/ui/core/qunit/types/DateFormat.qunit.js: Fix failing Min/Max sample value tests"
