@@ -720,6 +720,7 @@ sap.ui.define([
 		}
 
 		var oButtonGroup = new OverflowToolbar({
+			width: "100%",
 			visible: BindingHelper.reuse(vVisible),
 			style: ToolbarStyle.Clear
 		});
