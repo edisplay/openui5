@@ -3461,7 +3461,7 @@ sap.ui.define([
 		oRemoveExpectation = oBindingMock.expects("_removePersistedCreatedContexts")
 			.withExactArgs();
 		oResetDataExpectation = oBindingMock.expects("resetData").withExactArgs();
-		oBindingMock.expects("abortPendingRequest").withExactArgs(true);
+		oBindingMock.expects("abortPendingRequest").withExactArgs(true, bFilterNone);
 		oBindingMock.expects("_fireRefresh").withExactArgs({reason : ChangeReason.Filter});
 		/** @deprecated As of version 1.11.0 */
 		(function () {

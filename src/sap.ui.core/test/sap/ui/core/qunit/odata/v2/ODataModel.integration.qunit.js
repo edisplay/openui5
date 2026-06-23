@@ -27057,6 +27057,39 @@ ToProduct/ToSupplier/BusinessPartnerID\'}}">\
 
 		assert.strictEqual(oTable.getItems().length, 0);
 	});
+
+	//*********************************************************************************************
+	// Scenario: If there is a pending request and filter(Filter.NONE) is applied, the pending
+	// request is canceled. dataReceived must be fired to close the dataRequested/dataReceived pair
+	// SNOW: DINC0904819
+	QUnit.test("SNOW: DINC0904819 - dataReceived must follow dataRequested", async function (assert) {
+		const oModel = createSalesOrdersModel();
+		const sView = `
+<Table id="table" items="{/SalesOrderSet}">
+	<Input id="note" value="{Note}" />
+</Table>`;
+
+		this.expectHeadRequest()
+			.expectRequest("SalesOrderSet?$skip=0&$top=100", {results : []})
+			.expectValue("note", []);
+
+		await this.createView(assert, sView, oModel);
+
+		const oBinding = this.oView.byId("table").getBinding("items");
+		const oEventHandlers = {onDataRequested() {}, onDataReceived() {}};
+		const oMock = this.mock(oEventHandlers);
+		oMock.expects("onDataRequested").once();
+		oMock.expects("onDataReceived").once();
+		oBinding.attachDataRequested(oEventHandlers.onDataRequested);
+		oBinding.attachDataReceived(oEventHandlers.onDataReceived);
+
+		// code under test
+		oBinding.refresh(true);
+		oBinding.filter(Filter.NONE, FilterType.Application);
+
+		await this.waitForChanges(assert);
+	});
+
 	//*********************************************************************************************
 	// Scenario: React on 503 "Retry-After" error during deferred loading of value help metadata,
 	// data and code list data

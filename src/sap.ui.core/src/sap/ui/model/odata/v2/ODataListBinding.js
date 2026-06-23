@@ -1819,7 +1819,7 @@ sap.ui.define([
 			} else {
 				this._removePersistedCreatedContexts();
 				this.resetData();
-				this.abortPendingRequest(true);
+				this.abortPendingRequest(true, this.oCombinedFilter === Filter.NONE);
 				this.sChangeReason = ChangeReason.Filter;
 				this._fireRefresh({reason: this.sChangeReason});
 			}
