@@ -2132,6 +2132,7 @@ sap.ui.define([
 		}
 
 		const aCreatedContextDeepPaths = this._getCreatedContexts()
+			.filter((oContext) => oContext.isTransient())
 			.map((oCreatedContext) => oCreatedContext.getDeepPath());
 		this.oModel.getMessagesByPath(sDeepPath, true).forEach(function (oMessage) {
 			var sPredicate;
