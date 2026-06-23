@@ -1538,7 +1538,6 @@ sap.ui.define([
 		}
 
 		if (bIsBound) {
-			sResourcePath &&= sResourcePath.split("?")[0]; // remove query string
 			aTargets = [resolveTarget(oRawMessage.target)];
 			if (oRawMessage.additionalTargets) {
 				oRawMessage.additionalTargets.forEach(function (sTarget) {
@@ -2672,7 +2671,7 @@ sap.ui.define([
 
 		if (sResourcePath) {
 			const oMetaModel = this.getMetaModel();
-			sContextPath = "/" + sResourcePath.split("?")[0]; // remove query string
+			sContextPath = "/" + sResourcePath;
 			const sMetaPath = _Helper.getMetaPath(sContextPath);
 			const vMetadata = oMetaModel.getObject(sMetaPath);
 			if (Array.isArray(vMetadata)) {
