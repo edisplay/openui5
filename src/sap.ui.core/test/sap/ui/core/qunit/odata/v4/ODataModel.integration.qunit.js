@@ -71772,6 +71772,7 @@ make root = ${bMakeRoot}`;
 	// Select via setSelected and setting the client-side annotation (JIRA: CPOUI5ODATAV4-1944).
 	// Filter removes selection (JIRA: CPOUI5ODATAV4-2203).
 	// ODLB#getSelectionCount (JIRA: CPOUI5ODATAV4-1945)
+	// v4.Context#setKeepAlive on a suspended binding (JIRA: CPOUI5ODATAV4-3571)
 [false, true].forEach(function (bImplicitly) {
 	[false, true].forEach(function (bUseAnnotation) {
 		var sTitle = "CPOUI5ODATAV4-488: Refresh w/" + (bImplicitly ? " implicitly" : "")
@@ -71850,8 +71851,11 @@ make root = ${bMakeRoot}`;
 				checkSelected(assert, oKeptContext3, true);
 				assert.strictEqual(oListBinding.getSelectionCount(), 3);
 			} else {
+				// code under test (JIRA: CPOUI5ODATAV4-3571)
+				oKeptContext3.getBinding().suspend();
 				// 3rd kept-alive ontext (JIRA: CPOUI5ODATAV4-579)
 				oKeptContext3.setKeepAlive(true, fnOnBeforeDestroy);
+				oKeptContext3.getBinding().resume();
 			}
 
 			that.expectRequest("#5 SalesOrderList"
