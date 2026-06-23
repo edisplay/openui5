@@ -1998,6 +1998,48 @@ sap.ui.define([
 		});
 	});
 
+	QUnit.test("Button group toolbar has width '100%'", async function (assert) {
+		this.oCard.setManifest({
+			"sap.app": {
+				"type": "card",
+				"id": "test.object.card.buttonGroup"
+			},
+			"sap.card": {
+				"type": "Object",
+				"data": {
+					"json": {
+						"attachments": [
+							{ "icon": "sap-icon://attachment" },
+							{ "icon": "sap-icon://attachment" }
+						]
+					}
+				},
+				"content": {
+					"groups": [{
+						"items": [{
+							"label": "Attachments",
+							"type": "ButtonGroup",
+							"path": "attachments",
+							"template": {
+								"icon": "{icon}"
+							}
+						}]
+					}]
+				}
+			}
+		});
+
+		await nextCardReadyEvent(this.oCard);
+		await nextUIUpdate();
+
+		const oGroup = this.oCard.getCardContent()._getRootContainer().getItems()[0].getContent()[0];
+		const oButtonGroup = oGroup.getItems()[1];
+
+		// Assert
+		assert.ok(oButtonGroup.isA("sap.m.OverflowToolbar"), "Button group is an OverflowToolbar");
+		assert.strictEqual(oButtonGroup.getWidth(), "100%", "Button group toolbar width is '100%'");
+	});
+
 	QUnit.test("Avatar group with template - Icon src for Mobile SDK", async function (assert) {
 		// Arrange
 		var oCardData = {
