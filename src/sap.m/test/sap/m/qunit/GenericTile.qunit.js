@@ -528,7 +528,8 @@ sap.ui.define([
 			this.oGenericTile = new GenericTile({
 				frameType: FrameType.Auto,
 				header: "This is a header",
-				subheader: "This is a subheader"
+				subheader: "This is a subheader",
+				ariaRole: "button"
 			}).placeAt("qunit-fixture");
 			await nextUIUpdate();
 		},
@@ -2209,12 +2210,29 @@ sap.ui.define([
 		assert.equal(sAriaAndTooltipText, sExpectedAriaAndTooltipText, "Expected text for ARIA-label and tooltip has been generated after content was updated and tooltip was destroyed");
 	});
 
+	QUnit.test("aria-label is not rendered on presentation tile on initial render, hover, and keyup", function(assert) {
+		// Initial render — role="presentation" (no press, url, or ariaRole)
+		assert.strictEqual(this.oGenericTile.getDomRef().getAttribute("aria-label"), null,
+			"aria-label must not be present on a presentation tile after initial render");
+
+		// Hover — _updateAriaAndTitle must not add aria-label back
+		this.oGenericTile.getDomRef().dispatchEvent(new MouseEvent("mouseenter"));
+		assert.strictEqual(this.oGenericTile.getDomRef().getAttribute("aria-label"), null,
+			"aria-label must not be added on hover for a presentation tile");
+
+		// Keyup — _updateAriaLabel must not add aria-label back
+		this.oGenericTile.getDomRef().dispatchEvent(new KeyboardEvent("keyup", { keyCode: KeyCodes.TAB, bubbles: true }));
+		assert.strictEqual(this.oGenericTile.getDomRef().getAttribute("aria-label"), null,
+			"aria-label must not be added on keyup for a presentation tile");
+	});
+
 	QUnit.module("Tooltip handling", {
 		beforeEach: async function() {
 			this.oGenericTile = new GenericTile("generic-tile", {
 				header: "Header text",
 				subheader: "subheader text",
-				tileContent: [new TileContent("tile-cont-1"), new TileContent("tile-cont-2")]
+				tileContent: [new TileContent("tile-cont-1"), new TileContent("tile-cont-2")],
+				ariaRole: "button"
 			}).placeAt("qunit-fixture");
 			// stub function _getAriaAndTooltipText of the content
 			this.oGenericTile.getTileContent()[0]._getAriaAndTooltipText = function() {
@@ -2381,7 +2399,8 @@ sap.ui.define([
 				header: "header",
 				subheader: "subheader",
 				mode: GenericTileMode.LineMode,
-				tileContent: [new TileContent("tile-cont-1"), new TileContent("tile-cont-2")]
+				tileContent: [new TileContent("tile-cont-1"), new TileContent("tile-cont-2")],
+				ariaRole: "button"
 			});
 
 			jQuery("html").addClass("sapUiMedia-GenericTileDeviceSet-large").removeClass("sapUiMedia-GenericTileDeviceSet-small");
@@ -3904,6 +3923,7 @@ QUnit.test("Check for visibilty of content in header mode in 2*1 tile ", async f
 				subheader: "Expenses By Region",
 				frameType: FrameType.TwoByOne,
 				header: "Comparative Annual Totals",
+				ariaRole: "button",
 				tileContent: new TileContent("tileCont", {
 					unit: "EUR",
 					priority: Priority.High,
@@ -3920,6 +3940,7 @@ QUnit.test("Check for visibilty of content in header mode in 2*1 tile ", async f
 				frameType: FrameType.TwoByOne,
 				header: "Comparative Annual Totals",
 				headerImage: "sap-icon://alert",
+				ariaRole: "button",
 				tileContent: new TileContent("tile-cont", {
 					unit: "EUR",
 					footer: "Current Quarter",
@@ -5956,7 +5977,8 @@ QUnit.test("Check for visibilty of content in header mode in 2*1 tile ", async f
 	});
 
 	QUnit.test("Announcement of text tile should only be done once", function (assert) {
-		assert.ok(this.isRepeatedTwice(this.oGenericTile.getDomRef().getAttribute("aria-label"),"tile"),"The word tile has been announced only once");
+		assert.strictEqual(this.oGenericTile.getDomRef().getAttribute("aria-label"), null,
+			"aria-label is not rendered on a presentation tile with linkTileContents");
 	});
 
 	QUnit.test("Line-height set to 1.5rem inside the LinkTileContent", function (assert) {

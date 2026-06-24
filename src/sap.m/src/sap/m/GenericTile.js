@@ -1416,9 +1416,13 @@ sap.ui.define([
 		var sAriaText = this._getAriaText(),
 			$Tile = this.$(),
 			bIsAriaUpd = false;
-		if ($Tile.attr("aria-label") !== sAriaText) {
-			$Tile.attr("aria-label", sAriaText);
-			bIsAriaUpd = true;                  // Aria Label Updated
+		if (this.hasListeners("press") || this._shouldRenderLink() || this.getGridItemRole() || this.getAriaRole()) {
+			if ($Tile.attr("aria-label") !== sAriaText) {
+				$Tile.attr("aria-label", sAriaText);
+				bIsAriaUpd = true;                  // Aria Label Updated
+			}
+		} else {
+			$Tile.removeAttr("aria-label");
 		}
 		return bIsAriaUpd;
 	};
@@ -1986,7 +1990,11 @@ sap.ui.define([
 		var $Tile = this.$();
 
 		if ($Tile.attr("title") !== sAriaAndTitleText) {
-			$Tile.attr("aria-label", sAriaText);
+			if (this.hasListeners("press") || this._shouldRenderLink() || this.getGridItemRole() || this.getAriaRole()) {
+				$Tile.attr("aria-label", sAriaText);
+			} else {
+				$Tile.removeAttr("aria-label");
+			}
 		}
 		if (this._isInActionScope()) {
 			$Tile.find('*:not(.sapMGTRemoveButton,.sapMGTActionMoreButton)').removeAttr("aria-label").removeAttr("title").off("mouseenter");
