@@ -3,6 +3,16 @@
     "date": "June 2026",
     "notes": [
       {
+        "id": "e163f4ca60fcaf114df0c17e98226c3452859cd9",
+        "type": "FEATURE",
+        "text": " StandardListItem: Usage of ObjectStatus for info text/state"
+      },
+      {
+        "id": "04e658331c0d93198d922b19f0532dedd4969ecd",
+        "type": "FIX",
+        "text": " sap.ui.unified.Calendar: fixed day cell width for two-type calendars"
+      },
+      {
         "id": "75dc5cbec5325250abc4536291f630382a28f5c2",
         "type": "FIX",
         "text": " sap.m.Tokenizer: Underline N-more indicator in HC themes"

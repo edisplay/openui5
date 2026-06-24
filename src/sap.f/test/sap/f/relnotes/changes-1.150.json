@@ -3,6 +3,11 @@
     "date": "June 2026",
     "notes": [
       {
+        "id": "cf2e74b90202893cd5e8d51619ce4abfc23adff5",
+        "type": "FEATURE",
+        "text": " Integration Cards: Object Card now have option for horizontal items layout."
+      },
+      {
         "id": "a24edeed771d295e8394cfbc61fd7a593ab1eb62",
         "type": "FIX",
         "text": " DynamicPage: Preserve focus when moving header"

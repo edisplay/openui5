@@ -3,6 +3,16 @@
     "date": "June 2026",
     "notes": [
       {
+        "id": "cf2e74b90202893cd5e8d51619ce4abfc23adff5",
+        "type": "FEATURE",
+        "text": " Integration Cards: Object Card now have option for horizontal items layout."
+      },
+      {
+        "id": "289248fd3246d63a007f723ae534754fcf70b26f",
+        "type": "FIX",
+        "text": " sap.ui.integration: ObjectContent ButtonGroup resize loop in compact mode"
+      },
+      {
         "id": "c91fc6a90ed724029fccf3ad28ba38f3560ff4c5",
         "type": "FIX",
         "text": " Integration Cards: Adding ignoreBinding param flag and fail-safe for malformed bindings"

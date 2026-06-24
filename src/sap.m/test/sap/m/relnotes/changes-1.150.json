@@ -3,6 +3,31 @@
     "date": "June 2026",
     "notes": [
       {
+        "id": "e163f4ca60fcaf114df0c17e98226c3452859cd9",
+        "type": "FEATURE",
+        "text": " StandardListItem: Usage of ObjectStatus for info text/state"
+      },
+      {
+        "id": "57c8362e462a4cee349306fc6b08b458384d1ebf",
+        "type": "FIX",
+        "text": " sap.m.ObjectStatus: avoid duplicate SR output"
+      },
+      {
+        "id": "2fca593e7ed1301f9d050b3293a6d07b793af043",
+        "type": "FIX",
+        "text": " sap.m.DynamicDateRange: week number click does not populate footer dates and enable Apply button"
+      },
+      {
+        "id": "ecaf3e19409966c7563b2ee75b3a31ae7718d635",
+        "type": "FIX",
+        "text": " sap.m: Announce suggestions popover expanded/collapsed state"
+      },
+      {
+        "id": "0209ac3eb87739cf8d6dba8a15af4c265b7527eb",
+        "type": "FEATURE",
+        "text": " sap.m.ComboBoxBase: maxPickerHeight property is now added"
+      },
+      {
         "id": "9e054fdb0af214622c4cc3162a14f805aa6795e6",
         "type": "FIX",
         "text": " We've now enabled video preview support for WebM, OGG, and MOV formats in the FilePreviewDialog"
