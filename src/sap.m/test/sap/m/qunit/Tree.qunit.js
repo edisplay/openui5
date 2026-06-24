@@ -726,6 +726,10 @@ sap.ui.define([
 		assert.ok(oFakeBinding.applyAdapterInterface.calledOnce, "applyAdapterInterface called for v2 ODataTreeBinding");
 	});
 
+	/**
+	 * @deprecated As of version 1.96.
+	 * See {@link sap.ui.model.TreeBindingCompatibilityAdapter}.
+	 */
 	QUnit.test("getBinding applies legacy ODataTreeBinding compatibility adapter", function(assert) {
 		// TreeBindingCompatibilityAdapter mutates the binding.
 		// Provide just enough surface on the binding and the tree for that call to
