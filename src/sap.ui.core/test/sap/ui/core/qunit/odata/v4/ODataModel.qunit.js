@@ -122,9 +122,12 @@ sap.ui.define([
 		this.mock(Supportability).expects("isStatisticsEnabled")
 			.withExactArgs().returns(bStatistics);
 		const oExpectation = this.mock(_MetadataRequestor).expects("create")
-			.withExactArgs({"Accept-Language" : "ab-CD"}, "4.0", undefined, bStatistics
-				? {"sap-client" : "279", "sap-statistics" : true}
-				: {"sap-client" : "279"}, undefined, sinon.match.func)
+			.withExactArgs({"Accept-Language" : "ab-CD", "X-SAP-Security-Session" : "disabled"},
+				"4.0", undefined,
+				bStatistics
+					? {"sap-client" : "279", "sap-statistics" : true}
+					: {"sap-client" : "279"},
+				undefined, sinon.match.func)
 			.returns(oMetadataRequestor);
 		this.mock(ODataMetaModel.prototype).expects("fetchEntityContainer").withExactArgs(true);
 		this.mock(ODataModel.prototype).expects("initializeSecurityToken").withExactArgs();
@@ -174,11 +177,12 @@ sap.ui.define([
 		this.mock(ODataModel.prototype).expects("buildQueryOptions")
 			.withExactArgs("~mURLParameters~", false, true).returns(mURLParameters);
 		this.mock(_MetadataRequestor).expects("create")
-			.withExactArgs({"Accept-Language" : "ab-CD"}, "4.0", true, {
-				"sap-client" : "279",
-				"sap-context-token" : "20200716120000",
-				"sap-language" : "EN"
-			}, undefined, sinon.match.func);
+			.withExactArgs({"Accept-Language" : "ab-CD", "X-SAP-Security-Session" : "disabled"},
+				"4.0", true, {
+					"sap-client" : "279",
+					"sap-context-token" : "20200716120000",
+					"sap-language" : "EN"
+				}, undefined, sinon.match.func);
 		this.mock(_Requestor).expects("create")
 			.withExactArgs(sServiceUrl, sinon.match.object, {"Accept-Language" : "ab-CD"},
 				{"sap-client" : "279", "sap-context-token" : "n/a"}, "4.0", undefined)
@@ -251,8 +255,8 @@ sap.ui.define([
 					checkHeaderNames : function () {}
 				});
 			oMetadataRequestorCreateExpectation = this.mock(_MetadataRequestor).expects("create")
-				.withExactArgs({"Accept-Language" : "ab-CD"}, sODataVersion, undefined,
-					sinon.match.object, undefined, sinon.match.func)
+				.withExactArgs({"Accept-Language" : "ab-CD", "X-SAP-Security-Session" : "disabled"},
+					sODataVersion, undefined, sinon.match.object, undefined, sinon.match.func)
 				.returns({});
 
 			// code under test
@@ -444,15 +448,18 @@ sap.ui.define([
 		oModel = this.createModel("", {httpHeaders : mHeaders});
 
 		assert.deepEqual(oModel.mHeaders, mHeaders);
-		assert.deepEqual(oModel.mMetadataHeaders, mHeaders);
+		assert.deepEqual(oModel.mMetadataHeaders, {
+			...mHeaders,
+			"X-SAP-Security-Session" : "disabled"
+		});
 	});
 
 	//*********************************************************************************************
 [false, true].forEach(function (bWithCredentials) {
 	QUnit.test("Model creates _Requestor, withCredentials=" + bWithCredentials, function () {
 		this.mock(_MetadataRequestor).expects("create")
-			.withExactArgs({"Accept-Language" : "ab-CD"}, "4.0",
-				/*bIngnoreAnnotationsFromMetadata*/undefined, /*mQueryParams*/{},
+			.withExactArgs({"Accept-Language" : "ab-CD", "X-SAP-Security-Session" : "disabled"},
+				"4.0", /*bIngnoreAnnotationsFromMetadata*/undefined, /*mQueryParams*/{},
 				/*bWithCredentials*/bWithCredentials, sinon.match.func);
 		this.mock(_Requestor).expects("create")
 			.withExactArgs(sServiceUrl, {
@@ -2306,14 +2313,17 @@ sap.ui.define([
 		assert.strictEqual(oModel.mHeaders, mHeaders);
 		assert.strictEqual(oModel.mMetadataHeaders, mMetadataHeaders);
 		assert.deepEqual(mHeaders, {"Accept-Language" : "ab-CD", aBc : "xyz"});
-		assert.deepEqual(mMetadataHeaders, {"Accept-Language" : "ab-CD", aBc : "xyz"});
+		assert.deepEqual(mMetadataHeaders,
+			{"Accept-Language" : "ab-CD", "X-SAP-Security-Session" : "disabled", aBc : "xyz"});
 
 		oRequestorMock.expects("checkHeaderNames").withExactArgs(sinon.match.object);
 
 		// code under test
 		oModel.changeHttpHeaders({AbC : "12 [3] $4: ~"});
 
-		assert.deepEqual(mMetadataHeaders, {AbC : "12 [3] $4: ~", "Accept-Language" : "ab-CD"});
+		assert.deepEqual(mMetadataHeaders, {
+			AbC : "12 [3] $4: ~", "Accept-Language" : "ab-CD", "X-SAP-Security-Session" : "disabled"
+		});
 		assert.deepEqual(mHeaders, {AbC : "12 [3] $4: ~", "Accept-Language" : "ab-CD"});
 
 		oRequestorMock.expects("checkHeaderNames").withExactArgs(sinon.match.same(mMyHeaders));
@@ -2321,7 +2331,8 @@ sap.ui.define([
 		// code under test
 		oModel.changeHttpHeaders(mMyHeaders);
 
-		assert.deepEqual(mMetadataHeaders, {"Accept-Language" : "ab-CD"});
+		assert.deepEqual(mMetadataHeaders,
+			{"Accept-Language" : "ab-CD", "X-SAP-Security-Session" : "disabled"});
 		assert.deepEqual(mHeaders, {"Accept-Language" : "ab-CD", "X-CSRF-Token" : "abc123"});
 		assert.deepEqual(mMyHeaders, {abc : undefined, def : undefined, "x-CsRf-ToKeN" : "abc123"});
 
@@ -2330,7 +2341,8 @@ sap.ui.define([
 		// code under test
 		oModel.changeHttpHeaders();
 
-		assert.deepEqual(mMetadataHeaders, {"Accept-Language" : "ab-CD"});
+		assert.deepEqual(mMetadataHeaders,
+			{"Accept-Language" : "ab-CD", "X-SAP-Security-Session" : "disabled"});
 		assert.deepEqual(mHeaders, {"Accept-Language" : "ab-CD", "X-CSRF-Token" : "abc123"});
 
 		oRequestorMock.expects("checkHeaderNames").withExactArgs(null);
@@ -2338,7 +2350,8 @@ sap.ui.define([
 		// code under test
 		oModel.changeHttpHeaders(null);
 
-		assert.deepEqual(mMetadataHeaders, {"Accept-Language" : "ab-CD"});
+		assert.deepEqual(mMetadataHeaders,
+			{"Accept-Language" : "ab-CD", "X-SAP-Security-Session" : "disabled"});
 		assert.deepEqual(mHeaders, {"Accept-Language" : "ab-CD", "X-CSRF-Token" : "abc123"});
 	});
 
@@ -2355,7 +2368,8 @@ sap.ui.define([
 		}, new Error("Unsupported value for header 'abc': " + vValue));
 
 		assert.deepEqual(oModel.mHeaders, {"Accept-Language" : "ab-CD", def : "123"});
-		assert.deepEqual(oModel.mMetadataHeaders, {"Accept-Language" : "ab-CD", def : "123"});
+		assert.deepEqual(oModel.mMetadataHeaders,
+			{"Accept-Language" : "ab-CD", "X-SAP-Security-Session" : "disabled", def : "123"});
 	});
 });
 
@@ -2370,7 +2384,8 @@ sap.ui.define([
 		}, new Error("Duplicate header AbC"));
 
 		assert.deepEqual(oModel.mHeaders, {"Accept-Language" : "ab-CD"});
-		assert.deepEqual(oModel.mMetadataHeaders, {"Accept-Language" : "ab-CD"});
+		assert.deepEqual(oModel.mMetadataHeaders,
+			{"Accept-Language" : "ab-CD", "X-SAP-Security-Session" : "disabled"});
 	});
 });
 
@@ -2387,7 +2402,8 @@ sap.ui.define([
 		}, oError);
 
 		assert.deepEqual(oModel.mHeaders, {"Accept-Language" : "ab-CD"});
-		assert.deepEqual(oModel.mMetadataHeaders, {"Accept-Language" : "ab-CD"});
+		assert.deepEqual(oModel.mMetadataHeaders,
+			{"Accept-Language" : "ab-CD", "X-SAP-Security-Session" : "disabled"});
 	});
 
 	//*********************************************************************************************
