@@ -14804,7 +14804,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	<Input id="name" value="{Name}"/>\
 	<FlexBox id="action" \
 			binding="{' + sAction + '(...)}">\
-		<layoutData><FlexItemData/></layoutData>\
 		<Text id="teamId" text="{TEAM_ID}"/>\
 	</FlexBox>\
 </FlexBox>',
@@ -15879,7 +15878,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			}\
 		}">\
 	<FlexBox binding="{EMPLOYEE_2_TEAM}">\
-		<layoutData><FlexItemData/></layoutData>\
 		<Text id="name" text="{Name}"/>\
 	</FlexBox>\
 </FlexBox>';
@@ -16547,7 +16545,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 	<Text id="name" text="{Name}"/>\
 	<FlexBox id="action" \
 			binding="{com.sap.gateway.default.iwbep.tea_busi.v0001.__FAKE__AcOverload(...)}">\
-		<layoutData><FlexItemData/></layoutData>\
 		<Text id="isManager" text="{Is_Manager}"/>\
 	</FlexBox>\
 </FlexBox>',
@@ -16655,7 +16652,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 					}\
 				}\
 			}">\
-		<layoutData><FlexItemData/></layoutData>\
 		<Text id="name" text="{Name}"/>\
 	</FlexBox>\
 	<Text id="age" text="{AGE}"/>\
@@ -18554,7 +18550,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			sView = '\
 <FlexBox binding="{/Equipments(Category=\'Electronics\',ID=1)}">\
 	<FlexBox binding="{EQUIPMENT_2_PRODUCT}">\
-		<layoutData><FlexItemData/></layoutData>\
 		<Text id="text" text="{SupplierIdentifier}"/>\
 	</FlexBox>\
 </FlexBox>';
@@ -18756,7 +18751,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 <FlexBox binding="{/EMPLOYEES(\'1\')}">\
 	<FlexBox id="function" \
 		binding="{com.sap.gateway.default.iwbep.tea_busi.v0001.FuGetEmployeeSalaryForecast(...)}">\
-		<layoutData><FlexItemData/></layoutData>\
 		<Text id="status" text="{STATUS}"/>\
 	</FlexBox>\
 </FlexBox>',
@@ -18915,7 +18909,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			sView = '\
 <FlexBox binding="{/TEAMS(\'42\')}">\
 	<FlexBox binding="{TEAM_2_MANAGER}">\
-		<layoutData><FlexItemData/></layoutData>\
 		<Text id="id" text="{ID}"/>\
 	</FlexBox>\
 </FlexBox>',
@@ -19903,7 +19896,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 <FlexBox binding="{/NotificationCollection(\'foo\')}">\
 	<Text id="updated" text="{= %{updated} }"/>\
 	<FlexBox id="function" binding="{RMTSAMPLEFLIGHT.__FAKE__FunctionImport(...)}">\
-		<layoutData><FlexItemData/></layoutData>\
 		<Text id="value" text="{= %{value} }"/>\
 	</FlexBox>\
 </FlexBox>',
@@ -20038,7 +20030,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 <FlexBox binding="{/FlightCollection(carrid=\'AA\',connid=\'0017\',fldate=2017-08-10T00:00:00Z)}">\
 	<Text id="carrid" text="{carrid}"/>\
 	<FlexBox id="function" binding="{RMTSAMPLEFLIGHT.GetFlightDetails(...)}">\
-		<layoutData><FlexItemData/></layoutData>\
 		<Text id="distance" text="{distance}"/>\
 	</FlexBox>\
 </FlexBox>',
@@ -20145,7 +20136,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 <FlexBox binding="{/SalesOrderSet(\'0815\')}">\
 	<Text id="id0" text="{SalesOrderID}"/>\
 	<FlexBox id="action" binding="{GWSAMPLE_BASIC.SalesOrder_Confirm(...)}">\
-		<layoutData><FlexItemData/></layoutData>\
 		<Text id="id1" text="{SalesOrderID}"/>\
 	</FlexBox>\
 </FlexBox>',
@@ -20232,7 +20222,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 <FlexBox binding="{/TravelAgencies(\'00000061\')}">\
 	<Text id="oldPhone" text="{TELEPHONE}"/>\
 	<FlexBox id="action" binding="{RMTSAMPLEFLIGHT.UpdateAgencyPhoneNo(...)}">\
-		<layoutData><FlexItemData/></layoutData>\
 		<Text id="newPhone" text="{TELEPHONE}"/>\
 	</FlexBox>\
 </FlexBox>',
@@ -20586,7 +20575,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 <FlexBox id="outerForm" binding="{/Equipments(Category=\'Electronics\',ID=1)}">\
 	<Text id="idEquipmentName" text="{Name}"/>\
 	<FlexBox id="innerForm" binding="{EQUIPMENT_2_EMPLOYEE}">\
-		<layoutData><FlexItemData/></layoutData>\
 		<Text id="idEmployeeName" text="{Name}"/>\
 		<Text id="idManagerId" text="{MANAGER_ID}"/>\
 	</FlexBox>\
@@ -20655,7 +20643,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 <FlexBox id="outerForm" binding="{/Equipments(Category=\'Electronics\',ID=1)}">\
 	<Text id="idEquipmentName" text="{Name}"/>\
 	<FlexBox id="innerForm" binding="{EQUIPMENT_2_EMPLOYEE}">\
-		<layoutData><FlexItemData/></layoutData>\
 		<Text id="idEmployeeName" text="{Name}"/>\
 		<Text id="idManagerId" text="{MANAGER_ID}"/>\
 	</FlexBox>\
@@ -21254,7 +21241,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 <FlexBox id="employee" binding="{/EMPLOYEES(\'2\')}">\
 	<Text id="salary" text="{SALARY/YEARLY_BONUS_AMOUNT}"/>\
 	<FlexBox id="function" binding="{' + sFunctionName + '(...)}">\
-		<layoutData><FlexItemData/></layoutData>\
 		<Text id="forecastSalary" text="{SALARY/YEARLY_BONUS_AMOUNT}"/>\
 	</FlexBox>\
 </FlexBox>',
@@ -21985,7 +21971,6 @@ constraints:{'maxLength':5},formatOptions:{'parseKeepsEmptyString':true}\
 			sView = '\
 <FlexBox binding="{/SalesOrderList(\'0500000000\')}" id="form">\
 	<FlexBox binding="{SO_2_BP}" id="businessPartner">\
-		<layoutData><FlexItemData/></layoutData>\
 		<Text id="phoneNumber" text="{PhoneNumber}"/>\
 	</FlexBox>\
 	<Text id="companyName" text="{SO_2_BP/CompanyName}"/>\
@@ -56081,7 +56066,6 @@ make root = ${bMakeRoot}`;
 	<FlexBox id="action"\
 		binding="{path : \'com.sap.gateway.default.zui5_epm_sample.v0002.SalesOrder_Confirm(...)\'\
 			, parameters : {$$inheritExpandSelect : true}}">\
-		<layoutData><FlexItemData/></layoutData>\
 	</FlexBox>\
 </FlexBox>',
 			that = this;
@@ -58027,7 +58011,6 @@ make root = ${bMakeRoot}`;
 <FlexBox binding="{/Equipments(Category=\'foo\',ID=815)}">\
 	<FlexBox id="form" binding="{path : \'EQUIPMENT_2_EMPLOYEE\', \
 		parameters : {$select : \'__CT__FAKE__Message/__FAKE__Messages\'}}">\
-		<layoutData><FlexItemData/></layoutData>\
 		<Input id="text" value="{Name}"/>\
 	</FlexBox>\
 </FlexBox>',
@@ -61030,7 +61013,6 @@ make root = ${bMakeRoot}`;
 	<FlexBox binding="{path : \'\',\
 		' + sParameters + '\
 		}">\
-		<layoutData><FlexItemData/></layoutData>\
 		<Text id="street" text="{Address/Street}"/>\
 	</FlexBox>\
 	<Table id="table" items="{path : \'BP_2_PRODUCT\', ' + sParameters + '\ }">\
