@@ -1,0 +1,17 @@
+{
+  "1.151.0": {
+    "date": "June 2026",
+    "notes": [
+      {
+        "id": "9adce547e9fe6fb29a0e9d3cda7fa9864b8fb39e",
+        "type": "FIX",
+        "text": " sap.m.Toolbar: Fix arrow key navigation for Slider, RangeSlider and MultiInput"
+      },
+      {
+        "id": "183bcb2b0f5d3f23c23c3761f2bda34309dc4903",
+        "type": "FIX",
+        "text": " sap.m.Wizard: Progress navigator is properly updated"
+      }
+    ]
+  }
+}

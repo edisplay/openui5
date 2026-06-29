@@ -1,0 +1,12 @@
+{
+  "1.151.0": {
+    "date": "June 2026",
+    "notes": [
+      {
+        "id": "6dfef7f1488d622b1d050f21921c81152c050898",
+        "type": "FIX",
+        "text": " Adapt Filters Dialog: invisible label for mode switch"
+      }
+    ]
+  }
+}
