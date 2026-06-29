@@ -70,6 +70,10 @@ sap.ui.define([
 			sandbox.restore();
 		}
 	}, function() {
+		/**
+		 * @deprecated
+		 * @private
+		 */
 		QUnit.test("with 'sap-app-id'", function(assert) {
 			var mPropertyBag = {
 				componentData: {

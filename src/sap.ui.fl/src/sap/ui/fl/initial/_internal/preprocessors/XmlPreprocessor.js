@@ -155,7 +155,12 @@ sap.ui.define([
 		const oComponent = Component.getComponentById(mProperties.componentId);
 		const oAppComponent = Utils.getAppComponentForControl(oComponent);
 
-		// no caching possible with startup parameter based variants
+		/**
+		 * @deprecated
+		 * @private
+		 *
+		 * no caching possible with startup parameter based variants
+		 */
 		if (Utils.isVariantByStartupParameter(oAppComponent)) {
 			return undefined;
 		}
