@@ -525,6 +525,11 @@ sap.ui.define([
 					type: "Unstyled"
 				}).addStyleClass("sapMPointer").addStyleClass(sTileClass + "MoreIcon");
 				this._oMoreIcon._bExcludeFromTabChain = true;
+				// JAWS synthesizes keydown/keyup on the tile root instead of the button DOM; flag
+				// the button activation so onkeyup can suppress the resulting unintended firePress.
+				this._oMoreIcon.attachPress(function() {
+					this._bScopeButtonActivated = true;
+				}, this);
 			}
 			this._oRemoveButton = this._oRemoveButton || new Button({
 				id: this.getId() + "-action-remove",
@@ -1454,11 +1459,15 @@ sap.ui.define([
 
 			}
 
-			// The ActionMore button in IconMode tile would be fired irrespective of the pressEnabled property
-			if ((!preventPress && bFirePress && (this._bTilePress || this._isActionMoreButtonVisibleIconMode(event)))) {
-				this.firePress(oParams);
-				event.preventDefault();
+			// Suppress tile press if the more button was activated in this key cycle (JAWS scenario).
+			if (!this._bScopeButtonActivated) {
+				// The ActionMore button in IconMode tile would be fired irrespective of the pressEnabled property
+				if ((!preventPress && bFirePress && (this._bTilePress || this._isActionMoreButtonVisibleIconMode(event)))) {
+					this.firePress(oParams);
+					event.preventDefault();
+				}
 			}
+			this._bScopeButtonActivated = false;
 
 			this._updateAriaLabel(); // To update the Aria Label for Generic Tile on change.
 		}
