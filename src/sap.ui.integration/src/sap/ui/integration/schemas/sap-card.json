@@ -240,6 +240,13 @@
       "description": "Represents card header attributes",
       "$ref": "#/$defs/HeaderType"
     },
+    "badges": {
+      "description": "Defines one or more badges to be displayed on the card. Badges can show important information that attracts user attention, such as 'New' or 'Updated' indicators. Must be specified as an array of badge objects. Available since version 1.151",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/badgeDefinition"
+      }
+    },
     "content": {
       "description": "Represents card content attributes. Content type should be the same as card type e.g. if card type List is used the content type should also be List"
     },
@@ -489,6 +496,90 @@
     }
   ],
   "$defs": {
+    "badgeDefinition": {
+      "description": "Defines a single badge with its properties",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "description": "The text to display in the badge",
+          "type": "string"
+        },
+        "icon": {
+          "description": "Optional icon URI (e.g., 'sap-icon://status-in-process')",
+          "type": "string"
+        },
+        "state": {
+          "description": "Color indication for the badge. Supports sap.ui.core.IndicationColor (Indication01-20) and sap.ui.core.ValueState values. Default is 'Indication05'",
+          "oneOf": [
+            {
+              "enum": [
+                "Indication01",
+                "Indication02",
+                "Indication03",
+                "Indication04",
+                "Indication05",
+                "Indication06",
+                "Indication07",
+                "Indication08",
+                "Indication09",
+                "Indication10",
+                "Indication11",
+                "Indication12",
+                "Indication13",
+                "Indication14",
+                "Indication15",
+                "Indication16",
+                "Indication17",
+                "Indication18",
+                "Indication19",
+                "Indication20",
+                "Success",
+                "Error",
+                "Warning",
+                "Information",
+                "None"
+              ],
+              "default": "Indication05"
+            },
+            {
+              "$ref": "#/$defs/simpleBinding"
+            }
+          ]
+        },
+        "visible": {
+          "description": "Whether the badge is initially visible. Default is true",
+          "oneOf": [
+            {
+              "type": "boolean",
+              "default": true
+            },
+            {
+              "$ref": "#/$defs/simpleBinding"
+            }
+          ]
+        },
+        "visibilityMode": {
+          "description": "Defines the visibility behavior. 'Disappear' hides the badge on interaction (default), 'Persist' keeps it visible",
+          "oneOf": [
+            {
+              "enum": [
+                "Disappear",
+                "Persist"
+              ],
+              "default": "Disappear"
+            },
+            {
+              "$ref": "#/$defs/simpleBinding"
+            }
+          ]
+        },
+        "announcementText": {
+          "description": "Custom accessibility announcement text for screen readers",
+          "type": "string"
+        }
+      }
+    },
     "HeaderType": {
       "oneOf": [
         {

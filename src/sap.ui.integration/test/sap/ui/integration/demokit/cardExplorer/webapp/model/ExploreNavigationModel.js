@@ -2107,6 +2107,61 @@ sap.ui.define([
 				expanded: true,
 				items: [
 					{
+						key: 'badges',
+						target: 'exploreSamples',
+						title: 'Badges',
+						subSamples: [
+							{
+								title: 'Basic',
+								key: 'basic',
+								files: [
+									{
+										url: '/samples/badgeManifest/basic.json',
+										name: 'manifest.json',
+										key: 'manifest.json',
+										editable: true
+									}
+								]
+							},
+							{
+								title: 'Badge with Icon',
+								key: 'withIcon',
+								files: [
+									{
+										url: '/samples/badgeManifest/withIcon.json',
+										name: 'manifest.json',
+										key: 'manifest.json',
+										editable: true
+									}
+								]
+							},
+							{
+								title: 'Multiple Badges',
+								key: 'multiple',
+								files: [
+									{
+										url: '/samples/badgeManifest/multiple.json',
+										name: 'manifest.json',
+										key: 'manifest.json',
+										editable: true
+									}
+								]
+							},
+							{
+								title: 'Badge with Data Binding',
+								key: 'bindings',
+								files: [
+									{
+										url: '/samples/badgeManifest/bindings.json',
+										name: 'manifest.json',
+										key: 'manifest.json',
+										editable: true
+									}
+								]
+							}
+						]
+					},
+					{
 						key: 'cache',
 						target: 'exploreSamples',
 						title: 'Cache',
