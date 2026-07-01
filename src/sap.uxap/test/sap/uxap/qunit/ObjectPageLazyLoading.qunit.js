@@ -2,7 +2,6 @@
 sap.ui.define([
 	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/ui/thirdparty/jquery",
-	"sap/ui/core/Core",
 	"sap/ui/core/Element",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/Button",
@@ -15,7 +14,6 @@ sap.ui.define([
 ], async function(
 	nextUIUpdate,
 	jQuery,
-	Core,
 	Element,
 	JSONModel,
 	Button,
@@ -29,7 +27,7 @@ sap.ui.define([
 	"use strict";
 
 	// utility function that will be used in these tests
-	var _getOneBlock = function () {
+	const _getOneBlock = function () {
 		return {
 			Type: "sap.uxap.testblocks.employmentblockjob.EmploymentBlockJob",
 
@@ -63,9 +61,9 @@ sap.ui.define([
 		};
 	};
 
-	var _loadBlocksData = function (oData) {
-		jQuery.each(oData.sections, function (iIndexSection, oSection) {
-			jQuery.each(oSection.subSections, function (iIndex, oSubSection) {
+	const _loadBlocksData = function (oData) {
+		jQuery.each(oData.sections, (iIndexSection, oSection) => {
+			jQuery.each(oSection.subSections, (iIndex, oSubSection) => {
 				oSubSection.blocks = [_getOneBlock()];
 				if (iIndexSection <= 4) {
 					oSubSection.mode = "Collapsed";
@@ -75,16 +73,27 @@ sap.ui.define([
 		});
 	};
 
-	var iLoadingDelay = 1000;
-	var oConfigModel = new JSONModel();
+	const iLoadingDelay = 1000;
+	const oConfigModel = new JSONModel();
 	await oConfigModel.loadData("test-resources/sap/uxap/qunit/model/ObjectPageConfig.json");
+
+	/**
+	 * Returns a Promise that resolves after the ObjectPageLayout fires onAfterRenderingDOMReady.
+	 * @param {sap.uxap.ObjectPageLayout} oOPL
+	 * @returns {Promise<void>}
+	 */
+	function waitForDOMReady(oOPL) {
+		return new Promise((resolve) => {
+			oOPL.attachEventOnce("onAfterRenderingDOMReady", resolve);
+		});
+	}
 
 	/**
 	 * @deprecated Since version 1.120
 	 */
 	QUnit.module("ObjectPageConfig", {
 		beforeEach: function (assert) {
-			var done = assert.async();
+			const done = assert.async();
 			XMLView.create({
 				id: "UxAP-27_ObjectPageConfig",
 				viewName: "view.UxAP-27_ObjectPageConfig"
@@ -107,26 +116,30 @@ sap.ui.define([
 	/**
 	 * @deprecated Since version 1.120
 	 */
-	QUnit.test("load first visible sections", function (assert) {
-		var oObjectPageLayout = this.oComponentContainer
+	QUnit.test("load first visible sections", async function (assert) {
+		assert.expect(3);
+		// Arrange
+		const oObjectPageLayout = this.oComponentContainer
 			.getObjectPageLayoutInstance();
 
-		var oData = oConfigModel.getData();
+		const oData = oConfigModel.getData();
 		_loadBlocksData(oData);
 
+		// Act
 		oConfigModel.setData(oData);
-		Core.applyChanges();
+		await nextUIUpdate();
 
-		var done = assert.async();
+		const done = assert.async();
 
+		// Assert
 		setTimeout(function() {
-			var oFirstSubSection = oObjectPageLayout.getSections()[0].getSubSections()[0];
+			const oFirstSubSection = oObjectPageLayout.getSections()[0].getSubSections()[0];
 			assert.strictEqual(oFirstSubSection.getBlocks()[0]._bConnected, true, "block data loaded successfully");
 
-			var oSecondSubSection = oObjectPageLayout.getSections()[0].getSubSections()[0];
+			const oSecondSubSection = oObjectPageLayout.getSections()[0].getSubSections()[0];
 			assert.strictEqual(oSecondSubSection.getBlocks()[0]._bConnected, true, "block data loaded successfully");
 
-			var oLastSubSection = oObjectPageLayout.getSections()[5].getSubSections()[0];
+			const oLastSubSection = oObjectPageLayout.getSections()[5].getSubSections()[0];
 			assert.strictEqual(oLastSubSection.getBlocks()[0]._bConnected, false, "block data outside viewport not loaded");
 			done();
 		}, iLoadingDelay);
@@ -135,11 +148,11 @@ sap.ui.define([
 	/**
 	 * @deprecated Since version 1.120
 	 */
-	QUnit.test("does not load more than needed subsections", function (assert) {
-			var oObjectPageLayout = this.oComponentContainer
+	QUnit.test("does not load more than needed subsections", async function (assert) {
+			const oObjectPageLayout = this.oComponentContainer
 				.getObjectPageLayoutInstance();
 
-			var oData = oConfigModel.getData();
+			const oData = oConfigModel.getData();
 			_loadBlocksData(oData);
 
 			oConfigModel.setData(oData);
@@ -151,49 +164,50 @@ sap.ui.define([
 			oObjectPageLayout.addHeaderContent(new Button({
 				text: "Hello"
 			}));
-			Core.applyChanges();
+			await nextUIUpdate();
 
-			var done = assert.async();
+			const done = assert.async();
 			assert.expect(3);
 
 			setTimeout(function() {
-				var oFirstSubSection = oObjectPageLayout.getSections()[0].getSubSections()[0];
+				const oFirstSubSection = oObjectPageLayout.getSections()[0].getSubSections()[0];
 				assert.strictEqual(oFirstSubSection.getBlocks()[0]._bConnected, true, "block data loaded successfully");
 
-				var oSecondSubSection = oObjectPageLayout.getSections()[0].getSubSections()[0];
+				const oSecondSubSection = oObjectPageLayout.getSections()[0].getSubSections()[0];
 				assert.strictEqual(oSecondSubSection.getBlocks()[0]._bConnected, true, "block data loaded successfully");
 
-				var oOutOfViewPortSubSection = oObjectPageLayout.getSections()[3].getSubSections()[1];
+				const oOutOfViewPortSubSection = oObjectPageLayout.getSections()[3].getSubSections()[1];
 				assert.strictEqual(oOutOfViewPortSubSection.getBlocks()[0]._bConnected, false, "block data outside viewport not loaded");
 				done();
 			}, iLoadingDelay);
 	});
 
-	QUnit.test("subSectionEnteredViewPort event is fired only for visible SubSections after rerendering", function (assert) {
+	QUnit.test("subSectionEnteredViewPort event is fired only for visible SubSections after rerendering", async function (assert) {
+		assert.expect(1);
+		// Arrange
+		const oObjectPageLayout = this.oComponentContainer.getObjectPageLayoutInstance();
+		const oThirdSection = oObjectPageLayout.getSections()[3];
+		const oThirdSubSection = oThirdSection.getSubSections()[1];
+		const done = assert.async();
+		let iCallCounts = 0;
+		const aSubSectionsEnteredViewPortIds = [];
 
-		var oObjectPageLayout = this.oComponentContainer.getObjectPageLayoutInstance(),
-			oThirdSection = oObjectPageLayout.getSections()[3],
-			oThirdSubSection = oThirdSection.getSubSections()[1],
-			done = assert.async(),
-			iCallCounts = 0,
-			aSubSectionsEnteredViewPortIds = [];
-
-
-		var oData = oConfigModel.getData();
+		const oData = oConfigModel.getData();
 		_loadBlocksData(oData);
 		oConfigModel.setData(oData);
 
-		//act
+		// Act
 		oObjectPageLayout.setSelectedSection(oThirdSection, 0);
 		oThirdSection.setSelectedSubSection(oThirdSubSection.getId());
 		oObjectPageLayout.getSections()[5].setVisible(false);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		oObjectPageLayout.attachEvent("subSectionEnteredViewPort", function (oEvent) {
 			iCallCounts++;
 			aSubSectionsEnteredViewPortIds.push(oEvent.getParameter("subSection").getId());
 
 			if (iCallCounts === 6) {
+				// Assert
 				assert.strictEqual(aSubSectionsEnteredViewPortIds
 					.indexOf("__xmlview0--ObjectPageSubSection-__xmlview0--ObjectPageLayout-3-__xmlview0--ObjectPageSection-__xmlview0--ObjectPageLayout-3-0"),
 				-1, "subSectionEnteredViewPort event not called with first SubSection of the third Section");
@@ -207,15 +221,16 @@ sap.ui.define([
 	 * @deprecated Since version 1.120
 	 */
 	QUnit.test("load first visible sections is relative to selectedSection", function (assert) {
+		// Arrange
+		const oObjectPageLayout = this.oComponentContainer
+			.getObjectPageLayoutInstance();
 
-		var oObjectPageLayout = this.oComponentContainer
-			.getObjectPageLayoutInstance(),
-			secondSection;
-
-		secondSection = oObjectPageLayout.getSections()[1];
+		// Act
+		const secondSection = oObjectPageLayout.getSections()[1];
 		oObjectPageLayout.setSelectedSection(secondSection);
 
-		var aSectionBases = oObjectPageLayout._getSectionsToPreloadOnBeforeFirstRendering();
+		// Assert
+		const aSectionBases = oObjectPageLayout._getSectionsToPreloadOnBeforeFirstRendering();
 		assert.strictEqual(aSectionBases[0].getParent(), secondSection, "first visible subSection is within the currently selectedSection");
 
 		this.oView.destroy();
@@ -225,23 +240,24 @@ sap.ui.define([
 	 * @deprecated Since version 1.120
 	 */
 	QUnit.test("load scrolled sections", function (assert) {
-
-		var oObjectPageLayout = this.oComponentContainer
-			.getObjectPageLayoutInstance(),
-			oThirdSubSection = oObjectPageLayout.getSections()[3].getSubSections()[0];
+		// Arrange
+		const oObjectPageLayout = this.oComponentContainer
+			.getObjectPageLayoutInstance();
+		const oThirdSubSection = oObjectPageLayout.getSections()[3].getSubSections()[0];
 
 		assert.strictEqual(oThirdSubSection.getBlocks()[0]._bConnected, false, "block data outside viewport not loaded yet");
 
-		//act
+		// Act
 		oObjectPageLayout.scrollToSection(oObjectPageLayout.getSections()[5].getId());
 
-		var done = assert.async();
+		const done = assert.async();
 
+		// Assert
 		setTimeout(function() {
 
 			assert.strictEqual(oThirdSubSection.getBlocks()[0]._bConnected, false, "block data outside viewport still not loaded");
 
-			var oLastSubSection = oObjectPageLayout.getSections()[5].getSubSections()[0];
+			const oLastSubSection = oObjectPageLayout.getSections()[5].getSubSections()[0];
 			assert.strictEqual(oLastSubSection.getBlocks()[0]._bConnected, true, "block data if target section loaded");
 			done();
 		}, iLoadingDelay);
@@ -251,25 +267,28 @@ sap.ui.define([
 	 * @deprecated Since version 1.120
 	 */
 	QUnit.test("model mapping for scrolled sections", async function (assert) {
-
-		var oObjectPageLayout = this.oComponentContainer
+		assert.expect(2);
+		// Arrange
+		const oObjectPageLayout = this.oComponentContainer
 			.getObjectPageLayoutInstance();
 
-		var oDataModel = new JSONModel();
+		const oDataModel = new JSONModel();
 		oDataModel.loadData("test-resources/sap/uxap/qunit/model/HRData.json", {}, false);
 
+		// Act
 		this.oView.setModel(oDataModel, "objectPageData");
 
 		await nextUIUpdate();
 
-		var done = assert.async();
+		const done = assert.async();
 
+		// Assert
 		setTimeout(function() {
 
-			var oThirdSubSection = oObjectPageLayout.getSections()[3].getSubSections()[0];
+			const oThirdSubSection = oObjectPageLayout.getSections()[3].getSubSections()[0];
 			assert.strictEqual(oThirdSubSection.getBlocks()[0]._bConnected, false, "data of disconnected blocks is not loaded");
 
-			var oLastSubSection = oObjectPageLayout.getSections()[5].getSubSections()[0];
+			const oLastSubSection = oObjectPageLayout.getSections()[5].getSubSections()[0];
 			assert.strictEqual(oLastSubSection.getBlocks()[0]._bConnected, false, "data of last connected blocks is loaded"); // TODO Verify this is correct since these tests were disabled (changed from true)
 			done();
 		}, iLoadingDelay);
@@ -278,24 +297,24 @@ sap.ui.define([
 	/**
 	 * @deprecated Since version 1.120
 	 */
-	QUnit.test("scrollToSection with animation does not load intermediate sections", function (assert) {
-			var oObjectPageLayout = this.oComponentContainer.getObjectPageLayoutInstance(),
-			oData = oConfigModel.getData(),
-			done = assert.async(),
-			that = this;
+	QUnit.test("scrollToSection with animation does not load intermediate sections", async function (assert) {
+			const oObjectPageLayout = this.oComponentContainer.getObjectPageLayoutInstance();
+			const oData = oConfigModel.getData();
+			const done = assert.async();
+			const that = this;
 
 		_loadBlocksData(oData);
 
 		oConfigModel.setData(oData);
-		Core.applyChanges();
+		await nextUIUpdate();
 
 		assert.expect(1);
 
 		function checkOnDomReady() {
-			var iSectionsCount = oObjectPageLayout.getSections().length,
-				oLastSection = oObjectPageLayout.getSections()[iSectionsCount - 1],
-				oSectionBeforeLast = oObjectPageLayout.getSections()[iSectionsCount - 2],
-				iSectionBeforeLastPositionTo = oObjectPageLayout._computeScrollPosition(oSectionBeforeLast);
+			const iSectionsCount = oObjectPageLayout.getSections().length;
+			const oLastSection = oObjectPageLayout.getSections()[iSectionsCount - 1];
+			const oSectionBeforeLast = oObjectPageLayout.getSections()[iSectionsCount - 2];
+			const iSectionBeforeLastPositionTo = oObjectPageLayout._computeScrollPosition(oSectionBeforeLast);
 
 			// Setup: mock scrollTop of a section before the target section
 			that.stub(oObjectPageLayout, "_getHeightRelatedParameters").callsFake(function() {
@@ -328,9 +347,9 @@ sap.ui.define([
 	 * @deprecated Since version 1.120
 	 */
 	QUnit.test("BCP: 1970115549 - _grepCurrentTabSectionBases should always return a value", function (assert) {
-			var oObjectPageLayout = this.oComponentContainer.getObjectPageLayoutInstance(),
-			aSectionBases = oObjectPageLayout._aSectionBases,
-			fnCustomGetParent = function () {
+			const oObjectPageLayout = this.oComponentContainer.getObjectPageLayoutInstance();
+			const aSectionBases = oObjectPageLayout._aSectionBases;
+			const fnCustomGetParent = function () {
 				return undefined;
 			};
 
@@ -344,20 +363,21 @@ sap.ui.define([
 	});
 
 	QUnit.test("_triggerVisibleSubSectionsEvents fires subSectionEnteredViewPort event for visible SubSections", async function(assert) {
+		assert.expect(3);
 		// Arrange
-		var oObjectPageLayout = this.oComponentContainer.getObjectPageLayoutInstance(),
-			fnDone = assert.async(),
-			iCallCounts = 0,
-			fnOnSubSectionEnteredViewPort = function (oEvent) {
-				var oSubSection = oEvent.getParameter("subSection");
-				assert.ok(true, "subSectionEnteredViewPort fired for " + oSubSection.getId());
-				iCallCounts++;
+		const oObjectPageLayout = this.oComponentContainer.getObjectPageLayoutInstance();
+		const fnDone = assert.async();
+		let iCallCounts = 0;
+		const fnOnSubSectionEnteredViewPort = function (oEvent) {
+			const oSubSection = oEvent.getParameter("subSection");
+			assert.ok(true, "subSectionEnteredViewPort fired for " + oSubSection.getId());
+			iCallCounts++;
 
-				if (iCallCounts === 3) {
-					fnDone();
-				}
-			},
-			oData = oConfigModel.getData();
+			if (iCallCounts === 3) {
+				fnDone();
+			}
+		};
+		const oData = oConfigModel.getData();
 
 		_loadBlocksData(oData);
 		oConfigModel.setData(oData);
@@ -373,40 +393,36 @@ sap.ui.define([
 
 	QUnit.test("_triggerVisibleSubSectionsEvents makes sure the OPL is scrolled to the correct position before executing lazyloading",
 		async function(assert) {
+		assert.expect(1);
 		// Arrange
-		var oObjectPageLayout = this.oComponentContainer.getObjectPageLayoutInstance(),
-			fnDone = assert.async(),
-			oScrolledToSection = oObjectPageLayout.getSections()[2],
-			sScrolledToSectionId = oScrolledToSection.getId(),
-			oData = oConfigModel.getData(),
-			oSpy;
+		const oObjectPageLayout = this.oComponentContainer.getObjectPageLayoutInstance();
+		const oScrolledToSection = oObjectPageLayout.getSections()[2];
+		const sScrolledToSectionId = oScrolledToSection.getId();
+		const oData = oConfigModel.getData();
 
 		_loadBlocksData(oData);
 		oConfigModel.setData(oData);
 		oObjectPageLayout.setSelectedSection(oScrolledToSection);
 		await nextUIUpdate();
 
-		oObjectPageLayout.attachEventOnce("onAfterRenderingDOMReady", function () {
-			oSpy = this.spy(oObjectPageLayout, "scrollToSection");
+		await waitForDOMReady(oObjectPageLayout);
 
-			// Fake different top position of scrolled section
-			oObjectPageLayout._oSectionInfo[sScrolledToSectionId].positionTop = 1500;
+		const oSpy = this.spy(oObjectPageLayout, "scrollToSection");
 
-			// Act
-			oObjectPageLayout._triggerVisibleSubSectionsEvents();
+		// Fake different top position of scrolled section
+		oObjectPageLayout._oSectionInfo[sScrolledToSectionId].positionTop = 1500;
 
-			// Assert
-			assert.ok(oSpy.calledWith(oScrolledToSection.getId()), "scrolled to correct Section");
+		// Act
+		oObjectPageLayout._triggerVisibleSubSectionsEvents();
 
-			// Clean up
-			fnDone();
-		}.bind(this));
+		// Assert
+		assert.ok(oSpy.calledWith(oScrolledToSection.getId()), "scrolled to correct Section");
 	});
 
 	QUnit.module("ObjectPageAfterRendering");
 
 	QUnit.test("triggering visible subsections calculations should not fail before rendering", function (assert) {
-		var oObjectPageLayout = new ObjectPageLayout({
+		const oObjectPageLayout = new ObjectPageLayout({
 			enableLazyLoading: true,
 			sections: new ObjectPageSection("mySection1", {
 				subSections: [
@@ -424,9 +440,10 @@ sap.ui.define([
 	});
 
 	QUnit.test("BCP: 1870326083 - _triggerVisibleSubSectionsEvents should force OP to recalculate", async function(assert) {
+		assert.expect(2);
 		// Arrange
-		var oObjectPageLayout = new ObjectPageLayout({enableLazyLoading: true}),
-			oRequestAdjustLayoutSpy = this.spy(oObjectPageLayout, "_requestAdjustLayout");
+		const oObjectPageLayout = new ObjectPageLayout({enableLazyLoading: true});
+		const oRequestAdjustLayoutSpy = this.spy(oObjectPageLayout, "_requestAdjustLayout");
 
 		// We have to render the OP as LazyLoading is initiated on onBeforeRendering
 		oObjectPageLayout.placeAt("qunit-fixture");
@@ -447,18 +464,17 @@ sap.ui.define([
 	});
 
 	QUnit.test("Early lazyLoading onAfterRendering", async function(assert) {
-
-		var oObjectPage = new ObjectPageLayout({enableLazyLoading: true}),
-			iExpectedLazyLoadingDelay,
-			spy,
-			that = this,
-			done = assert.async();
+		// Arrange
+		const oObjectPage = new ObjectPageLayout({enableLazyLoading: true});
+		const that = this;
+		const done = assert.async();
+		let spy;
 
 		assert.expect(1);
 
 		// Arrange: enable early lazy loading
 		oObjectPage._triggerVisibleSubSectionsEvents();
-		iExpectedLazyLoadingDelay = 0; // expect very small delay
+		const iExpectedLazyLoadingDelay = 0; // expect very small delay
 
 		oObjectPage.addEventDelegate({
 			"onBeforeRendering": function() {
@@ -479,11 +495,10 @@ sap.ui.define([
 	});
 
 	QUnit.test("Early lazyLoading onAfterRendering if already scheduled", async function(assert) {
-
-		var oObjectPage = new ObjectPageLayout({enableLazyLoading: true}),
-			that = this,
-			spy,
-			done = assert.async();
+		// Arrange
+		const oObjectPage = new ObjectPageLayout({enableLazyLoading: true});
+		const that = this;
+		let spy;
 
 		assert.expect(1);
 
@@ -498,25 +513,23 @@ sap.ui.define([
 			}
 		}, this);
 
-		oObjectPage.attachEventOnce("onAfterRenderingDOMReady", function() {
-				// Check:
-				assert.strictEqual(spy.callCount, 1, "lazy loading is called early");
-				oObjectPage.destroy();
-				done();
-		});
-
 		oObjectPage.placeAt("qunit-fixture");
 		await nextUIUpdate();
+
+		await waitForDOMReady(oObjectPage);
+
+		// Check:
+		assert.strictEqual(spy.callCount, 1, "lazy loading is called early");
+		oObjectPage.destroy();
 	});
 
 	QUnit.test("Early lazyLoading onAfterRendering when hidden", async function(assert) {
-
-		var oObjectPage = new ObjectPageLayout({enableLazyLoading: true}),
-			iExpectedLazyLoadingDelay,
-			recalcSpy = this.spy(oObjectPage, "_requestAdjustLayout"),
-			lazyLoadingSpy,
-			that = this,
-			done = assert.async();
+		// Arrange
+		const oObjectPage = new ObjectPageLayout({enableLazyLoading: true});
+		const recalcSpy = this.spy(oObjectPage, "_requestAdjustLayout");
+		const that = this;
+		const done = assert.async();
+		let iExpectedLazyLoadingDelay, lazyLoadingSpy;
 
 		assert.expect(2);
 
@@ -574,17 +587,16 @@ sap.ui.define([
 
 	QUnit.test("Sections are lazy loaded when header content is pinned initially", async function(assert) {
 		// Arrange
-		var oObjectPageLayout = new ObjectPageLayout({
+		const oObjectPageLayout = new ObjectPageLayout({
 				enableLazyLoading: true,
 				headerContentPinned: true,
 				headerTitle: [new ObjectPageDynamicHeaderTitle()]
-			}),
-			fnDone = assert.async(),
-			fnOnBeforeRendering = function () {
-				oObjectPageLayout.removeEventDelegate(fnOnBeforeRendering);
-				oLazyLoadingSpy = this.spy(oObjectPageLayout._oLazyLoading, "doLazyLoading");
-			}.bind(this),
-			oLazyLoadingSpy;
+			});
+		let oLazyLoadingSpy;
+		const fnOnBeforeRendering = function () {
+			oObjectPageLayout.removeEventDelegate(fnOnBeforeRendering);
+			oLazyLoadingSpy = this.spy(oObjectPageLayout._oLazyLoading, "doLazyLoading");
+		}.bind(this);
 
 		assert.expect(1);
 
@@ -593,19 +605,16 @@ sap.ui.define([
 			"onBeforeRendering": fnOnBeforeRendering
 		});
 
-		oObjectPageLayout.attachEventOnce("onAfterRenderingDOMReady",
-			function () {
-				// Assert
-				assert.ok(oLazyLoadingSpy.calledOnce, "LazyLoading is called");
-
-				// Clean up
-				oObjectPageLayout.destroy();
-				fnDone();
-			}
-		);
-
 		oObjectPageLayout.placeAt("qunit-fixture");
 		await nextUIUpdate();
+
+		await waitForDOMReady(oObjectPageLayout);
+
+		// Assert
+		assert.ok(oLazyLoadingSpy.calledOnce, "LazyLoading is called");
+
+		// Clean up
+		oObjectPageLayout.destroy();
 	});
 
 
@@ -613,7 +622,7 @@ sap.ui.define([
 
 	QUnit.test("lazyLoading created on beforeRendering", function (assert) {
 		// Setup
-		var oObjectPageLayout = new ObjectPageLayout({enableLazyLoading: true});
+		const oObjectPageLayout = new ObjectPageLayout({enableLazyLoading: true});
 
 		// Act: mock framework call on before rendering
 		oObjectPageLayout.onBeforeRendering();
@@ -623,10 +632,8 @@ sap.ui.define([
 	});
 
 	QUnit.test("lazyLoading interval task", function (assert) {
-		var oObjectPageLayout = new ObjectPageLayout({enableLazyLoading: true}),
-			oLazyLoading,
-			oLazyLoadingSpy,
-			done = assert.async();
+		const oObjectPageLayout = new ObjectPageLayout({enableLazyLoading: true});
+		const done = assert.async();
 
 		assert.expect(1);
 
@@ -640,8 +647,8 @@ sap.ui.define([
 		oObjectPageLayout.onBeforeRendering();
 
 		// Setup: spy for repeated calls of <code>doLazyLoading</code>
-		oLazyLoading = oObjectPageLayout._oLazyLoading;
-		oLazyLoadingSpy = this.spy(oLazyLoading, "doLazyLoading");
+		const oLazyLoading = oObjectPageLayout._oLazyLoading;
+		const oLazyLoadingSpy = this.spy(oLazyLoading, "doLazyLoading");
 
 		// Act: trigger lazyLoading
 		oLazyLoading.doLazyLoading(); // mock initial trigger from objectPage
@@ -656,10 +663,8 @@ sap.ui.define([
 	});
 
 	QUnit.test("lazyLoading interval task cancelled when not needed", function (assert) {
-		var oObjectPageLayout = new ObjectPageLayout({enableLazyLoading: true}),
-			oLazyLoading,
-			oLazyLoadingSpy,
-			done = assert.async();
+		const oObjectPageLayout = new ObjectPageLayout({enableLazyLoading: true});
+		const done = assert.async();
 
 		assert.expect(1);
 
@@ -673,8 +678,8 @@ sap.ui.define([
 		oObjectPageLayout.onBeforeRendering();
 
 		// Setup: spy for repeated calls of <code>doLazyLoading</code>
-		oLazyLoading = oObjectPageLayout._oLazyLoading;
-		oLazyLoadingSpy = this.spy(oLazyLoading, "doLazyLoading");
+		const oLazyLoading = oObjectPageLayout._oLazyLoading;
+		const oLazyLoadingSpy = this.spy(oLazyLoading, "doLazyLoading");
 		oLazyLoading.doLazyLoading(); // mock initial call from objectPage
 		oLazyLoadingSpy.resetHistory(); // ensure we monitor only calls from this point on
 
@@ -690,14 +695,14 @@ sap.ui.define([
 	});
 
 	QUnit.test("lazyLoading called when content size is updated", async function (assert) {
+		assert.expect(1);
 		// Setup
-		var oObjectPageLayout = new ObjectPageLayout({enableLazyLoading: true}),
-			fnDone = assert.async(),
-			oSpy;
+		const oObjectPageLayout = new ObjectPageLayout({enableLazyLoading: true});
+		const fnDone = assert.async();
 		oObjectPageLayout.placeAt("qunit-fixture");
 		await nextUIUpdate();
 
-		oSpy = this.spy(oObjectPageLayout._oLazyLoading, "doLazyLoading");
+		const oSpy = this.spy(oObjectPageLayout._oLazyLoading, "doLazyLoading");
 
 		// Act: call _onUpdateContentSize (when content is updated)
 		oObjectPageLayout._onUpdateContentSize({
@@ -713,10 +718,11 @@ sap.ui.define([
 	});
 
 	QUnit.test("doLazyLoading called with scroll top parameter from lazyLoadingDuringScroll", async function (assert) {
+		assert.expect(1);
 		// Setup
-		var oObjectPageLayout = new ObjectPageLayout({enableLazyLoading: true}),
-			fnDone = assert.async(),
-			oSpy;
+		const oObjectPageLayout = new ObjectPageLayout({enableLazyLoading: true});
+		const fnDone = assert.async();
+		let oSpy;
 
 		oObjectPageLayout.placeAt("qunit-fixture");
 		await nextUIUpdate();
@@ -740,20 +746,19 @@ sap.ui.define([
 
 	QUnit.test("_unStashControlsAsync preserves control order with different resolution times", function (assert) {
 		// Setup
-		var fnDone = assert.async(),
-			oSubSection = new ObjectPageSubSection(),
-			aUnstashedControls = [], // Array to track controls in the order they were unstashed
-			aFinalBlockIds = [], // Array to track the final order of blocks in the aggregation
-			oAddAggregationSpy;
+		const fnDone = assert.async();
+		const oSubSection = new ObjectPageSubSection();
+		const aUnstashedControls = []; // Array to track controls in the order they were unstashed
+		const aFinalBlockIds = []; // Array to track the final order of blocks in the aggregation
 
 		// Create mock stashed controls
-		var oMockStashedControl1 = {
+		const oMockStashedControl1 = {
 			getId: function() { return "control1"; },
 			unstash: function() {
 				// Mock the first control to unstash LAST (slowest)
 				return new Promise(function(resolve) {
 					setTimeout(function() {
-						var oUnstashedControl = new Title({text: "Control 1", id: "control1"});
+						const oUnstashedControl = new Title({text: "Control 1", id: "control1"});
 						aUnstashedControls.push("control1");
 						resolve(oUnstashedControl);
 					}, 30);
@@ -762,13 +767,13 @@ sap.ui.define([
 			isStashed: function() { return true; }
 		};
 
-		var oMockStashedControl2 = {
+		const oMockStashedControl2 = {
 			getId: function() { return "control2"; },
 			unstash: function() {
 				// Mock the second control to unstash SECOND
 				return new Promise(function(resolve) {
 					setTimeout(function() {
-						var oUnstashedControl = new Title({text: "Control 2", id: "control2"});
+						const oUnstashedControl = new Title({text: "Control 2", id: "control2"});
 						aUnstashedControls.push("control2");
 						resolve(oUnstashedControl);
 					}, 20);
@@ -777,13 +782,13 @@ sap.ui.define([
 			isStashed: function() { return true; }
 		};
 
-		var oMockStashedControl3 = {
+		const oMockStashedControl3 = {
 			getId: function() { return "control3"; },
 			unstash: function() {
 				// Mock the third control to unstash FIRST (fastest)
 				return new Promise(function(resolve) {
 					setTimeout(function() {
-						var oUnstashedControl = new Title({text: "Control 3", id: "control3"});
+						const oUnstashedControl = new Title({text: "Control 3", id: "control3"});
 						aUnstashedControls.push("control3");
 						resolve(oUnstashedControl);
 					}, 10);
@@ -800,10 +805,10 @@ sap.ui.define([
 		];
 
 		// Spy on addAggregation to verify the implementation
-		oAddAggregationSpy = this.spy(oSubSection, "addAggregation");
+		const oAddAggregationSpy = this.spy(oSubSection, "addAggregation");
 
 		// Keep a reference to the original getElementById function
-		var fnOriginalGetElementById = Element.getElementById;
+		const fnOriginalGetElementById = Element.getElementById;
 
 		// Override getElementById to return our unstashed controls
 		this.stub(Element, "getElementById").callsFake(function(sId) {
