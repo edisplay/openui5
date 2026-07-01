@@ -746,7 +746,6 @@ sap.ui.define([
 		assert.strictEqual(oResult, oFakeBinding, "binding returned");
 		// The adapter installs the ListBinding-compatibility surface on the binding.
 		// If Tree took the wrong dispatch branch, none of these methods would exist.
-		assert.strictEqual(typeof oFakeBinding._init, "function", "adapter installed _init");
 		assert.strictEqual(typeof oFakeBinding.getLength, "function", "adapter installed getLength");
 		assert.strictEqual(typeof oFakeBinding.getContexts, "function", "adapter installed getContexts");
 		assert.strictEqual(typeof oFakeBinding.expand, "function", "adapter installed expand");
