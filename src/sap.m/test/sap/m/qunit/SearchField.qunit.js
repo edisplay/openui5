@@ -375,6 +375,50 @@ sap.ui.define([
 		Core.applyChanges();
 	});
 
+	QUnit.test("ariaControls association sets aria-controls attribute", function (assert) {
+		// arrange
+		const oButton = new Button("controlledBtn");
+		oButton.placeAt(DOM_RENDER_LOCATION);
+		Core.applyChanges();
+
+		// act
+		this.oSearchField.addAriaControl(oButton);
+		Core.applyChanges();
+
+		// assert
+		const sAriaControls = this.oSearchField.getDomRef("I").getAttribute("aria-controls");
+		assert.ok(sAriaControls?.includes(oButton.getId()), "aria-controls references the controlled element");
+
+		// clean up
+		oButton.destroy();
+	});
+
+	QUnit.test("ariaControls is not rendered when association is empty", function (assert) {
+		// assert
+		assert.notOk(this.oSearchField.getDomRef("I").getAttribute("aria-controls"), "aria-controls is not rendered when no ariaControls are set");
+	});
+
+	QUnit.test("removeAriaControl removes aria-controls attribute", function (assert) {
+		// arrange
+		const oButton = new Button("controlledBtn2");
+		oButton.placeAt(DOM_RENDER_LOCATION);
+		Core.applyChanges();
+
+		this.oSearchField.addAriaControl(oButton);
+		Core.applyChanges();
+
+		// act
+		this.oSearchField.removeAriaControl(oButton);
+		Core.applyChanges();
+
+		// assert
+		const sAriaControls = this.oSearchField.getDomRef("I").getAttribute("aria-controls");
+		assert.ok(!sAriaControls || sAriaControls.indexOf(oButton.getId()) === -1, "aria-controls no longer references the removed element");
+
+		// clean up
+		oButton.destroy();
+	});
+
 	QUnit.module("Input", {
 		beforeEach: function () {
 			this.oSearchField = new SearchField("sf7", {

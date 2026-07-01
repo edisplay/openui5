@@ -90,7 +90,12 @@ sap.ui.define([
 				 * Defines the content inside the footer.
 				 * @deprecated Since version 1.120. Use the aggregation <code>fixedItem</code> instead.
 				 */
-				footer: { type: "sap.tnt.NavigationList", multiple: false }
+				footer: { type: "sap.tnt.NavigationList", multiple: false },
+				/**
+				 * Defines the filter section.
+				 * @since 1.151
+				 */
+				filterSection: { type: "sap.ui.core.Control", multiple: false }
 			},
 			associations: {
 				/**
