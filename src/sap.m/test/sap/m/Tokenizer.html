@@ -234,7 +234,7 @@
 			oTokenizer9,
 			new sap.m.ToolbarSpacer(),
 			new sap.m.Button({
-				text: "Add", 
+				text: "Add",
 				layoutData: new OverflowToolbarLayoutData({priority: OverflowToolbarPriority.Low})
 			}),
 			new sap.m.Button({
@@ -307,7 +307,7 @@
 			var aDeletedTokens = oEvent.getParameter("tokens");
 			aDeletedTokens.forEach(function (oToken) {
 				sap.m.MessageToast.show("Token deleted: " + oToken.getText());
-				oAddRemoveTokens.removeToken(oToken);	
+				oAddRemoveTokens.removeToken(oToken);
 			});
 		};
 
@@ -334,7 +334,7 @@
 			}
 		);
 
-		var app = new sap.m.App("myApp");
+		var app = new sap.m.App("myApp", {autoFocus: false});
 
 		var page1 = new sap.m.Page("page1", {
 			title:"sap.m.Tokenizer Test Samples",
