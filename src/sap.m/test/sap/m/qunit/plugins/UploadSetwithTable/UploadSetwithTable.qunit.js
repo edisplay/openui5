@@ -1201,6 +1201,60 @@ sap.ui.define([
 
 	});
 
+	QUnit.test("URL item rename dialog splits name at dot and caps input at 40 chars", async function (assert) {
+		const oTable = await createMDCTable();
+		const oUploadSetwithTablePlugin = new UploadSetwithTable({
+			rowConfiguration: new UploadItemConfiguration({ fileNamePath: "fileName", urlPath: "imageUrl", mediaTypePath: "mediaType", fileSizePath: "size" })
+		});
+		oTable.addDependent(oUploadSetwithTablePlugin);
+		await oTable.initialized();
+		await nextUIUpdate();
+
+		// URL document: url set, no mediaType — split same as regular file
+		const oUrlItem = new UploadItem({ fileName: "sap.com", url: "https://sap.com" });
+		const oDialog = oUploadSetwithTablePlugin._getFileRenameDialog(oUrlItem);
+		assert.equal(oDialog.getContent()[1].getValue(), "sap", "URL item: name part in input");
+		assert.equal(oDialog.getContent()[2].getText(), ".com", "URL item: extension shown separately");
+		assert.equal(oDialog.getContent()[1].getMaxLength(), 36, "URL item: input capped at 40 minus extension length");
+
+		oDialog.destroy();
+		oTable.destroy();
+	});
+
+	QUnit.test("URL item rename blocks dot in name on liveChange and on Apply", async function (assert) {
+		const oTable = await createMDCTable();
+		const oUploadSetwithTablePlugin = new UploadSetwithTable({
+			rowConfiguration: new UploadItemConfiguration({ fileNamePath: "fileName", urlPath: "imageUrl", mediaTypePath: "mediaType", fileSizePath: "size" })
+		});
+		oTable.addDependent(oUploadSetwithTablePlugin);
+		await oTable.initialized();
+		await nextUIUpdate();
+
+		const oItem = new UploadItem({ fileName: "sapcom", url: "https://sap.com" });
+		const oItemRenamedSpy = this.spy(oUploadSetwithTablePlugin, "fireItemRenamed");
+		const oDialog = oUploadSetwithTablePlugin._getFileRenameDialog(oItem);
+		const oInput = oDialog.getContent()[1];
+
+		// liveChange with dot → error
+		oInput.setValue("google.com");
+		oInput.fireLiveChange({ value: "google.com" });
+		assert.equal(oInput.getValueState(), "Error", "Error state on liveChange with dot");
+
+		// Apply with dot → blocked
+		oDialog.getBeginButton().firePress();
+		assert.equal(oItem.getFileName(), "sapcom", "Filename unchanged after blocked Apply");
+		assert.ok(oItemRenamedSpy.notCalled, "itemRenamed not fired");
+
+		// Apply with valid name → saved
+		oInput.setValue("googlecom");
+		oInput.fireLiveChange({ value: "googlecom" });
+		oDialog.getBeginButton().firePress();
+		assert.equal(oItem.getFileName(), "googlecom", "Filename updated with valid name");
+		assert.ok(oItemRenamedSpy.calledOnce, "itemRenamed fired");
+
+		oTable.destroy();
+	});
+
 	QUnit.test("Test for download API to download the file with current context passed.", async function (assert) {
 		/**
 		 * MDC Table with ActionsPlaceholder
