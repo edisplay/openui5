@@ -1161,4 +1161,231 @@ sap.ui.define([
 		assert.strictEqual(oController.getResetAllMode(), ResetAllMode.Default, "resetAllMode default is 'Default'.");
 		assert.notOk(oController.getPersoService(), "persoService is not set by default.");
 	});
+
+	QUnit.module("_adjustTable reordering", {
+		afterEach: function() {
+			destroyController();
+		}
+	});
+
+	QUnit.test("_adjustTable: reorders columns when service data 'order' differs from current index", async function(assert) {
+		await createController();
+		const oNameColumn = Element.getElementById("Name");
+		const oColorColumn = Element.getElementById("Color");
+		const oNumberColumn = Element.getElementById("Number");
+		const sNameKey = oController._getColumnPersoKey(oNameColumn);
+		const sColorKey = oController._getColumnPersoKey(oColorColumn);
+		const sNumberKey = oController._getColumnPersoKey(oNumberColumn);
+
+		// Reverse the column order via _adjustTable
+		oController._adjustTable({
+			aColumns: [
+				{id: sNumberKey, order: 0},
+				{id: sColorKey, order: 1},
+				{id: sNameKey, order: 2}
+			]
+		});
+
+		assert.equal(oTable.indexOfColumn(oNumberColumn), 0, "Number column is now at index 0.");
+		assert.equal(oTable.indexOfColumn(oColorColumn), 1, "Color column is now at index 1.");
+		assert.equal(oTable.indexOfColumn(oNameColumn), 2, "Name column is now at index 2.");
+	});
+
+	QUnit.module("_getCurrentTablePersoData fallback", {
+		afterEach: function() {
+			destroyController();
+		}
+	});
+
+	QUnit.test("_getCurrentTablePersoData: uses persoKey as text when header text is empty", async function(assert) {
+		await createController();
+
+		// Add a column without any label, name or multiLabels -> getHeaderText returns ""
+		const oBlankColumn = new Column("BlankCol", {
+			template: new TableQUnitUtils.TestControl({text: "x"})
+		});
+		oTable.addColumn(oBlankColumn);
+
+		const oData = oController._getCurrentTablePersoData(true);
+		const oBlankInfo = oData.aColumns[oData.aColumns.length - 1];
+		const sExpectedKey = oController._getColumnPersoKey(oBlankColumn);
+		assert.equal(oBlankInfo.text, sExpectedKey, "Text falls back to the column's persoKey when header text is empty.");
+	});
+
+	/**
+	 * @deprecated As of Version 1.115
+	 */
+	QUnit.module("openDialog", {
+		beforeEach: function() {
+			// Fake TablePersoDialog constructor - captures the settings passed to it.
+			const oCapturedSettings = {settings: null, styleClasses: []};
+			this.capturedDialogState = oCapturedSettings;
+
+			const FakeDialog = function(sId, mSettings) {
+				oCapturedSettings.settings = mSettings;
+				this._sId = sId;
+				this.setShowResetAll = function(bShow) { this._showResetAll = bShow; };
+				this.setInitialColumnState = function(aCols) { this._initialColumnState = aCols; };
+				this.open = function() { oCapturedSettings.opened = true; };
+				this.destroy = function() { this._destroyed = true; };
+				this._oDialog = {
+					addStyleClass: function(sClass) { oCapturedSettings.styleClasses.push(sClass); }
+				};
+			};
+			this.FakeDialog = FakeDialog;
+
+			// Stub the async loadLibrary + require chain
+			this.stub(sap.ui.getCore(), "loadLibrary").returns(Promise.resolve());
+			this.stub(sap.ui, "require").callsFake(function(aDeps, fnCallback) {
+				if (Array.isArray(aDeps) && aDeps[0] === "sap/m/TablePersoDialog") {
+					fnCallback(FakeDialog);
+				}
+			});
+		},
+		afterEach: function() {
+			destroyController();
+		}
+	});
+
+	// Waits for the async openDialog chain (loadLibrary Promise + require) to complete.
+	function waitForDialog() {
+		return new Promise((resolve) => { setTimeout(resolve, 20); });
+	}
+
+	QUnit.test("openDialog: creates dialog with defaults and opens it", async function(assert) {
+		await createController({persoService: createResolvingService()});
+
+		oController.openDialog();
+		await waitForDialog();
+
+		const oState = this.capturedDialogState;
+		assert.ok(oController._oDialog, "Dialog was created and stored on the controller.");
+		assert.strictEqual(oState.settings.showResetAll, true, "showResetAll defaults from controller property (true).");
+		assert.strictEqual(oState.settings.contentWidth, undefined, "contentWidth is undefined when not supplied.");
+		assert.strictEqual(oState.settings.contentHeight, "20rem", "contentHeight defaults to '20rem'.");
+		assert.strictEqual(oState.settings.hasGrouping, false, "hasGrouping is always false.");
+		assert.ok(oState.styleClasses.includes("sapUiNoContentPadding"), "sapUiNoContentPadding style class added.");
+		assert.strictEqual(oState.opened, true, "Dialog was opened.");
+	});
+
+	QUnit.test("openDialog: mSettings.showResetAll and content dimensions override defaults", async function(assert) {
+		await createController({persoService: createResolvingService()});
+
+		oController.openDialog({
+			showResetAll: false,
+			contentWidth: "40rem",
+			contentHeight: "30rem"
+		});
+		await waitForDialog();
+
+		const oSettings = this.capturedDialogState.settings;
+		// Note: source uses `(mSettings && mSettings.showResetAll) || that.getShowResetAll()` -
+		// a falsy mSettings.showResetAll still falls back to the controller default, which is true.
+		assert.strictEqual(oSettings.showResetAll, true, "showResetAll falls back to controller default when mSettings value is falsy.");
+		assert.strictEqual(oSettings.contentWidth, "40rem", "contentWidth taken from mSettings.");
+		assert.strictEqual(oSettings.contentHeight, "30rem", "contentHeight taken from mSettings.");
+	});
+
+	QUnit.test("openDialog: columnInfoCallback returns current perso data columns", async function(assert) {
+		await createController({persoService: createResolvingService()});
+
+		oController.openDialog();
+		await waitForDialog();
+
+		const aCols = this.capturedDialogState.settings.columnInfoCallback();
+		assert.ok(Array.isArray(aCols), "columnInfoCallback returned an array.");
+		assert.equal(aCols.length, oTable.getColumns().length, "Array length matches number of table columns.");
+	});
+
+	QUnit.test("openDialog: confirm callback applies personalizations and saves when autoSave is on", async function(assert) {
+		const oService = createResolvingService();
+		await createController({persoService: oService});
+		const oAdjustSpy = this.spy(oController, "_adjustTable");
+		const oSaveSpy = this.spy(oController, "savePersonalizations");
+
+		oController.openDialog();
+		await waitForDialog();
+
+		const oFakeDialogInstance = oController._oDialog;
+		oFakeDialogInstance.retrievePersonalizations = () => ({aColumns: []});
+		this.capturedDialogState.settings.confirm.call(oFakeDialogInstance);
+
+		assert.ok(oAdjustSpy.calledOnce, "_adjustTable was invoked from confirm callback.");
+		assert.ok(oSaveSpy.calledOnce, "savePersonalizations was invoked because autoSave is on.");
+	});
+
+	QUnit.test("openDialog: confirm callback with autoSave=false does not save", async function(assert) {
+		const oService = createResolvingService();
+		await createController({autoSave: false, persoService: oService});
+		const oSaveSpy = this.spy(oController, "savePersonalizations");
+
+		oController.openDialog();
+		await waitForDialog();
+
+		const oFakeDialogInstance = oController._oDialog;
+		oFakeDialogInstance.retrievePersonalizations = () => ({aColumns: []});
+		this.capturedDialogState.settings.confirm.call(oFakeDialogInstance);
+
+		assert.equal(oSaveSpy.callCount, 0, "savePersonalizations not called when autoSave is off.");
+	});
+
+	QUnit.test("openDialog: ServiceReset mode uses getResetPersData to populate initial column state", async function(assert) {
+		await createController();
+		oController.destroy();
+
+		const oResetData = {aColumns: [{id: "reset-col", order: 0}]};
+		const oService = createResolvingService();
+		oService.getResetPersData = () => jqResolved(oResetData);
+
+		oController = new TablePersoController({
+			table: oTable,
+			persoService: oService,
+			resetAllMode: ResetAllMode.ServiceReset
+		});
+
+		oController.openDialog();
+		await waitForDialog();
+
+		const oDialog = oController._oDialog;
+		assert.strictEqual(oDialog._initialColumnState, oResetData.aColumns,
+			"Dialog's initial column state was updated from getResetPersData result.");
+		assert.strictEqual(oDialog._showResetAll, oController.getShowResetAll(),
+			"showResetAll re-enabled after reset data resolved.");
+	});
+
+	QUnit.test("openDialog: ServiceReset mode with falsy reset data leaves showResetAll disabled", async function(assert) {
+		await createController();
+		oController.destroy();
+
+		const oService = createResolvingService();
+		oService.getResetPersData = () => jqResolved(null);
+
+		oController = new TablePersoController({
+			table: oTable,
+			persoService: oService,
+			resetAllMode: ResetAllMode.ServiceReset
+		});
+
+		oController.openDialog();
+		await waitForDialog();
+
+		assert.strictEqual(oController._oDialog._showResetAll, false,
+			"showResetAll remains disabled when reset data is falsy.");
+	});
+
+	QUnit.test("openDialog: subsequent call reuses existing dialog and re-opens it", async function(assert) {
+		await createController({persoService: createResolvingService()});
+
+		oController.openDialog();
+		await waitForDialog();
+		const oFirstDialog = oController._oDialog;
+
+		// Reset the open marker to detect a re-open
+		this.capturedDialogState.opened = false;
+
+		oController.openDialog();
+		// _open is synchronous in the "dialog already exists" branch
+		assert.strictEqual(oController._oDialog, oFirstDialog, "Existing dialog instance was reused.");
+		assert.strictEqual(this.capturedDialogState.opened, true, "Dialog was opened again.");
+	});
 });
