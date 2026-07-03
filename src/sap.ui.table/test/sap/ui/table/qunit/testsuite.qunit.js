@@ -120,6 +120,18 @@ sap.ui.define([
 				group: "Menus",
 				module: "./menus/{name}.qunit"
 			},
+			/**
+			 * @deprecated As of Version 1.117
+			 */
+			"AnalyticalColumnMenu": {
+				group: "Menus"
+			},
+			/**
+			 * @deprecated As of Version 1.117
+			 */
+			"ColumnMenu": {
+				group: "Menus"
+			},
 			"Row": {},
 			"RowAction": {},
 			"RowSettings": {},

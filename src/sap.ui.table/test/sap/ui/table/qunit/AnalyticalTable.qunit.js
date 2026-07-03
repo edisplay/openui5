@@ -11,6 +11,7 @@ sap.ui.define([
 	"sap/ui/core/qunit/analytics/o4aMetadata",
 	"sap/ui/model/TreeAutoExpandMode",
 	"sap/ui/table/AnalyticalColumn",
+	"sap/ui/table/Column",
 	"sap/ui/model/Filter",
 	"sap/ui/model/type/Float",
 	"sap/ui/table/Row",
@@ -18,6 +19,7 @@ sap.ui.define([
 	"sap/ui/core/Element",
 	"sap/m/Title",
 	"sap/m/table/columnmenu/Menu",
+	"sap/base/Log",
 	// provides mock data
 	"sap/ui/core/qunit/analytics/TBA_ServiceDocument",
 	// provides mock data
@@ -33,13 +35,15 @@ sap.ui.define([
 	o4aFakeService,
 	TreeAutoExpandMode,
 	AnalyticalColumn,
+	Column,
 	Filter,
 	FloatType,
 	Row,
 	library,
 	Element,
 	Title,
-	ColumnMenu
+	ColumnMenu,
+	Log
 ) {
 	"use strict";
 
@@ -1870,5 +1874,350 @@ sap.ui.define([
 		this.oTable.unbindRows();
 		assert.deepEqual(this.oTable._getContexts(1, 2, 3), [], "Called without binding: Return value");
 		assert.ok(this.fnBindingNodesSpy.notCalled, "Called without binding: Binding#getNodes not called");
+	});
+
+	QUnit.module("Unsupported operations", {
+		beforeEach: function() {
+			this.oTable = new AnalyticalTable();
+		},
+		afterEach: function() {
+			this.oTable.destroy();
+		}
+	});
+
+	/**
+	 * @deprecated As of version 1.28
+	 */
+	QUnit.test("setGroupBy logs a warning and does not change the association", function(assert) {
+		const oLogWarning = this.stub(Log, "warning");
+		assert.strictEqual(this.oTable.setGroupBy("someColumnId"), this.oTable, "setGroupBy returns the table for chaining");
+		assert.strictEqual(this.oTable.getGroupBy(), null, "groupBy association remains unset");
+		assert.ok(oLogWarning.calledOnce, "Log.warning called once");
+	});
+
+	QUnit.test("_getColumn throws for unsupported column types", function(assert) {
+		assert.throws(() => this.oTable._getColumn(42),
+			new Error("Wrong column type. You need to define a string (property) or pass an AnalyticalColumnObject"));
+	});
+
+	QUnit.test("_getColumn creates an AnalyticalColumn from a string", function(assert) {
+		const oColumn = this.oTable._getColumn("SomeProperty");
+		assert.ok(oColumn instanceof AnalyticalColumn, "Returns an AnalyticalColumn");
+		assert.strictEqual(oColumn.getLeadingProperty(), "SomeProperty", "leadingProperty derived from the string");
+		oColumn.destroy();
+	});
+
+	QUnit.test("_getColumn passes an AnalyticalColumn through unchanged", function(assert) {
+		const oColumn = new AnalyticalColumn();
+		assert.strictEqual(this.oTable._getColumn(oColumn), oColumn, "Returns the same instance");
+		oColumn.destroy();
+	});
+
+	QUnit.test("Methods depending on the binding tolerate an unbound table", function(assert) {
+		assert.deepEqual(this.oTable._getFixedBottomRowContexts(), [], "_getFixedBottomRowContexts returns an empty array");
+		assert.strictEqual(this.oTable._getTotalRowCount(), 0, "_getTotalRowCount returns 0");
+		this.oTable._updateTotalRow(true);
+		assert.deepEqual(this.oTable.getProperty("rowCountConstraints"), {fixedTop: false, fixedBottom: false},
+			"_updateTotalRow keeps fixedBottom disabled");
+	});
+
+	QUnit.test("_getColumnInformation logs an error for non-AnalyticalColumn instances", function(assert) {
+		const oLogError = this.stub(Log, "error");
+		const oPlainColumn = new Column();
+		// AnalyticalColumn adds getLeadingProperty; a plain Column does not. Stub it so the
+		// method can complete after logging.
+		oPlainColumn.getLeadingProperty = () => "P";
+		oPlainColumn.getGrouped = () => false;
+		oPlainColumn.getSummed = () => false;
+		oPlainColumn.getInResult = () => false;
+		oPlainColumn.getGroupHeaderFormatter = () => null;
+
+		this.oTable.addAggregation("columns", oPlainColumn);
+		this.oTable._getColumnInformation();
+
+		assert.ok(oLogError.calledWithMatch(/AnalyticalColumns/), "Log.error called with the expected message");
+	});
+
+	QUnit.module("suspend/resumeUpdateAnalyticalInfo", {
+		beforeEach: function() {
+			this.oTable = new AnalyticalTable();
+		},
+		afterEach: function() {
+			this.oTable.destroy();
+		}
+	});
+
+	QUnit.test("suspend prevents _updateColumns and updateAnalyticalInfo from running", function(assert) {
+		const oUpdateTableColumnDetailsSpy = this.spy(this.oTable, "_updateTableColumnDetails");
+		const oUpdateAnalyticalInfoSpy = this.spy(this.oTable, "updateAnalyticalInfo");
+
+		this.oTable.suspendUpdateAnalyticalInfo();
+		assert.strictEqual(this.oTable._bSuspendUpdateAnalyticalInfo, true, "Suspend flag set");
+
+		this.oTable._updateColumns();
+		assert.ok(oUpdateTableColumnDetailsSpy.notCalled, "_updateTableColumnDetails not called while suspended");
+
+		this.oTable.updateAnalyticalInfo();
+		assert.ok(oUpdateAnalyticalInfoSpy.calledOnce, "updateAnalyticalInfo invoked but returned early");
+	});
+
+	QUnit.test("resume clears the suspend flag and triggers _updateColumns", function(assert) {
+		const oUpdateColumnsSpy = this.spy(this.oTable, "_updateColumns");
+
+		this.oTable.suspendUpdateAnalyticalInfo();
+		this.oTable.resumeUpdateAnalyticalInfo(true, false);
+
+		assert.strictEqual(this.oTable._bSuspendUpdateAnalyticalInfo, false, "Suspend flag cleared");
+		assert.ok(oUpdateColumnsSpy.calledOnceWithExactly(true, false), "_updateColumns called with forwarded arguments");
+	});
+
+	QUnit.test("_updateTableColumnDetails returns early while suspended", function(assert) {
+		this.oTable._bSuspendUpdateAnalyticalInfo = true;
+		const oGetBindingSpy = this.spy(this.oTable, "getBinding");
+
+		this.oTable._updateTableColumnDetails();
+
+		assert.ok(oGetBindingSpy.notCalled, "getBinding not called while suspended");
+	});
+
+	QUnit.module("Column aggregation management", {
+		beforeEach: function() {
+			this.oTable = new AnalyticalTable();
+		},
+		afterEach: function() {
+			this.oTable.destroy();
+		}
+	});
+
+	QUnit.test("insertColumn registers a grouped column", function(assert) {
+		const oGrouped = new AnalyticalColumn({leadingProperty: "A", grouped: true});
+		const oUngrouped = new AnalyticalColumn({leadingProperty: "B"});
+
+		this.oTable.insertColumn(oGrouped, 0);
+		this.oTable.insertColumn(oUngrouped, 1);
+
+		assert.deepEqual(this.oTable.getGroupedColumns(), [oGrouped.getId()], "Only the grouped column is registered");
+		assert.strictEqual(this.oTable.getColumns()[0], oGrouped, "Column inserted at requested index");
+	});
+
+	QUnit.test("removeColumn removes the column id from the grouped-columns list", function(assert) {
+		const oGrouped = new AnalyticalColumn({leadingProperty: "A", grouped: true});
+
+		this.oTable.addColumn(oGrouped);
+		assert.deepEqual(this.oTable.getGroupedColumns(), [oGrouped.getId()], "Grouped column registered on add");
+
+		this.oTable.removeColumn(oGrouped);
+		assert.deepEqual(this.oTable.getGroupedColumns(), [], "Grouped column deregistered on remove");
+
+		oGrouped.destroy();
+	});
+
+	QUnit.test("removeColumn leaves grouped-columns list unchanged during a column reorder", function(assert) {
+		const oGrouped = new AnalyticalColumn({leadingProperty: "A", grouped: true});
+		this.oTable.addColumn(oGrouped);
+
+		this.oTable._bReorderInProcess = true;
+		this.oTable.removeColumn(oGrouped);
+
+		assert.deepEqual(this.oTable.getGroupedColumns(), [oGrouped.getId()],
+			"Grouped column still registered when removal is caused by reorder");
+		this.oTable._bReorderInProcess = false;
+		oGrouped.destroy();
+	});
+
+	QUnit.test("removeAllColumns clears the grouped-columns list", function(assert) {
+		this.oTable.addColumn(new AnalyticalColumn({leadingProperty: "A", grouped: true}));
+		this.oTable.addColumn(new AnalyticalColumn({leadingProperty: "B", grouped: true}));
+
+		const aResult = this.oTable.removeAllColumns();
+
+		assert.strictEqual(aResult.length, 2, "Removed columns are returned");
+		assert.deepEqual(this.oTable.getGroupedColumns(), [], "Grouped-columns list is empty");
+		aResult.forEach((oColumn) => oColumn.destroy());
+	});
+
+	QUnit.test("_removeGroupedColumn removes only the matching id", function(assert) {
+		this.oTable._aGroupedColumns = ["a", "b", "c"];
+
+		this.oTable._removeGroupedColumn("b");
+		assert.deepEqual(this.oTable._aGroupedColumns, ["a", "c"], "Existing id removed");
+
+		this.oTable._removeGroupedColumn("x");
+		assert.deepEqual(this.oTable._aGroupedColumns, ["a", "c"], "Unknown id ignored");
+	});
+
+	/** @deprecated As of version 1.48 */
+	QUnit.module("_metadataLoaded with a v1 model", {
+		beforeEach: function() {
+			this.oTable = new AnalyticalTable();
+		},
+		afterEach: function() {
+			this.oTable.destroy();
+		}
+	});
+
+	QUnit.test("Resolves once the v1 model fires 'metadataLoaded' asynchronously", async function(assert) {
+		let fnMetadataLoadedCallback;
+		const oV1Model = {
+			oMetadata: {isLoaded: () => false},
+			attachMetadataLoaded: (fn) => {
+				fnMetadataLoadedCallback = fn;
+			}
+		};
+		this.stub(this.oTable, "getBinding").returns({getModel: () => oV1Model});
+
+		let bResolved = false;
+		const oPromise = this.oTable._metadataLoaded().then(() => {
+			bResolved = true;
+		});
+
+		// The promise must be pending until the model's metadataLoaded event fires.
+		await Promise.resolve();
+		assert.strictEqual(bResolved, false, "Promise is pending while the model has not yet loaded metadata");
+		assert.strictEqual(typeof fnMetadataLoadedCallback, "function", "attachMetadataLoaded received a callback");
+
+		fnMetadataLoadedCallback();
+		await oPromise;
+		assert.strictEqual(bResolved, true, "Promise resolves after the model fires metadataLoaded");
+	});
+
+	QUnit.module("Analytical Info", {
+		beforeEach: function() {
+			this.oTable = new AnalyticalTable();
+
+			this.oBinding = {
+				getNumberOfExpandedLevels: this.stub().returns(0),
+				setNumberOfExpandedLevels: this.stub(),
+				updateAnalyticalInfo: this.stub(),
+				providesGrandTotal: this.stub().returns(false),
+				hasTotaledMeasures: this.stub().returns(false),
+				getAnalyticalQueryResult: this.stub().returns(null),
+				isMeasure: this.stub().returns(false),
+				nodeHasChildren: this.stub().returns(false),
+				getGroupName: this.stub().returns(""),
+				getModel: this.stub().returns({})
+			};
+			this.stub(this.oTable, "getBinding").returns(this.oBinding);
+			this.stub(this.oTable, "getBindingInfo").returns({parameters: {sumOnTop: false}});
+		},
+		afterEach: function() {
+			this.oTable.destroy();
+		}
+	});
+
+	QUnit.test("updateAnalyticalInfo resets numberOfExpandedLevels when it exceeds grouped-column count", function(assert) {
+		this.oBinding.getNumberOfExpandedLevels.returns(5);
+		this.oTable._aGroupedColumns = ["a"];
+
+		this.oTable.updateAnalyticalInfo(true);
+
+		assert.ok(this.oBinding.setNumberOfExpandedLevels.calledOnceWithExactly(0),
+			"Binding#setNumberOfExpandedLevels called with 0");
+	});
+
+	QUnit.test("updateAnalyticalInfo returns early while suspended", function(assert) {
+		this.oTable._bSuspendUpdateAnalyticalInfo = true;
+
+		this.oTable.updateAnalyticalInfo();
+
+		assert.ok(this.oBinding.updateAnalyticalInfo.notCalled, "Binding#updateAnalyticalInfo not called");
+	});
+
+	QUnit.test("_updateTableColumnDetails skips invisible columns and flags the sole ungrouped dimension", function(assert) {
+		const oUngroupedColumn = new AnalyticalColumn({leadingProperty: "Dim1"});
+		const oInvisibleColumn = new AnalyticalColumn({leadingProperty: "Dim2", visible: false});
+
+		this.oTable.addAggregation("columns", oUngroupedColumn);
+		this.oTable.addAggregation("columns", oInvisibleColumn);
+
+		this.oBinding.getAnalyticalQueryResult.returns({
+			findDimensionByPropertyName: (sName) => ({getName: () => sName})
+		});
+
+		this.oTable._updateTableColumnDetails();
+
+		assert.strictEqual(oUngroupedColumn._isLastGroupableLeft, true,
+			"Ungrouped dimension flagged as last groupable left");
+		assert.strictEqual(oInvisibleColumn._isLastGroupableLeft, false,
+			"Invisible column not touched by the flag-assignment loop");
+	});
+
+	QUnit.test("_getFirstMeasureColumnIndex returns -1 without an analytical query result", function(assert) {
+		this.oBinding.getAnalyticalQueryResult.returns(null);
+		assert.strictEqual(this.oTable._getFirstMeasureColumnIndex(), -1, "Returns -1 without a result set");
+	});
+
+	QUnit.test("_getFirstMeasureColumnIndex returns the index of the first measure column", function(assert) {
+		const oColumnA = new AnalyticalColumn({leadingProperty: "A"});
+		const oColumnB = new AnalyticalColumn({leadingProperty: "B"});
+		const oColumnC = new AnalyticalColumn({leadingProperty: "C"});
+
+		this.stub(this.oTable, "_getVisibleColumns").returns([oColumnA, oColumnB, oColumnC]);
+		this.oBinding.getAnalyticalQueryResult.returns({
+			findMeasureByName: (sName) => (sName === "B" ? {name: sName} : null),
+			findMeasureByPropertyName: () => null
+		});
+
+		assert.strictEqual(this.oTable._getFirstMeasureColumnIndex(), 1, "Index of first measure column");
+		oColumnA.destroy();
+		oColumnB.destroy();
+		oColumnC.destroy();
+	});
+
+	QUnit.module("updateRowState hook", {
+		beforeEach: function() {
+			this.oTable = new AnalyticalTable();
+			this.stub(this.oTable, "getBinding").returns({
+				nodeHasChildren: () => false,
+				getGroupName: () => ""
+			});
+			this.stub(this.oTable, "getBindingInfo").returns({parameters: {sumOnTop: false}});
+		},
+		afterEach: function() {
+			this.oTable.destroy();
+		}
+	});
+
+	QUnit.test("Row state remains untouched when the node has no context", function(assert) {
+		const oState = {
+			context: {context: null, nodeState: {}, level: 0},
+			Type: {Standard: "Standard", GroupHeader: "GroupHeader", Summary: "Summary"},
+			type: "Standard"
+		};
+
+		TableUtils.Hook.call(this.oTable, TableUtils.Hook.Keys.Row.UpdateState, oState);
+
+		assert.strictEqual(oState.context, null, "Context replaced by the inner node context");
+		assert.strictEqual(oState.type, "Standard", "Type unchanged");
+		assert.notOk("expanded" in oState, "Expanded not assigned");
+		assert.notOk("title" in oState, "Title not assigned");
+	});
+
+	/**
+	 * @deprecated As of version 1.115
+	 */
+	QUnit.module("_onPersoApplied", {
+		beforeEach: function() {
+			this.oTable = new AnalyticalTable();
+		},
+		afterEach: function() {
+			this.oTable.destroy();
+		}
+	});
+
+	/**
+	 * @deprecated As of version 1.115
+	 */
+	QUnit.test("Rebuilds the grouped-columns list from currently grouped columns", function(assert) {
+		const oGrouped = new AnalyticalColumn({leadingProperty: "A", grouped: true});
+		const oUngrouped = new AnalyticalColumn({leadingProperty: "B"});
+		this.oTable.addColumn(oGrouped);
+		this.oTable.addColumn(oUngrouped);
+
+		this.oTable._aGroupedColumns = ["stale"];
+		this.oTable._onPersoApplied();
+
+		assert.deepEqual(this.oTable._aGroupedColumns, [oGrouped.getId()],
+			"Grouped-columns list reflects the current grouped columns only");
 	});
 });
