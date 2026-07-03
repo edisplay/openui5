@@ -3567,4 +3567,77 @@ sap.ui.define([
 		oItem.destroy();
 	});
 
+	QUnit.module("FilePreviewDialog video URL encoding (XSS prevention)", {
+		beforeEach: function () {
+			this.oFilePreviewDialog = new FilePreviewDialog();
+			this.oCanPlayStub = sinon.stub(this.oFilePreviewDialog, "_canPlayType").returns("probably");
+		},
+		afterEach: function () {
+			this.oFilePreviewDialog.destroy();
+			this.oCanPlayStub.restore();
+		}
+	});
+
+	QUnit.test("video src attribute is quoted and encodeXML-encoded for a clean URL", async function (assert) {
+		const oItem = new UploadItem({
+			fileName: "video.mp4",
+			mediaType: "video/mp4",
+			url: "test-resources/sap/m/UploadSetwithTableSampleFiles/Video.mp4"
+		});
+
+		const oPage = await this.oFilePreviewDialog.getPageContent(oItem);
+
+		assert.ok(oPage.isA("sap.ui.core.HTML"), "Page content should be an HTML control for video/mp4");
+		const sContent = oPage.getContent();
+		// encodeXML encodes '/' (\x2f) to '&#x2f;' — browser decodes it back before the HTTP request
+		assert.ok(sContent.includes('src="test-resources&#x2f;sap&#x2f;m&#x2f;UploadSetwithTableSampleFiles&#x2f;Video.mp4"'),
+			"src attribute must be quoted and slashes encoded to &#x2f; by encodeXML");
+
+		oPage.destroy();
+		oItem.destroy();
+	});
+
+	QUnit.test("embedded double-quote in URL is encoded — onerror attribute cannot be injected", async function (assert) {
+		const oItem = new UploadItem({
+			fileName: "malicious.mp4",
+			mediaType: "video/mp4",
+			url: 'test-resources/sap/m/UploadSetwithTableSampleFiles/Video.mp4" onerror="alert(\'XSS\')'
+		});
+
+		const oPage = await this.oFilePreviewDialog.getPageContent(oItem);
+
+		assert.ok(oPage.isA("sap.ui.core.HTML"), "Page content should be an HTML control");
+		const sContent = oPage.getContent();
+		// encodeXML maps '"' to '&quot;' — the injected attribute boundary is neutralised
+		assert.notOk(sContent.includes("onerror="),
+			"onerror= must not appear in any form in the rendered HTML after encoding");
+		assert.ok(sContent.includes("&quot;"),
+			"double-quote in the URL is HTML-encoded to &quot; by encodeXML");
+
+		oPage.destroy();
+		oItem.destroy();
+	});
+
+	QUnit.test("URL with query string ampersand is HTML-encoded by encodeXML", async function (assert) {
+		const oItem = new UploadItem({
+			fileName: "video.mp4",
+			mediaType: "video/mp4",
+			url: "/api/files/video.mp4?id=123&token=abc"
+		});
+
+		const oPage = await this.oFilePreviewDialog.getPageContent(oItem);
+
+		assert.ok(oPage.isA("sap.ui.core.HTML"), "Page content should be an HTML control");
+		const sContent = oPage.getContent();
+		// encodeXML encodes '&' to '&amp;' — browser decodes back to '&' before the HTTP request
+		assert.ok(sContent.includes("&amp;"),
+			"ampersand in query string is HTML-encoded to &amp; by encodeXML");
+		// encodeXML also encodes '/' and '?' so raw unquoted src cannot appear
+		assert.notOk(sContent.includes("src=/"),
+			"src attribute must be quoted — unquoted src=/... cannot appear");
+
+		oPage.destroy();
+		oItem.destroy();
+	});
+
 });
