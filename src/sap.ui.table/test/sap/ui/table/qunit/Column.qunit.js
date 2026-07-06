@@ -2018,6 +2018,9 @@ sap.ui.define([
 		assert.ok(oSetFilterValueSpy.notCalled, "setFilterValue not called when the event is prevented");
 	});
 
+	/**
+	 * @deprecated As of Version 1.117
+	 */
 	QUnit.test("#filter reports Error state for columns with invalid filter type", function(assert) {
 		this.oOtherColumn.setFilterProperty("a");
 		this.oOtherColumn.setFilterValue("notANumber");
