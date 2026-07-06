@@ -1,0 +1,17 @@
+{
+  "1.151.0": {
+    "date": "July 2026",
+    "notes": [
+      {
+        "id": "6b9adebfa693d84dc40f0a5bd32dab8c980a7bb3",
+        "type": "FEATURE",
+        "text": " sap.ui.unified.calendar.Month: add showWeekNumbersHeader property"
+      },
+      {
+        "id": "d232f6633b731f17896aadb63b1b1225d331400c",
+        "type": "FIX",
+        "text": " sap.ui.unified.MenuTextFieldItem: Fix  onkeydown and onkeyup event handling"
+      }
+    ]
+  }
+}

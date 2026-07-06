@@ -1,0 +1,12 @@
+{
+  "1.151.0": {
+    "date": "July 2026",
+    "notes": [
+      {
+        "id": "800aa3a343788c01d83791dfead17542ff2cdcff",
+        "type": "FIX",
+        "text": " sap.ui.integration.widgets.CardFacade: hideMessage method is now properly assigned"
+      }
+    ]
+  }
+}

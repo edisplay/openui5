@@ -1,11 +1,86 @@
 {
   "1.151.0": {
-    "date": "June 2026",
+    "date": "July 2026",
     "notes": [
+      {
+        "id": "119ab926ac1f01e886a3c4b82764e5897c8096f1",
+        "type": "FIX",
+        "text": " sap.m.Dialog: Screen reader no longer announces the footer button before the link in content"
+      },
+      {
+        "id": "1c0c614b729c6ee9febb74328a4c819199bb7506",
+        "type": "FIX",
+        "text": " sap.m.MultiInput: no change event on own Token focus"
+      },
+      {
+        "id": "5442fd8d7705c336d3178bd7bf727d040b7b28a4",
+        "type": "FIX",
+        "text": " sap.m.Select: Defer value state popup open() to complete setter chain"
+      },
+      {
+        "id": "bc0b2c666773a9b2a7fd026436a6ef4b95d82944",
+        "type": "FIX",
+        "text": " sap.m.DateRangeSelection: returns parameters based on validity"
+      },
+      {
+        "id": "b3bf4792c349f232dc21f42c8376e614f18e4088",
+        "type": "FIX",
+        "text": " sap.m.Menu: fix hover state for item with open submenu"
+      },
+      {
+        "id": "555f85c3781131af5e891f6f440c0c1540160c58",
+        "type": "FIX",
+        "text": " sap.m.IconTabHeader: End overflow tab now displays correct count on mobile devices"
+      },
+      {
+        "id": "b578ced7866d93f6b31e1f4187337009801f6dac",
+        "type": "FIX",
+        "text": " sap.m.MessagePopover: title level correctly set"
+      },
+      {
+        "id": "6f56ca4a3a52341a2582c402f014ced6e0fcca22",
+        "type": "FIX",
+        "text": " core/Element: Skip focus redirect on same-parent move"
+      },
+      {
+        "id": "1e5bb92b1198e93a4445dbab0769a8760d08cf2d",
+        "type": "FIX",
+        "text": " We've now fixed the invalid aria-label on GenericTile with role=\"presentation\""
+      },
+      {
+        "id": "4b2e60572f980f2bf3275915090b01c825ae7e32",
+        "type": "FIX",
+        "text": " We've now fixed the incorrect list roles in HeaderContainer that were causing incorrect screen reader announcements"
+      },
+      {
+        "id": "99a47c864387609ee50e08979eee2d9d2372355b",
+        "type": "FIX",
+        "text": " sap.m.DynamicDateRange: option value is not stripped if"
+      },
+      {
+        "id": "108aa3b0aa89f079851a3adf6665f4894690a9c9",
+        "type": "FEATURE",
+        "text": " sap.tnt.SideNavigation: add search functionality"
+      },
+      {
+        "id": "1341aa6ca3cea598091092f78928081c1c71e80a",
+        "type": "FIX",
+        "text": " We've fixed an issue where the JAWS screen reader launched an application instead of accessing the overflow menu when you pressed Enter on the More button"
+      },
       {
         "id": "9adce547e9fe6fb29a0e9d3cda7fa9864b8fb39e",
         "type": "FIX",
         "text": " sap.m.Toolbar: Fix arrow key navigation for Slider, RangeSlider and MultiInput"
+      },
+      {
+        "id": "a562220e7967e4bba74841108487a3676e5ff94c",
+        "type": "FIX",
+        "text": " sap.m.MessageBox: box shadow of the header fixed"
+      },
+      {
+        "id": "e27b11c9fa4f3db9d8f785492bbc2ca743a25ab9",
+        "type": "FIX",
+        "text": " We've now fixed the validation issues that occurred when renaming a URL document in UploadSetwithTable"
       },
       {
         "id": "183bcb2b0f5d3f23c23c3761f2bda34309dc4903",

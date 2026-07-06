@@ -1,0 +1,32 @@
+{
+  "1.151.0": {
+    "date": "July 2026",
+    "notes": [
+      {
+        "id": "fd0c1521b4a935f50348d355967fb1381e217e1a",
+        "type": "FIX",
+        "text": " OpaAction: Fix unstable OPA test for page scroll"
+      },
+      {
+        "id": "6f56ca4a3a52341a2582c402f014ced6e0fcca22",
+        "type": "FIX",
+        "text": " core/Element: Skip focus redirect on same-parent move"
+      },
+      {
+        "id": "108aa3b0aa89f079851a3adf6665f4894690a9c9",
+        "type": "FEATURE",
+        "text": " sap.tnt.SideNavigation: add search functionality"
+      },
+      {
+        "id": "f39d4767951f6fbb63104a7592146ff34f5e90fb",
+        "type": "FIX",
+        "text": " TestRunner: Fix test page discovery in Safari"
+      },
+      {
+        "id": "8d1d952b866e9de20bf5e5f55d4ff53fea7fa6b9",
+        "type": "FIX",
+        "text": " sap.ui.test: fix unstable _timeoutWaiter tests on Firefox"
+      }
+    ]
+  }
+}

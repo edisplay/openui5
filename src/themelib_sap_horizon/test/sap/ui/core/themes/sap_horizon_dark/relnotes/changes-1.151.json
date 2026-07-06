@@ -1,0 +1,17 @@
+{
+  "1.151.0": {
+    "date": "July 2026",
+    "notes": [
+      {
+        "id": "0f522da741828275bd6f6ace220882612bc61296",
+        "type": "FIX",
+        "text": " sap.m.Text: Selection background color is fixed"
+      },
+      {
+        "id": "a562220e7967e4bba74841108487a3676e5ff94c",
+        "type": "FIX",
+        "text": " sap.m.MessageBox: box shadow of the header fixed"
+      }
+    ]
+  }
+}
