@@ -349,7 +349,7 @@ sap.ui.define(["sap/base/assert", "sap/base/Log", "sap/ui/thirdparty/jquery"],
 			dialog,
 			i;
 
-		for (i = 0 ; i < aIntances.length; i++) {
+		for (i = 0; i < aIntances.length; i++) {
 			dialog = aIntances[i];
 
 			if (!dialog.getCloseOnNavigation()) {
@@ -360,14 +360,15 @@ sap.ui.define(["sap/base/assert", "sap/base/Log", "sap/ui/thirdparty/jquery"],
 				oDeferred = new jQuery.Deferred().done();
 				aDeferred.push(oDeferred);
 
+				// use _registerCloseCallback instead of the afterClose event,
+				// because afterClose is not fired if the dialog is destroyed while closing
 				/*eslint-disable no-loop-func */
-				dialog.attachEvent("afterClose", (function(def){
+				dialog._registerCloseCallback((function(def){
 					return function() {
 						def.resolve();
 					};
 				}(oDeferred)));
 				/*eslint-enable no-loop-func */
-
 			}
 
 			dialog.close();
