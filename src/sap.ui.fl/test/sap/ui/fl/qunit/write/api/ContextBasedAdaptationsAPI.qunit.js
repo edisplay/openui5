@@ -195,6 +195,10 @@ sap.ui.define([
 				getId() {
 					return "sComponentId";
 				},
+				/**
+				 * @deprecated
+				 * @private
+				 */
 				getComponentData() {
 					return {
 						startupParameters: ["sap-app-id"]
@@ -744,6 +748,10 @@ sap.ui.define([
 				getId() {
 					return "sComponentId";
 				},
+				/**
+				 * @deprecated
+				 * @private
+				 */
 				getComponentData() {
 					return {
 						startupParameters: ["sap-app-id"]
@@ -959,6 +967,10 @@ sap.ui.define([
 				getId() {
 					return "sComponentId";
 				},
+				/**
+				 * @deprecated
+				 * @private
+				 */
 				getComponentData() {
 					return {
 						startupParameters: ["sap-app-id"]
@@ -1090,6 +1102,10 @@ sap.ui.define([
 				getId() {
 					return "sComponentId";
 				},
+				/**
+				 * @deprecated
+				 * @private
+				 */
 				getComponentData() {
 					return {
 						startupParameters: ["sap-app-id"]
@@ -1263,6 +1279,10 @@ sap.ui.define([
 				getId() {
 					return "sComponentId";
 				},
+				/**
+				 * @deprecated
+				 * @private
+				 */
 				getComponentData() {
 					return {
 						startupParameters: ["sap-app-id"]
@@ -1421,6 +1441,10 @@ sap.ui.define([
 				getId() {
 					return "sComponentId";
 				},
+				/**
+				 * @deprecated
+				 * @private
+				 */
 				getComponentData() {
 					return {
 						startupParameters: ["sap-app-id"]
@@ -1531,6 +1555,10 @@ sap.ui.define([
 				getId() {
 					return "sComponentId";
 				},
+				/**
+				 * @deprecated
+				 * @private
+				 */
 				getComponentData() {
 					return {
 						startupParameters: ["sap-app-id"]
@@ -1654,6 +1682,10 @@ sap.ui.define([
 				getId() {
 					return "sComponentId";
 				},
+				/**
+				 * @deprecated
+				 * @private
+				 */
 				getComponentData() {
 					return {
 						startupParameters: ["sap-app-id"]
@@ -1789,6 +1821,10 @@ sap.ui.define([
 				getId() {
 					return "sComponentId";
 				},
+				/**
+				 * @deprecated
+				 * @private
+				 */
 				getComponentData() {
 					return {
 						startupParameters: ["sap-app-id"]

@@ -38,6 +38,10 @@ sap.ui.define([
 			sandbox.stub(Utils, "getAppComponentForControl")
 			.withArgs("invalidComponent").returns(undefined)
 			.withArgs("validComponent").returns("appComponent");
+			/**
+			 * @deprecated
+			 * @private
+			 */
 			sandbox.stub(Utils, "isVariantByStartupParameter").returns(false);
 			sandbox.stub(ManifestUtils, "getFlexReferenceForControl")
 			.withArgs("appComponent").returns("flexReference");
@@ -48,6 +52,10 @@ sap.ui.define([
 			sandbox.restore();
 		}
 	}, function() {
+		/**
+		 * @deprecated
+		 * @private
+		 */
 		QUnit.test("with a variant by startup parameter", async function(assert) {
 			Utils.isVariantByStartupParameter.restore();
 			sandbox.stub(Utils, "isVariantByStartupParameter").returns(true);
@@ -114,6 +122,10 @@ sap.ui.define([
 			sandbox.restore();
 		}
 	}, function() {
+		/**
+		 * @deprecated
+		 * @private
+		 */
 		QUnit.test("detects the app variant id and requests the changes for it", function(assert) {
 			var oView = {
 				sId: "testView"
@@ -168,6 +180,10 @@ sap.ui.define([
 			var sComponentName = "someComponentName";
 
 			var oComponentData = {
+				/**
+				 * @deprecated
+				 * @private
+				 */
 				startupParameters: {
 					"sap-app-id": ["someId"]
 				}

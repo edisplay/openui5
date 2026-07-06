@@ -50,6 +50,10 @@ sap.ui.define([
 			sandbox.restore();
 		}
 	}, function() {
+		/**
+		 * @deprecated
+		 * @private
+		 */
 		QUnit.test("isVariantByStartupParameter can detect a variant by the startup parameter", function(assert) {
 			sandbox.stub(Utils, "getAppComponentForControl").returns({
 				getComponentData() {
@@ -66,6 +70,10 @@ sap.ui.define([
 			assert.equal(bIsStartupParameterBasedVariant, true, "the variant was detected");
 		});
 
+		/**
+		 * @deprecated
+		 * @private
+		 */
 		QUnit.test("isVariantByStartupParameter returns false if no variant by the startup parameter is present", function(assert) {
 			sandbox.stub(Utils, "getAppComponentForControl").returns({
 				getComponentData() {
