@@ -528,6 +528,39 @@ sap.ui.define([
 		});
 	});
 
+	QUnit.test("URL item rename splits name at dot, caps at 40 chars, and blocks dot in name part", async function (assert) {
+		var oModel = this.oUploadSet.getModel();
+		var aItems = oModel.getProperty("/items");
+		aItems.push({ fileName: "sap.com", url: "https://sap.com", enabledEdit: true, visibleEdit: true });
+		oModel.setProperty("/items", aItems);
+		this.oUploadSet.placeAt("qunit-fixture");
+		await nextUIUpdate();
+
+		var oItem = this.oUploadSet.getItems()[2];
+		oItem._getEditButton().firePress();
+		await nextUIUpdate();
+
+		// Name part in input, extension outside, max 36 (40 minus ".com")
+		assert.equal(oItem._getFileNameEdit().getValue(), "sap", "URL item: name part in input");
+		assert.equal(oItem._getFileNameEdit().getDescription(), ".com", "URL item: extension shown separately");
+		assert.equal(oItem._getFileNameEdit().getMaxLength(), 36, "URL item: input capped at 40 minus extension length");
+
+		// Dot in name part → blocked
+		oItem._getFileNameEdit().setValue("google.extra");
+		oItem._getConfirmRenameButton().firePress();
+		await nextUIUpdate();
+		assert.equal(oItem._getFileNameEdit().getValueState(), "Error", "Error state when dot in URL name part");
+		assert.equal(oItem.getFileName(), "sap.com", "Filename unchanged when dot validation fails");
+
+		// Valid name part → saved (full name reconstructed with extension)
+		this.oUploadSet.attachEventOnce("fileRenamed", function (oEvent) {
+			assert.equal(oEvent.getParameter("item").getFileName(), "google.com", "URL item renamed correctly with extension preserved");
+		});
+		oItem._getFileNameEdit().setValue("google");
+		oItem._getConfirmRenameButton().firePress();
+		await nextUIUpdate();
+	});
+
 	QUnit.test("oXhr parameters are not empty", async function (assert) {
 		var oUploader = new Uploader(),
 			oItem = this.oUploadSet.getItems()[0],

@@ -1551,6 +1551,13 @@ sap.ui.define([
 			this._oEditedItem = null;
 			return;
 		}
+
+		if (oItem.getUrl() && !oItem.getMediaType() && sNewFileName.includes(".")) {
+			oEdit.setValueStateText(this._oRb.getText("UPLOADSET_WITH_TABLE_DOCUMENT_RENAME_SPLC_VALIDATION_ERROR_MESSAGE", ["."]));
+			oEdit.setProperty("valueState", "Error", true);
+			oEdit.setShowValueStateMessage(true);
+			return;
+		}
 		if (!this.getSameFilenameAllowed() && UploadSetItem._checkDoubleFileName(sNewFileName + "." + oFile.extension, this._getAllItems())) {
 			oEdit.setValueStateText(this._oRb.getText("UPLOAD_SET_FILE_NAME_EXISTS"));
 			oEdit.setProperty("valueState", "Error", true);
