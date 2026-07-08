@@ -19,9 +19,9 @@
 			"sap/ui/unified/Menu",
 			"sap/ui/unified/MenuItem",
 			"sap/ui/unified/MenuTextFieldItem",
-			"sap/ui/unified/MenuItemsGroup",
+			"sap/ui/unified/MenuItemGroup",
 			"sap/ui/core/library"
-		], function(Button, Menu, MenuItem, MenuTextFieldItem, MenuItemsGroup, coreLibrary) {
+		], function(Button, Menu, MenuItem, MenuTextFieldItem, MenuItemGroup, coreLibrary) {
 
 			var ItemSelectionMode = coreLibrary.ItemSelectionMode;
 
@@ -98,7 +98,7 @@
 								]
 							})
 						}),
-						new MenuItemsGroup({
+						new MenuItemGroup({
 							itemSelectionMode: ItemSelectionMode.MultiSelect,
 							items: [
 								new MenuItem({
@@ -130,7 +130,7 @@
 							startsSection: true,
 							icon: "sap-icon://filter"
 						}),
-						new MenuItemsGroup({
+						new MenuItemGroup({
 							itemSelectionMode: ItemSelectionMode.SingleSelect,
 							items: [
 								new MenuItem({
