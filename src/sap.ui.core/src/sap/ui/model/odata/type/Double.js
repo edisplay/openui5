@@ -110,13 +110,6 @@ sap.ui.define([
 	 *     style: "standard"
 	 *   }]
 	 *   Format options as defined in {@link sap.ui.core.format.NumberFormat.getFloatInstance}.
-	 *   In contrast to NumberFormat <code>groupingEnabled</code> defaults to <code>true</code>.
-	 * @param {boolean} [oFormatOptions.parseEmptyValueToZero=false]
-	 *   Whether the empty string and <code>null</code> are parsed to <code>0</code> if the <code>nullable</code>
-	 *   constraint is set to <code>false</code>; see {@link #parseValue parseValue}; since 1.115.0
-	 * @param {boolean} [oFormatOptions.preserveDecimals=true]
-	 *   by default decimals are preserved, unless <code>oFormatOptions.style</code> is given as
-	 *   "short" or "long" {@since 1.89.0}
 	 * @param {object} [oConstraints]
 	 *   constraints; {@link #validateValue validateValue} throws an error if any constraint is
 	 *   violated

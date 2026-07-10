@@ -159,7 +159,7 @@ sap.ui.define([
 	 * Collapses the group node that this context points to.
 	 *
 	 * @param {boolean} [bAll]
-	 *   Whether to collapse the node and all its descendants {@since 1.132.0}
+	 *   Whether to collapse the node and all its descendants (since 1.132.0)
 	 * @throws {Error}
 	 *   If the context points to a node that
 	 *   <ul>
@@ -703,7 +703,7 @@ sap.ui.define([
 	 * or fully expanded.
 	 *
 	 * @param {boolean} [bAll]
-	 *   Whether to expand the node and all its descendants {@since 1.132.0}
+	 *   Whether to expand the node and all its descendants (since 1.132.0)
 	 * @returns {Promise<void>}
 	 *   A promise which is resolved without a defined result when the expand is successful, or
 	 *   rejected in case of an error
@@ -1997,7 +1997,7 @@ sap.ui.define([
 	 *   exactly the messages for a single row can be updated. Same for a "*" segment or an empty
 	 *   navigation property path.
 	 * @param {string} [sGroupId]
-	 *   The group ID to be used {@since 1.69.0}. If not specified, the
+	 *   The group ID to be used (since 1.69.0). If not specified, the
 	 *   {@link #getUpdateGroupId update group ID} for the context's binding is used. If a different
 	 *   group ID is specified, make sure that {@link #requestSideEffects} is called after the
 	 *   corresponding updates have been successfully processed by the server and that there are no
@@ -2381,7 +2381,7 @@ sap.ui.define([
 	 *   <code>true</code>. Determines the messages property from the annotation
 	 *   "com.sap.vocabularies.Common.v1.Messages" at the entity type. If found, the binding keeps
 	 *   requesting messages until it is destroyed. Otherwise an error is logged in the console and
-	 *   no messages are requested. {@since 1.92.0}
+	 *   no messages are requested. Supported since 1.92.0
 	 * @throws {Error} If
 	 *   <ul>
 	 *     <li> this context is not a list binding's context,
@@ -2528,7 +2528,7 @@ sap.ui.define([
 	 *   annotation, <code>null</code> is used automatically. Since 1.74.0, you can use
 	 *   <code>null</code> to prevent the PATCH request.
 	 * @param {boolean} [bRetry]
-	 *   {@since 1.85.0} If <code>true</code> the property is not reset if the PATCH request failed.
+	 *   Since 1.85.0, if <code>true</code> the property is not reset if the PATCH request failed.
 	 *   It contributes to the pending changes instead (see
 	 *   {@link sap.ui.model.odata.v4.ODataModel#hasPendingChanges},
 	 *   {@link sap.ui.model.odata.v4.ODataContextBinding#hasPendingChanges} and

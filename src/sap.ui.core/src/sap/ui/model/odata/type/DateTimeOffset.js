@@ -43,7 +43,7 @@ sap.ui.define([
 	 *   If <code>true</code>, the value <code>null</code> is accepted
 	 * @param {boolean} [oConstraints.precision=0]
 	 *   The number of decimal places allowed in the seconds portion of a valid string value
-	 *   (OData V4 only); only integer values between 0 and 12 are valid {@since 1.37.0}
+	 *   (OData V4 only); only integer values between 0 and 12 are valid (since 1.37.0)
 	 * @param {boolean} [oConstraints.V4=false]
 	 *   Whether OData V4 semantics apply and the model representation is expected to be a
 	 *   <code>string</code> like "1970-12-31T23:59:58Z" (see {@link #parseValue} and

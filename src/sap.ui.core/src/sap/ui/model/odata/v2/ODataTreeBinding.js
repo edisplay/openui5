@@ -71,7 +71,7 @@ sap.ui.define([
 	 * @param {sap.ui.model.odata.OperationMode} [mParameters.operationMode]
 	 *   The operation mode for this binding
 	 * @param {number} [mParameters.threshold]
-	 *   {@deprecated since 1.102.0, as {@link sap.ui.model.odata.OperationMode.Auto} is deprecated;}
+	 *   Deprecated since 1.102.0, as {@link sap.ui.model.odata.OperationMode.Auto} is deprecated;
 	 *   the threshold that defines how many entries should be fetched at least by the binding if
 	 *   <code>operationMode</code> is set to <code>Auto</code>
 	 * @param {boolean} [mParameters.useServersideApplicationFilters]
@@ -86,9 +86,9 @@ sap.ui.define([
 	 *  @param {boolean} [mParameters.usePreliminaryContext]
 	 *    Whether a preliminary context is used
 	 * @param {string} [mParameters.batchGroupId]
-	 *   {@deprecated as of version 1.31.0, use <code>groupId</code> instead}
+	 *   <b>Deprecated as of version 1.31.0</b>, use <code>groupId</code> instead
 	 * @param {object} [mParameters.navigation]
-	 *   {@deprecated as of version 1.44, for whatever reason} A map describing the navigation properties between entity
+	 *   <b>Deprecated as of version 1.44</b>. A map describing the navigation properties between entity
 	 *   sets, which is used for constructing and paging the tree
 	 * @param {sap.ui.model.Sorter[]|sap.ui.model.Sorter} [vSorters=[]]
 	 *   The sorters used initially; call {@link #sort} to replace them

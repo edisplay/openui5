@@ -203,7 +203,7 @@ sap.ui.define([
 	 * @param {boolean} [bReplaceWithRVC]
 	 *   Whether this operation binding's parent context, which must belong to a list binding, is
 	 *   replaced with the operation's return value context (see below) and that new list context is
-	 *   returned instead. {@since 1.97.0}
+	 *   returned instead. Since 1.97.0.
 	 * @returns {Promise<sap.ui.model.odata.v4.Context|undefined>}
 	 *   A promise that is resolved without data or with a return value context when the operation
 	 *   call succeeded, or rejected with an <code>Error</code> instance <code>oError</code> in case
@@ -1294,7 +1294,7 @@ sap.ui.define([
 	 * @param {boolean} [bIgnoreETag]
 	 *   Whether the entity's ETag should be actively ignored (If-Match:*); supported for bound
 	 *   actions only, since 1.90.0. This parameter is ignored if there is no ETag (since 1.93.0)
-	 *   unless no data has been read so far {@since 1.132.0}.
+	 *   unless no data has been read so far (since 1.132.0).
 	 * @param {function(sap.ui.core.message.Message[]):Promise<boolean>} [fnOnStrictHandlingFailed]
 	 *   If this callback is given for an action, the preference "handling=strict" is applied. If
 	 *   the service responds with the HTTP status code 412 and a

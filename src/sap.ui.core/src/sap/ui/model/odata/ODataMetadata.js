@@ -33,10 +33,10 @@ sap.ui.define([
 	 * @param {string} sMetadataURI needs the correct metadata uri including $metadata
 	 * @param {object} mParams map of parameters.
 	 * @param {boolean} [mParams.async=true] request is per default async
-	 * @param {string} [mParams.user] {@deprecated as of version 1.75.0 for security reasons. Use strong server
-	 *   side authentication instead.} UserID for the service.
-	 * @param {string} [mParams.password] {@deprecated as of version 1.75.0 for security reasons. Use strong server
-	 *   side authentication instead.} Password for the service.
+	 * @param {string} [mParams.user] <b>Deprecated as of version 1.75.0</b> for security reasons. Use strong server
+	 *   side authentication instead. UserID for the service.
+	 * @param {string} [mParams.password] <b>Deprecated as of version 1.75.0</b> for security reasons. Use strong server
+	 *   side authentication instead. Password for the service.
 	 * @param {object} [mParams.headers] (optional) map of custom headers which should be set with the request.
 	 * @param {string} [mParams.cacheKey] (optional) A valid cache key
 	 * @param {string} [mParams.metadata] The metadata XML as string as provided in a back-end response; the

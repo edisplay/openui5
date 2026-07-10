@@ -1248,7 +1248,7 @@ sap.ui.define([
 	 *
 	 * @param {string} [sGroupId]
 	 *   The ID of the group to be checked; if not supplied all groups are checked for pending
-	 *   changes {@since 1.70.0}
+	 *   changes (since 1.70.0)
 	 * @returns {boolean} <code>true</code> if there are pending changes
 	 *
 	 * @public

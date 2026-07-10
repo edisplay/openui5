@@ -200,14 +200,14 @@ sap.ui.define([
 	 *   a string is generated and the keys and values are URL-encoded. The resulting string is appended to the URL if
 	 *   the HTTP request method cannot have a request body, e.g. for a "GET" request. Otherwise, the resulting string
 	 *   is added to the request body.
-	 * @param {boolean} [bAsync=true] {@deprecated as of version 1.107, always use asynchronous
-	 * loading for performance reasons.} By default, all requests are sent asynchronously.
+	 * @param {boolean} [bAsync=true] <b>Deprecated as of Version 1.107</b>; always use asynchronous
+	 * loading for performance reasons. By default, all requests are sent asynchronously.
 	 * Synchronous requests may temporarily lock the browser, disabling any actions while
 	 * the request is active. Cross-domain requests do not support synchronous operations.
 	 * @param {string} [sType="GET"] The HTTP verb to use for the request ("GET" or "POST")
 	 * @param {boolean} [bMerge=false] Whether the data should be merged instead of replaced
-	 * @param {boolean} [bCache=true] {@deprecated as of version 1.107, always use the cache
-	 * headers from the back-end system for performance reasons.} Disables caching if set to
+	 * @param {boolean} [bCache=true] <b>Deprecated as of Version 1.107</b>; always use the cache
+	 * headers from the back-end system for performance reasons. Disables caching if set to
 	 * <code>false</code>.
 	 * @param {object} [mHeaders] An object of additional header key/value pairs to send along with the request
 	 *

@@ -53,7 +53,7 @@ sap.ui.define([
 	 *   <b>Note:</b> The formatted output may differ depending on locale.
 	 * @property {boolean} [preserveDecimals]
 	 *   By default, decimals are preserved unless <code>oFormatOptions.style</code> is given as
-	 *   "short" or "long"; {@since 1.89.0}
+	 *   "short" or "long"; since 1.89.0
 	 * @property {boolean} [showMeasure]
 	 *   Defines whether the currency code or symbol is shown in the formatted string,
 	 *   for example true: "1.00 EUR", false: "1.00" for locale "en"
@@ -123,7 +123,7 @@ sap.ui.define([
 	 *   that is, they can only be set once on construction.
 	 * @param {boolean} [oConstraints.skipDecimalsValidation=false]
 	 *   Whether to skip validation of the number of decimals based on the code list customizing;
-	 *   {@since 1.93.0}
+	 *   since 1.93.0
 	 * @throws {Error}
 	 *   If
 	 *   <ul>

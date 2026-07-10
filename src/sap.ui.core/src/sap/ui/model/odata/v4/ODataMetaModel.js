@@ -179,7 +179,7 @@ sap.ui.define([
 		 *   The URL to the $metadata document of the service
 		 * @param {string|string[]} [vAnnotationURL]
 		 *   The URL (or an array of URLs) from which the annotation metadata are loaded
-		 *   {@since 1.41.0}
+		 *   Supported since 1.41.0
 		 * @param {sap.ui.model.odata.v4.ODataModel} oModel
 		 *   The model this meta model is related to
 		 * @param {boolean} [bSupportReferences=true]
@@ -561,7 +561,7 @@ sap.ui.define([
 	 *   The URL to the $metadata document of the service
 	 * @param {string|string[]} [vAnnotationURL]
 	 *   The URL (or an array of URLs) from which the annotation metadata are loaded
-	 *   {@since 1.41.0}
+	 *   Supported since 1.41.0
 	 * @param {sap.ui.model.odata.v4.ODataModel} oModel
 	 *   The model this meta model is related to
 	 * @param {boolean} [bSupportReferences=true]
@@ -1029,7 +1029,7 @@ sap.ui.define([
 	 *   Whether {@link sap.ui.model.PropertyBinding#getValue} may return a <code>Promise</code>
 	 *   resolving with the value (since 1.57.0)
 	 * @param {object} [mParameters.scope]
-	 *   Optional scope for lookup of aliases for computed annotations {@since 1.43.0}
+	 *   Optional scope for lookup of aliases for computed annotations (since 1.43.0)
 	 * @returns {sap.ui.model.PropertyBinding}
 	 *   A property binding for this metadata model
 	 *
@@ -1176,7 +1176,7 @@ sap.ui.define([
 	 *   Whether a computed annotation may return a <code>Promise</code> resolving with its value
 	 *   (since 1.57.0)
 	 * @param {object} [mParameters.scope]
-	 *   Optional scope for lookup of aliases for computed annotations {@since 1.43.0}
+	 *   Optional scope for lookup of aliases for computed annotations (since 1.43.0)
 	 * @returns {sap.ui.base.SyncPromise<object>}
 	 *   A promise which is resolved with the requested metadata object as soon as it is available;
 	 *   it is rejected if the requested metadata cannot be loaded
@@ -1804,7 +1804,7 @@ sap.ui.define([
 	 * @param {string} sPath
 	 *   An absolute path to an OData property within the OData data model
 	 * @param {object} [mFormatOptions]
-	 *   Type-specific format options {@since 1.81.0}. The boolean format option
+	 *   Type-specific format options, since 1.81.0. The boolean format option
 	 *   "parseKeepsEmptyString" applies to {@link sap.ui.model.odata.type.String} only and is
 	 *   ignored for all other types. All other format options are passed "as is".
 	 * @returns {sap.ui.base.SyncPromise<sap.ui.model.odata.type.ODataType>}
@@ -2546,7 +2546,7 @@ sap.ui.define([
 	 * @param {object} [mParameters]
 	 *   Optional (binding) parameters; if they are given, <code>oContext</code> cannot be omitted
 	 * @param {object} [mParameters.scope]
-	 *   Optional scope for lookup of aliases for computed annotations {@since 1.43.0}
+	 *   Optional scope for lookup of aliases for computed annotations (since 1.43.0)
 	 * @returns {any|undefined}
 	 *   The requested metadata object if it is already available, or <code>undefined</code>
 	 *
@@ -2684,7 +2684,7 @@ sap.ui.define([
 	 * @param {string} sPath
 	 *   An absolute path to an OData property within the OData data model
 	 * @param {object} [mFormatOptions]
-	 *   Type-specific format options {@since 1.81.0}. The boolean format option
+	 *   Type-specific format options, since 1.81.0. The boolean format option
 	 *   "parseKeepsEmptyString" applies to {@link sap.ui.model.odata.type.String} only and is
 	 *   ignored for all other types. All other format options are passed "as is".
 	 * @returns {sap.ui.model.odata.type.ODataType}
@@ -3307,7 +3307,7 @@ sap.ui.define([
 	 * @param {string} sPath
 	 *   An absolute path to an OData property within the OData data model
 	 * @param {object} [mFormatOptions]
-	 *   Type-specific format options {@since 1.81.0}. The boolean format option
+	 *   Type-specific format options, since 1.81.0. The boolean format option
 	 *   "parseKeepsEmptyString" applies to {@link sap.ui.model.odata.type.String} only and is
 	 *   ignored for all other types. All other format options are passed "as is".
 	 * @returns {Promise<sap.ui.model.odata.type.ODataType>}
@@ -3447,11 +3447,11 @@ sap.ui.define([
 	 * @param {boolean} [bAutoExpandSelect]
 	 *   The value of the parameter <code>autoExpandSelect</code> for value list models created by
 	 *   this method. If the value list model is the data model associated with this meta model,
-	 *   this flag has no effect. {@since 1.68.0}
+	 *   this flag has no effect. Supported since 1.68.0
 	 * @param {sap.ui.model.odata.v4.Context} [oContext]
 	 *   Context to resolve "14.4.1.7 Expression edm:Path" references contained in a
-	 *   "com.sap.vocabularies.Common.v1.ValueListRelevantQualifiers" annotation. {@since
-	 *   1.84.0}
+	 *   "com.sap.vocabularies.Common.v1.ValueListRelevantQualifiers" annotation. Supported since
+	 *   1.84.0
 	 * @returns {Promise<Object<object>>}
 	 *   A promise which is resolved with a map of qualifier to value list mapping objects
 	 *   structured as defined by <code>com.sap.vocabularies.Common.v1.ValueListType</code>;
