@@ -66,7 +66,7 @@ const rQuestionMarkOrHash = /[?#]/;
  * @param {sap.ui.model.odata.ODataMetadata} oMetadata
  *   The ODataMetadata object
  * @param {boolean} bPersistTechnicalMessages
- *   Whether technical messages should always be treated as persistent, since 1.83.0
+ *   Whether technical messages should always be treated as persistent {@since 1.83.0}
  *
  * @class
  *   OData implementation of the sap.ui.core.message.MessageParser class. Parses message responses

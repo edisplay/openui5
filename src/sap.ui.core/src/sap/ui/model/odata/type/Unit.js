@@ -116,8 +116,8 @@ sap.ui.define([
 	 *   Only the 'skipDecimalsValidation' constraint is supported. Constraints are immutable,
 	 *   that is, they can only be set once on construction.
 	 * @param {boolean} [oConstraints.skipDecimalsValidation=false]
-	 *   Whether to skip validation of the number of decimals based on the code list customizing;
-	 *   since 1.93.0
+	 *   Whether to skip validation of the number of decimals based on the code list customizing
+	 *   {@since 1.93.0}
 	 * @param {string[]} [aDynamicFormatOptionNames] Not supported
 	 * @throws {Error}
 	 *   If

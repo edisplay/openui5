@@ -113,9 +113,8 @@ sap.ui.define([
 		 * @param {boolean} [mParameters.autoExpandSelect]
 		 *   Whether the OData model's bindings automatically generate $select and $expand system
 		 *   query options from the binding hierarchy. Note: Dynamic changes to the binding
-		 *   hierarchy are not supported. This parameter is supported since 1.47.0, and since 1.75.0
-		 *   it also enables property paths containing navigation properties in
-		 *   <code>$select</code>.
+		 *   hierarchy are not supported. {@since 1.47.0} Since 1.75.0, this parameter also
+		 *   enables property paths containing navigation properties in <code>$select</code>.
 		 * @param {boolean} [mParameters.earlyRequests]
 		 *   Whether the following is requested at the earliest convenience:
 		 *   <ul>
@@ -124,7 +123,7 @@ sap.ui.define([
 		 *   </ul>
 		 *   Note: The root $metadata document and annotation files are just requested but not yet
 		 *   converted from XML to JSON unless really needed.
-		 *   Supported since 1.53.0.
+		 *   {@since 1.53.0}
 		 *   <b>BEWARE:</b> The default value may change to <code>true</code> in later releases.
 		 *   You may also set {@link topic:26ba6a5c1e5c417f8b21cce1411dba2c Manifest Model Preload}
 		 *   in order to further speed up the start of a UI5 component.
@@ -143,11 +142,11 @@ sap.ui.define([
 		 *   Whether to ignore all annotations from service metadata and "cross-service references";
 		 *   only the value <code>true</code> is allowed. Only annotations from annotation files
 		 *   (see parameter "annotationURI") are loaded. This parameter is not inherited by value
-		 *   list models. Supported since 1.121.0
+		 *   list models. {@since 1.121.0}
 		 * @param {object} [mParameters.metadataUrlParams]
 		 *   Additional map of URL parameters used specifically for $metadata requests. Note that
 		 *   "sap-context-token" applies only to the service's root $metadata, but not to
-		 *   "cross-service references". Supported since 1.81.0
+		 *   "cross-service references". {@since 1.81.0}
 		 * @param {string} [mParameters.odataVersion="4.0"]
 		 *   The version of the OData service. Supported values are "2.0", "4.0", and "4.01".
 		 *   <b>Note:</b> "2.0" is deprecated since 1.143.0. We recommend migrating your service to
@@ -178,8 +177,8 @@ sap.ui.define([
 		 *   are supported in order to load schemas on demand from other $metadata documents and
 		 *   include them into the current service ("cross-service references").
 		 * @param {string} [mParameters.synchronizationMode]
-		 *   <b>deprecated:</b> As of Version 1.110.0, this parameter is obsolete; see also
-		 *   {@link topic:648e360fa22d46248ca783dc6eb44531 Data Reuse}
+		 *   {@deprecated As of Version 1.110.0, this parameter is obsolete; see also
+		 *   {@link topic:648e360fa22d46248ca783dc6eb44531 Data Reuse}}
 		 *   (Controls synchronization between different bindings which refer to the same data for
 		 *   the case data changes in one binding. Must be set to 'None' which means bindings are
 		 *   not synchronized at all; all other values are not supported and lead to an error.)
@@ -189,7 +188,7 @@ sap.ui.define([
 		 *   <code>undefined</code>, '$auto', '$auto.*', '$direct' or an application group ID.
 		 * @param {boolean} [mParameters.withCredentials]
 		 *   Whether the XMLHttpRequest is called with <code>withCredentials</code>, so that user
-		 *   credentials are included in cross-origin requests by the browser (since 1.120.0)
+		 *   credentials are included in cross-origin requests by the browser {@since 1.120.0}
 		 * @throws {Error} If an unsupported synchronization mode is given, if the given service
 		 *   root URL does not end with a forward slash, if an unsupported parameter is given, if
 		 *   OData system query options or parameter aliases are specified as parameters, if an
@@ -973,8 +972,8 @@ sap.ui.define([
 	 *   Whether the binding always uses an own service request to read its data; only the value
 	 *   <code>true</code> is allowed.
 	 * @param {string[]} [mParameters.$$separate]
-	 *   An array of navigation property names which are omitted from the main list request (since
-	 *   1.137.0). Instead, each of them is loaded in a separate request. This results in the main
+	 *   An array of navigation property names which are omitted from the main list request {@since
+	 *   1.137.0}. Instead, each of them is loaded in a separate request. This results in the main
 	 *   list becoming available faster, while the separate properties are merged as soon as the
 	 *   data is received. Note that the separate properties must be single valued. If they are not
 	 *   part of the '$expand' system query option, either automatically via the "autoExpandSelect"
@@ -1106,8 +1105,8 @@ sap.ui.define([
 	 *   Valid values are <code>undefined</code>, '$auto', '$auto.*', '$direct' or application group
 	 *   IDs as specified in {@link sap.ui.model.odata.v4.ODataModel}.
 	 * @param {boolean} [mParameters.$$ignoreMessages]
-	 *   Whether this binding does not propagate model messages to the control; supported since
-	 *   1.82.0. Some composite types like {@link sap.ui.model.odata.type.Currency} or
+	 *   Whether this binding does not propagate model messages to the control {@since
+	 *   1.82.0}. Some composite types like {@link sap.ui.model.odata.type.Currency} or
 	 *   {@link sap.ui.model.odata.type.Unit} automatically ignore messages for some of their parts
 	 *   depending on their format options; setting this parameter to <code>true</code> or
 	 *   <code>false</code> overrules the automatism of the type.
@@ -1907,7 +1906,7 @@ sap.ui.define([
 	 * "SAP-ContextId" header is only included if requested explicitly (since 1.86.0).
 	 *
 	 * @param {boolean} [bIncludeContextId]
-	 *   Whether to include the "SAP-ContextId" header (since 1.86.0)
+	 *   Whether to include the "SAP-ContextId" header {@since 1.86.0}
 	 * @returns {Object<string>}
 	 *   The map of HTTP headers
 	 *
@@ -1951,7 +1950,7 @@ sap.ui.define([
 	 * @param {boolean} [bRequestMessages]
 	 *   Whether to request messages for the context's entity
 	 * @param {object} [mParameters]
-	 *   Parameters for the context or the temporary binding; supported since 1.100.0. All custom
+	 *   Parameters for the context or the temporary binding {@since 1.100.0}. All custom
 	 *   query options and the following binding-specific parameters for a list binding may be given
 	 *   (see {@link #bindList} for details).
 	 * @param {string} [mParameters.$$groupId]

@@ -247,7 +247,7 @@ sap.ui.define([
 			 *   a parameter; needed to strip off the binding parameter's name from any dynamic
 			 *   "14.4.1.7 Expression edm:Path" and "14.4.1.6 Expression edm:PropertyPath" where it
 			 *   might be used as a first segment (since 1.71.0). This does not apply to annotations
-			 *   on a parameter (since 1.76.0).
+			 *   on a parameter {@since 1.76.0}.
 			 * @returns {string|Promise<string>}
 			 *   A data binding, or a fixed text, or a sequence thereof, or a <code>Promise</code>
 			 *   resolving with that string, for example if not all type information is already
@@ -427,7 +427,7 @@ sap.ui.define([
 			 *   The details object
 			 * @param {boolean} [oDetails.$$valueAsPromise]
 			 *   Whether a <code>Promise</code> may be returned if the needed metadata is not yet
-			 *   loaded (since 1.57.0)
+			 *   loaded {@since 1.57.0}
 			 * @param {sap.ui.model.Context} oDetails.context
 			 *   Points to the given path, that is
 			 *   <code>oDetails.context.getProperty("") === vRawValue</code>
@@ -481,7 +481,7 @@ sap.ui.define([
 			 *   The details object
 			 * @param {boolean} [oDetails.$$valueAsPromise]
 			 *   Whether a <code>Promise</code> may be returned if the needed metadata is not yet
-			 *   loaded (since 1.57.0)
+			 *   loaded {@since 1.57.0}
 			 * @param {sap.ui.model.Context} oDetails.context
 			 *   Points to the given path, that is
 			 *   <code>oDetails.context.getProperty("") === sPath</code>
@@ -544,7 +544,7 @@ sap.ui.define([
 			 *   The details object
 			 * @param {boolean} [oDetails.$$valueAsPromise]
 			 *   Whether a <code>Promise</code> may be returned if the needed metadata is not yet
-			 *   loaded (since 1.57.0)
+			 *   loaded {@since 1.57.0}
 			 * @param {sap.ui.model.Context} oDetails.context
 			 *   Points to the given raw value, that is
 			 *   <code>oDetails.context.getProperty("") === vRawValue</code>
@@ -784,7 +784,7 @@ sap.ui.define([
 			 *   a parameter; needed to strip off the binding parameter's name from any dynamic
 			 *   "14.4.1.7 Expression edm:Path" and "14.4.1.6 Expression edm:PropertyPath" where it
 			 *   might be used as a first segment (since 1.72.0). This does not apply to annotations
-			 *   on a parameter (since 1.76.0).
+			 *   on a parameter {@since 1.76.0}.
 			 * @param {string} [oDetails.prefix=""]
 			 *   Optional prefix to be added to each dynamic "14.4.1.7 Expression edm:Path" and
 			 *   "14.4.1.6 Expression edm:PropertyPath"; is either an empty string or a path ending

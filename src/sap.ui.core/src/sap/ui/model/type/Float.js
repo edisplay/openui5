@@ -57,6 +57,11 @@ sap.ui.define([
 	 *     style: "standard"
 	 *   }]
 	 *   Format options as defined in {@link sap.ui.core.format.NumberFormat.getFloatInstance}
+	 * @param {boolean} [oFormatOptions.preserveDecimals=true]
+	 *   By default decimals are preserved, unless <code>oFormatOptions.style</code> is given as
+	 *   "short" or "long" {@since 1.89.0}
+	 * @param {object} [oFormatOptions.source] Additional set of format options to be used if the property in the model is not of type string and needs formatting as well.
+	 * 										   If an empty object is given, the grouping is disabled and a dot is used as decimal separator.
 	 * @param {object} [oConstraints] Value constraints
 	 * @param {float} [oConstraints.minimum] Smallest value allowed for this type
 	 * @param {float} [oConstraints.maximum] Largest value allowed for this type
