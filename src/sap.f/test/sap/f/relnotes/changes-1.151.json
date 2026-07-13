@@ -1,0 +1,22 @@
+{
+  "1.151.0": {
+    "date": "July 2026",
+    "notes": [
+      {
+        "id": "6c53cb88d0ac4e3c1771f47eda200547c6b5f54b",
+        "type": "FIX",
+        "text": " sap.ui.integration.widgets.Card: Resolve snack card dialog resize on loading"
+      },
+      {
+        "id": "be3155004c9b989c6d9a7e332c500f988a73f926",
+        "type": "FIX",
+        "text": " sap.f.DynamicPageTitle: Associate action toolbars with heading"
+      },
+      {
+        "id": "20b5a5f501c3bb4b5ae0eafd2efe82c44ed6b49b",
+        "type": "FIX",
+        "text": " sap.f.DynamicPageTitle: refresh accessible name on title text changes"
+      }
+    ]
+  }
+}

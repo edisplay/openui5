@@ -3,6 +3,21 @@
     "date": "July 2026",
     "notes": [
       {
+        "id": "0e9fafe48db35cd617120695a81f272441d4166a",
+        "type": "FIX",
+        "text": " message/MessageMixin: Fix additional text generation"
+      },
+      {
+        "id": "67abd96c3cdc212b3d833ece662319b76ffbbd4c",
+        "type": "FIX",
+        "text": " sap.ui.test: fix type signature of matcher modules that export factory functions"
+      },
+      {
+        "id": "1d686f8c575bb83bfeaff45bd2f08af9f138ff53",
+        "type": "FIX",
+        "text": " sap.ui.security.FrameOptions: Harden allowlist host matching"
+      },
+      {
         "id": "fd0c1521b4a935f50348d355967fb1381e217e1a",
         "type": "FIX",
         "text": " OpaAction: Fix unstable OPA test for page scroll"

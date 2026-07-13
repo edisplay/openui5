@@ -3,6 +3,36 @@
     "date": "July 2026",
     "notes": [
       {
+        "id": "efaf22c1dcb7b438074bc84624c09eea54171ebb",
+        "type": "FIX",
+        "text": " sap.m.Toolbar: fix arrow-key navigation issue"
+      },
+      {
+        "id": "e0742165e64c242069e8a5e1f52b33f7db0eb0ac",
+        "type": "FIX",
+        "text": " sap.m.ColorPalette: fix buttons active state"
+      },
+      {
+        "id": "7f1e187150cf14f8557b04628db769c067a1a12c",
+        "type": "FIX",
+        "text": " mdc/SmartChart: 'View By' popover now have correct announcement."
+      },
+      {
+        "id": "9dd86eda46333d09f2d042e652af6b1845211cab",
+        "type": "FIX",
+        "text": " sap.m.MessageBox: Dialog role is now set based on the message type"
+      },
+      {
+        "id": "1143dab1826c2809ea8673b8463c90cab9b8f14a",
+        "type": "FIX",
+        "text": " sap.m.ObjectHeader: image is decorative if the alt is empty"
+      },
+      {
+        "id": "437026fccb4a774db7272b804250314009a2ce95",
+        "type": "FEATURE",
+        "text": " We've now introduced AdditionalPriority property for generic tile when ActionMode or Article Mode containing FrameType Stretch is enabled"
+      },
+      {
         "id": "119ab926ac1f01e886a3c4b82764e5897c8096f1",
         "type": "FIX",
         "text": " sap.m.Dialog: Screen reader no longer announces the footer button before the link in content"

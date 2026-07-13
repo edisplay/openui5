@@ -1,0 +1,12 @@
+{
+  "1.151.0": {
+    "date": "July 2026",
+    "notes": [
+      {
+        "id": "20b5a5f501c3bb4b5ae0eafd2efe82c44ed6b49b",
+        "type": "FIX",
+        "text": " sap.f.DynamicPageTitle: refresh accessible name on title text changes"
+      }
+    ]
+  }
+}

@@ -3,6 +3,16 @@
     "date": "July 2026",
     "notes": [
       {
+        "id": "e0742165e64c242069e8a5e1f52b33f7db0eb0ac",
+        "type": "FIX",
+        "text": " sap.m.ColorPalette: fix buttons active state"
+      },
+      {
+        "id": "bf7766e2ac98d38b2a34a270e10b7bba4d1d1d89",
+        "type": "FIX",
+        "text": " sap.m.Button: active state has correct color"
+      },
+      {
         "id": "0f522da741828275bd6f6ace220882612bc61296",
         "type": "FIX",
         "text": " sap.m.Text: Selection background color is fixed"

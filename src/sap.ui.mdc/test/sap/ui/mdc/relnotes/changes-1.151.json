@@ -3,6 +3,16 @@
     "date": "July 2026",
     "notes": [
       {
+        "id": "7f1e187150cf14f8557b04628db769c067a1a12c",
+        "type": "FIX",
+        "text": " mdc/SmartChart: 'View By' popover now have correct announcement."
+      },
+      {
+        "id": "075e2cf4513e7fb5e41d8aa053583dda581f399d",
+        "type": "FIX",
+        "text": " Table: Duplicate ID issue in filter info bar handling"
+      },
+      {
         "id": "6dfef7f1488d622b1d050f21921c81152c050898",
         "type": "FIX",
         "text": " Adapt Filters Dialog: invisible label for mode switch"

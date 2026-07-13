@@ -3,6 +3,11 @@
     "date": "July 2026",
     "notes": [
       {
+        "id": "a3151560bd9fe9f444747aa6ebb79b0b9b13b355",
+        "type": "FIX",
+        "text": " sap.ui.unified.FileUploader: fix control width in Bar/Toolbar/OverflowToolbar"
+      },
+      {
         "id": "6b9adebfa693d84dc40f0a5bd32dab8c980a7bb3",
         "type": "FEATURE",
         "text": " sap.ui.unified.calendar.Month: add showWeekNumbersHeader property"
