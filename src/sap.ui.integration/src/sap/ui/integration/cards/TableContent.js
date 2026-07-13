@@ -5,7 +5,6 @@
 sap.ui.define([
 	"./BaseListContent",
 	"./TableContentRenderer",
-	"sap/ui/integration/library",
 	"sap/f/cards/loading/TablePlaceholder",
 	"sap/m/Table",
 	"sap/m/Column",
@@ -26,7 +25,6 @@ sap.ui.define([
 ], function (
 	BaseListContent,
 	TableContentRenderer,
-	library,
 	TablePlaceholder,
 	ResponsiveTable,
 	Column,
@@ -101,7 +99,14 @@ sap.ui.define([
 	TableContent.prototype.onBeforeRendering = function () {
 		BaseListContent.prototype.onBeforeRendering.apply(this, arguments);
 
-		this._getTable().setBackgroundDesign(this.getDesign());
+		const oTable = this._getTable();
+
+		oTable.setBackgroundDesign(this.getDesign());
+
+		if (this.isInDialog()) {
+			oTable.setWidth("auto");
+			oTable.setFixedLayout(false);
+		}
 	};
 
 	TableContent.prototype.exit = function () {
@@ -192,17 +197,6 @@ sap.ui.define([
 			hiddenInPopin: oConfiguration.hiddenInPopin,
 			popinLayout: oConfiguration.popinLayout
 		});
-	};
-
-	/**
-	 * @override
-	 */
-	TableContent.prototype.onOpenInDialog = function () {
-		BaseListContent.prototype.onOpenInDialog.apply(this, arguments);
-
-		const oTable = this._getTable();
-		oTable.setWidth("auto");
-		oTable.setFixedLayout(false);
 	};
 
 	/**
