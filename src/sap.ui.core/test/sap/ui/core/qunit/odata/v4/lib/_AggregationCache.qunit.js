@@ -5254,6 +5254,22 @@ sap.ui.define([
 		if (sGroupId) {
 			const oExpectedBackupFirstLevel = bReuse ? null : oFirstLevel;
 			assert.deepEqual(oCache.oBackup, {
+				mKeptElements : {
+					bar : {
+						"@$ui5._" : {a : 0, b : 1, predicate : "bar"},
+						"@$ui5.node.isExpanded" : false,
+						"@$ui5.node.isTotal" : "n/a",
+						"@$ui5.node.level" : 1,
+						name : "bar"
+					},
+					foo : {
+						"@$ui5._" : {a : -3, b : 4, predicate : "foo"},
+						"@$ui5.node.isExpanded" : undefined,
+						"@$ui5.node.isTotal" : "n/a",
+						"@$ui5.node.level" : 4,
+						name : "foo"
+					}
+				},
 				oCountPromise : "~oCountPromise~",
 				oFirstLevel : oExpectedBackupFirstLevel,
 				oGrandTotalPromise : "~oGrandTotalPromise~",
@@ -5340,12 +5356,25 @@ sap.ui.define([
 			oResultingFirstLevelMock = this.mock(oResultingFirstLevel);
 
 		oCache.bUnifiedCache = "~bOldUnifiedCache~";
+		oCache.aElements.$byPredicate = {
+			"('1')" : {name : "keep alive"}
+		};
 		oCache.oBackup = bReally
 			? {
 				oCountPromise : "~oNewCountPromise~",
 				// either restore oFirstLevel from backup or call #restore on the old one
 				oFirstLevel : bCallRestore ? null : oNewFirstLevel,
 				oGrandTotalPromise : "~oNewGrandTotalPromise~",
+				mKeptElements : {
+					"('1')" : {
+						"@$ui5._" : "~@$ui5._~",
+						"@$ui5.node.isExpanded" : false,
+						"@$ui5.node.level" : 1,
+						// don't restore other properties
+						name : "n/a",
+						foo : "n/a"
+					}
+				},
 				bUnifiedCache : "~bNewUnifiedCache~"
 			}
 			: null;
@@ -5370,6 +5399,16 @@ sap.ui.define([
 			bReally ? "~oNewGrandTotalPromise~" : "~oOldGrandTotalPromise~");
 		assert.strictEqual(oCache.bUnifiedCache,
 			bReally ? "~bNewUnifiedCache~" : "~bOldUnifiedCache~");
+		assert.deepEqual(oCache.aElements.$byPredicate, {
+			"('1')" : bReally
+				? {
+					"@$ui5._" : "~@$ui5._~",
+					"@$ui5.node.isExpanded" : false,
+					"@$ui5.node.level" : 1,
+					name : "keep alive"
+				}
+				: {name : "keep alive"}
+		});
 	});
 	});
 });
