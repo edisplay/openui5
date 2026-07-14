@@ -592,6 +592,24 @@ sap.ui.define([
 		});
 	});
 
+	QUnit.test("Edit and Delete buttons have descriptive aria-label without filename", function (assert) {
+		var oItem = this.oUploadSet.getItems()[0];
+
+		var oEditButton = oItem._getEditButton();
+		var oDeleteButton = oItem._getDeleteButton();
+
+		var oBundle = oItem._oRb;
+
+		// Resolve the aria-labelledby text for each button
+		var sEditLabelText = document.getElementById(oEditButton.getAriaLabelledBy()[0])?.textContent;
+		var sDeleteLabelText = document.getElementById(oDeleteButton.getAriaLabelledBy()[0])?.textContent;
+
+		assert.strictEqual(sEditLabelText, oBundle.getText("UPLOAD_SET_EDIT_BUTTON_ARIA_LABEL"),
+			"Edit button aria-labelledby text should be 'Edit file'.");
+		assert.strictEqual(sDeleteLabelText, oBundle.getText("UPLOAD_SET_DELETE_BUTTON_ARIA_LABEL"),
+			"Delete button aria-labelledby text should be 'Delete file'.");
+	});
+
 	QUnit.test("Edit mode label is not created before edit mode is entered", function (assert) {
 		var oItem = this.oUploadSet.getItems()[0];
 
