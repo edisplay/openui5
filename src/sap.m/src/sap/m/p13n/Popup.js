@@ -18,7 +18,8 @@ sap.ui.define([
 	"sap/ui/core/library",
 	"sap/ui/core/syncStyleClass",
 	"sap/ui/model/json/JSONModel",
-	"sap/ui/core/ShortcutHintsMixin"
+	"sap/ui/core/ShortcutHintsMixin",
+	"sap/ui/core/InvisibleMessage"
 ], (
 	Control,
 	Button,
@@ -36,7 +37,8 @@ sap.ui.define([
 	coreLibrary,
 	syncStyleClass,
 	JSONModel,
-	ShortcutHintsMixin
+	ShortcutHintsMixin,
+	InvisibleMessage
 ) => {
 	"use strict";
 
@@ -44,7 +46,7 @@ sap.ui.define([
 	const {P13nPopupMode} = mLibrary;
 
 	//Shortcut to sap.ui.core.TitleLevel
-	const {TitleLevel, InvisibleMessage, InvisibleMessageMode} = coreLibrary;
+	const {TitleLevel, InvisibleMessageMode} = coreLibrary;
 
 	/**
 	 * Constructor for a new <code>Popup</code>.
