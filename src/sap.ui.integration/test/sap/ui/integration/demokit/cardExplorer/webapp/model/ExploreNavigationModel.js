@@ -633,6 +633,21 @@ sap.ui.define([
 										editable: true
 									}
 								]
+							},
+							{
+								title: 'Value Entries',
+								key: 'valueEntries',
+								settings: {
+									columns: 5
+								},
+								files: [
+									{
+										url: '/samples/object/valueEntries.json',
+										name: 'manifest.json',
+										key: 'manifest.json',
+										editable: true
+									}
+								]
 							}
 						]
 					},
