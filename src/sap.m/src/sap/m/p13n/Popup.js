@@ -18,7 +18,8 @@ sap.ui.define([
 	"sap/ui/core/Lib",
 	"sap/ui/core/library",
 	"sap/ui/model/json/JSONModel",
-	"sap/ui/core/ShortcutHintsMixin"
+	"sap/ui/core/ShortcutHintsMixin",
+	"sap/ui/core/InvisibleMessage"
 ], (
 	Control,
 	Button,
@@ -36,7 +37,8 @@ sap.ui.define([
 	Library,
 	coreLibrary,
 	JSONModel,
-	ShortcutHintsMixin
+	ShortcutHintsMixin,
+	InvisibleMessage
 ) => {
 	"use strict";
 
