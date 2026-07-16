@@ -134,6 +134,7 @@ sap.ui.define([
 			 "sap.ui.core.tmpl.DOMElement",
 			 /** @deprecated since 1.56 */
 			 "sap.ui.core.tmpl.TemplateControl",
+			 "sap.ui.core.tooltip.Tooltip",
 			 "sap.ui.core.util.Export"
 		 ],
 		 elements: [
