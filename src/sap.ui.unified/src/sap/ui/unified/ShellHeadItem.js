@@ -5,12 +5,10 @@
 // Provides control sap.ui.unified.ShellHeadItem.
 sap.ui.define([
 	'sap/ui/core/Element',
-	'sap/ui/core/IconPool',
 	'./library',
-	"sap/base/security/encodeXML",
 	"sap/ui/thirdparty/jquery"
 ],
-	function(Element, IconPool, library, encodeXML, jQuery) {
+	function(Element, library, jQuery) {
 	"use strict";
 
 
@@ -171,32 +169,6 @@ sap.ui.define([
 		return this;
 	};
 
-
-	ShellHeadItem.prototype.setIcon = function(sIcon){
-		this.setProperty("icon", sIcon, true);
-		if (this.getDomRef()) {
-			this._refreshIcon();
-		}
-		return this;
-	};
-
-
-	ShellHeadItem.prototype._refreshIcon = function(){
-		var $Ico = jQuery(this.$().children()[0]);
-		var sIco = this.getIcon();
-		if (IconPool.isIconURI(sIco)) {
-			var oIconInfo = IconPool.getIconInfo(sIco);
-			$Ico.html("").attr("style", "");
-			if (oIconInfo) {
-				$Ico.text(oIconInfo.content).attr("role", "presentation").attr("aria-label", oIconInfo.text || oIconInfo.name).css("font-family", "'" + oIconInfo.fontFamily + "'");
-			}
-		} else {
-			var $Image = this.$("img-inner");
-			if ($Image.length == 0 || $Image.attr("src") != sIco) {
-				$Ico.attr("style", "").attr("aria-label", null).html("<img role='presentation' id='" + this.getId() + "-img-inner' src='" + encodeXML(sIco) + "'>");
-			}
-		}
-	};
 
 	return ShellHeadItem;
 
