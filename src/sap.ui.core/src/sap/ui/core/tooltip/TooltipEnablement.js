@@ -94,7 +94,7 @@ sap.ui.define([
 		 *     if (TooltipEnablement.isEnhancedTooltipEnabled()) {
 		 *         this._oTooltipEnablement = new TooltipEnablement(this, {
 		 *             textProvider: () =&gt; this._buildVisibleTooltip(),
-		 *             invisibleTextProvider: () =&gt; this._buildInvisibleTooltip() || ""
+		 *             invisibleTextProvider: () =&gt; this._buildInvisibleTooltip()
 		 *         });
 		 *     }
 		 * };
@@ -109,7 +109,12 @@ sap.ui.define([
 		 * MyControlRenderer.render = function(oRm, oControl) {
 		 *     oRm.openStart("button", oControl);
 		 *     if (oControl._oTooltipEnablement) {
-		 *         oRm.attr("aria-describedby", oControl._oTooltipEnablement.getInvisibleTooltipId());
+		 *         oRm.accessibilityState(oControl, {
+		 *             describedby: {
+		 *                 value: oControl._oTooltipEnablement.getInvisibleTooltipId() + " ...combine with other describedby ids, if any...",
+		 *                 append: true
+		 *             }
+		 *         });
 		 *     }
 		 *     oRm.openEnd();
 		 *     // ...host content...
