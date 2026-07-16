@@ -6783,10 +6783,12 @@ sap.ui.define([
 	});
 
 	//*********************************************************************************************
+[false, true].forEach(function (bValueListRelevantQualifiers) {
 	["ValueList", "ValueListMapping"].forEach(function (sValueList) {
-		[false, true].forEach(function (bDuplicate) {
-			var sTitle = "requestValueListInfo: " + sValueList + ", fixed values: duplicate="
-					+ bDuplicate;
+		[false, true].forEach(function (bMultiple) {
+			var sTitle = "requestValueListInfo: " + sValueList
+				+ ", fixed values, multiple qualifiers=" + bMultiple
+				+ ", ValueListRelevantQualifiers=" + bValueListRelevantQualifiers;
 
 			QUnit.test(sTitle, function (assert) {
 				var oAnnotations = {
@@ -6813,31 +6815,55 @@ sap.ui.define([
 					oMetaModel = oModel.getMetaModel(),
 					sPropertyPath = "/VH_BusinessPartnerSet('42')/Country";
 
+				if (bValueListRelevantQualifiers) {
+					oAnnotations["@com.sap.vocabularies.Common.v1.ValueListRelevantQualifiers"]
+						= ["bar", "foo"]; // Note: content is not actually evaluated w/o oContext!
+				}
 				oAnnotations["@com.sap.vocabularies.Common.v1." + sValueList + "#foo"] = {
 						CollectionPath : "foo",
 						SearchSupported : true // BCP: 2280012068
 					};
-				if (bDuplicate) {
-					oAnnotations["@com.sap.vocabularies.Common.v1." + sValueList + "#bar"] = {};
+				if (bMultiple) {
+					oAnnotations["@com.sap.vocabularies.Common.v1." + sValueList + "#bar"] = {
+						CollectionPath : "bar"
+					};
 				}
 				this.mock(oMetaModel).expects("fetchEntityContainer").atLeast(1)
 					.returns(SyncPromise.resolve(oMetadata));
 
 				assert.strictEqual(oMetaModel.getValueListType(sPropertyPath), ValueListType.Fixed);
 
-				// code under test
+				// code under test (no context! JIRA: CPOUI5ODATAV4-3597)
 				return oMetaModel.requestValueListInfo(sPropertyPath).then(function (oResult) {
-					assert.notOk(bDuplicate);
-					assert.strictEqual(oResult[""].$model, oModel);
-					delete oResult[""].$model;
-					assert.deepEqual(oResult, {
-						"" : { // for fixed values, actual qualifier is ignored here
-							$qualifier : "foo",
-							CollectionPath : "foo"
-						}
-					});
+					assert.notOk(bMultiple && !bValueListRelevantQualifiers);
+					if (bMultiple) {
+						assert.strictEqual(oResult["bar"].$model, oModel);
+						assert.strictEqual(oResult["foo"].$model, oModel);
+						delete oResult["bar"].$model;
+						delete oResult["foo"].$model;
+						assert.deepEqual(oResult, {
+							bar : {
+								CollectionPath : "bar"
+							},
+							foo : {
+								CollectionPath : "foo"
+								// NO: SearchSupported : true
+							}
+						});
+					} else {
+						assert.strictEqual(oResult[""].$model, oModel);
+						delete oResult[""].$model;
+						assert.deepEqual(oResult, {
+							"" : { // for fixed values, actual qualifier is ignored here
+								$qualifier : "foo",
+								CollectionPath : "foo"
+							}
+						});
+					}
 				}, function (oError) {
-					assert.ok(bDuplicate);
+					assert.ok(bMultiple && !bValueListRelevantQualifiers);
+					// Note: w/o ValueListRelevantQualifiers, we still see error even w/o oContext
+					// (JIRA: CPOUI5ODATAV4-3597)
 					assert.strictEqual(oError.message, "Annotation "
 						+ "'com.sap.vocabularies.Common.v1.ValueListWithFixedValues' but not "
 						+ "exactly one 'com.sap.vocabularies.Common.v1.ValueList' for property "
@@ -6846,6 +6872,7 @@ sap.ui.define([
 			});
 		});
 	});
+});
 
 	//*********************************************************************************************
 	QUnit.test("requestValueListInfo: property in cross-service reference", function (assert) {
