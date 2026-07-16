@@ -157,24 +157,13 @@ sap.ui.define([
 			}
 			this._pPopover = null;
 
-			if (this._iOpenTimeout) {
-				clearTimeout(this._iOpenTimeout);
-				this._iOpenTimeout = null;
-			}
-
-			if (this._iCloseTimeout) {
-				clearTimeout(this._iCloseTimeout);
-				this._iCloseTimeout = null;
-			}
+			this._clearTimeouts();
 
 			this._bOpenRequested = false;
 		};
 
 		Tooltip.prototype._onPopoverMouseEnter = function () {
-			if (this._iCloseTimeout) {
-				clearTimeout(this._iCloseTimeout);
-				this._iCloseTimeout = null;
-			}
+			this._clearCloseTimeout();
 		};
 
 		Tooltip.prototype._onPopoverMouseLeave = function () {
@@ -286,6 +275,9 @@ sap.ui.define([
 			// are still awaiting Popover instantiation can cancel the pending open.
 			this._bOpenRequested = true;
 			TooltipManager.registerOpening(this);
+
+			// A pending close (e.g. focusout) must not win over a fresh open — cancel it.
+			this._clearCloseTimeout();
 
 			// Cache the in-flight Promise so simultaneous callers (e.g. mouseenter+focusin)
 			// share a single Popover instance instead of racing and leaking duplicates.
@@ -444,10 +436,22 @@ sap.ui.define([
 		};
 
 		Tooltip.prototype._clearTimeouts = function () {
-			clearTimeout(this._iOpenTimeout);
-			this._iOpenTimeout = null;
-			clearTimeout(this._iCloseTimeout);
-			this._iCloseTimeout = null;
+			this._clearOpenTimeout();
+			this._clearCloseTimeout();
+		};
+
+		Tooltip.prototype._clearOpenTimeout = function () {
+			if (this._iOpenTimeout) {
+				clearTimeout(this._iOpenTimeout);
+				this._iOpenTimeout = null;
+			}
+		};
+
+		Tooltip.prototype._clearCloseTimeout = function () {
+			if (this._iCloseTimeout) {
+				clearTimeout(this._iCloseTimeout);
+				this._iCloseTimeout = null;
+			}
 		};
 
 		/**

@@ -344,6 +344,8 @@ sap.ui.define([
 			return s === ":focus-visible" || oOrig.call(this, s);
 		};
 		try {
+			// Leave initial focus first; focusin is suppressed until a key is pressed.
+			document.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab", bubbles: true }));
 			dispatch(this.oHost, new FocusEvent("focusin", { bubbles: true }));
 			await waitForOpen(this.clock, this.oEnablement);
 			assert.ok(true, "afterOpen fires on keyboard focus");
@@ -359,6 +361,8 @@ sap.ui.define([
 			return s === ":focus-visible" ? false : oOrig.call(this, s);
 		};
 		try {
+			// Leave initial focus so the :focus-visible gate is what suppresses the open.
+			document.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab", bubbles: true }));
 			dispatch(this.oHost, new FocusEvent("focusin", { bubbles: true }));
 			const sState = await waitForOpenState(this.clock, this.oEnablement);
 			assert.strictEqual(sState, "NotOpened", "afterOpen does not fire on programmatic focus");

@@ -343,10 +343,33 @@ sap.ui.define([
 
 		// Give the microtask queue a chance to deliver the resolution.
 		setTimeout(() => {
-			assert.strictEqual(this.oTooltip._iOpenTimeout, null, "resumed openBy did not schedule a timer");
+			assert.notOk(this.oTooltip._iOpenTimeout, "resumed openBy did not schedule a timer");
 			assert.notOk(this.oTooltip._bIsOpen, "tooltip did not open");
 			done();
 		}, 100);
+	});
+
+	QUnit.test("openBy cancels a pending close so focusin overrides focusout", async function(assert) {
+		const done = assert.async();
+		// Tooltip already open.
+		await this.oTooltip.openBy(this.stub, 0);
+		setTimeout(async () => {
+			assert.ok(this.oTooltip._bIsOpen, "tooltip open");
+
+			// focusout schedules a delayed close.
+			this.oTooltip.close(500);
+			assert.ok(this.oTooltip._iCloseTimeout, "close scheduled");
+
+			// focusin re-opens before the close fires.
+			await this.oTooltip.openBy(this.stub, 0);
+			assert.strictEqual(this.oTooltip._iCloseTimeout, null, "pending close cancelled");
+
+			// After the close delay, the tooltip must remain open.
+			setTimeout(() => {
+				assert.ok(this.oTooltip._bIsOpen, "tooltip stayed open");
+				done();
+			}, 600);
+		}, 50);
 	});
 
 	QUnit.module("_createPopover content", {
