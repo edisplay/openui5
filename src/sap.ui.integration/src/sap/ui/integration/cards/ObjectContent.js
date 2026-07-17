@@ -433,7 +433,6 @@ sap.ui.define([
 			}, this);
 
 			oGroup.addItem(oInnerAFLayout);
-			oInnerAFLayout.setMinItemWidth("6rem");
 		} else {
 			oGroupConfiguration.items.forEach(function (oItem, iIndex) {
 				oItem.labelWrapping = oGroupConfiguration.labelWrapping;
