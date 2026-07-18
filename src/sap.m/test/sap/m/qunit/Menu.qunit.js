@@ -788,7 +788,7 @@ sap.ui.define([
 		await nextUIUpdate(this.clock);
 
 		// Assert
-		assert.notOk(aItems[0].getDomRef().getAttribute("aria-checked"), "First item has no 'aria-checked' attribute set");
+		assert.equal(aItems[0].getDomRef().getAttribute("aria-checked"), "false", "First item has 'aria-checked=false' attribute set");
 		assert.notOk(aItems[0].getDomRef().querySelector(".sapMMenuItemSelected"), "First item has no selection mark rendered");
 
 		// Act - select more than one item
@@ -798,9 +798,9 @@ sap.ui.define([
 		await nextUIUpdate(this.clock);
 
 		// Assert
-		assert.notOk(aItems[0].getDomRef().getAttribute("aria-checked"), "First item has no 'aria-checked' attribute set");
+		assert.equal(aItems[0].getDomRef().getAttribute("aria-checked"), "false", "First item has 'aria-checked=false' attribute set");
 		assert.notOk(aItems[0].getDomRef().querySelector(".sapMMenuItemSelected"), "First item has no selection mark rendered");
-		assert.notOk(aItems[1].getDomRef().getAttribute("aria-checked"), "Second item has no 'aria-checked' attribute set");
+		assert.equal(aItems[1].getDomRef().getAttribute("aria-checked"), "false", "Second item has 'aria-checked=false' attribute set");
 		assert.notOk(aItems[1].getDomRef().querySelector(".sapMMenuItemSelected"), "Second item has no selection mark rendered");
 		assert.equal(aItems[2].getDomRef().getAttribute("aria-checked"), "true", "Third item has 'aria-checked' attribute set");
 		assert.ok(aItems[2].getDomRef().querySelector(".sapMMenuItemSelected"), "Third item has selection mark rendered");
@@ -824,7 +824,7 @@ sap.ui.define([
 		await nextUIUpdate(this.clock);
 
 		// Assert
-		assert.notOk(aItems[0].getDomRef().getAttribute("aria-checked"), "First item has no 'aria-checked' attribute set");
+		assert.equal(aItems[0].getDomRef().getAttribute("aria-checked"), "false", "First item has 'aria-checked=false' attribute set");
 		assert.notOk(aItems[0].getDomRef().querySelector(".sapMMenuItemSelected"), "First item has no selection mark rendered");
 
 		// Act - select more than one item

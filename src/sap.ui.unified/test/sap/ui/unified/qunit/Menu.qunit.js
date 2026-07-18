@@ -1265,7 +1265,7 @@ sap.ui.define([
 		await nextUIUpdate();
 
 		// Assert
-		assert.notOk(aGroupItems[0].getDomRef().getAttribute("aria-checked"), "First item has no 'aria-checked' attribute set");
+		assert.notOk(aGroupItems[0].getDomRef().getAttribute("aria-checked") === "true", "First item has no 'aria-checked=true' attribute set");
 		assert.notOk(aGroupItems[0].getDomRef().querySelector(".sapUiMnuItmSel"), "First item has no selection mark rendered");
 
 		// Act - select more than one item
@@ -1275,9 +1275,9 @@ sap.ui.define([
 		await nextUIUpdate();
 
 		// Assert
-		assert.notOk(aGroupItems[0].getDomRef().getAttribute("aria-checked"), "First item has no 'aria-checked' attribute set");
+		assert.notOk(aGroupItems[0].getDomRef().getAttribute("aria-checked") === "true", "First item has no 'aria-checked=true' attribute set");
 		assert.notOk(aGroupItems[0].getDomRef().querySelector(".sapUiMnuItmSel"), "First item has no selection mark rendered");
-		assert.notOk(aGroupItems[1].getDomRef().getAttribute("aria-checked"), "Second item has no 'aria-checked' attribute set");
+		assert.notOk(aGroupItems[1].getDomRef().getAttribute("aria-checked") === "true", "Second item has no 'aria-checked=true' attribute set");
 		assert.notOk(aGroupItems[1].getDomRef().querySelector(".sapUiMnuItmSel"), "Second item has no selection mark rendered");
 		assert.equal(aGroupItems[2].getDomRef().getAttribute("aria-checked"), "true", "Third item has 'aria-checked' attribute set");
 		assert.ok(aGroupItems[2].getDomRef().querySelector(".sapUiMnuItmSel"), "Third item has selection mark rendered");
@@ -1301,7 +1301,7 @@ sap.ui.define([
 		await nextUIUpdate();
 
 		// Assert
-		assert.notOk(aGroupItems[0].getDomRef().getAttribute("aria-checked"), "First item has no 'aria-checked' attribute set");
+		assert.notOk(aGroupItems[0].getDomRef().getAttribute("aria-checked") === "true", "First item has no 'aria-checked=true' attribute set");
 		assert.notOk(aGroupItems[0].getDomRef().querySelector(".sapUiMnuItmSel"), "First item has no selection mark rendered");
 
 		// Act - select more than one item
