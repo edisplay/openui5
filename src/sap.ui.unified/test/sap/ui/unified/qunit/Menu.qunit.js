@@ -1537,6 +1537,14 @@ sap.ui.define([
 		oLanguageStub.restore();
 	});
 
+	QUnit.test("Separator hr element has aria-hidden", function(assert) {
+		openMenu(oRootMenu, undefined, assert);
+
+		assert.strictEqual(oRootMenu.getDomRef().querySelector(".sapUiMnuDiv hr").getAttribute("aria-hidden"), "true", "Separator hr element has aria-hidden='true'");
+
+		closeAllMenusAndCheck(assert);
+	});
+
 	QUnit.module("Misc");
 
 	QUnit.test("Destruction", function(assert) {
