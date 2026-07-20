@@ -1008,6 +1008,13 @@ sap.ui.define([
 		assert.strictEqual(oNoneSelectionGroupDomRef.getAttribute("aria-label"), oRb.getText("MENU_ITEM_GROUP_NONE_ACCESSIBLE_NAME"), "Group with itemSelectionMode = None has proper aria-label");
 	});
 
+	QUnit.test("Separator hr element has aria-hidden", async function(assert) {
+		this.oMenu.openBy();
+		await nextUIUpdate(this.clock);
+
+		assert.strictEqual(this.oMenu._getPopover().getDomRef().querySelector(".sapMMenuSeparator hr").getAttribute("aria-hidden"), "true", "Separator hr element has aria-hidden='true'");
+	});
+
 	QUnit.module("Miscellaneous", {
 		beforeEach: async function () {
 			this.oMenu = new Menu({
