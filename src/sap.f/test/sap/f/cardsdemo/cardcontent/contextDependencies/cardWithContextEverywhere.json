@@ -1,0 +1,26 @@
+{
+	"sap.app": {
+		"id": "sap.f.cardsdemo.cardcontent.contextDependencies.cardWithContextEverywhere",
+		"type": "card"
+	},
+	"sap.card": {
+		"type": "List",
+		"header": {
+			"title": "My Tasks",
+			"icon": {
+				"src": "sap-icon://task"
+			}
+		},
+		"content": {
+			"data": {
+				"request": {
+					"url": "./tasks.json"
+				}
+			},
+			"item": {
+				"title": "{task}",
+				"description": "Assigned to: {context>/sample/currentUser/name}"
+			}
+		}
+	}
+}
