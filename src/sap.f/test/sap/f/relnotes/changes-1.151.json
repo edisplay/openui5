@@ -3,6 +3,11 @@
     "date": "July 2026",
     "notes": [
       {
+        "id": "d4addd826ded0c500b7c8fe7aa6b4af1873b2ed5",
+        "type": "FIX",
+        "text": " sap.f.DynamicPage: Improve landmarkInfo handling"
+      },
+      {
         "id": "6c53cb88d0ac4e3c1771f47eda200547c6b5f54b",
         "type": "FIX",
         "text": " sap.ui.integration.widgets.Card: Resolve snack card dialog resize on loading"

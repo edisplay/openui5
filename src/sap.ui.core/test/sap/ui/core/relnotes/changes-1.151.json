@@ -3,6 +3,16 @@
     "date": "July 2026",
     "notes": [
       {
+        "id": "6601e5b2656723a6a89cbc5a3493dce575865b46",
+        "type": "FIX",
+        "text": " sap/base: avoid use of the browser-only global 'window'"
+      },
+      {
+        "id": "c3235a8750f9e91b935880e06912306bc6721907",
+        "type": "FEATURE",
+        "text": " sap.ui.core.ControlBehavior: Extended Keyboard Navigation switch"
+      },
+      {
         "id": "0e9fafe48db35cd617120695a81f272441d4166a",
         "type": "FIX",
         "text": " message/MessageMixin: Fix additional text generation"

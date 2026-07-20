@@ -3,6 +3,11 @@
     "date": "July 2026",
     "notes": [
       {
+        "id": "657e55e787522ff7db7f64939b79c8e99b8bfaf7",
+        "type": "FIX",
+        "text": " sap.m.InstanceManager: closeAllDialogs promise is now resolved when dialog is destroyed during closing"
+      },
+      {
         "id": "6c53cb88d0ac4e3c1771f47eda200547c6b5f54b",
         "type": "FIX",
         "text": " sap.ui.integration.widgets.Card: Resolve snack card dialog resize on loading"

@@ -3,6 +3,41 @@
     "date": "July 2026",
     "notes": [
       {
+        "id": "3303967767db6742312a4c0c255ac75dfc4baca7",
+        "type": "FIX",
+        "text": " We've now added the title property of the PDFViewer to the iframe instance"
+      },
+      {
+        "id": "b095eb5efa9359d49a9d9408500409f646328c9e",
+        "type": "FEATURE",
+        "text": " TabContainer: Add support for zooming in TabStrip on mobile devices"
+      },
+      {
+        "id": "1b865c0c59056c7b36d3b5e0e51e66ad2570b924",
+        "type": "FIX",
+        "text": " sap.m.IconTabBar: overflow button focus outline now visible during mousedown"
+      },
+      {
+        "id": "cb4e0df4043996e6833f9995297d72470a189eae",
+        "type": "FIX",
+        "text": "p13n.Popup: Fix imports"
+      },
+      {
+        "id": "657e55e787522ff7db7f64939b79c8e99b8bfaf7",
+        "type": "FIX",
+        "text": " sap.m.InstanceManager: closeAllDialogs promise is now resolved when dialog is destroyed during closing"
+      },
+      {
+        "id": "823e8a24f5e4b73a0f77baa9be0facac72f91e7b",
+        "type": "FIX",
+        "text": "p13n panels: announcement on reset are missing"
+      },
+      {
+        "id": "8eef5331d8581ba0021dc1244d1f411afdf3430d",
+        "type": "FIX",
+        "text": " sap.m.Menu: context menu now opens when another menu is open"
+      },
+      {
         "id": "efaf22c1dcb7b438074bc84624c09eea54171ebb",
         "type": "FIX",
         "text": " sap.m.Toolbar: fix arrow-key navigation issue"
@@ -26,6 +61,11 @@
         "id": "1143dab1826c2809ea8673b8463c90cab9b8f14a",
         "type": "FIX",
         "text": " sap.m.ObjectHeader: image is decorative if the alt is empty"
+      },
+      {
+        "id": "0b920cbe366268fa65aac039e83c001808821f25",
+        "type": "FIX",
+        "text": " sap.m.MessageView - Details view is now preserved after resize"
       },
       {
         "id": "437026fccb4a774db7272b804250314009a2ce95",

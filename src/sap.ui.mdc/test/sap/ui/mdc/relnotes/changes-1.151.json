@@ -3,6 +3,11 @@
     "date": "July 2026",
     "notes": [
       {
+        "id": "7c24a546b8a2d5ba04b2900b52da56e34b8853d8",
+        "type": "FIX",
+        "text": " MDC OPA test utils: fix column personalization in Firefox"
+      },
+      {
         "id": "7f1e187150cf14f8557b04628db769c067a1a12c",
         "type": "FIX",
         "text": " mdc/SmartChart: 'View By' popover now have correct announcement."

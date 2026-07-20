@@ -3,6 +3,11 @@
     "date": "July 2026",
     "notes": [
       {
+        "id": "6b01864e85b5ed3499e09240468fc50c461a79d4",
+        "type": "FIX",
+        "text": " sap.m.SegmentedButton: Use CSS variable for border radius instead of hardcoded value"
+      },
+      {
         "id": "a562220e7967e4bba74841108487a3676e5ff94c",
         "type": "FIX",
         "text": " sap.m.MessageBox: box shadow of the header fixed"

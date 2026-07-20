@@ -3,6 +3,16 @@
     "date": "July 2026",
     "notes": [
       {
+        "id": "58bcf7786cf19dce6d5e7cdfad04fd767298daca",
+        "type": "FIX",
+        "text": " sap.ui.unified.MenuTextFieldItem: Prevent default behavior for Enter key in onkeydown event"
+      },
+      {
+        "id": "68e7e6bd2b16c0d35490dff353f055fa0e668662",
+        "type": "FEATURE",
+        "text": " sap.ui.unified.ColorPicker: Support high-zoom display mode"
+      },
+      {
         "id": "a3151560bd9fe9f444747aa6ebb79b0b9b13b355",
         "type": "FIX",
         "text": " sap.ui.unified.FileUploader: fix control width in Bar/Toolbar/OverflowToolbar"

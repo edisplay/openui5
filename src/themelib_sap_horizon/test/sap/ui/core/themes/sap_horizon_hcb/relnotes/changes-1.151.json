@@ -3,6 +3,16 @@
     "date": "July 2026",
     "notes": [
       {
+        "id": "6b01864e85b5ed3499e09240468fc50c461a79d4",
+        "type": "FIX",
+        "text": " sap.m.SegmentedButton: Use CSS variable for border radius instead of hardcoded value"
+      },
+      {
+        "id": "1b865c0c59056c7b36d3b5e0e51e66ad2570b924",
+        "type": "FIX",
+        "text": " sap.m.IconTabBar: overflow button focus outline now visible during mousedown"
+      },
+      {
         "id": "e0742165e64c242069e8a5e1f52b33f7db0eb0ac",
         "type": "FIX",
         "text": " sap.m.ColorPalette: fix buttons active state"
