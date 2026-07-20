@@ -371,11 +371,11 @@ sap.ui.define([
 			// We need to work on a copy since the messages reference is changed by _removeMessage()
 			var aOriginalMessages = vMessages.slice(0);
 			for (var i = 0; i < aOriginalMessages.length; i++) {
-				if (!bOnlyValidationMessages || aOriginalMessages[i].validation) {
+				if (!bOnlyValidationMessages || aOriginalMessages[i].isValidation()) {
 					_removeMessage(aOriginalMessages[i]);
 				}
 			}
-		} else if (vMessages instanceof Message && (!bOnlyValidationMessages || vMessages.validation)){
+		} else if (vMessages instanceof Message && (!bOnlyValidationMessages || vMessages.isValidation())){
 			_removeMessage(vMessages);
 		} else {
 			//map with target as key
