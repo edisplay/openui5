@@ -201,6 +201,17 @@ sap.ui.define([
 				oMessageModel.setData([]);
 			}
 			return oMessageModel;
+		},
+
+		/**
+		 * Returns all messages currently managed by Messaging.
+		 *
+		 * @return {sap.ui.core.message.Message[]} An array of all current messages
+		 * @public
+		 * @since 1.151
+		 */
+		getMessages: function() {
+			return Messaging.getMessageModel().getData();
 		}
 	};
 
