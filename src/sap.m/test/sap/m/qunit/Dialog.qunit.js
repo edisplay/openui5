@@ -1920,6 +1920,89 @@ sap.ui.define([
 		oDialogInformation.destroy();
 	});
 
+	QUnit.test("ValueState text should be empty when title matches state text", function (assert) {
+		this.clock.restore();
+
+		// Arrange
+		const oDialog = new Dialog({
+			title: "Error",
+			state: ValueState.Error
+		});
+
+		// Act
+		oDialog.open();
+
+		// Assert
+		assert.notOk(oDialog.getAggregation("_valueState"),
+			"No value state InvisibleText is created when the title conveys the state.");
+
+		// Clean up
+		oDialog.destroy();
+	});
+
+	QUnit.test("ValueState text should be set when title does not match state text", function (assert) {
+		this.clock.restore();
+
+		// Arrange
+		const rb = Library.getResourceBundleFor("sap.m");
+		const oDialog = new Dialog({
+			title: "Something went wrong",
+			state: ValueState.Error
+		});
+
+		// Act
+		oDialog.open();
+
+		// Assert
+		assert.strictEqual(oDialog.getAggregation("_valueState").getText(),
+			rb.getText("LIST_ITEM_STATE_ERROR"),
+			"ValueState text should be set when title differs from state text.");
+
+		// Clean up
+		oDialog.destroy();
+	});
+
+	QUnit.test("ValueState text suppression should be case-insensitive", function (assert) {
+		this.clock.restore();
+
+		// Arrange
+		const oDialog = new Dialog({
+			title: "ERROR",
+			state: ValueState.Error
+		});
+
+		// Act
+		oDialog.open();
+
+		// Assert
+		assert.notOk(oDialog.getAggregation("_valueState"),
+			"No value state InvisibleText is created even when title casing differs from state text.");
+
+		// Clean up
+		oDialog.destroy();
+	});
+
+	QUnit.test("ValueState text should be cleared when state reverts to None", function (assert) {
+		// Arrange
+		const oDialog = new Dialog({
+			title: "My Dialog",
+			state: ValueState.Error
+		});
+
+		// Act
+		oDialog.open();
+		this.clock.tick(500);
+		oDialog.setState(ValueState.None);
+		Core.applyChanges();
+
+		// Assert
+		assert.strictEqual(oDialog.getAggregation("_valueState").getText(), "",
+			"ValueState text should be empty when state is set to None.");
+
+		// Clean up
+		oDialog.destroy();
+	});
+
 	QUnit.test("Heading rendering when 'title' property is used", function(assert) {
 		// arrange
 		var oDialog = new Dialog({
