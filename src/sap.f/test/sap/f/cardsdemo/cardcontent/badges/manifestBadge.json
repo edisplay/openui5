@@ -1,0 +1,45 @@
+{
+	"_version": "1.14.0",
+	"sap.app": {
+		"id": "card.test.badge.manifest",
+		"type": "card"
+	},
+	"sap.card": {
+		"type": "List",
+		"badge": [
+			{
+				"text": "New",
+				"icon": "sap-icon://status-in-process",
+				"state": "Indication03",
+				"visible": true,
+				"visibilityMode": "Persist"
+			}
+		],
+		"header": {
+			"title": "Manifest Badge",
+			"subTitle": "Badge defined in manifest (no customData)"
+		},
+		"content": {
+			"data": {
+				"json": [
+					{
+						"Name": "John Clark",
+						"Relation": "Husband"
+					},
+					{
+						"Name": "Sarah Clark",
+						"Relation": "Daughter"
+					},
+					{
+						"Name": "Tom Clark",
+						"Relation": "Son"
+					}
+				]
+			},
+			"item": {
+				"title": "{Name}",
+				"description": "{Relation}"
+			}
+		}
+	}
+}
