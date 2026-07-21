@@ -1811,7 +1811,7 @@ sap.ui.define([
 		var oClock = sinon.useFakeTimers();
 
 		var oFormattedText = new FormattedText({
-			htmlText: "This is some formatted text with a link: <a href='https://www.sap.com' target='_blank'>Visit SAP</a>."
+			htmlText: "This is some formatted text with a link: <a href='https://www.sap.com' target='_blank' rel='noopener noreferrer'>Visit SAP</a>."
 		});
 
 		var oDialog = new Dialog({
