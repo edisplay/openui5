@@ -24,6 +24,8 @@ sap.ui.define([
 	"sap/m/SegmentedButton",
 	"sap/m/SegmentedButtonItem",
 	"sap/ui/core/library",
+	"sap/ui/core/LabelEnablement",
+	"sap/ui/core/Element",
 	"sap/m/table/Util",
 	"sap/m/Button",
 	"sap/m/ToggleButton",
@@ -31,7 +33,7 @@ sap.ui.define([
 	"sap/ui/core/InvisibleMessage",
 	"sap/ui/Device",
 	"sap/ui/layout/VerticalLayout"
-], (Library, JSONModel, QueryPanel, Icon, Sorter, OverflowToolbar, ToolbarSpacer, Title, Label, HBox, Filter, Item, mLibrary, ComboBox, List, CustomListItem, GroupHeaderListItem, Grid, GridData, SegmentedButton, SegmentedButtonItem, coreLib, TableUtil, Button, ToggleButton, InvisibleText, InvisibleMessage, Device, VerticalLayout) => {
+], (Library, JSONModel, QueryPanel, Icon, Sorter, OverflowToolbar, ToolbarSpacer, Title, Label, HBox, Filter, Item, mLibrary, ComboBox, List, CustomListItem, GroupHeaderListItem, Grid, GridData, SegmentedButton, SegmentedButtonItem, coreLib, LabelEnablement, Element, TableUtil, Button, ToggleButton, InvisibleText, InvisibleMessage, Device, VerticalLayout) => {
 	"use strict";
 
 	const { InvisibleMessageMode } = coreLib;
@@ -758,7 +760,13 @@ sap.ui.define([
 
 		if (oFilterControl) {
 			oFilterControl.addAriaLabelledBy?.(oLabel);
-			oLabel.setLabelFor(oFilterControl);
+			const oFilterField = oFilterControl.getFilterField?.() || oFilterControl;
+			const aLabelIds = LabelEnablement.getReferencingLabels(oFilterField);
+			aLabelIds.forEach((sId) => { // remove old Label assignment to prevent wrong aria-labelledby
+				const oLabel = Element.getElementById(sId);
+				oLabel.setLabelFor();
+			});
+			oLabel.setLabelFor(oFilterField);
 		}
 
 		const oActionContainer = this._createActionContainer(oContext, oLabel);

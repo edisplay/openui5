@@ -724,6 +724,7 @@ sap.ui.define([
 		 * @param {object} mReportSettings Settings to control specific events
 		 * @param {object} mReportSettings.triggerFilterUpdate Indicates if a filtersChange event is fired
 		 * @param {object} mReportSettings.triggerSearch Indicates if a search event is fired
+		 * @param {object} mReportSettings.recheckMissingRequired Indicates if a check for required fields needs to be triggered
 		 */
 		FilterBarBase.prototype._reportModelChange = function(mReportSettings) {
 
@@ -2125,7 +2126,7 @@ sap.ui.define([
 					triggerSearch: false
 				});
 				this._bInitialFiltersApplied = true;
-				this._fResolveInitialFiltersApplied();
+				this._fResolveInitialFiltersApplied?.();
 				this._fResolveInitialFiltersApplied = null;
 			});
 		};
