@@ -197,8 +197,10 @@ sap.ui.define([
 				oRm.openStart("div").class("sapMUSTextInnerContainer").openEnd();
 				if (oItem._bInEditMode) {
 					oRm.renderControl(oItem._getFileNameEditLabel());
+					oRm.renderControl(oItem._getFileNameEdit());
+				} else {
+					oRm.renderControl(oItem._getFileNameLink());
 				}
-				oRm.renderControl(oItem._bInEditMode ? oItem._getFileNameEdit() : oItem._getFileNameLink());
 				oItem._renderMarkers(oRm);
 				oItem._renderMarkersAsStatus(oRm);
 				oRm.close("div");
@@ -796,6 +798,9 @@ sap.ui.define([
 			iMaxLength = iMaxLength ? iMaxLength : 0;
 			var iNameMaxLength = iMaxLength - iFileExtensionLength;
 			iNameMaxLength = iNameMaxLength < 0 ? 0 : iNameMaxLength;
+			if (this.getUrl() && !this.getMediaType()) {
+				iNameMaxLength = iMaxLength ? Math.max(0, Math.min(iMaxLength, 40) - iFileExtensionLength) : Math.max(0, 40 - iFileExtensionLength);
+			}
 			this._getFileNameEdit().setProperty("maxLength", iNameMaxLength, true);
 			this._getFileNameEdit().setValue(oSplit.name);
 		}
