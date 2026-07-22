@@ -85884,6 +85884,8 @@ make root = ${bMakeRoot}`;
 	// Scenario: Invoke an Action (POST) or Function (GET) that returns Edm.Stream. The operation
 	// should use fetch API and return a ReadableStream.
 	// JIRA: CPOUI5ODATAV4-3375
+	//
+	// Invoke an additional action in parallel (JIRA: CPOUI5ODATAV4-3591)
 [false, true].forEach((bAction) => {
 	QUnit.test("Edm.Stream: " + (bAction ? "Action" : "Function"), async function (assert) {
 		const oModel = this.createTeaBusiModel();
@@ -85891,29 +85893,46 @@ make root = ${bMakeRoot}`;
 			+ "/com.sap.gateway.default.iwbep.tea_busi.v0001.__FAKE__"
 			+ (bAction ? "Ac" : "Fu") + "DownloadDocument";
 		const oBinding = oModel.bindContext("/" + sPath + "(...)");
-		oBinding.setParameter("format", "PDF");
-		oBinding.setParameter("locale", "en-US");
 
-		const oStreamResponse = {
-			body : "~body~",
-			headers : "~headers~",
+		const oStreamResponse0 = {
+			body : "~body0~",
+			headers : "~headers0~",
+			foo : "bar" // must not be part of the result
+		};
+		const oStreamResponse1 = {
+			body : "~body1~",
+			headers : "~headers1~",
 			foo : "bar" // must not be part of the result
 		};
 
+		const oRequestorMock = this.mock(oModel.oRequestor);
 		if (bAction) {
-			this.mock(oModel.oRequestor).expects("fetch")
+			oRequestorMock.expects("fetch")
 				.withExactArgs("POST", sPath, {format : "PDF", locale : "en-US"})
-				.resolves(oStreamResponse);
+				.resolves(oStreamResponse0);
+			oRequestorMock.expects("fetch")
+				.withExactArgs("POST", sPath, {format : "JSON", locale : "de"})
+				.resolves(oStreamResponse1);
 		} else {
-			this.mock(oModel.oRequestor).expects("fetch")
+			oRequestorMock.expects("fetch")
 				.withExactArgs("GET", sPath + "(format='PDF',locale='en-US')", undefined)
-				.resolves(oStreamResponse);
+				.resolves(oStreamResponse0);
+			oRequestorMock.expects("fetch")
+				.withExactArgs("GET", sPath + "(format='JSON',locale='de')", undefined)
+				.resolves(oStreamResponse1);
 		}
 
-		// code under test
-		const oResult = await oBinding.invoke("$stream");
+		const [oResult0, oResult1] = await Promise.all([
+			// code under test (JIRA: CPOUI5ODATAV4-3375) j
+			oBinding.setParameter("format", "PDF").setParameter("locale", "en-US")
+				.invoke("$stream"),
+			// code under test (JIRA: CPOUI5ODATAV4-3591)
+			oBinding.setParameter("format", "JSON").setParameter("locale", "de")
+				.invoke("$stream")
+		]);
 
-		assert.deepEqual(oResult, {body : "~body~", headers : "~headers~"});
+		assert.deepEqual(oResult0, {body : "~body0~", headers : "~headers0~"});
+		assert.deepEqual(oResult1, {body : "~body1~", headers : "~headers1~"});
 	});
 });
 });
