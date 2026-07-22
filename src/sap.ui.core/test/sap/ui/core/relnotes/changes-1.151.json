@@ -3,6 +3,26 @@
     "date": "July 2026",
     "notes": [
       {
+        "id": "8e055b8a2b58d87141d043d18e0673dcf04ad654",
+        "type": "FIX",
+        "text": " sap.ui.core.KeyboardInteractionDisplay: handle browser focus restoration"
+      },
+      {
+        "id": "321b49f1af95b132b9f3afaec51846df12de4c9d",
+        "type": "FEATURE",
+        "text": " Message: add isValidation() to expose validation origin"
+      },
+      {
+        "id": "fe29900e9ab7becd0d38cf453e0d6f6a06f535b6",
+        "type": "FEATURE",
+        "text": " Messaging: add public getMessages() convenience API"
+      },
+      {
+        "id": "6a3ce6efd9dde6f76cb81724a233255087a0e5d5",
+        "type": "FIX",
+        "text": " sap/base/util/deepEqual: guard browser-global Node reference"
+      },
+      {
         "id": "6601e5b2656723a6a89cbc5a3493dce575865b46",
         "type": "FIX",
         "text": " sap/base: avoid use of the browser-only global 'window'"

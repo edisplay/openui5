@@ -3,6 +3,11 @@
     "date": "July 2026",
     "notes": [
       {
+        "id": "8e9c931d4f9d7cf5efa86ab70fdd0eb56e262611",
+        "type": "FIX",
+        "text": " sap.m/sap.ui.unified Menu: fix separator a11y tree"
+      },
+      {
         "id": "58bcf7786cf19dce6d5e7cdfad04fd767298daca",
         "type": "FIX",
         "text": " sap.ui.unified.MenuTextFieldItem: Prevent default behavior for Enter key in onkeydown event"

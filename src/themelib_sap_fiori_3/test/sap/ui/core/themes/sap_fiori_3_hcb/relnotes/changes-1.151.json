@@ -3,6 +3,11 @@
     "date": "July 2026",
     "notes": [
       {
+        "id": "940d07b74ef2af62e916c8ec15540cd46e2b1b06",
+        "type": "FIX",
+        "text": " sap.m.Token: Apply focus styles on mobile devices"
+      },
+      {
         "id": "6b01864e85b5ed3499e09240468fc50c461a79d4",
         "type": "FIX",
         "text": " sap.m.SegmentedButton: Use CSS variable for border radius instead of hardcoded value"

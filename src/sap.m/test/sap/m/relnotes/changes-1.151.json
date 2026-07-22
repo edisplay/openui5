@@ -3,6 +3,41 @@
     "date": "July 2026",
     "notes": [
       {
+        "id": "d2543cc867382f566b55f438af5515ec7231e5cb",
+        "type": "FIX",
+        "text": " sap.m.PlanningCalendar: \"1 Month\" view responsiveness"
+      },
+      {
+        "id": "7aa42dd7cb2c8bf1a5c4422f519f62b3524df3b3",
+        "type": "FIX",
+        "text": " sap.m.Dialog: min-width 100% on narrow viewports"
+      },
+      {
+        "id": "e0658796a4839b82168e59a89408edf668f76613",
+        "type": "FIX",
+        "text": "p13n.SelectionPanel: add anouncements for reordering"
+      },
+      {
+        "id": "940d07b74ef2af62e916c8ec15540cd46e2b1b06",
+        "type": "FIX",
+        "text": " sap.m.Token: Apply focus styles on mobile devices"
+      },
+      {
+        "id": "ef73e06db677d929fbdc5ad017d4aed3664923cf",
+        "type": "FIX",
+        "text": " sap.m.Dialog: avoid redundant screen reader announcement when title matches value state"
+      },
+      {
+        "id": "cc1582bc88d99d733faf33a4aea5dc1ca9988b00",
+        "type": "FIX",
+        "text": " sap.m.DatePicker: respects constrains set in the binding"
+      },
+      {
+        "id": "8e9c931d4f9d7cf5efa86ab70fdd0eb56e262611",
+        "type": "FIX",
+        "text": " sap.m/sap.ui.unified Menu: fix separator a11y tree"
+      },
+      {
         "id": "3303967767db6742312a4c0c255ac75dfc4baca7",
         "type": "FIX",
         "text": " We've now added the title property of the PDFViewer to the iframe instance"
@@ -73,6 +108,11 @@
         "text": " We've now introduced AdditionalPriority property for generic tile when ActionMode or Article Mode containing FrameType Stretch is enabled"
       },
       {
+        "id": "131805e5ffad57d2b77deb8950b81cc58a448c98",
+        "type": "FIX",
+        "text": " We've now fixed the validation issues that occurred when renaming a URL document in UploadSet"
+      },
+      {
         "id": "119ab926ac1f01e886a3c4b82764e5897c8096f1",
         "type": "FIX",
         "text": " sap.m.Dialog: Screen reader no longer announces the footer button before the link in content"
@@ -141,6 +181,11 @@
         "id": "9adce547e9fe6fb29a0e9d3cda7fa9864b8fb39e",
         "type": "FIX",
         "text": " sap.m.Toolbar: Fix arrow key navigation for Slider, RangeSlider and MultiInput"
+      },
+      {
+        "id": "5a2da6401b43038a5be02b9de2375f88ba32aaac",
+        "type": "FEATURE",
+        "text": " sap.m.Tokenizer: announce token deletion"
       },
       {
         "id": "a562220e7967e4bba74841108487a3676e5ff94c",
