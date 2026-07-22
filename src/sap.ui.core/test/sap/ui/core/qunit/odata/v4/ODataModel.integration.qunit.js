@@ -82155,6 +82155,9 @@ make root = ${bMakeRoot}`;
 	// @see "Fiori Elements Safeguard: Test 2 (Create)" for a similar scenario "but w/o
 	//   $$inheritExpandSelect because nothing can be inherited" :-(
 	// @see "DINC0333115: bound action w/o entity data" for a similar scenario w/ ODCB
+	//
+	// Invoke promise is rejected because group ID $stream is used without return type Edm.Stream.
+	// JIRA: CPOUI5ODATAV4-3590
 	QUnit.test("CS20250010102074: $$inheritExpandSelect on new ODLB", async function (assert) {
 		const oModel = this.createSpecialCasesModel({autoExpandSelect : true});
 
@@ -82183,6 +82186,17 @@ make root = ${bMakeRoot}`;
 
 		assert.strictEqual(oReturnValueContext.getPath(),
 			"/Artists(ArtistID='23',IsActiveEntity=false)", "some quick check");
+
+		const sMessage = "$stream requires Edm.Stream: " + sODCB
+			+ ": /Artists|special.cases.Create(...)";
+		this.oLogMock.expects("error")
+			.withExactArgs("Failed to invoke /Artists/special.cases.Create(...)",
+				sinon.match(sMessage), sODCB);
+
+		// code under test (JIRA: CPOUI5ODATAV4-3590)
+		await oOperationBinding.invoke("$stream").then(mustFail(assert), (oError) => {
+			assert.strictEqual(oError.message, sMessage);
+		});
 	});
 
 	//*********************************************************************************************
@@ -85865,4 +85879,41 @@ make root = ${bMakeRoot}`;
 		]);
 		assert.strictEqual(sNote, "late #2");
 	});
+
+	//*********************************************************************************************
+	// Scenario: Invoke an Action (POST) or Function (GET) that returns Edm.Stream. The operation
+	// should use fetch API and return a ReadableStream.
+	// JIRA: CPOUI5ODATAV4-3375
+[false, true].forEach((bAction) => {
+	QUnit.test("Edm.Stream: " + (bAction ? "Action" : "Function"), async function (assert) {
+		const oModel = this.createTeaBusiModel();
+		const sPath = "EMPLOYEES('1')"
+			+ "/com.sap.gateway.default.iwbep.tea_busi.v0001.__FAKE__"
+			+ (bAction ? "Ac" : "Fu") + "DownloadDocument";
+		const oBinding = oModel.bindContext("/" + sPath + "(...)");
+		oBinding.setParameter("format", "PDF");
+		oBinding.setParameter("locale", "en-US");
+
+		const oStreamResponse = {
+			body : "~body~",
+			headers : "~headers~",
+			foo : "bar" // must not be part of the result
+		};
+
+		if (bAction) {
+			this.mock(oModel.oRequestor).expects("fetch")
+				.withExactArgs("POST", sPath, {format : "PDF", locale : "en-US"})
+				.resolves(oStreamResponse);
+		} else {
+			this.mock(oModel.oRequestor).expects("fetch")
+				.withExactArgs("GET", sPath + "(format='PDF',locale='en-US')", undefined)
+				.resolves(oStreamResponse);
+		}
+
+		// code under test
+		const oResult = await oBinding.invoke("$stream");
+
+		assert.deepEqual(oResult, {body : "~body~", headers : "~headers~"});
+	});
+});
 });
