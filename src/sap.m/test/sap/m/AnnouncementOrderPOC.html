@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Announcement Order POC , SR Testing</title>
+
+	<script src="shared-config.js"></script>
+	<script id="sap-ui-bootstrap"
+		src="../../../resources/sap-ui-core.js"
+		data-sap-ui-async="true"
+		data-sap-ui-compat-version="edge"
+		data-sap-ui-libs="sap.m"
+		data-sap-ui-on-init="module:local/AnnouncementOrderPOC"
+		data-sap-ui-resource-roots='{ "local": "./" }'>
+	</script>
+
+	<style>
+		html { scroll-padding-top: 14rem; }
+		.poc-preview-row { position: sticky; top: 0; z-index: 9999; display: flex; gap: 0.5rem; background: #fff; }
+		.poc-preview { pointer-events: none; flex: 1; min-width: 0; margin: 0; padding: 0.5rem 1rem; border: 1px solid #f0c36d; background: #fffbe6; font: 12px/1.4 monospace; white-space: pre-wrap; }
+	</style>
+</head>
+<body id="body" class="sapUiBody">
+	<div id="content"></div>
+</body>
+</html>
