@@ -257,7 +257,9 @@ sap.ui.define([
 		// Buttons
 		this._oRestartButton = null;
 		this._oEditButton = null;
+		this._oEditInvisibleText = null;
 		this._oDeleteButton = null;
+		this._oDeleteInvisibleText = null;
 		this._oTerminateButton = null;
 		this._oConfirmRenameButton = null;
 		this._oCancelRenameButton = null;
@@ -298,6 +300,12 @@ sap.ui.define([
 				this._getFileNameEdit().setValue(oFile.name);
 				this._checkNameLengthRestriction(this.getParent().getMaxFileNameLength());
 				this._checkTypeRestriction(this.getParent().getFileTypes());
+			}
+			if (this._oEditInvisibleText) {
+				this._oEditInvisibleText.setText(this._oRb.getText("UPLOAD_SET_EDIT_BUTTON_ARIA_LABEL"));
+			}
+			if (this._oDeleteInvisibleText) {
+				this._oDeleteInvisibleText.setText(this._oRb.getText("UPLOAD_SET_DELETE_BUTTON_ARIA_LABEL"));
 			}
 		}
 
@@ -698,8 +706,8 @@ sap.ui.define([
 	UploadSetItem.prototype._getEditButton = function () {
 		var oParent = this.getParent();
 		if (!this._oEditButton) {
-			this._oInvisibleText = new InvisibleText();
-			this._oInvisibleText.toStatic();
+			this._oEditInvisibleText = new InvisibleText();
+			this._oEditInvisibleText.toStatic();
 			this._oEditButton = new Button({
 				id: this.getId() + "-editButton",
 				icon: "sap-icon://edit",
@@ -711,9 +719,9 @@ sap.ui.define([
 			});
 			this._oEditButton.addStyleClass("sapMUCEditBtn");
 			this.addDependent(this._oEditButton);
-			this._oEditButton.addAriaLabelledBy(this._oInvisibleText.getId());
-			this._oInvisibleText.setText("Button" + this._oRb.getText("UPLOAD_SET_EDIT_BUTTON_TEXT"));
-			}
+			this._oEditButton.addAriaLabelledBy(this._oEditInvisibleText.getId());
+			this._oEditInvisibleText.setText(this._oRb.getText("UPLOAD_SET_EDIT_BUTTON_ARIA_LABEL"));
+		}
 
 		return this._oEditButton;
 	};
@@ -851,8 +859,8 @@ sap.ui.define([
 	UploadSetItem.prototype._getDeleteButton = function () {
 		var oParent = this.getParent();
 		if (!this._oDeleteButton) {
-			this._oInvisibleText = new InvisibleText();
-			this._oInvisibleText.toStatic();
+			this._oDeleteInvisibleText = new InvisibleText();
+			this._oDeleteInvisibleText.toStatic();
 			this._oDeleteButton = new Button({
 				id: this.getId() + "-deleteButton",
 				icon: "sap-icon://delete",
@@ -864,8 +872,8 @@ sap.ui.define([
 			});
 			this._oDeleteButton.addStyleClass("sapMUCDeleteBtn");
 			this.addDependent(this._oDeleteButton);
-			this._oDeleteButton.addAriaLabelledBy(this._oInvisibleText.getId());
-			this._oInvisibleText.setText("Button" + this._oRb.getText("UPLOAD_SET_DELETE_BUTTON_TEXT"));
+			this._oDeleteButton.addAriaLabelledBy(this._oDeleteInvisibleText.getId());
+			this._oDeleteInvisibleText.setText(this._oRb.getText("UPLOAD_SET_DELETE_BUTTON_ARIA_LABEL"));
 		}
 
 		return this._oDeleteButton;
