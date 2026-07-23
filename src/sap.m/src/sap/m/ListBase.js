@@ -2231,7 +2231,7 @@ function(
 				aItems = aItems.filter((oItem) => aGroupItemIds.includes(oItem.getId()));
 				iSetSize = aItems.length;
 			}
-		} else if (this._skipGroupHeaderFocus()) {
+		} else if (this.getSkipGroupHeaderFocus()) {
 			aItems = aItems.filter((oItem) => !oItem.isGroupHeader());
 		}
 
@@ -2262,7 +2262,7 @@ function(
 
 	ListBase.prototype.getSize = function() {
 		let aItems = this.getVisibleItems();
-		const bExcludeGroupHeaderFromCount = (this._hasNestedGrouping() || this._skipGroupHeaderFocus());
+		const bExcludeGroupHeaderFromCount = (this._hasNestedGrouping() || this.getSkipGroupHeaderFocus());
 
 		if (bExcludeGroupHeaderFromCount) {
 			aItems = aItems.filter((oItem) => !oItem.isGroupHeader());
@@ -2463,7 +2463,7 @@ function(
 	 */
 	ListBase.prototype.setNavigationItems = function(oItemNavigation, oNavigationRoot) {
 		let sSelector = ".sapMLIB";
-		if (this._skipGroupHeaderFocus()) {
+		if (this.getSkipGroupHeaderFocus()) {
 			// TODO: maybe use aria-roledescription instead, as CustomListItem and StandardListItem do not have MGHLI class
 			sSelector = ".sapMLIB:not(.sapMGHLI)";
 		}
@@ -3250,7 +3250,7 @@ function(
 		return "list";
 	};
 
-	ListBase.prototype._skipGroupHeaderFocus = function() {
+	ListBase.prototype.getSkipGroupHeaderFocus = function() {
 		return false;
 	};
 
