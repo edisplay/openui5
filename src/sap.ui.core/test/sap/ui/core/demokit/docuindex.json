@@ -442,32 +442,6 @@
 					"Heap of Shards"
 				]
 			},
-			{
-				"id": "sap.ui.core.tutorial.databinding",
-				"name": "Data Binding",
-				"category": "Tutorial",
-				"since": "1.30",
-				"formFactors": "-",
-				"description": "In this tutorial, we will explain the concepts of data binding in SAPUI5.",
-				"docuLink": "topic/e5310932a71f42daa41f3a6143efca9c",
-				"samplesAsSteps": [
-					"No Data Binding",
-					"Creating a Model",
-					"Create Property Binding",
-					"Two-Way Data Binding",
-					"One-way Data Binding",
-					"Resource Models",
-					"(Optional) Resource Bundles and Multiple Languages",
-					"Binding Paths: Accessing Properties in Hierarchically Structured Models",
-					"Formatting Values",
-					"Property Formatting Using Data Types",
-					"Validation Using the Message Manager",
-					"Aggregation Binding Using Templates",
-					"Element Binding",
-					"Expression Binding",
-					"Aggregation Binding Using a Factory Function"
-				]
-			},
 		    {
 				"id": "sap.ui.core.tutorial.mockserver",
 				"name": "OData V2 Mock Server",
