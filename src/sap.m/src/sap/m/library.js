@@ -105,6 +105,8 @@ sap.ui.define([
 			"sap.m.ButtonAccessibleRole",
 			"sap.m.ButtonType",
 			"sap.m.CarouselArrowsPlacement",
+			"sap.m.DateHighZoomInputsField",
+			"sap.m.DateHighZoomInputsMode",
 			"sap.m.DateTimeInputType",
 			"sap.m.DeviationIndicator",
 			"sap.m.DialogRoleType",
@@ -263,6 +265,7 @@ sap.ui.define([
 			"sap.m.CustomListItem",
 			"sap.m.CustomTile",
 			"sap.m.CustomTreeItem",
+			"sap.m.DateHighZoomInputs",
 			"sap.m.DatePicker",
 			"sap.m.DateRangeSelection",
 			"sap.m.DateTimeField",
@@ -1245,6 +1248,30 @@ sap.ui.define([
 	 */
 	DataType.registerEnum("sap.m.DateTimeInputType", thisLib.DateTimeInputType);
 
+	/**
+	 * Date field identifier for the <code>change</code> event of {@link sap.m.DateHighZoomInputs}.
+	 *
+	 * @enum {string}
+	 * @private
+	 */
+	thisLib.DateHighZoomInputsField = {
+		/** @private */ Year  : "Year",
+		/** @private */ Month : "Month",
+		/** @private */ Day   : "Day"
+	};
+	DataType.registerEnum("sap.m.DateHighZoomInputsField", thisLib.DateHighZoomInputsField);
+
+	/**
+	 * Rendering mode for {@link sap.m.DateHighZoomInputs}.
+	 *
+	 * @enum {string}
+	 * @private
+	 */
+	thisLib.DateHighZoomInputsMode = {
+		/** @private */ Single : "Single",
+		/** @private */ Range  : "Range"
+	};
+	DataType.registerEnum("sap.m.DateHighZoomInputsMode", thisLib.DateHighZoomInputsMode);
 
 	/**
 	 * Enum for the type of {@link sap.m.Dialog} control.
