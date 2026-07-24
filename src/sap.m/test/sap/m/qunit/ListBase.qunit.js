@@ -3383,7 +3383,7 @@ sap.ui.define([
 			});
 			oList.placeAt("qunit-fixture");
 
-			const oSkipFocusStub = sinon.stub(oList, "_skipGroupHeaderFocus").returns(true);
+			const oSkipFocusStub = sinon.stub(oList, "getSkipGroupHeaderFocus").returns(true);
 
 			const oBinding = oList.getBinding("items");
 			oBinding.sort(oSorter);
